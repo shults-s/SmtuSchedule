@@ -22,9 +22,8 @@
                 android:drawablePadding="4dp"
                 android:layout_gravity="left"
                 android:ellipsize="end"
-                android:textColor="@color/toolbarText"
-                android:textSize="@dimen/largeTextSize"
-                android:text="@string/welcomeToolbarTitle" />
+                android:text="@string/welcomeToolbarTitle"
+                android:textAppearance="@style/Toolbar.Title" />
         </android.support.v7.widget.Toolbar>
         <android.support.design.widget.TabLayout
             android:id="@+id/mainTabLayout"

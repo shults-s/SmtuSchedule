@@ -3,9 +3,9 @@
     <!-- Для каждой релизной версии необходимо вручную обновлять versionCode в манифесте приложения -->
     <string name="applicationCompleteName">Расписание СПбГМТУ</string>
     <string name="applicationLabel">Расписание</string>
-    <string name="applicationVersion">0.7</string>
+    <string name="applicationVersion">0.8</string>
     <string name="aboutApplicationMessage">
-        Версия 0.7 от 09 февраля 2019.
+        Версия 0.8 от 10 февраля 2019.
         \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>.
         \nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
     </string>

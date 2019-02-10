@@ -159,8 +159,8 @@ namespace SmtuSchedule.Core
             // На входе: ЧЧ:ММ-ЧЧ:ММ[<br><span class="s_small">Вид недели</span>]
             void ParseTime(HtmlNode td, out DateTime from, out DateTime to, out WeekType type)
             {
-                String weekType = td.Element("span")?.InnerText;
-                String timeRange = td.InnerHtml;
+                String weekType = td.Element("span")?.InnerText.Trim();
+                String timeRange = td.InnerHtml.Trim();
 
                 if (weekType != null)
                 {
@@ -180,7 +180,7 @@ namespace SmtuSchedule.Core
             // На входе: Корпус Аудитория[Литера]|Корпус каф.[ФВ|ВК|...]|Корпус Лаборатория
             String ParseAudience(HtmlNode td)
             {
-                String audience = td.InnerText.Replace(' ', '-').ToUpper(Culture);
+                String audience = td.InnerText.Trim().Replace(' ', '-').ToUpper(Culture);
 
                 if (!audience.Contains('.'))
                 {
@@ -194,12 +194,12 @@ namespace SmtuSchedule.Core
             String ParseTitle(HtmlNode td)
             {
                 String subject = td.InnerHtml.Substring(0, td.InnerHtml.IndexOf('<'));
-                String studyType = Studies[td.Element("span").InnerText];
+                String studyType = Studies[td.Element("span").InnerText.Trim()];
 
-                return $"{subject} ({studyType})".TrimStart('\t', ' ', '\r', '\n');
+                return $"{subject.Trim()} ({studyType})";
             }
 
-            // На входе: Номер группы|<a href="/ru/viewperson/Идентификатор/">Фамилия Имя Отчество</a>
+            // На входе: Номер группы|<a href="/ru/viewperson/Идентификатор/">ФИО</a>|ФИО
             void ParseLecturerOrGroup(HtmlNode td, out String name, out Int32 id)
             {
                 if (Int32.TryParse(td.InnerText, out Int32 groupId))
@@ -209,7 +209,13 @@ namespace SmtuSchedule.Core
                 }
                 else
                 {
-                    name = td.Element("a")?.InnerText;
+                    name = td.Element("a")?.InnerText ?? td.InnerText;
+                    name = name.Trim();
+
+                    if (name == String.Empty)
+                    {
+                        name = null;
+                    }
 
                     Boolean isLecturerScheduleExists = name != null
                         && _lecturers != null
