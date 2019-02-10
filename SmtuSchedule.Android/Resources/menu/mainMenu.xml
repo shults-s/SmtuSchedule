@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/removeCurrentScheduleMenuItem"
+        android:visible="false"
+        android:icon="@drawable/delete"
+        android:title="@string/removeCurrentScheduleMenuItem"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/selectScheduleDateMenuItem"
+        android:visible="false"
+        android:icon="@drawable/calendar"
+        android:title="@string/selectScheduleDateMenuItem"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/downloadSchedulesMenuItem"
+        android:icon="@drawable/download"
+        android:title="@string/downloadSchedulesMenuItem"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/openPreferencesMenuItem"
+        android:title="@string/openPreferencesMenuItem"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/aboutApplicationMenuItem"
+        android:title="@string/aboutApplicationMenuItem"
+        app:showAsAction="never" />
+</menu>

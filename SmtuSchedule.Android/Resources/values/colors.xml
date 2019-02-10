@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <color name="windowBackground">#FAFAFA</color>
+
+    <color name="primaryDark">#455273</color>
+    <color name="primary">#517CB3</color>
+    <color name="accent">#E1F7F4</color>
+
+    <color name="divider">#E1F7F4</color>
+
+    <color name="errorText">#B00020</color>
+    <color name="toolbarText">#FFFFFF</color>
+    <color name="primaryText">#202020</color>
+    <color name="secondaryText">#727272</color>
+    <color name="subjectTitleText">#455273</color>
+</resources>

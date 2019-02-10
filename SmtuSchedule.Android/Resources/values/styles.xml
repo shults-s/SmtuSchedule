@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <style name="MainTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+
+        <item name="popupMenuStyle">@style/PopupMenu</item>
+
+        <item name="alertDialogTheme">@style/MainTheme.Dialog</item>
+        <item name="android:dialogTheme">@style/MainTheme.Dialog</item>
+
+        <item name="colorAccent">@color/primary</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+
+        <item name="android:windowBackground">@color/windowBackground</item>
+    </style>
+
+    <style name="MainTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/primary</item>
+    </style>
+
+    <style name="MainTheme.Dialog.Content" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/primary</item>
+    </style>
+
+    <style name="MainTheme.Popup" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="MainTheme.AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="PopupMenu" parent="@style/Widget.AppCompat.Light.PopupMenu">
+        <item name="overlapAnchor">true</item>
+    </style>
+
+    <style name="Toolbar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@color/toolbarText</item>
+        <item name="android:textSize">@dimen/largeTextSize</item>
+    </style>
+</resources>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TableRow
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:padding="@dimen/normalPadding"
+    android:background="@color/windowBackground">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/normalPadding">
+        <TextView
+            android:id="@+id/subjectFromTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/smallPadding"
+            android:textSize="@dimen/normalTextSize"
+            android:textColor="@color/primaryText" />
+        <TextView
+            android:id="@+id/subjectAudienceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:textSize="@dimen/normalTextSize"
+            android:textColor="@color/primaryText"
+            android:layout_below="@id/subjectFromTextView" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/subjectTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/smallPadding"
+            android:textSize="@dimen/normalTextSize"
+            android:textColor="@color/subjectTitleText" />
+        <TextView
+            android:id="@+id/subjectLecturerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/normalTextSize"
+            android:textColor="@color/primaryText"
+            android:layout_below="@id/subjectTitleTextView" />
+    </RelativeLayout>
+</TableRow>

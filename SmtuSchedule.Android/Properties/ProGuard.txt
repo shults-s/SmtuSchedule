@@ -1,0 +1,3 @@
+-keep class android.support.v7.widget.** { *; }
+-keep class android.support.v4.widget.Space { *; }
+-keep class android.support.design.widget.** { *; }

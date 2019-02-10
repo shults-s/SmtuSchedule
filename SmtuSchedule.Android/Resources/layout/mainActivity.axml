@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/mainAppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/MainTheme.AppBar">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/mainToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/primary"
+            app:popupTheme="@style/MainTheme.Popup">
+            <TextView
+                android:id="@+id/mainToolbarTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="4dp"
+                android:layout_gravity="left"
+                android:ellipsize="end"
+                android:textColor="@color/toolbarText"
+                android:textSize="@dimen/largeTextSize"
+                android:text="@string/welcomeToolbarTitle" />
+        </android.support.v7.widget.Toolbar>
+        <android.support.design.widget.TabLayout
+            android:id="@+id/mainTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="@color/primary"
+            android:textSize="@dimen/normalTextSize"
+            app:tabMode="scrollable"
+            app:tabGravity="fill"
+            app:tabTextColor="@color/toolbarText"
+            app:tabIndicatorColor="@color/toolbarText"
+            app:tabSelectedTextColor="@color/toolbarText" />
+    </android.support.design.widget.AppBarLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/mainSelectScheduleDateFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_margin="@dimen/normalPadding"
+        android:clickable="true"
+        android:visibility="gone"
+        android:src="@drawable/calendar"
+        app:fabSize="normal"
+        app:backgroundTint="@color/primary" />
+    <RelativeLayout
+        android:id="@+id/mainContentRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+</android.support.design.widget.CoordinatorLayout>

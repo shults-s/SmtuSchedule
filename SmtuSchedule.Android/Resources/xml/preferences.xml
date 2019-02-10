@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<android.support.v7.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <shults.smtuschedule.SmtuSchedule.Android.Views.DatePreference
+        android:key="UpperWeekDate"
+        android:title="@string/preferenceUpperWeekDateTitle"
+        android:summary="@string/preferenceUpperWeekDateSummary"
+        android:layout="@layout/customPreference" />
+    <SwitchPreferenceCompat
+        android:key="UseFabDateSelector"
+        android:title="@string/preferenceUseFabDateSelectorTitle"
+        android:summary="@string/preferenceUseFabDateSelectorSummary"
+        android:defaultValue="false"
+        android:layout="@layout/customPreference" />
+    <SwitchPreferenceCompat
+        android:key="CheckUpdatesOnStart"
+        android:title="@string/preferenceCheckUpdatesOnStartTitle"
+        android:summary="@string/preferenceCheckUpdatesOnStartSummary"
+        android:defaultValue="true"
+        android:layout="@layout/customPreference" />
+</android.support.v7.preference.PreferenceScreen>

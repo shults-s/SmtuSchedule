@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Для каждой релизной версии необходимо вручную обновлять versionCode в манифесте приложения -->
+    <string name="applicationCompleteName">Расписание СПбГМТУ</string>
+    <string name="applicationLabel">Расписание</string>
+    <string name="applicationVersion">0.7</string>
+    <string name="aboutApplicationMessage">
+        Версия 0.7 от 09 февраля 2019.
+        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>.
+        \nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
+    </string>
+
+    <!-- Заголовки диалогов и панелей инструментов -->
+    <string name="aboutApplicationTitle">О приложении</string>
+    <string name="updateApplicationTitle">Загрузить новую версию?</string>
+    <string name="preferencesToolbarTitle">Настройки</string>
+    <string name="downloadToolbarTitle">Загрузка расписаний</string>
+    <string name="welcomeToolbarTitle">@string/applicationCompleteName</string>
+
+    <!-- Названия пунктов меню в панели инстументов -->
+    <string name="selectScheduleDateMenuItem">Выбрать дату</string>
+    <string name="downloadSchedulesMenuItem">Загрузить расписания</string>
+    <string name="removeCurrentScheduleMenuItem">Удалить расписание</string>
+    <string name="aboutApplicationMenuItem">@string/aboutApplicationTitle</string>
+    <string name="openPreferencesMenuItem">@string/preferencesToolbarTitle</string>
+
+    <!-- Названия действий Snackbar'ов и кнопок -->
+    <string name="cancelActionText">Отмена</string>
+    <string name="removeActionText">Удалить</string>
+    <string name="thanksActionText">Спасибо</string>
+    <string name="skipActionText">Пропустить</string>
+    <string name="downloadActionText">Загрузить</string>
+    <string name="configureActionText">Настроить</string>
+    <string name="grantAccessActionText">Разрешить</string>
+
+    <!-- Сообщения уведомительного характера -->
+    <string name="weekendMessage">Выходной день :)</string>
+    <string name="welcomeMessage">Ни одно расписание занятий еще не загружено.</string>
+    <string name="removeCurrentScheduleMessage">Удалить расписание «%1s»?</string>
+    <string name="schedulesDownloadingStarted">Загрузка началась...</string>
+    <string name="scheduleRemovedSuccessfullyMessage">Расписание удалено.</string>
+    <string name="scheduleNotAvailableMessage">Это расписание не доступно.</string>
+    <string name="scheduleDownloadedSuccessfullyMessage">Расписание загружено.</string>
+    <string name="schedulesDownloadedSuccessfullyMessage">Все расписания загружены.</string>
+    <string name="scheduleNotYetDownloadedMessage">Это расписание еще не загружено.</string>
+    <string name="waitUntilSchedulesFinishDownloading">Дождитесь окончания загрузки расписаний.</string>
+    <string name="configureApplicationMessage">Настройте приложение для корректного отображения занятий.</string>
+    <string name="applicationUpdateAvailableMessage">
+        Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md">новая версия</a> приложения.
+    </string>
+
+    <!-- Сообщения об ошибках -->
+    <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
+    <string name="schedulesReadingErrorMessage">Не все расписания удалось открыть.</string>
+    <string name="scheduleDownloadErrorMessage">Ошибка при загрузке расписания.</string>
+    <string name="schedulesDownloadErrorMessage">Не все расписания удалось загрузить.</string>
+    <string name="lecturersDownloadErrorMessage">
+        Ошибка при получении списка с именами преподавателей. Будут загружены только расписания групп.
+    </string>
+    <string name="applicationInitializationErrorMessage">Ошибка при инициализации приложения.</string>
+    <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с сайтом университета.</string>
+
+    <!-- Подсказки ввода -->
+    <string name="downloadRequestHintMessage">Введите номера групп, ФИО преподавателей через запятую:</string>
+
+    <!-- Заголовки и описания настроек приложения -->
+    <string name="preferenceCheckUpdatesOnStartTitle">Проверять обновления</string>
+    <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string>
+    <string name="preferenceUpperWeekDateTitle">Первый день семестра по числителю</string>
+    <string name="preferenceUpperWeekDateSummary">Не задан</string>
+    <string name="preferenceUseFabDateSelectorTitle">Плавующая кнопка</string>
+    <string name="preferenceUseFabDateSelectorSummary">Использовать плавующую кнопку для выбора даты в расписании</string>
+
+    <!-- Обоснования для запроса разрешений -->
+    <string name="internetPermissionRationaleMessage">Доступ к интернету необходим для загрузки расписаний.</string>
+    <string name="storagePermissionsRationaleMessage">Доступ к памяти смартфона необходим для загрузки расписаний.</string>
+</resources>
