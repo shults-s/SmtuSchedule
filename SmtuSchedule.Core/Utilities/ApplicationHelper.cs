@@ -7,10 +7,11 @@ namespace SmtuSchedule.Core.Utilities
 {
     public static class ApplicationHelper
     {
+        public const String LatestReleaseUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest";
+
         public static async Task<String> GetCurrentVersionAsync()
         {
-            const String Url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/"
-                + "CHANGELOG.md";
+            const String Url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/CHANGELOG.md";
 
             try
             {
@@ -44,8 +45,7 @@ namespace SmtuSchedule.Core.Utilities
 
         public static String GetApkDownloadUrl(String version)
         {
-            return $"https://github.com/shults-s/SmtuSchedule/releases/download/{version}/"
-                + $"Shults.SmtuSchedule-{version}.apk";
+            return $"https://github.com/shults-s/SmtuSchedule/releases/download/{version}/Shults.SmtuSchedule-{version}.apk";
         }
     }
 }

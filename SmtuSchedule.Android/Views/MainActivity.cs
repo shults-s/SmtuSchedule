@@ -296,8 +296,13 @@ namespace SmtuSchedule.Android.Views
             }
 
             String version = await ApplicationHelper.GetCurrentVersionAsync();
+            if (version == null)
+            {
+                return ;
+            }
 
-            if (version != null && version != _application.Preferences.LastSeenVersion)
+            String current = _application.GetVersion();
+            if (version != current && version != _application.Preferences.LastSeenVersion)
             {
                 CustomAlertDialog dialog = new CustomAlertDialog(this)
                     .SetTitle(Resource.String.updateApplicationTitle)
@@ -310,8 +315,9 @@ namespace SmtuSchedule.Android.Views
                         Resource.String.downloadActionText,
                         () =>
                         {
-                            String downloadUrl = ApplicationHelper.GetApkDownloadUrl(version);
-                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(downloadUrl)));
+                            _application.Preferences.LastSeenVersion = version;
+                            String releaseUrl = ApplicationHelper.LatestReleaseUrl;
+                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(releaseUrl)));
                         }
                     );
 
