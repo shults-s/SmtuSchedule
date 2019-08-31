@@ -23,8 +23,32 @@ namespace SmtuSchedule.Android
         public ScheduleApplication(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
         {
-            IsInitialized = false;
+            PreInitialize();
+        }
+
+        public ScheduleApplication() => PreInitialize();
+
+        private void PreInitialize()
+        {
             _logger = new InMemoryLogger();
+            _logger.Log(
+                "SmtuSchedule version {0}, running on {1} {2} (Android {4} – API {3}).",
+                GetVersion(),
+                Build.Manufacturer,
+                Build.Model,
+                Build.VERSION.Sdk,
+                Build.VERSION.Release
+            );
+
+            // У AndroidEnvironment.UnhandledExceptionRaiser трассировка стека подробнее,
+            // чем у AppDomain.CurrentDomain.UnhandledException.
+            AndroidEnvironment.UnhandledExceptionRaiser += (s, a) =>
+            {
+                _logger.Log(a.Exception);
+                SaveLog(true);
+            };
+
+            IsInitialized = false;
         }
 
         ~ScheduleApplication() => _logger.Dispose();
@@ -44,19 +68,6 @@ namespace SmtuSchedule.Android
         }
 
         public String GetInternalStoragePath() => FilesDir.AbsolutePath + "/";
-
-        public void SaveLog()
-        {
-            String logsPath = GetExternalStoragePath() + "Logs/";
-
-            if (!Directory.Exists(logsPath))
-            {
-                Directory.CreateDirectory(logsPath);
-            }
-
-            String fileName = DateTime.Now.ToString("dd.MM.yyyy HH-mm") + ".log";
-            _ = _logger.Save(logsPath + fileName);
-        }
 
         public Boolean Initialize()
         {
@@ -78,16 +89,22 @@ namespace SmtuSchedule.Android
             Manager = new SchedulesManager(externalStoragePath);
             Manager.SetLogger(_logger);
 
-            _logger.Log(
-                "SmtuSchedule version {0}, running on {1} {2} (Android {4} – API {3}).",
-                GetVersion(),
-                Build.Manufacturer,
-                Build.Model,
-                Build.VERSION.Sdk,
-                Build.VERSION.Release
-            );
-
             return IsInitialized = true;
+        }
+
+        public void SaveLog(Boolean isCrashLog = false)
+        {
+            String logsPath = GetExternalStoragePath() + "Logs/";
+
+            if (!Directory.Exists(logsPath))
+            {
+                Directory.CreateDirectory(logsPath);
+            }
+
+            String prefix = isCrashLog ? "CRASH " : String.Empty;
+
+            String fileName = prefix + DateTime.Now.ToString("dd.MM.yyyy HH-mm") + ".log";
+            _ = _logger.Save(logsPath + fileName);
         }
 
         private InMemoryLogger _logger;
