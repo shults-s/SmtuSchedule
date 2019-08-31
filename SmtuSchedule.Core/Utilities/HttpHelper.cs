@@ -18,7 +18,7 @@ namespace SmtuSchedule.Core.Utilities
             }
 
             HttpResponseMessage message = await _client.PostAsync(url, content).ConfigureAwait(false);
-            return await message.Content.ReadAsStringAsync();
+            return await message.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         public static async Task<String> GetAsync(String url, Dictionary<String, String> parameters = null)
@@ -29,7 +29,7 @@ namespace SmtuSchedule.Core.Utilities
                 url += "?" + await content.ReadAsStringAsync().ConfigureAwait(false);
             }
 
-            return await _client.GetStringAsync(url);
+            return await _client.GetStringAsync(url).ConfigureAwait(false);
         }
 
         private static readonly HttpClient _client;

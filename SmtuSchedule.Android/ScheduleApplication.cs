@@ -79,7 +79,7 @@ namespace SmtuSchedule.Android
             Manager.SetLogger(_logger);
 
             _logger.Log(
-                "SmtuSchedule version {0}, running on {1} {2} (Android {4} – API {3}).",
+                "SmtuSchedule version {0}, running on {1} {2} (Android {4} â€“ API {3}).",
                 GetVersion(),
                 Build.Manufacturer,
                 Build.Model,

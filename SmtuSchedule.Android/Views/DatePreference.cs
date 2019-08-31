@@ -11,8 +11,8 @@ using DatePicker = Android.Widget.DatePicker;
 
 namespace SmtuSchedule.Android.Views
 {
-    // Объявление DatePreference в XML не должно содержать аттрибут android:defaultValue, иначе
-    // выбрасывается исключение Unable to activate instance of type ... from native handle ...
+    // РћР±СЉСЏРІР»РµРЅРёРµ DatePreference РІ XML РЅРµ РґРѕР»Р¶РЅРѕ СЃРѕРґРµСЂР¶Р°С‚СЊ Р°С‚С‚СЂРёР±СѓС‚ android:defaultValue, РёРЅР°С‡Рµ
+    // РІС‹Р±СЂР°СЃС‹РІР°РµС‚СЃСЏ РёСЃРєР»СЋС‡РµРЅРёРµ Unable to activate instance of type ... from native handle ...
     [Register("shults.smtuschedule.SmtuSchedule.Android.Views.DatePreference")]
     internal class DatePreference : DialogPreference
     {

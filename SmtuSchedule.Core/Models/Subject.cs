@@ -37,7 +37,7 @@ namespace SmtuSchedule.Core.Models
         [JsonProperty(Required = Required.DisallowNull)]
         public Lecturer Group { get; set; }
 
-        // Определяет, принадлежит ли данный момент времени занятию.
+        // Проверяет, принадлежит ли данный момент времени занятию.
         public Boolean IsTimeInside(DateTime time)
         {
             if (time.Hour < From.Hour || time.Hour > To.Hour)

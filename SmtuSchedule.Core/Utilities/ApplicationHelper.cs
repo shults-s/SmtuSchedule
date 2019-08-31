@@ -17,6 +17,7 @@ namespace SmtuSchedule.Core.Utilities
             {
                 String changeLog = await HttpHelper.GetAsync(Url).ConfigureAwait(false);
 
+                // ## [Версия X.X.X]
                 Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");
                 if (!match.Success)
                 {

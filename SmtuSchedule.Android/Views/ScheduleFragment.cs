@@ -2,19 +2,35 @@ using System;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Android.Content;
 using Android.Support.V4.App;
 using SmtuSchedule.Core.Models;
+using SmtuSchedule.Android.Interfaces;
 
 namespace SmtuSchedule.Android.Views
 {
     public class ScheduleFragment : Fragment
     {
-        public ScheduleFragment(Subject[] subjects, Boolean highlightCurrentSubject,
-            Action<Int32> switchScheduleCallback)
+        public void SetFragmentData(Subject[] subjects, Boolean needHighlightCurrentSubject)
         {
             _subjects = subjects;
-            _switchScheduleCallback = switchScheduleCallback;
-            _highlightCurrentSubject = highlightCurrentSubject;
+            _highlightCurrentSubject = needHighlightCurrentSubject;
+        }
+
+        public override void OnAttach(Context context)
+        {
+            base.OnAttach(context);
+
+            if (Activity is ISchedulesViewer viewer)
+            {
+                _switchScheduleCallback = viewer.ShowSchedule;
+            }
+        }
+
+        public override void OnDetach()
+        {
+            base.OnDetach();
+            _switchScheduleCallback = null;
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,7 +110,7 @@ namespace SmtuSchedule.Android.Views
         }
 
         private Subject[] _subjects;
-        private readonly Boolean _highlightCurrentSubject;
-        private readonly Action<Int32> _switchScheduleCallback;
+        private Boolean _highlightCurrentSubject;
+        private Action<Int32> _switchScheduleCallback;
     }
 }

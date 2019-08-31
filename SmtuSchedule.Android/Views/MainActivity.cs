@@ -15,6 +15,7 @@ using Android.Support.V4.View;
 using Android.Support.Design.Widget;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Utilities;
+using SmtuSchedule.Android.Interfaces;
 
 using PopupMenu = Android.Support.V7.Widget.PopupMenu;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
@@ -23,7 +24,7 @@ using Uri = Android.Net.Uri;
 namespace SmtuSchedule.Android.Views
 {
     [Activity(MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait)]
-    public class MainActivity : AppCompatActivity
+    public class MainActivity : AppCompatActivity, ISchedulesViewer
     {
         private enum MainActivityState { NotInitialized, Initialized, DisplaysMessage, DisplaysSchedule }
 
@@ -42,7 +43,7 @@ namespace SmtuSchedule.Android.Views
         public override Boolean OnPrepareOptionsMenu(IMenu menu)
         {
             // Если этот метод вызван до инициализации приложения или до окончания считывания расписаний.
-            if (_state == MainActivityState.NotInitialized)
+            if (_activityState == MainActivityState.NotInitialized)
             {
                 return true;
             }
@@ -59,8 +60,8 @@ namespace SmtuSchedule.Android.Views
             downloadScheduleMenuItem.SetShowAsAction(isToolbarDateSelectorVisible ? ShowAsAction.Never
                 : ShowAsAction.Always);
 
-            IMenuItem removeScheduleMenuItem = menu.FindItem(Resource.Id.removeCurrentScheduleMenuItem);
-            removeScheduleMenuItem.SetVisible(_application.Manager.Schedules.Count != 0);
+            //IMenuItem removeScheduleMenuItem = menu.FindItem(Resource.Id.removeCurrentScheduleMenuItem);
+            //removeScheduleMenuItem.SetVisible(_application.Manager.Schedules.Count != 0);
 
             return true;
         }
@@ -75,9 +76,9 @@ namespace SmtuSchedule.Android.Views
         {
             switch (item.ItemId)
             {
-                case Resource.Id.removeCurrentScheduleMenuItem:
-                    ShowCurrentScheduleRemovingDialog();
-                    break;
+                //case Resource.Id.removeCurrentScheduleMenuItem:
+                //    ShowCurrentScheduleRemovingDialog();
+                //    break;
 
                 case Resource.Id.selectScheduleDateMenuItem:
                     ShowCustomDatePickerDialog();
@@ -151,13 +152,13 @@ namespace SmtuSchedule.Android.Views
             }
             else
             {
-                RenderSubjects(DateTime.Today, false);
+                ViewPagerMoveToDate(DateTime.Today, false);
             }
         }
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            _state = MainActivityState.NotInitialized;
+            _activityState = MainActivityState.NotInitialized;
 
             base.OnCreate(savedInstanceState);
 
@@ -187,7 +188,7 @@ namespace SmtuSchedule.Android.Views
         {
             base.OnResume();
 
-            if (_state == MainActivityState.DisplaysSchedule)
+            if (_activityState == MainActivityState.DisplaysSchedule)
             {
                 _currentSubjectHighlightTimer?.Start();
             }
@@ -198,7 +199,7 @@ namespace SmtuSchedule.Android.Views
             base.OnPause();
             _application.Preferences?.Save();
 
-            if (_state == MainActivityState.DisplaysSchedule)
+            if (_activityState == MainActivityState.DisplaysSchedule)
             {
                 _currentSubjectHighlightTimer?.Stop();
             }
@@ -258,14 +259,16 @@ namespace SmtuSchedule.Android.Views
             _schedulesMenu = new PopupMenu(this, _toolbarTitle);
             _schedulesMenu.MenuItemClick += (s, e) => ShowSchedule(e.Item.ItemId);
             _toolbarTitle.Click += (s, e) => _schedulesMenu.Show();
+            _toolbarTitle.LongClick += (s, e) => ShowCurrentScheduleRemovingDialog();
 
             _tabLayout = FindViewById<TabLayout>(Resource.Id.mainTabLayout);
 
             void UpdateSubjectsHighlighting()
             {
+                // Перерисовка фрагмента посредством программного перемещения к текущей дате.
                 if (_application.Preferences.CurrentScheduleDate == DateTime.Today)
                 {
-                    RunOnUiThread(() => RenderSubjects(DateTime.Today));
+                    RunOnUiThread(() => ViewPagerMoveToDate(DateTime.Today));
                 }
             }
 
@@ -276,7 +279,7 @@ namespace SmtuSchedule.Android.Views
             _fab = FindViewById<FloatingActionButton>(Resource.Id.mainSelectScheduleDateFab);
             _fab.Click += (s, e) => ShowCustomDatePickerDialog();
 
-            _state = MainActivityState.Initialized;
+            _activityState = MainActivityState.Initialized;
 
             RestartSchedulesRenderingSubsystem();
         }
@@ -307,12 +310,8 @@ namespace SmtuSchedule.Android.Views
                 CustomAlertDialog dialog = new CustomAlertDialog(this)
                     .SetTitle(Resource.String.updateApplicationTitle)
                     .SetMessage(Resource.String.applicationUpdateAvailableMessage)
-                    .SetNegativeButton(
-                        Resource.String.skipActionText,
-                        () => _application.Preferences.LastSeenVersion = version
-                    )
                     .SetPositiveButton(
-                        Resource.String.downloadActionText,
+                        Resource.String.viewActionText,
                         () =>
                         {
                             _application.Preferences.LastSeenVersion = version;
@@ -320,6 +319,8 @@ namespace SmtuSchedule.Android.Views
                             StartActivity(new Intent(Intent.ActionView, Uri.Parse(releaseUrl)));
                         }
                     );
+
+                dialog.DismissEvent += (s, e) => _application.Preferences.LastSeenVersion = version;
 
                 RunOnUiThread(dialog.Show);
             }
@@ -340,21 +341,28 @@ namespace SmtuSchedule.Android.Views
                 _currentSubjectHighlightTimer.Stop();
 
                 ShowLayoutMessage(Resource.String.welcomeMessage);
-                _state = MainActivityState.DisplaysMessage;
+                _activityState = MainActivityState.DisplaysMessage;
                 return ;
             }
 
             SetSchedulesMenu(schedules);
 
-            // Пересоздавать адаптер приходится при каждой перезагрузке, иначе на активной
-            // в момент перезапуска вкладке не отрисуется фрагмент.
-            _pagerAdapter = new SchedulesPagerAdapter(SupportFragmentManager);
+            // Пересоздавать адаптер необходимо при каждом перезапуске MainActivity, иначе
+            // на активной в момент перезапуска вкладке не отрисуется фрагмент.
+            _pagerAdapter = new SchedulesPagerAdapter(SupportFragmentManager, _application);
 
             ShowViewPager();
             _viewPager = FindViewById<ViewPager>(Resource.Id.scheduleViewPager);
+            _viewPager.OffscreenPageLimit = 1;
+
+            // Bug: если после запуска приложения перелистнуть страницу расписания влево или вправо, то
+            // затем при изменении ориентации устройства событие по неизвестной причине срабатывает
+            // дважды, причем оба раза с разными значениями позиции. В результате, при каждом повороте
+            // экрана дата увеличивается/уменьшается (в зависимости от того, куда изначально свайпнуть),
+            // но таблица с расписанием не обновляется.
             _viewPager.PageSelected += (s, e) =>
             {
-                DateTime date = _pagerAdapter.Helper.GetDateByIndex(e.Position);
+                DateTime date = _pagerAdapter.RenderingDateRange.GetDateByIndex(e.Position);
                 _application.Preferences.CurrentScheduleDate = date;
             };
 
@@ -422,7 +430,13 @@ namespace SmtuSchedule.Android.Views
         private void ShowCurrentScheduleRemovingDialog()
         {
             Int32 scheduleId = _application.Preferences.CurrentScheduleId;
-            String displayedName = _application.Manager.Schedules[scheduleId].DisplayedName;
+
+            if (!_application.Manager.Schedules.TryGetValue(scheduleId, out Schedule schedule))
+            {
+                return ;
+            }
+
+            String displayedName = schedule.DisplayedName;
 
             String message = Resources.GetString(
                 Resource.String.removeCurrentScheduleMessage,
@@ -439,7 +453,7 @@ namespace SmtuSchedule.Android.Views
         private void ShowCustomDatePickerDialog()
         {
             DateTime initialDate = _application.Preferences.CurrentScheduleDate;
-            new CustomDatePickerDialog(this, initialDate, (date) => RenderSubjects(date)).Show();
+            new CustomDatePickerDialog(this, initialDate, (date) => ViewPagerMoveToDate(date)).Show();
         }
 
         private void ShowSnackbar(Int32 messageId, Int32 actionId = 0, Action callback = null)
@@ -455,7 +469,7 @@ namespace SmtuSchedule.Android.Views
             message.TextSize = 16;
             message.SetMaxLines(3);
 
-            RunOnUiThread(snackbar.Show);
+            snackbar.Show(); // RunOnUiThread(snackbar.Show);
         }
 
         private void ShowProgressBar()
@@ -480,7 +494,7 @@ namespace SmtuSchedule.Android.Views
             message.SetText(messageId);
         }
 
-        private void ShowSchedule(Int32 scheduleId)
+        public void ShowSchedule(Int32 scheduleId)
         {
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
 
@@ -502,36 +516,20 @@ namespace SmtuSchedule.Android.Views
             }
 
             _toolbarTitle.Text = schedules[scheduleId].DisplayedName;
-
             _application.Preferences.CurrentScheduleId = scheduleId;
+            ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate);
 
-            _pagerAdapter.PageFactory = (date) =>
-            {
-                Boolean highlightCurrentSubject = (date == DateTime.Today);
-
-                Subject[] subjects = schedules[scheduleId].GetSubjects(
-                    _application.Preferences.UpperWeekDate,
-                    date
-                );
-
-                return new ScheduleFragment(subjects, highlightCurrentSubject, ShowSchedule);
-            };
-
-            RenderSubjects(_application.Preferences.CurrentScheduleDate);
-
-            _state = MainActivityState.DisplaysSchedule;
+            _activityState = MainActivityState.DisplaysSchedule;
         }
 
-        private void RenderSubjects(DateTime date, Boolean adapterResetRequired = true)
+        private void ViewPagerMoveToDate(DateTime date, Boolean adapterResetRequired = true)
         {
-            // Предотвращает ситуацию, когда диапазон отображаемых дат пересчитывается
+            // Предотвращает ситуацию, когда диапазон отображаемых дат перерассчитывается каждый раз
             // при переходе между расписаниями, если перед этим перелистнуть страницу.
-            if (_pagerAdapter.Helper == null || !_pagerAdapter.Helper.IsDateInsideRange(date))
+            if (!_pagerAdapter.RenderingDateRange.IsDateInside(date))
             {
-                const Int32 RenderingRangeInDays = 15;
-
                 adapterResetRequired = true;
-                _pagerAdapter.Helper = new DateTimeHelper(date, RenderingRangeInDays);
+                _pagerAdapter.RenderingDateRange.Recompute(date);
             }
 
             if (adapterResetRequired)
@@ -539,8 +537,8 @@ namespace SmtuSchedule.Android.Views
                 _viewPager.Adapter = _pagerAdapter;
             }
 
-            // Плавная прокрутка возможна только без переназначения адаптера.
-            _viewPager.SetCurrentItem(_pagerAdapter.Helper.GetIndexByDate(date), true);
+            // Плавная прокрутка до выбранной вкладки возможна только без переназначения адаптера.
+            _viewPager.SetCurrentItem(_pagerAdapter.RenderingDateRange.GetIndexByDate(date), true);
         }
 
         private void SetSchedulesMenu(IReadOnlyDictionary<Int32, Schedule> schedules)
@@ -622,7 +620,7 @@ namespace SmtuSchedule.Android.Views
             ShowSnackbar(messageId);
         }
 
-        private MainActivityState _state;
+        private MainActivityState _activityState;
 
         private ScheduleApplication _application;
         private Timer _currentSubjectHighlightTimer;

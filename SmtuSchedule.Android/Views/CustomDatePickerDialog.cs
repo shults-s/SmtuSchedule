@@ -45,7 +45,7 @@ namespace SmtuSchedule.Android.Views
                 dateChangedCallback(selectedDate);
             };
 
-            // В View.Inflate(...) передается Dialog.Context, к которому уже применена тема.
+            // В View.Inflate(...) передается Dialog.Context, к которому уже (!) применена тема.
             View pickerView = View.Inflate(Context, Resource.Layout.customDatePicker, null);
             SetContentView(pickerView);
 
