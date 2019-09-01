@@ -1,20 +1,8 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionName="@string/applicationVersion"
-    android:versionCode="10"
-    package="Shults.SmtuSchedule">
-    <uses-sdk
-        android:minSdkVersion="22"
-        android:targetSdkVersion="28" />
-    <application
-        android:icon="@mipmap/icon"
-        android:theme="@style/MainTheme"
-        android:label="@string/applicationLabel" />
-    <uses-permission
-        android:name="android.permission.INTERNET" />
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="@string/applicationVersion" android:versionCode="11" package="Shults.SmtuSchedule" android:installLocation="auto">
+	<uses-sdk android:minSdkVersion="18" android:targetSdkVersion="28" />
+	<application android:icon="@mipmap/icon" android:theme="@style/MainTheme" android:label="@string/applicationLabel" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest>
