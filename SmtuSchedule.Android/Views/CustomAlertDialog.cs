@@ -1,4 +1,5 @@
 using System;
+using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
@@ -13,6 +14,14 @@ namespace SmtuSchedule.Android.Views
         public CustomAlertDialog(Context context) : base(context)
         {
             _layout = View.Inflate(Context, Resource.Layout.customDialog, null);
+
+            // Вместо android:padding = "?android:attr/dialogPreferredPadding" в customDialog.axml для API < 22.
+            Int32 paddingInPx = Build.VERSION.SdkInt < BuildVersionCodes.LollipopMr1
+                ? Context.Resources.GetDimensionPixelSize(Resource.Dimension.dialogContentPaddingApiLevelLess22)
+                : UiUtilities.GetAttributePixelSize(Context, Resource.Attribute.dialogPreferredPadding);
+
+            _layout.SetPadding(paddingInPx, paddingInPx, paddingInPx, _layout.PaddingBottom);
+
             SetView(_layout);
 
             _content = _layout.FindViewById<FrameLayout>(Resource.Id.customDialogContentFrameLayout);
@@ -90,14 +99,14 @@ namespace SmtuSchedule.Android.Views
             base.SetButton((Int32)type, text, (s, e) => callback?.Invoke());
         }
 
-        private void SetContentBottomPadding(Int32 size)
+        private void SetContentBottomPadding(Int32 sizeInPx)
         {
-            _content.SetPadding(_content.PaddingLeft, _content.PaddingTop, _content.PaddingRight, size);
+            _content.SetPadding(_content.PaddingLeft, _content.PaddingTop, _content.PaddingRight, sizeInPx);
         }
 
-        private void SetContentTopPadding(Int32 size)
+        private void SetContentTopPadding(Int32 sizeInPx)
         {
-            _content.SetPadding(_content.PaddingLeft, size, _content.PaddingRight, _content.PaddingBottom);
+            _content.SetPadding(_content.PaddingLeft, sizeInPx, _content.PaddingRight, _content.PaddingBottom);
         }
 
         private View _layout;

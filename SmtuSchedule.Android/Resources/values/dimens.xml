@@ -10,4 +10,5 @@
     <dimen name="normalPadding">16dp</dimen>
 
     <dimen name="dialogContentTopPadding">18dp</dimen>
+    <dimen name="dialogContentPaddingApiLevelLess22">24dp</dimen>
 </resources>

@@ -241,15 +241,6 @@ namespace SmtuSchedule.Android.Views
 
             _application.Preferences.Read();
 
-            if (_application.Preferences.UpperWeekDate == default(DateTime))
-            {
-                new CustomAlertDialog(this)
-                    .SetPositiveButton(Resource.String.configureActionText, OpenPreferences)
-                    .SetMessage(Resource.String.configureApplicationMessage)
-                    .SetCancelable(false)
-                    .Show();
-            }
-
             if (_application.Preferences.CheckUpdatesOnStart)
             {
                 CheckForUpdatesAsync();
@@ -328,6 +319,15 @@ namespace SmtuSchedule.Android.Views
 
         private void RestartSchedulesRenderingSubsystem()
         {
+            if (_application.Preferences.UpperWeekDate == default(DateTime))
+            {
+                new CustomAlertDialog(this)
+                    .SetPositiveButton(Resource.String.configureActionText, OpenPreferences)
+                    .SetMessage(Resource.String.configureApplicationMessage)
+                    .SetCancelable(false)
+                    .Show();
+            }
+
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
 
             InvalidateOptionsMenu();

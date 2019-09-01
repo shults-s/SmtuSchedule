@@ -2046,6 +2046,9 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f08008a
 			public const int design_tab_text_size_2line = 2131230858;
 			
+			// aapt resource value: 0x7f0800a6
+			public const int dialogContentPaddingApiLevelLess22 = 2131230886;
+			
 			// aapt resource value: 0x7f0800a5
 			public const int dialogContentTopPadding = 2131230885;
 			
