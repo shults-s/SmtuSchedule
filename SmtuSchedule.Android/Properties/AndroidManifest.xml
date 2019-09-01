@@ -2,7 +2,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionName="@string/applicationVersion"
-    android:versionCode="9"
+    android:versionCode="10"
     package="Shults.SmtuSchedule">
     <uses-sdk
         android:minSdkVersion="22"

@@ -90,7 +90,7 @@ namespace SmtuSchedule.Core
 
         public async Task<IEnumerable<String>> DownloadLecturers(Boolean forced = false)
         {
-            const String SearchScheduleUrl = "http://www.smtu.ru/ru/searchschedule/";
+            const String SearchScheduleUrl = "https://www.smtu.ru/ru/searchschedule/";
 
             if (_lecturers != null && !forced)
             {
@@ -153,8 +153,8 @@ namespace SmtuSchedule.Core
 
         private async Task<Schedule> DownloadScheduleAsync(Int32 scheduleId)
         {
-            const String LecturerScheduleBaseUrl = "http://www.smtu.ru/ru/viewschedule/teacher/";
-            const String GroupScheduleBaseUrl = "http://www.smtu.ru/ru/viewschedule/";
+            const String LecturerScheduleBaseUrl = "https://www.smtu.ru/ru/viewschedule/teacher/";
+            const String GroupScheduleBaseUrl = "https://www.smtu.ru/ru/viewschedule/";
 
             // На входе: ЧЧ:ММ-ЧЧ:ММ[<br><span class="s_small">Вид недели</span>]
             void ParseTime(HtmlNode td, out DateTime from, out DateTime to, out WeekType type)

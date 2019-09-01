@@ -412,9 +412,11 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            if (!ApplicationHelper.IsUniversitySiteConnectionAvailable())
+            if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
+                _application.Logger.Log(failReason);
+                _application.SaveLog();
                 return ;
             }
 
@@ -592,9 +594,11 @@ namespace SmtuSchedule.Android.Views
 
         private async void DownloadSchedulesAsync(params String[] requests)
         {
-            if (!ApplicationHelper.IsUniversitySiteConnectionAvailable())
+            if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
+                _application.Logger.Log(failReason);
+                _application.SaveLog();
                 return ;
             }
 

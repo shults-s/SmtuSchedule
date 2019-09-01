@@ -11,8 +11,10 @@ using Environment = Android.OS.Environment;
 namespace SmtuSchedule.Android
 {
     [Application]
-    public class ScheduleApplication : Application
+    public sealed class ScheduleApplication : Application
     {
+        public InMemoryLogger Logger { get; private set; }
+
         public Boolean IsInitialized { get; private set; }
 
         public SchedulesManager Manager { get; set; }
@@ -30,8 +32,8 @@ namespace SmtuSchedule.Android
 
         private void PreInitialize()
         {
-            _logger = new InMemoryLogger();
-            _logger.Log(
+            Logger = new InMemoryLogger();
+            Logger.Log(
                 "SmtuSchedule version {0}, running on {1} {2} (Android {4} – API {3}).",
                 GetVersion(),
                 Build.Manufacturer,
@@ -44,14 +46,14 @@ namespace SmtuSchedule.Android
             // чем у AppDomain.CurrentDomain.UnhandledException.
             AndroidEnvironment.UnhandledExceptionRaiser += (s, a) =>
             {
-                _logger.Log(a.Exception);
+                Logger.Log(a.Exception);
                 SaveLog(true);
             };
 
             IsInitialized = false;
         }
 
-        ~ScheduleApplication() => _logger.Dispose();
+        ~ScheduleApplication() => Logger.Dispose();
 
         public String GetVersion()
         {
@@ -87,7 +89,7 @@ namespace SmtuSchedule.Android
             Preferences = new Preferences(this);
 
             Manager = new SchedulesManager(externalStoragePath);
-            Manager.SetLogger(_logger);
+            Manager.SetLogger(Logger);
 
             return IsInitialized = true;
         }
@@ -104,9 +106,7 @@ namespace SmtuSchedule.Android
             String prefix = isCrashLog ? "CRASH " : String.Empty;
 
             String fileName = prefix + DateTime.Now.ToString("dd.MM.yyyy HH-mm") + ".log";
-            _ = _logger.Save(logsPath + fileName);
+            _ = Logger.Save(logsPath + fileName);
         }
-
-        private InMemoryLogger _logger;
     }
 }
