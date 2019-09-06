@@ -3,7 +3,6 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
-using Android.Runtime;
 
 namespace SmtuSchedule.Android.Views
 {
@@ -36,12 +35,6 @@ namespace SmtuSchedule.Android.Views
             }
 
             private DateTime _last;
-        }
-
-        // Preventive bugfix: Unable to activate instance of type ... from native handle ...
-        public CustomDatePickerDialog(IntPtr javaReference, JniHandleOwnership transfer)
-            : base(javaReference, transfer)
-        {
         }
 
         public CustomDatePickerDialog(Context context, DateTime initialDate) : base(context)

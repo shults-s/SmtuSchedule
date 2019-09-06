@@ -4,7 +4,6 @@ using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
-using Android.Runtime;
 using Android.Text.Method;
 using Android.Support.V7.App;
 using SmtuSchedule.Android.Utilities;
@@ -22,12 +21,6 @@ namespace SmtuSchedule.Android.Views
         //        ScrollChanged?.Invoke(scrollY);
         //    }
         //}
-
-        // Preventive bugfix: Unable to activate instance of type ... from native handle ...
-        public CustomAlertDialog(IntPtr javaReference, JniHandleOwnership transfer)
-            : base(javaReference, transfer)
-        {
-        }
 
         public CustomAlertDialog(Context context) : base(context)
         {

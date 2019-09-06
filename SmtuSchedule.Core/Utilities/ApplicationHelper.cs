@@ -17,22 +17,6 @@ namespace SmtuSchedule.Core.Utilities
             return $"https://github.com/shults-s/SmtuSchedule/releases/download/{version}/Shults.SmtuSchedule-{version}.apk";
         }
 
-        // Если v1 > v2, вернется 1; если v1 = v2, вернется 0; если v1 < v2, вернется -1.
-        public static Int32 CompareVersions(String version1, String version2)
-        {
-            Int32[] v1 = version1.Split('.').Select(s => Int32.Parse(s)).ToArray();
-            Int32[] v2 = version2.Split('.').Select(s => Int32.Parse(s)).ToArray();
-
-            Int32 major = (v1[0] > v2[0]) ? 1 : (v1[0] < v2[0] ? -1 : 0);
-            Int32 minor = (v1[1] > v2[1]) ? 1 : (v1[1] < v2[1] ? -1 : 0);
-
-            Int32 patch = (v1.Length == 3 && v2.Length == 3)
-                ? (v1[2] > v2[2] ? 1 : v1[2] < v2[2] ? -1 : 0)
-                : (v1.Length == v2.Length ? 0 : v1.Length > v2.Length ? 1 : -1);
-
-            return (major == 0) ? (minor == 0 ? patch : minor) : major;
-        }
-
         public static async Task<String> GetLatestVersionAsync()
         {
             const String Url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/CHANGELOG.md";
@@ -54,6 +38,25 @@ namespace SmtuSchedule.Core.Utilities
             {
                 return null;
             }
+        }
+
+        // Если v1 > v2, вернется 1; если v1 = v2, вернется 0; если v1 < v2, вернется -1.
+        public static Int32 CompareVersions(String version1, String version2)
+        {
+            Int32[] v1 = version1.Split('.')
+                .Select(s => Int32.TryParse(s, out Int32 value) ? value : Int32.MaxValue).ToArray();
+
+            Int32[] v2 = version2.Split('.')
+                .Select(s => Int32.TryParse(s, out Int32 value) ? value : Int32.MaxValue).ToArray();
+
+            Int32 majorComparsion = (v1[0] > v2[0]) ? 1 : (v1[0] < v2[0] ? -1 : 0);
+            Int32 minorComparsion = (v1[1] > v2[1]) ? 1 : (v1[1] < v2[1] ? -1 : 0);
+
+            Int32 patchComparsion = (v1.Length == 3 && v2.Length == 3)
+                ? (v1[2] > v2[2] ? 1 : v1[2] < v2[2] ? -1 : 0)
+                : (v1.Length == v2.Length ? 0 : v1.Length > v2.Length ? 1 : -1);
+
+            return (majorComparsion == 0) ? (minorComparsion == 0 ? patchComparsion : minorComparsion) : majorComparsion;
         }
 
         public static Boolean IsUniversitySiteConnectionAvailable(out String failReason)

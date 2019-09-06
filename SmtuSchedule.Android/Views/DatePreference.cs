@@ -53,12 +53,6 @@ namespace SmtuSchedule.Android.Views
 
         public DateTime Date { get; private set; }
 
-        // Preventive bugfix: Unable to activate instance of type ... from native handle ...
-        public DatePreference(IntPtr javaReference, JniHandleOwnership transfer)
-            : base(javaReference, transfer)
-        {
-        }
-
         public DatePreference(Context context, IAttributeSet attributes) : base(context, attributes,
             Resource.Attribute.dialogPreferenceStyle, Resource.Attribute.dialogPreferenceStyle)
         {

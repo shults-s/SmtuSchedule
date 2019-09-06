@@ -21,13 +21,8 @@ namespace SmtuSchedule.Android
 
         public Boolean IsInitialized { get; private set; }
 
-        // Bugfix: Unable to activate instance of type ... from native handle ...
         public ScheduleApplication(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
-        {
-        }
-
-        public ScheduleApplication()
         {
             Logger = new InMemoryLogger();
             Logger.Log(

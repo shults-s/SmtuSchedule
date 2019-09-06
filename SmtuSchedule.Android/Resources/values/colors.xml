@@ -18,15 +18,11 @@
     <color name="subjectSecondaryTextDay">#202020</color>
 
     <!-- Цвета, относящиеся к темной (ночной) теме -->
-    <!--<color name="windowBackgroundNight">#19191A</color>-->
     <color name="windowBackgroundNight">#161817</color>
 
-    <!--<color name="primaryDarkNight">#0A0A0A</color>-->
     <color name="primaryDarkNight">#101211</color>
-    <!--<color name="primaryNight">#19191A</color>-->
     <color name="primaryNight">#232728</color>
     <color name="accentNight">#517CB3</color>
-    <!--<color name="dividerNight">#2C2D2E</color>-->
     <color name="dividerNight">#232728</color>
 
     <color name="errorTextNight">#B00020</color>

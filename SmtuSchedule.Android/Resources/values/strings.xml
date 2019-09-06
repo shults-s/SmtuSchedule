@@ -41,7 +41,7 @@
 
     <!-- Названия действий Snackbar'ов и кнопок -->
     <string name="gotItActionText">Понял</string>
-    <string name="updateActionText">Google Play</string>
+    <string name="updateActionText">Обновить</string>
     <string name="cancelActionText">Отмена</string>
     <string name="removeActionText">Удалить</string>
     <string name="thanksActionText">Спасибо</string>
