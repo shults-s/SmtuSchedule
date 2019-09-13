@@ -68,8 +68,10 @@
     <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string>
     <string name="preferenceUpperWeekDateTitle">Первый день семестра по числителю</string>
     <string name="preferenceUpperWeekDateSummary">Не задан</string>
-    <string name="preferenceUseFabDateSelectorTitle">Плавующая кнопка</string>
+    <string name="preferenceUseFabDateSelectorTitle">Плавающая кнопка</string>
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавующую кнопку для выбора даты в расписании</string>
+    <string name="preferenceDisplaySubjectEndTimeTitle">Время окончания занятий</string>
+    <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
 
     <!-- Обоснования для запроса разрешений -->
     <string name="internetPermissionRationaleMessage">Доступ к интернету необходим для загрузки расписаний.</string>

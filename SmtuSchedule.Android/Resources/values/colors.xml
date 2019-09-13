@@ -2,9 +2,9 @@
 <resources>
     <color name="windowBackground">#FAFAFA</color>
 
-    <!-- В билде для Семы primaryDark = #0028A3 -->
     <color name="primaryDark">#455273</color>
 
+    <!-- В билде для Семы primary = #0028A3 -->
     <color name="primary">#517CB3</color>
     <color name="accent">#E1F7F4</color>
 

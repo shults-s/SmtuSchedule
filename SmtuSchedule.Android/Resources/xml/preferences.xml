@@ -18,4 +18,10 @@
         android:summary="@string/preferenceCheckUpdatesOnStartSummary"
         android:defaultValue="true"
         android:layout="@layout/customPreference" />
+    <SwitchPreferenceCompat
+        android:key="DisplaySubjectEndTime"
+        android:title="@string/preferenceDisplaySubjectEndTimeTitle"
+        android:summary="@string/preferenceDisplaySubjectEndTimeSummary"
+        android:defaultValue="false"
+        android:layout="@layout/customPreference" />
 </android.support.v7.preference.PreferenceScreen>

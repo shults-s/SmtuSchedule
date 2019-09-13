@@ -90,6 +90,14 @@ namespace SmtuSchedule.Android.Views
             TextView from = layout.FindViewById<TextView>(Resource.Id.subjectFromTextView);
             from.Text = _subjects[index].From.ToString("HH:mm");
 
+            ScheduleApplication application = Context.ApplicationContext as ScheduleApplication;
+            if (application.Preferences.DisplaySubjectEndTime)
+            {
+                TextView to = layout.FindViewById<TextView>(Resource.Id.subjectToTextView);
+                to.Text = _subjects[index].To.ToString("HH:mm");
+                to.Visibility = ViewStates.Visible;
+            }
+
             TextView title = layout.FindViewById<TextView>(Resource.Id.subjectTitleTextView);
             title.Text = _subjects[index].Title;
 

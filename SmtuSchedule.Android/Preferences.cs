@@ -16,6 +16,8 @@ namespace SmtuSchedule.Android
 
         public Boolean UseFabDateSelector { get; set; }
 
+        public Boolean DisplaySubjectEndTime { get; set; }
+
         public DateTime UpperWeekDate { get; set; }
 
         public Preferences(Context context)
@@ -40,6 +42,7 @@ namespace SmtuSchedule.Android
             LastSeenVersion = _preferences.GetString("LastSeenVersion", null);
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", false);
             CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
+            DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
         }
 
         private ISharedPreferences _preferences;
