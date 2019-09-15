@@ -7,6 +7,7 @@
     android:padding="@dimen/normalPadding"
     android:background="@color/windowBackground">
     <RelativeLayout
+        android:id="@+id/subjectLeftCell"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginRight="@dimen/normalPadding">
@@ -27,14 +28,14 @@
         <TextView
             android:id="@+id/subjectAudienceTextView"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/smallPadding"
-            android:gravity="bottom"
+            android:layout_alignParentBottom="true"
             android:textSize="@dimen/normalTextSize"
-            android:textColor="@color/primaryText"
-            android:layout_below="@id/subjectToTextView" />
+            android:textColor="@color/primaryText" />
     </RelativeLayout>
     <RelativeLayout
+        android:id="@+id/subjectRightCell"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1">

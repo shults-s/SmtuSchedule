@@ -1,12 +1,12 @@
 using System;
-using Android.App;
+using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
 
 namespace SmtuSchedule.Android.Views
 {
-    internal class CustomDatePickerDialog : Dialog
+    internal class CustomDatePickerDialog : CustomAlertDialog
     {
         private class DateChangingListener : Java.Lang.Object, DatePicker.IOnDateChangedListener
         {
@@ -47,10 +47,22 @@ namespace SmtuSchedule.Android.Views
 
             // В View.Inflate(...) передается Dialog.Context, к которому уже (!) применена тема.
             View pickerView = View.Inflate(Context, Resource.Layout.customDatePicker, null);
-            SetContentView(pickerView);
+            SetView(pickerView);
 
             DatePicker picker = pickerView.FindViewById<DatePicker>(Resource.Id.customDatePicker);
             picker.Init(initialDate.Year, initialDate.Month - 1, initialDate.Day, listener);
+
+            // Из-за бага в Android 5.0 событие изменения даты не срабатывает, если DatePicker
+            // отображается в режиме календаря, поэтому без кнопок здесь не обойтись.
+            if (Build.VERSION.SdkInt < BuildVersionCodes.LollipopMr1)
+            {
+                SetNegativeButton(global::Android.Resource.String.Cancel, () => Dismiss());
+
+                SetPositiveButton(
+                    global::Android.Resource.String.Ok,
+                    () => listener.OnDateChanged(picker, picker.Year, picker.Month, picker.DayOfMonth)
+                );
+            }
         }
     }
 }

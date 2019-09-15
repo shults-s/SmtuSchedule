@@ -90,14 +90,6 @@ namespace SmtuSchedule.Android.Views
             TextView from = layout.FindViewById<TextView>(Resource.Id.subjectFromTextView);
             from.Text = _subjects[index].From.ToString("HH:mm");
 
-            ScheduleApplication application = Context.ApplicationContext as ScheduleApplication;
-            if (application.Preferences.DisplaySubjectEndTime)
-            {
-                TextView to = layout.FindViewById<TextView>(Resource.Id.subjectToTextView);
-                to.Text = _subjects[index].To.ToString("HH:mm");
-                to.Visibility = ViewStates.Visible;
-            }
-
             TextView title = layout.FindViewById<TextView>(Resource.Id.subjectTitleTextView);
             title.Text = _subjects[index].Title;
 
@@ -113,6 +105,38 @@ namespace SmtuSchedule.Android.Views
 
             TextView audience = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
             audience.Text = _subjects[index].Audience;
+
+            ScheduleApplication application = Context.ApplicationContext as ScheduleApplication;
+            if (application.Preferences.DisplaySubjectEndTime)
+            {
+                TextView to = layout.FindViewById<TextView>(Resource.Id.subjectToTextView);
+                to.Text = _subjects[index].To.ToString("HH:mm");
+                to.Visibility = ViewStates.Visible;
+
+                RelativeLayout.LayoutParams lecturerParameters = lecturer.LayoutParameters
+                    as RelativeLayout.LayoutParams;
+                lecturerParameters.RemoveRule(LayoutRules.Below);
+                lecturerParameters.AddRule(LayoutRules.AlignParentBottom);
+
+                RelativeLayout.LayoutParams audienceParameters = audience.LayoutParameters
+                    as RelativeLayout.LayoutParams;
+                audienceParameters.RemoveRule(LayoutRules.AlignParentBottom);
+                audienceParameters.AddRule(LayoutRules.Below, Resource.Id.subjectToTextView);
+
+                RelativeLayout leftCell = layout.FindViewById<RelativeLayout>(Resource.Id.subjectLeftCell);
+                //leftCell.LayoutParameters = new TableRow.LayoutParams(
+                //    ViewGroup.LayoutParams.WrapContent,
+                //    ViewGroup.LayoutParams.WrapContent
+                //);
+                leftCell.LayoutParameters.Height = ViewGroup.LayoutParams.WrapContent;
+
+                RelativeLayout rightCell = layout.FindViewById<RelativeLayout>(Resource.Id.subjectRightCell);
+                //rightCell.LayoutParameters = new TableRow.LayoutParams(
+                //    ViewGroup.LayoutParams.WrapContent,
+                //    ViewGroup.LayoutParams.MatchParent
+                //);
+                rightCell.LayoutParameters.Height = ViewGroup.LayoutParams.MatchParent;
+            }
 
             return layout;
         }

@@ -11,7 +11,7 @@ using DatePicker = Android.Widget.DatePicker;
 
 namespace SmtuSchedule.Android.Views
 {
-    // Объявление DatePreference в XML не должно содержать аттрибут android:defaultValue, иначе
+    // Объявление компонента DatePreference в XML не должно содержать атрибут android:defaultValue, иначе
     // выбрасывается исключение Unable to activate instance of type ... from native handle ...
     [Register("shults.smtuschedule.SmtuSchedule.Android.Views.DatePreference")]
     internal class DatePreference : DialogPreference
@@ -71,11 +71,18 @@ namespace SmtuSchedule.Android.Views
             return array.GetInt(index, 0);
         }
 
-        protected override void OnSetInitialValue(Boolean restorePersistedValue,
-            Java.Lang.Object defaultValue)
+        protected override void OnSetInitialValue(Java.Lang.Object defaultValue)
         {
-            Int64 ticks = restorePersistedValue ? GetPersistedLong(Date.Ticks) : (Int64)defaultValue;
+            Int64 ticks = (defaultValue == null) ? GetPersistedLong(Date.Ticks) : (Int64)defaultValue;
             SetDate(new DateTime(ticks));
         }
+
+        // AndroidX: onSetInitialValue(boolean, Object) --> onSetInitialValue(Object).
+        //protected override void OnSetInitialValue(Boolean restorePersistedValue,
+        //    Java.Lang.Object defaultValue)
+        //{
+        //    Int64 ticks = restorePersistedValue ? GetPersistedLong(Date.Ticks) : (Int64)defaultValue;
+        //    SetDate(new DateTime(ticks));
+        //}
     }
 }

@@ -3329,8 +3329,8 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0a003e
 			public const int SYM = 2131361854;
 			
-			// aapt resource value: 0x7f0a00d8
-			public const int aboutApplicationMenuItem = 2131362008;
+			// aapt resource value: 0x7f0a00da
+			public const int aboutApplicationMenuItem = 2131362010;
 			
 			// aapt resource value: 0x7f0a008d
 			public const int action_bar = 2131361933;
@@ -3500,8 +3500,8 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0a00ad
 			public const int downloadMultiAutoCompleteTextView = 2131361965;
 			
-			// aapt resource value: 0x7f0a00d6
-			public const int downloadSchedulesMenuItem = 2131362006;
+			// aapt resource value: 0x7f0a00d8
+			public const int downloadSchedulesMenuItem = 2131362008;
 			
 			// aapt resource value: 0x7f0a00ac
 			public const int downloadToolbar = 2131361964;
@@ -3620,8 +3620,8 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0a00b2
 			public const int mainToolbarTitleTextView = 2131361970;
 			
-			// aapt resource value: 0x7f0a00d4
-			public const int masked = 2131362004;
+			// aapt resource value: 0x7f0a00d6
+			public const int masked = 2131362006;
 			
 			// aapt resource value: 0x7f0a009c
 			public const int message = 2131361948;
@@ -3665,8 +3665,8 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0a00ba
 			public const int notification_main_column_container = 2131361978;
 			
-			// aapt resource value: 0x7f0a00d7
-			public const int openPreferencesMenuItem = 2131362007;
+			// aapt resource value: 0x7f0a00d9
+			public const int openPreferencesMenuItem = 2131362009;
 			
 			// aapt resource value: 0x7f0a0060
 			public const int outline = 2131361888;
@@ -3779,8 +3779,8 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0a00c9
 			public const int seekbar_value = 2131361993;
 			
-			// aapt resource value: 0x7f0a00d5
-			public const int selectScheduleDateMenuItem = 2131362005;
+			// aapt resource value: 0x7f0a00d7
+			public const int selectScheduleDateMenuItem = 2131362007;
 			
 			// aapt resource value: 0x7f0a009b
 			public const int select_dialog_listview = 2131361947;
@@ -3839,20 +3839,26 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0a005b
 			public const int stretch = 2131361883;
 			
-			// aapt resource value: 0x7f0a00d0
-			public const int subjectAudienceTextView = 2131362000;
-			
-			// aapt resource value: 0x7f0a00ce
-			public const int subjectFromTextView = 2131361998;
-			
-			// aapt resource value: 0x7f0a00d2
-			public const int subjectLecturerTextView = 2131362002;
-			
 			// aapt resource value: 0x7f0a00d1
-			public const int subjectTitleTextView = 2131362001;
+			public const int subjectAudienceTextView = 2131362001;
 			
 			// aapt resource value: 0x7f0a00cf
-			public const int subjectToTextView = 2131361999;
+			public const int subjectFromTextView = 2131361999;
+			
+			// aapt resource value: 0x7f0a00d4
+			public const int subjectLecturerTextView = 2131362004;
+			
+			// aapt resource value: 0x7f0a00ce
+			public const int subjectLeftCell = 2131361998;
+			
+			// aapt resource value: 0x7f0a00d2
+			public const int subjectRightCell = 2131362002;
+			
+			// aapt resource value: 0x7f0a00d3
+			public const int subjectTitleTextView = 2131362003;
+			
+			// aapt resource value: 0x7f0a00d0
+			public const int subjectToTextView = 2131362000;
 			
 			// aapt resource value: 0x7f0a0084
 			public const int submenuarrow = 2131361924;
@@ -3953,8 +3959,8 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0a001b
 			public const int view_offset_helper = 2131361819;
 			
-			// aapt resource value: 0x7f0a00d3
-			public const int visible = 2131362003;
+			// aapt resource value: 0x7f0a00d5
+			public const int visible = 2131362005;
 			
 			// aapt resource value: 0x7f0a0043
 			public const int withText = 2131361859;
