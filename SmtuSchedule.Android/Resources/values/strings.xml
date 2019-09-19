@@ -69,7 +69,7 @@
     <string name="preferenceUpperWeekDateTitle">Первый день семестра по числителю</string>
     <string name="preferenceUpperWeekDateSummary">Не задан</string>
     <string name="preferenceUseFabDateSelectorTitle">Плавающая кнопка</string>
-    <string name="preferenceUseFabDateSelectorSummary">Использовать плавующую кнопку для выбора даты в расписании</string>
+    <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
     <string name="preferenceDisplaySubjectEndTimeTitle">Время окончания занятий</string>
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
 
