@@ -1,5 +1,6 @@
 using System;
 using Android.OS;
+using Android.Text;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
@@ -109,6 +110,16 @@ namespace SmtuSchedule.Android.Views
             ScheduleApplication application = Context.ApplicationContext as ScheduleApplication;
             if (application.Preferences.DisplaySubjectEndTime)
             {
+                //title.Ellipsize = TextUtils.TruncateAt.Marquee;
+                //title.SetMaxLines(2);
+                title.ViewTreeObserver.PreDraw += (s, e) =>
+                {
+                    if (title.LineCount < 2)
+                    {
+
+                    }
+                };
+
                 TextView to = layout.FindViewById<TextView>(Resource.Id.subjectToTextView);
                 to.Text = _subjects[index].To.ToString("HH:mm");
                 to.Visibility = ViewStates.Visible;
@@ -124,17 +135,9 @@ namespace SmtuSchedule.Android.Views
                 audienceParameters.AddRule(LayoutRules.Below, Resource.Id.subjectToTextView);
 
                 RelativeLayout leftCell = layout.FindViewById<RelativeLayout>(Resource.Id.subjectLeftCell);
-                //leftCell.LayoutParameters = new TableRow.LayoutParams(
-                //    ViewGroup.LayoutParams.WrapContent,
-                //    ViewGroup.LayoutParams.WrapContent
-                //);
                 leftCell.LayoutParameters.Height = ViewGroup.LayoutParams.WrapContent;
 
                 RelativeLayout rightCell = layout.FindViewById<RelativeLayout>(Resource.Id.subjectRightCell);
-                //rightCell.LayoutParameters = new TableRow.LayoutParams(
-                //    ViewGroup.LayoutParams.WrapContent,
-                //    ViewGroup.LayoutParams.MatchParent
-                //);
                 rightCell.LayoutParameters.Height = ViewGroup.LayoutParams.MatchParent;
             }
 
