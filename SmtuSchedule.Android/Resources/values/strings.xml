@@ -17,6 +17,8 @@
     <string name="downloadToolbarTitle">Загрузка расписаний</string>
     <string name="welcomeToolbarTitle">@string/applicationCompleteName</string>
 
+    <string name="multiGroupSubjectPrefix">Группы</string>
+
     <!-- Названия пунктов меню в панели инстументов -->
     <string name="selectScheduleDateMenuItem">Выбрать дату</string>
     <string name="downloadSchedulesMenuItem">Загрузить расписания</string>

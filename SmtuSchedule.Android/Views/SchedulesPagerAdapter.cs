@@ -32,7 +32,6 @@ namespace SmtuSchedule.Android.Views
 
         public override Fragment GetItem(Int32 position)
         {
-            Int32 scheduleId = _application.Preferences.CurrentScheduleId;
             DateTime date = RenderingDateRange.GetDateByIndex(position);
 
             //if (_cachedFragments.TryGetValue((date, scheduleId), out ScheduleFragment fragment))
@@ -40,16 +39,7 @@ namespace SmtuSchedule.Android.Views
             //    return fragment;
             //}
 
-            ScheduleFragment fragment = new ScheduleFragment();
-
-            DateTime upperWeekDate = _application.Preferences.UpperWeekDate;
-            Boolean needHighlightCurrentSubject = (date == DateTime.Today);
-
-            fragment.SetFragmentData(
-                _application.Manager.Schedules[scheduleId].GetSubjects(upperWeekDate, date),
-                needHighlightCurrentSubject
-            );
-
+            ScheduleFragment fragment = new ScheduleFragment() { Date = date };
             //_cachedFragments[(date, scheduleId)] = fragment;
 
             return fragment;

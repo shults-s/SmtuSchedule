@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="Interfaces\ISchedulesViewer.cs" />
     <Compile Include="Preferences.cs" />
+    <Compile Include="Views\CustomClickableSpan.cs" />
     <Compile Include="Utilities\ICharSequenceExtension.cs" />
     <Compile Include="Utilities\UiUtilities.cs" />
     <Compile Include="Views\CustomAlertDialog.cs" />

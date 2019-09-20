@@ -3,6 +3,7 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
+using Android.Graphics;
 using Android.Text.Method;
 using Android.Support.V7.App;
 using SmtuSchedule.Android.Utilities;
@@ -65,7 +66,7 @@ namespace SmtuSchedule.Android.Views
         {
             TextView textView = _layout.FindViewById<TextView>(Resource.Id.customDialogMessageTextView);
             textView.MovementMethod = LinkMovementMethod.Instance;
-            textView.TextFormatted = message.Trim();
+            textView.TextFormatted = message.Trim().StripUrlUnderlines();
             return this;
         }
 

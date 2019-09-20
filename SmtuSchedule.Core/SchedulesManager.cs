@@ -61,21 +61,38 @@ namespace SmtuSchedule.Core
 
             foreach ((Int32 scheduleId, Schedule schedule) in schedules)
             {
-                String fileName = schedule.DisplayedName + ".json";
-                try
-                {
-                    File.WriteAllText(_storagePath + fileName, schedule.ToJson());
-                    _schedules[scheduleId] = schedule;
-                }
-                catch (Exception exception)
+                if (!SaveSchedule(schedule))
                 {
                     hasSavingErrors = true;
-                    _logger?.Log($"Error of saving schedule to file {fileName}: ", exception);
+                }
+                else
+                {
+                    _schedules[scheduleId] = schedule;
                 }
             }
 
             IsDownloadingInProgress = false;
             return _loader.HasDownloadingErrors || hasSavingErrors;
+        }
+
+        public async Task<Boolean> MigrateSchedulesAsync()
+        {
+            IEnumerable<Schedule> changedSchedules = MigrationUtility.Migrate(_schedules.Values);
+
+            return await Task.Run(() =>
+            {
+                Boolean hasMigrationErrors = false;
+
+                foreach (Schedule schedule in changedSchedules)
+                {
+                    if (!SaveSchedule(schedule))
+                    {
+                        hasMigrationErrors = true;
+                    }
+                }
+
+                return hasMigrationErrors;
+            });
         }
 
         public async Task<Boolean> ReadSchedulesAsync()
@@ -85,6 +102,24 @@ namespace SmtuSchedule.Core
                 _schedules = new ConcurrentDictionary<Int32, Schedule>(_reader.Read(_storagePath));
                 return _reader.HasReadingErrors;
             });
+        }
+
+        private Boolean SaveSchedule(Schedule schedule)
+        {
+            Boolean hasSavingErrors = false;
+
+            String fileName = schedule.DisplayedName + ".json";
+            try
+            {
+                File.WriteAllText(_storagePath + fileName, schedule.ToJson());
+            }
+            catch (Exception exception)
+            {
+                hasSavingErrors = true;
+                _logger?.Log($"Error of saving schedule to file {fileName}: ", exception);
+            }
+
+            return hasSavingErrors;
         }
 
         private LocalSchedulesReader _reader;

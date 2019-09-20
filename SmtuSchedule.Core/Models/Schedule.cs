@@ -30,6 +30,9 @@ namespace SmtuSchedule.Core.Models
         [JsonProperty(Required = Required.Always)]
         public Int32 ScheduleId { get; set; }
 
+        [JsonProperty(Required = Required.Default)]
+        public ScheduleType Type { get; set; }
+
         [JsonProperty(Required = Required.Always)]
         public Timetable Timetable { get; set; }
 
@@ -76,7 +79,7 @@ namespace SmtuSchedule.Core.Models
             }
 
             Int32 numberOfWeeksBetweenDates = numberOfDaysBetweenDates / 7;
-            return (numberOfWeeksBetweenDates % 2) == 0 ? WeekType.Upper : WeekType.Lower;
+            return (numberOfWeeksBetweenDates % 2 == 0) ? WeekType.Upper : WeekType.Lower;
         }
     }
 }

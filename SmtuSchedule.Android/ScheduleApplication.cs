@@ -44,11 +44,11 @@ namespace SmtuSchedule.Android
 
             // У AndroidEnvironment.UnhandledExceptionRaiser трассировка стека подробнее,
             // чем у AppDomain.CurrentDomain.UnhandledException.
-            AndroidEnvironment.UnhandledExceptionRaiser += (s, a) =>
-            {
-                Logger.Log(a.Exception);
-                SaveLog(true);
-            };
+            //AndroidEnvironment.UnhandledExceptionRaiser += (s, a) =>
+            //{
+            //    Logger.Log(a.Exception);
+            //    SaveLog(true);
+            //};
 
             IsInitialized = false;
         }

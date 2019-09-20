@@ -16,7 +16,9 @@ namespace SmtuSchedule.Android
 
         public Boolean UseFabDateSelector { get; set; }
 
-        public Boolean DisplaySubjectEndTime { get; set; }
+        public Boolean ShowSubjectEndTime { get; set; }
+
+        public Boolean IsFirstRun { get; set; }
 
         public DateTime UpperWeekDate { get; set; }
 
@@ -31,6 +33,7 @@ namespace SmtuSchedule.Android
             ISharedPreferencesEditor editor = _preferences.Edit();
             editor.PutInt("CurrentScheduleId", CurrentScheduleId);
             editor.PutString("LastSeenVersion", LastSeenVersion);
+            editor.PutBoolean("IsFirstRun", IsFirstRun);
             editor.Apply();
         }
 
@@ -40,9 +43,10 @@ namespace SmtuSchedule.Android
 
             CurrentScheduleId = _preferences.GetInt("CurrentScheduleId", 0);
             LastSeenVersion = _preferences.GetString("LastSeenVersion", null);
+            IsFirstRun = _preferences.GetBoolean("IsFirstRun", true);
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", false);
+            ShowSubjectEndTime = _preferences.GetBoolean("ShowSubjectEndTime", false);
             CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
-            DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
         }
 
         private ISharedPreferences _preferences;
