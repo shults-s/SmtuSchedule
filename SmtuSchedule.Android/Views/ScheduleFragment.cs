@@ -26,8 +26,10 @@ namespace SmtuSchedule.Android.Views
         {
             Schedule schedule = _application.Manager.Schedules[_application.Preferences.CurrentScheduleId];
 
-            DateTime upperWeekDate = _application.Preferences.UpperWeekDate;
-            Subject[] subjects = schedule.GetSubjects(upperWeekDate, Date);
+            Subject[] subjects = schedule.GetSubjects(
+                _application.Preferences.UpperWeekDate,
+                Date
+            );
 
             Int32 currentIndex = (Date == DateTime.Today) ? FindCurrentSubjectIndex(subjects) : -1;
 
