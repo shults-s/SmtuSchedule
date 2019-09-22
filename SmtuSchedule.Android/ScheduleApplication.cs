@@ -87,9 +87,7 @@ namespace SmtuSchedule.Android
             }
 
             Preferences = new Preferences(this);
-
-            Manager = new SchedulesManager(externalStoragePath);
-            Manager.SetLogger(Logger);
+            Manager = new SchedulesManager(externalStoragePath) { Logger = Logger };
 
             return IsInitialized = true;
         }

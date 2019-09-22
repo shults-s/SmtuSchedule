@@ -3,9 +3,9 @@
     <!-- Для каждой релизной версии необходимо вручную обновлять versionCode в манифесте приложения -->
     <string name="applicationCompleteName">Расписание СПбГМТУ</string>
     <string name="applicationLabel">Расписание</string>
-    <string name="applicationVersion">0.8.3</string>
+    <string name="applicationVersion">0.9</string>
     <string name="aboutApplicationMessage">
-        Версия 0.8.3 от 02 сентября 2019.
+        Версия 0.9 от XX сентября 2019.
         \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>.
         \nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
     </string>
@@ -46,6 +46,7 @@
     <string name="schedulesDownloadedSuccessfullyMessage">Все расписания загружены.</string>
     <string name="scheduleNotYetDownloadedMessage">Это расписание еще не загружено.</string>
     <string name="waitUntilSchedulesFinishDownloading">Дождитесь окончания загрузки расписаний.</string>
+    <string name="schedulesMigratedSuccessfullyMessage">Расписания преобразованы в новый формат.</string>
     <string name="configureApplicationMessage">Настройте приложение для корректного отображения занятий.</string>
     <string name="applicationUpdateAvailableMessage">
         Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md">новая версия</a> приложения.
@@ -54,6 +55,7 @@
     <!-- Сообщения об ошибках -->
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
     <string name="schedulesReadingErrorMessage">Не все расписания удалось открыть.</string>
+    <string name="schedulesMigrationErrorMessage">Не все расписания удалось преобразовать в новый формат.</string>
     <string name="scheduleDownloadErrorMessage">Ошибка при загрузке расписания.</string>
     <string name="schedulesDownloadErrorMessage">Не все расписания удалось загрузить.</string>
     <string name="lecturersDownloadErrorMessage">

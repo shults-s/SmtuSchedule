@@ -25,15 +25,22 @@ namespace SmtuSchedule.Android.Views
             Bundle savedInstanceState)
         {
             Schedule schedule = _application.Manager.Schedules[_application.Preferences.CurrentScheduleId];
+            Subject[] subjects = schedule.GetSubjects(_application.Preferences.UpperWeekDate, Date);
 
-            Subject[] subjects = schedule.GetSubjects(
-                _application.Preferences.UpperWeekDate,
-                Date
-            );
+            Int32 FindCurrentSubjectIndex()
+            {
+                if (subjects == null)
+                {
+                    return -1;
+                }
 
-            Int32 currentIndex = (Date == DateTime.Today) ? FindCurrentSubjectIndex(subjects) : -1;
+                DateTime now = DateTime.Now;
+                return Array.FindIndex(subjects, e => e.IsTimeInside(now));
+            }
 
-            View layout;
+            Int32 currentIndex = (Date == DateTime.Today) ? FindCurrentSubjectIndex() : -1;
+
+            View layout = null;
 
             if (subjects == null)
             {
@@ -63,7 +70,7 @@ namespace SmtuSchedule.Android.Views
                 IEnumerable<Subject> relatedSubjects = null;
                 Int32 numberOfRelatedSubjects = 0;
 
-                if (_type == ScheduleType.Lecturer || _type == ScheduleType.Audience)
+                if (schedule.Type == ScheduleType.Lecturer || schedule.Type == ScheduleType.Audience)
                 {
                     relatedSubjects = subjects.Skip(i + 1).Where(
                         s => s.From == subject.From
@@ -111,17 +118,6 @@ namespace SmtuSchedule.Android.Views
             _application = null;
             _multiGroupPrefix = null;
             _switchScheduleCallback = null;
-        }
-
-        private Int32 FindCurrentSubjectIndex(Subject[] subjects)
-        {
-            if (subjects == null)
-            {
-                return -1;
-            }
-
-            DateTime now = DateTime.Now;
-            return Array.FindIndex(subjects, e => e.IsTimeInside(now));
         }
 
         private View CreateSubjectView(LayoutInflater inflater, ViewGroup container, Subject current,
@@ -216,7 +212,6 @@ namespace SmtuSchedule.Android.Views
         private Color _secondaryText;
         private String _multiGroupPrefix;
 
-        private ScheduleType _type;
         private ScheduleApplication _application;
         private Action<Int32> _switchScheduleCallback;
     }

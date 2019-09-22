@@ -70,8 +70,7 @@ namespace SmtuSchedule.Android.Views
         {
             ScheduleApplication application = ApplicationContext as ScheduleApplication;
 
-            IEnumerable<String> lecturers = await application.Manager.DownloadLecturersAsync();
-
+            IEnumerable<String> lecturers = await application.Manager.DownloadLecturersNamesAsync();
             if (lecturers == null)
             {
                 application.SaveLog();

@@ -6,21 +6,21 @@ namespace SmtuSchedule.Android
 {
     public class Preferences
     {
+        public Boolean CheckUpdatesOnStart { get; private set; }
+
+        public Boolean UseFabDateSelector { get; private set; }
+
+        public Boolean ShowSubjectEndTime { get; private set; }
+
+        public DateTime UpperWeekDate { get; private set; }
+
+        public Int32 CurrentScheduleId { get; private set; }
+
         public DateTime CurrentScheduleDate { get; set; }
 
-        public Int32 CurrentScheduleId { get; set; }
+        public String LastSeenVersion { get; private set; }
 
-        public Boolean CheckUpdatesOnStart { get; set; }
-
-        public String LastSeenVersion { get; set; }
-
-        public Boolean UseFabDateSelector { get; set; }
-
-        public Boolean ShowSubjectEndTime { get; set; }
-
-        public Boolean IsFirstRun { get; set; }
-
-        public DateTime UpperWeekDate { get; set; }
+        public String LastMigrationVersion { get; private set; }
 
         public Preferences(Context context)
         {
@@ -28,13 +28,31 @@ namespace SmtuSchedule.Android
             CurrentScheduleDate = DateTime.Today;
         }
 
-        public void Save()
+        public void SetLastMigrationVersion(String lastMigrationVersion)
+        {
+            ISharedPreferencesEditor editor = _preferences.Edit();
+            editor.PutString("LastMigrationVersion", lastMigrationVersion);
+            editor.Apply();
+
+            LastMigrationVersion = lastMigrationVersion;
+        }
+
+        public void SetLastSeenVersion(String lastSeenVersion)
+        {
+            ISharedPreferencesEditor editor = _preferences.Edit();
+            editor.PutString("LastSeenVersion", lastSeenVersion);
+            editor.Apply();
+
+            LastSeenVersion = lastSeenVersion;
+        }
+
+        public void SetCurrentScheduleId(Int32 currentScheduleId)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
             editor.PutInt("CurrentScheduleId", CurrentScheduleId);
-            editor.PutString("LastSeenVersion", LastSeenVersion);
-            editor.PutBoolean("IsFirstRun", IsFirstRun);
             editor.Apply();
+
+            CurrentScheduleId = currentScheduleId;
         }
 
         public void Read()
@@ -43,12 +61,11 @@ namespace SmtuSchedule.Android
 
             CurrentScheduleId = _preferences.GetInt("CurrentScheduleId", 0);
             LastSeenVersion = _preferences.GetString("LastSeenVersion", null);
-            IsFirstRun = _preferences.GetBoolean("IsFirstRun", true);
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", false);
             ShowSubjectEndTime = _preferences.GetBoolean("ShowSubjectEndTime", false);
             CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
         }
 
-        private ISharedPreferences _preferences;
+        private readonly ISharedPreferences _preferences;
     }
 }

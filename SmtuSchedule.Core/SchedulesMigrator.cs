@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Enumerations;
 
-namespace SmtuSchedule.Core.Utilities
+namespace SmtuSchedule.Core
 {
-    internal static class MigrationUtility
+    internal static class SchedulesMigrator
     {
         public static IEnumerable<Schedule> Migrate(IEnumerable<Schedule> schedules)
         {

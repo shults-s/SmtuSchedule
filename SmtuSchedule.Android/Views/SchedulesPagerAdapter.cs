@@ -17,11 +17,10 @@ namespace SmtuSchedule.Android.Views
         //    _cachedFragments = new Dictionary<(DateTime, Int32), ScheduleFragment>();
         //}
 
-        public SchedulesPagerAdapter(FragmentManager manager, ScheduleApplication application)
+        public SchedulesPagerAdapter(FragmentManager manager, DateTime dateRangeCenter)
             : base(manager)
         {
-            _application = application;
-            RenderingDateRange = new DateRange(application.Preferences.CurrentScheduleDate);
+            RenderingDateRange = new DateRange(dateRangeCenter);
         }
 
         public override Java.Lang.ICharSequence GetPageTitleFormatted(Int32 position)
@@ -44,8 +43,6 @@ namespace SmtuSchedule.Android.Views
 
             return fragment;
         }
-
-        private ScheduleApplication _application;
 
         private static readonly CultureInfo _culture = new CultureInfo("ru-RU");
 

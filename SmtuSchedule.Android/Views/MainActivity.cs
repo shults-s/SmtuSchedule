@@ -197,7 +197,6 @@ namespace SmtuSchedule.Android.Views
         protected override void OnPause()
         {
             base.OnPause();
-            _application.Preferences?.Save();
 
             if (_activityState == MainActivityState.DisplaysSchedule)
             {
@@ -231,8 +230,8 @@ namespace SmtuSchedule.Android.Views
 
                 ShowProgressBar();
 
-                Boolean hasReadingErrors = await _application.Manager.ReadSchedulesAsync();
-                if (hasReadingErrors)
+                Boolean haveReadingErrors = await _application.Manager.ReadSchedulesAsync();
+                if (haveReadingErrors)
                 {
                     ShowSnackbar(Resource.String.schedulesReadingErrorMessage);
                     _application.SaveLog();
@@ -241,10 +240,17 @@ namespace SmtuSchedule.Android.Views
 
             _application.Preferences.Read();
 
+            if (_application.Preferences.LastSeenVersion == null)
+            {
+                _application.Preferences.SetLastSeenVersion(_application.GetVersion());
+            }
+
             if (_application.Preferences.CheckUpdatesOnStart)
             {
                 CheckForUpdatesAsync();
             }
+
+            MigrateSchedulesAsync();
 
             _toolbarTitle = FindViewById<TextView>(Resource.Id.mainToolbarTitleTextView);
             _schedulesMenu = new PopupMenu(this, _toolbarTitle);
@@ -275,14 +281,33 @@ namespace SmtuSchedule.Android.Views
             RestartSchedulesRenderingSubsystem();
         }
 
-        private async void CheckForUpdatesAsync()
+        private async void MigrateSchedulesAsync()
         {
-            if (_application.Preferences.LastSeenVersion == null)
+            if (_application.Preferences.LastMigrationVersion == _application.GetVersion())
             {
-                _application.Preferences.LastSeenVersion = _application.GetVersion();
                 return ;
             }
 
+            Boolean haveMigrationErrors = await _application.Manager.MigrateSchedulesAsync();
+
+            Int32 messageId;
+            if (haveMigrationErrors)
+            {
+                messageId = Resource.String.schedulesMigrationErrorMessage;
+
+                _application.SaveLog();
+            }
+            else
+            {
+                messageId = Resource.String.schedulesMigratedSuccessfullyMessage;
+                _application.Preferences.SetLastMigrationVersion(_application.GetVersion());
+            }
+
+            ShowSnackbar(messageId);
+        }
+
+        private async void CheckForUpdatesAsync()
+        {
             if (IsPermissionDenied(Manifest.Permission.Internet))
             {
                 RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
@@ -305,13 +330,13 @@ namespace SmtuSchedule.Android.Views
                         Resource.String.viewActionText,
                         () =>
                         {
-                            _application.Preferences.LastSeenVersion = version;
+                            _application.Preferences.SetLastSeenVersion(version);
                             String releaseUrl = ApplicationHelper.LatestReleaseUrl;
                             StartActivity(new Intent(Intent.ActionView, Uri.Parse(releaseUrl)));
                         }
                     );
 
-                dialog.DismissEvent += (s, e) => _application.Preferences.LastSeenVersion = version;
+                dialog.DismissEvent += (s, e) => _application.Preferences.SetLastSeenVersion(version);
 
                 RunOnUiThread(dialog.Show);
             }
@@ -349,7 +374,10 @@ namespace SmtuSchedule.Android.Views
 
             // Пересоздавать адаптер необходимо при каждом перезапуске MainActivity, иначе
             // на активной в момент перезапуска вкладке не отрисуется фрагмент.
-            _pagerAdapter = new SchedulesPagerAdapter(SupportFragmentManager, _application);
+            _pagerAdapter = new SchedulesPagerAdapter(
+                SupportFragmentManager,
+                _application.Preferences.CurrentScheduleDate
+            );
 
             ShowViewPager();
             _viewPager = FindViewById<ViewPager>(Resource.Id.scheduleViewPager);
@@ -518,7 +546,7 @@ namespace SmtuSchedule.Android.Views
             }
 
             _toolbarTitle.Text = schedules[scheduleId].DisplayedName;
-            _application.Preferences.CurrentScheduleId = scheduleId;
+            _application.Preferences.SetCurrentScheduleId(scheduleId);
             ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate);
 
             _activityState = MainActivityState.DisplaysSchedule;
@@ -604,11 +632,11 @@ namespace SmtuSchedule.Android.Views
 
             ShowSnackbar(Resource.String.schedulesDownloadingStarted);
 
-            Boolean hasDownloadingErrors = await _application.Manager.DownloadSchedulesAsync(requests);
+            Boolean haveDownloadingErrors = await _application.Manager.DownloadSchedulesAsync(requests);
             RestartSchedulesRenderingSubsystem();
 
             Int32 messageId;
-            if (hasDownloadingErrors)
+            if (haveDownloadingErrors)
             {
                 messageId = (requests.Length == 1) ? Resource.String.scheduleDownloadErrorMessage
                     : Resource.String.schedulesDownloadErrorMessage;
