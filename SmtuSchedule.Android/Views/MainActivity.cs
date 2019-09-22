@@ -314,29 +314,31 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            String version = await ApplicationHelper.GetCurrentVersionAsync();
-            if (version == null)
+            String latest = await ApplicationHelper.GetLatestVersionAsync();
+            if (latest == null || latest == _application.Preferences.LastSeenVersion)
             {
                 return ;
             }
 
-            String current = _application.GetVersion();
-            if (version != current && version != _application.Preferences.LastSeenVersion)
+            if (ApplicationHelper.CompareVersions(latest, _application.GetVersion()) > 0)
             {
                 CustomAlertDialog dialog = new CustomAlertDialog(this)
                     .SetTitle(Resource.String.updateApplicationTitle)
                     .SetMessage(Resource.String.applicationUpdateAvailableMessage)
                     .SetPositiveButton(
-                        Resource.String.viewActionText,
+                        Resource.String.gotItActionText,
+                        () => _application.Preferences.SetLastSeenVersion(latest)
+                    )
+                    .SetNegativeButton(
+                        Resource.String.updateActionText,
                         () =>
                         {
-                            _application.Preferences.SetLastSeenVersion(version);
-                            String releaseUrl = ApplicationHelper.LatestReleaseUrl;
-                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(releaseUrl)));
+                            String googlePlayUrl = ApplicationHelper.GooglePlayUrl;
+                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(googlePlayUrl)));
                         }
                     );
 
-                dialog.DismissEvent += (s, e) => _application.Preferences.SetLastSeenVersion(version);
+                //dialog.DismissEvent += (s, e) => _application.Preferences.SetLastSeenVersion(latest);
 
                 RunOnUiThread(dialog.Show);
             }

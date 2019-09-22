@@ -27,10 +27,11 @@
     <string name="openPreferencesMenuItem">@string/preferencesToolbarTitle</string>
 
     <!-- Названия действий Snackbar'ов и кнопок -->
+    <string name="gotItActionText">Понял</string>
+    <string name="updateActionText">Обновить</string>
     <string name="cancelActionText">Отмена</string>
     <string name="removeActionText">Удалить</string>
     <string name="thanksActionText">Спасибо</string>
-    <string name="viewActionText">Просмотреть</string>
     <string name="downloadActionText">Загрузить</string>
     <string name="configureActionText">Настроить</string>
     <string name="grantAccessActionText">Разрешить</string>
