@@ -93,11 +93,13 @@ namespace SmtuSchedule.Android.Views
                     break;
 
                 case Resource.Id.aboutApplicationMenuItem:
-                    new CustomAlertDialog(this)
-                        .SetTitle(Resource.String.aboutApplicationTitle)
-                        .SetMessage(Resource.String.aboutApplicationMessage)
-                        .SetPositiveButton(Resource.String.thanksActionText)
-                        .Show();
+                    using (CustomAlertDialog dialog = new CustomAlertDialog(this))
+                    {
+                        dialog.SetTitle(Resource.String.aboutApplicationTitle)
+                            .SetMessage(Resource.String.aboutApplicationMessage)
+                            .SetPositiveButton(Resource.String.thanksActionText)
+                            .Show();
+                    }
                     break;
             }
 
@@ -240,14 +242,30 @@ namespace SmtuSchedule.Android.Views
 
             _application.Preferences.Read();
 
-            if (_application.Preferences.LastSeenVersion == null)
+            String current = _application.GetVersion();
+            if (_application.Preferences.LastSeenUpdateVersion == null)
             {
-                _application.Preferences.SetLastSeenVersion(_application.GetVersion());
+                _application.Preferences.SetLastSeenUpdateVersion(current);
             }
 
             if (_application.Preferences.CheckUpdatesOnStart)
             {
                 CheckForUpdatesAsync();
+            }
+
+            if (_application.Preferences.LastSeenWelcomeVersion != current)
+            {
+                using (CustomAlertDialog dialog = new CustomAlertDialog(this))
+                {
+                    dialog.SetTitle(Resource.String.introductionTitle)
+                        .SetMessage(Resource.String.introductionMessage)
+                        .SetPositiveButton(
+                            Resource.String.gotItActionText,
+                            () => _application.Preferences.SetLastSeenWelcomeVersion(current)
+                        );
+
+                    dialog.Show();
+                }
             }
 
             MigrateSchedulesAsync();
@@ -315,32 +333,32 @@ namespace SmtuSchedule.Android.Views
             }
 
             String latest = await ApplicationHelper.GetLatestVersionAsync();
-            if (latest == null || latest == _application.Preferences.LastSeenVersion)
+            if (latest == null || latest == _application.Preferences.LastSeenUpdateVersion)
             {
                 return ;
             }
 
             if (ApplicationHelper.CompareVersions(latest, _application.GetVersion()) > 0)
             {
-                CustomAlertDialog dialog = new CustomAlertDialog(this)
-                    .SetTitle(Resource.String.updateApplicationTitle)
-                    .SetMessage(Resource.String.applicationUpdateAvailableMessage)
-                    .SetPositiveButton(
-                        Resource.String.gotItActionText,
-                        () => _application.Preferences.SetLastSeenVersion(latest)
-                    )
-                    .SetNegativeButton(
-                        Resource.String.updateActionText,
-                        () =>
-                        {
-                            String googlePlayUrl = ApplicationHelper.GooglePlayUrl;
-                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(googlePlayUrl)));
-                        }
-                    );
+                using (CustomAlertDialog dialog = new CustomAlertDialog(this))
+                {
+                    dialog.SetTitle(Resource.String.updateApplicationTitle)
+                        .SetMessage(Resource.String.applicationUpdateAvailableMessage)
+                        .SetPositiveButton(
+                            Resource.String.gotItActionText,
+                            () => _application.Preferences.SetLastSeenUpdateVersion(latest)
+                        )
+                        .SetNegativeButton(
+                            Resource.String.updateActionText,
+                            () =>
+                            {
+                                String url = ApplicationHelper.GooglePlayUrl;
+                                StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
+                            }
+                        );
 
-                //dialog.DismissEvent += (s, e) => _application.Preferences.SetLastSeenVersion(latest);
-
-                RunOnUiThread(dialog.Show);
+                    dialog.Show();
+                }
             }
         }
 
@@ -348,11 +366,13 @@ namespace SmtuSchedule.Android.Views
         {
             if (_application.Preferences.UpperWeekDate == default(DateTime))
             {
-                new CustomAlertDialog(this)
-                    .SetPositiveButton(Resource.String.configureActionText, OpenPreferences)
-                    .SetMessage(Resource.String.configureApplicationMessage)
-                    .SetCancelable(false)
-                    .Show();
+                using (CustomAlertDialog dialog = new CustomAlertDialog(this))
+                {
+                    dialog.SetPositiveButton(Resource.String.configureActionText, OpenPreferences)
+                        .SetMessage(Resource.String.configureApplicationMessage)
+                        .SetCancelable(false)
+                        .Show();
+                }
             }
 
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
@@ -475,17 +495,24 @@ namespace SmtuSchedule.Android.Views
                 displayedName
             );
 
-            new CustomAlertDialog(this)
-                .SetMessage(message)
-                .SetPositiveButton(Resource.String.removeActionText, RemoveCurrentScheduleAsync)
-                .SetNegativeButton(Resource.String.cancelActionText)
-                .Show();
+            using (CustomAlertDialog dialog = new CustomAlertDialog(this))
+            {
+                dialog.SetMessage(message)
+                    .SetPositiveButton(Resource.String.removeActionText, RemoveCurrentScheduleAsync)
+                    .SetNegativeButton(Resource.String.cancelActionText)
+                    .Show();
+            }
         }
 
         private void ShowCustomDatePickerDialog()
         {
             DateTime initialDate = _application.Preferences.CurrentScheduleDate;
-            new CustomDatePickerDialog(this, initialDate, (date) => ViewPagerMoveToDate(date)).Show();
+
+            using (CustomDatePickerDialog dialog = new CustomDatePickerDialog(this, initialDate))
+            {
+                dialog.DateChanged += (date) => ViewPagerMoveToDate(date);
+                dialog.Show();
+            }
         }
 
         private void ShowSnackbar(Int32 messageId, Int32 actionId = 0, Action callback = null)

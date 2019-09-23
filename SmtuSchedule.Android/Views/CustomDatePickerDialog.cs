@@ -8,6 +8,8 @@ namespace SmtuSchedule.Android.Views
 {
     internal class CustomDatePickerDialog : CustomAlertDialog
     {
+        public event Action<DateTime> DateChanged;
+
         private class DateChangingListener : Java.Lang.Object, DatePicker.IOnDateChangedListener
         {
             public event Action<DateTime> DateChanged;
@@ -35,15 +37,10 @@ namespace SmtuSchedule.Android.Views
             private DateTime _last;
         }
 
-        public CustomDatePickerDialog(Context context, DateTime initialDate,
-            Action<DateTime> dateChangedCallback) : base(context)
+        public CustomDatePickerDialog(Context context, DateTime initialDate) : base(context)
         {
             DateChangingListener listener = new DateChangingListener(initialDate);
-            listener.DateChanged += (selectedDate) =>
-            {
-                Dismiss();
-                dateChangedCallback(selectedDate);
-            };
+            listener.DateChanged += (selectedDate) => DateChanged?.Invoke(selectedDate);
 
             // В View.Inflate(...) передается Dialog.Context, к которому уже (!) применена тема.
             View pickerView = View.Inflate(Context, Resource.Layout.customDatePicker, null);

@@ -143,7 +143,7 @@ namespace SmtuSchedule.Android.Views
             TextView audience = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
             audience.Text = current.Audience;
  
-            if (_application.Preferences.ShowSubjectEndTime)
+            if (_application.Preferences.DisplaySubjectEndTime)
             {
                 // Высота левой ячейки (match_parent) определяется высотой правой ячейки (wrap_content),
                 // с целью выровнять их по высоте для корректного позиционирования номера аудитории.

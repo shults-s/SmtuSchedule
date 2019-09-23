@@ -11,6 +11,7 @@
     </string>
 
     <!-- Заголовки диалогов и панелей инструментов -->
+    <string name="introductionTitle">Что нового?</string>
     <string name="aboutApplicationTitle">О приложении</string>
     <string name="updateApplicationTitle">Загрузить новую версию?</string>
     <string name="preferencesToolbarTitle">Настройки</string>
@@ -42,7 +43,7 @@
     <string name="removeCurrentScheduleMessage">Удалить расписание «%1s»?</string>
     <string name="schedulesDownloadingStarted">Загрузка началась...</string>
     <string name="scheduleRemovedSuccessfullyMessage">Расписание удалено.</string>
-    <string name="scheduleNotAvailableMessage">Это расписание не доступно.</string>
+    <string name="scheduleNotAvailableMessage">Это расписание недоступно.</string>
     <string name="scheduleDownloadedSuccessfullyMessage">Расписание загружено.</string>
     <string name="schedulesDownloadedSuccessfullyMessage">Все расписания загружены.</string>
     <string name="scheduleNotYetDownloadedMessage">Это расписание еще не загружено.</string>
@@ -50,8 +51,9 @@
     <string name="schedulesMigratedSuccessfullyMessage">Расписания преобразованы в новый формат.</string>
     <string name="configureApplicationMessage">Настройте приложение для корректного отображения занятий.</string>
     <string name="applicationUpdateAvailableMessage">
-        Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md">новая версия</a> приложения.
+        Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md"><b>новая версия</b></a> приложения.
     </string>
+    <string name="introductionMessage"><b>Прочитайте, пожалуйста. Это важно.</b></string>
 
     <!-- Сообщения об ошибках -->
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>

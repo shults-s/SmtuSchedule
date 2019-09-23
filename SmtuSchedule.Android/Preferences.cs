@@ -10,7 +10,7 @@ namespace SmtuSchedule.Android
 
         public Boolean UseFabDateSelector { get; private set; }
 
-        public Boolean ShowSubjectEndTime { get; private set; }
+        public Boolean DisplaySubjectEndTime { get; private set; }
 
         public DateTime UpperWeekDate { get; private set; }
 
@@ -18,14 +18,25 @@ namespace SmtuSchedule.Android
 
         public DateTime CurrentScheduleDate { get; set; }
 
-        public String LastSeenVersion { get; private set; }
-
         public String LastMigrationVersion { get; private set; }
+
+        public String LastSeenUpdateVersion { get; private set; }
+
+        public String LastSeenWelcomeVersion { get; private set; }
 
         public Preferences(Context context)
         {
             _preferences = PreferenceManager.GetDefaultSharedPreferences(context);
             CurrentScheduleDate = DateTime.Today;
+        }
+
+        public void SetLastSeenWelcomeVersion(String lastSeenWelcomeVersion)
+        {
+            ISharedPreferencesEditor editor = _preferences.Edit();
+            editor.PutString("LastSeenWelcomeVersion", lastSeenWelcomeVersion);
+            editor.Apply();
+
+            LastSeenWelcomeVersion = lastSeenWelcomeVersion;
         }
 
         public void SetLastMigrationVersion(String lastMigrationVersion)
@@ -37,13 +48,13 @@ namespace SmtuSchedule.Android
             LastMigrationVersion = lastMigrationVersion;
         }
 
-        public void SetLastSeenVersion(String lastSeenVersion)
+        public void SetLastSeenUpdateVersion(String lastSeenUpdateVersion)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutString("LastSeenVersion", lastSeenVersion);
+            editor.PutString("LastSeenUpdateVersion", lastSeenUpdateVersion);
             editor.Apply();
 
-            LastSeenVersion = lastSeenVersion;
+            LastSeenUpdateVersion = lastSeenUpdateVersion;
         }
 
         public void SetCurrentScheduleId(Int32 currentScheduleId)
@@ -58,12 +69,14 @@ namespace SmtuSchedule.Android
         public void Read()
         {
             UpperWeekDate = new DateTime(_preferences.GetLong("UpperWeekDate", 0));
+            UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", false);
+            CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
+            DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
 
             CurrentScheduleId = _preferences.GetInt("CurrentScheduleId", 0);
-            LastSeenVersion = _preferences.GetString("LastSeenVersion", null);
-            UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", false);
-            ShowSubjectEndTime = _preferences.GetBoolean("ShowSubjectEndTime", false);
-            CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
+            LastMigrationVersion = _preferences.GetString("LastMigrationVersion", null);
+            LastSeenUpdateVersion = _preferences.GetString("LastSeenUpdateVersion", null);
+            LastSeenWelcomeVersion = _preferences.GetString("LastSeenWelcomeVersion", null);
         }
 
         private readonly ISharedPreferences _preferences;
