@@ -101,6 +101,25 @@ namespace SmtuSchedule.Android.Views
             return this;
         }
 
+        public CustomAlertDialog SetPositiveButtonEnabledOnlyThenContentScrolledToBottom()
+        {
+            ScrollView view = _layout.FindViewById<ScrollView>(Resource.Id.customDialogScrollView);
+            if (view == null)
+            {
+                return this;
+            }
+
+            ShowEvent += (s, e) => GetButton((Int32)DialogButtonType.Positive).Enabled = false;
+
+            view.ScrollChange += (s, e) =>
+            {
+                Double scrollingSpace = view.GetChildAt(0).Height - view.Height;
+                GetButton((Int32)DialogButtonType.Positive).Enabled = (scrollingSpace <= e.ScrollY);
+            };
+
+            return this;
+        }
+
         private void SetButton(DialogButtonType type, String text, Action callback)
         {
             SetContentBottomPadding(0);
@@ -117,7 +136,7 @@ namespace SmtuSchedule.Android.Views
             _content.SetPadding(_content.PaddingLeft, sizeInPx, _content.PaddingRight, _content.PaddingBottom);
         }
 
-        private View _layout;
-        private FrameLayout _content;
+        private readonly View _layout;
+        private readonly FrameLayout _content;
     }
 }

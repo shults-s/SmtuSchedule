@@ -7,7 +7,8 @@
     <string name="aboutApplicationMessage">
         Версия 0.9 от XX сентября 2019.
         \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>.
-        \nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
+        \nПоддержать можно <a href="#">здесь</a>.
+        \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
     </string>
 
     <!-- Заголовки диалогов и панелей инструментов -->
@@ -37,24 +38,6 @@
     <string name="configureActionText">Настроить</string>
     <string name="grantAccessActionText">Разрешить</string>
 
-    <!-- Сообщения уведомительного характера -->
-    <string name="weekendMessage">Выходной день :)</string>
-    <string name="welcomeMessage">Ни одно расписание занятий еще не загружено.</string>
-    <string name="removeCurrentScheduleMessage">Удалить расписание «%1s»?</string>
-    <string name="schedulesDownloadingStarted">Загрузка началась...</string>
-    <string name="scheduleRemovedSuccessfullyMessage">Расписание удалено.</string>
-    <string name="scheduleNotAvailableMessage">Это расписание недоступно.</string>
-    <string name="scheduleDownloadedSuccessfullyMessage">Расписание загружено.</string>
-    <string name="schedulesDownloadedSuccessfullyMessage">Все расписания загружены.</string>
-    <string name="scheduleNotYetDownloadedMessage">Это расписание еще не загружено.</string>
-    <string name="waitUntilSchedulesFinishDownloading">Дождитесь окончания загрузки расписаний.</string>
-    <string name="schedulesMigratedSuccessfullyMessage">Расписания преобразованы в новый формат.</string>
-    <string name="configureApplicationMessage">Настройте приложение для корректного отображения занятий.</string>
-    <string name="applicationUpdateAvailableMessage">
-        Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md"><b>новая версия</b></a> приложения.
-    </string>
-    <string name="introductionMessage"><b>Прочитайте, пожалуйста. Это важно.</b></string>
-
     <!-- Сообщения об ошибках -->
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
     <string name="schedulesReadingErrorMessage">Не все расписания удалось открыть.</string>
@@ -83,4 +66,34 @@
     <!-- Обоснования для запроса разрешений -->
     <string name="internetPermissionRationaleMessage">Доступ к интернету необходим для загрузки расписаний.</string>
     <string name="storagePermissionsRationaleMessage">Доступ к памяти смартфона необходим для загрузки расписаний.</string>
+    
+        <!-- Сообщения уведомительного характера -->
+    <string name="weekendMessage">Выходной день :)</string>
+    <string name="welcomeMessage">Ни одно расписание занятий еще не загружено.</string>
+    <string name="removeCurrentScheduleMessage">Удалить расписание «%1s»?</string>
+    <string name="schedulesDownloadingStarted">Загрузка началась...</string>
+    <string name="scheduleRemovedSuccessfullyMessage">Расписание удалено.</string>
+    <string name="scheduleNotAvailableMessage">Это расписание недоступно.</string>
+    <string name="scheduleDownloadedSuccessfullyMessage">Расписание загружено.</string>
+    <string name="schedulesDownloadedSuccessfullyMessage">Все расписания загружены.</string>
+    <string name="scheduleNotYetDownloadedMessage">Это расписание еще не загружено.</string>
+    <string name="waitUntilSchedulesFinishDownloading">Дождитесь окончания загрузки расписаний.</string>
+    <string name="schedulesMigratedSuccessfullyMessage">Расписания преобразованы в новый формат.</string>
+    <string name="configureApplicationMessage">Настройте приложение для корректного отображения занятий.</string>
+    <string name="introductionMessage">
+        <b>Прочитайте, это важно.</b>
+        \nЗакрыть этот диалог можно нажав кнопку «Назад».
+        \n\nВерсия 0.9 – крайняя перед глобальными изменениями. Начиная с версии 1.0 часть функционала будет вынесена на сервер,
+        а значит, приложение станет «легче» и получит новые возможности, такие как:
+        \n1. Расписания аудиторий (на сайте такой функции нет);
+        \n2. Уведомления о предстоящих занятиях;
+        \n3. Список можно продолжить...
+        \n\nНа эти изменения может уйти полгода, может больше, а может и меньше.
+        \n\nПриложение разрабатывается мной в свободное от работы и учебы время.
+        \nЕсли приложение Вам понравилось или помогло, можете <a href="#"><b>поддержать меня</b></a>, если, конечно, хотите.
+        \nСсылка продублирована в окне «О приложении».
+    </string>
+    <string name="applicationUpdateAvailableMessage">
+        Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md"><b>новая версия</b></a> приложения.
+    </string>
 </resources>

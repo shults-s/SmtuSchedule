@@ -93,13 +93,11 @@ namespace SmtuSchedule.Android.Views
                     break;
 
                 case Resource.Id.aboutApplicationMenuItem:
-                    using (CustomAlertDialog dialog = new CustomAlertDialog(this))
-                    {
-                        dialog.SetTitle(Resource.String.aboutApplicationTitle)
-                            .SetMessage(Resource.String.aboutApplicationMessage)
-                            .SetPositiveButton(Resource.String.thanksActionText)
-                            .Show();
-                    }
+                    new CustomAlertDialog(this)
+                        .SetTitle(Resource.String.aboutApplicationTitle)
+                        .SetMessage(Resource.String.aboutApplicationMessage)
+                        .SetPositiveButton(Resource.String.thanksActionText)
+                        .Show();
                     break;
             }
 
@@ -255,17 +253,15 @@ namespace SmtuSchedule.Android.Views
 
             if (_application.Preferences.LastSeenWelcomeVersion != current)
             {
-                using (CustomAlertDialog dialog = new CustomAlertDialog(this))
-                {
-                    dialog.SetTitle(Resource.String.introductionTitle)
-                        .SetMessage(Resource.String.introductionMessage)
-                        .SetPositiveButton(
-                            Resource.String.gotItActionText,
-                            () => _application.Preferences.SetLastSeenWelcomeVersion(current)
-                        );
-
-                    dialog.Show();
-                }
+                new CustomAlertDialog(this)
+                    .SetTitle(Resource.String.introductionTitle)
+                    .SetMessage(Resource.String.introductionMessage)
+                    .SetPositiveButton(
+                        Resource.String.gotItActionText,
+                        () => _application.Preferences.SetLastSeenWelcomeVersion(current)
+                    )
+                    .SetPositiveButtonEnabledOnlyThenContentScrolledToBottom()
+                    .Show();
             }
 
             MigrateSchedulesAsync();
@@ -335,25 +331,22 @@ namespace SmtuSchedule.Android.Views
 
             if (ApplicationHelper.CompareVersions(latest, _application.GetVersion()) > 0)
             {
-                using (CustomAlertDialog dialog = new CustomAlertDialog(this))
-                {
-                    dialog.SetTitle(Resource.String.updateApplicationTitle)
-                        .SetMessage(Resource.String.applicationUpdateAvailableMessage)
-                        .SetPositiveButton(
-                            Resource.String.gotItActionText,
-                            () => _application.Preferences.SetLastSeenUpdateVersion(latest)
-                        )
-                        .SetNegativeButton(
-                            Resource.String.updateActionText,
-                            () =>
-                            {
-                                String url = ApplicationHelper.GooglePlayUrl;
-                                StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
-                            }
-                        );
-
-                    dialog.Show();
-                }
+                new CustomAlertDialog(this)
+                    .SetTitle(Resource.String.updateApplicationTitle)
+                    .SetMessage(Resource.String.applicationUpdateAvailableMessage)
+                    .SetPositiveButton(
+                        Resource.String.gotItActionText,
+                        () => _application.Preferences.SetLastSeenUpdateVersion(latest)
+                    )
+                    .SetNegativeButton(
+                        Resource.String.updateActionText,
+                        () =>
+                        {
+                            String googlePlayUrl = ApplicationHelper.GooglePlayUrl;
+                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(googlePlayUrl)));
+                        }
+                    )
+                    .Show();
             }
         }
 
@@ -361,13 +354,11 @@ namespace SmtuSchedule.Android.Views
         {
             if (_application.Preferences.UpperWeekDate == default(DateTime))
             {
-                using (CustomAlertDialog dialog = new CustomAlertDialog(this))
-                {
-                    dialog.SetPositiveButton(Resource.String.configureActionText, OpenPreferences)
-                        .SetMessage(Resource.String.configureApplicationMessage)
-                        .SetCancelable(false)
-                        .Show();
-                }
+                new CustomAlertDialog(this)
+                    .SetPositiveButton(Resource.String.configureActionText, OpenPreferences)
+                    .SetMessage(Resource.String.configureApplicationMessage)
+                    .SetCancelable(false)
+                    .Show();
             }
 
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
@@ -490,13 +481,11 @@ namespace SmtuSchedule.Android.Views
                 displayedName
             );
 
-            using (CustomAlertDialog dialog = new CustomAlertDialog(this))
-            {
-                dialog.SetMessage(message)
-                    .SetPositiveButton(Resource.String.removeActionText, RemoveCurrentScheduleAsync)
-                    .SetNegativeButton(Resource.String.cancelActionText)
-                    .Show();
-            }
+            new CustomAlertDialog(this)
+                .SetMessage(message)
+                .SetPositiveButton(Resource.String.removeActionText, RemoveCurrentScheduleAsync)
+                .SetNegativeButton(Resource.String.cancelActionText)
+                .Show();
         }
 
         private void ShowCustomDatePickerDialog()
