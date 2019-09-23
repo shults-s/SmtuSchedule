@@ -308,20 +308,15 @@ namespace SmtuSchedule.Android.Views
 
             Boolean haveMigrationErrors = await _application.Manager.MigrateSchedulesAsync();
 
-            Int32 messageId;
             if (haveMigrationErrors)
             {
-                messageId = Resource.String.schedulesMigrationErrorMessage;
-
+                ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
                 _application.SaveLog();
             }
             else
             {
-                messageId = Resource.String.schedulesMigratedSuccessfullyMessage;
                 _application.Preferences.SetLastMigrationVersion(_application.GetVersion());
             }
-
-            ShowSnackbar(messageId);
         }
 
         private async void CheckForUpdatesAsync()

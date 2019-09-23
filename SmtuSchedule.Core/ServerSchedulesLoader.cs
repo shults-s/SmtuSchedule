@@ -49,14 +49,23 @@ namespace SmtuSchedule.Core
 
         public Boolean HaveDownloadingErrors { get; private set; }
 
-        public Dictionary<String, Int32> Lecturers { get; set; }
-
         public ILogger Logger { get; set; }
+
+        public ServerSchedulesLoader(Dictionary<String, Int32> lecturers) => _lecturers = lecturers;
 
         public async Task<Dictionary<Int32, Schedule>> DownloadAsync(IEnumerable<String> requests)
         {
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
             HaveDownloadingErrors = false;
+
+            if (_lecturers == null)
+            {
+                Logger?.Log("Lecturers property is null, therefore, in any loaded schedule, " +
+                    "the lecturers id's will be zero. So, switching between schedules will be impossible.");
+
+                HaveDownloadingErrors = true;
+                return schedules;
+            }
 
             IEnumerable<Int32> ConvertRequestsToIds(IEnumerable<String> searchRequests)
             {
@@ -66,9 +75,9 @@ namespace SmtuSchedule.Core
                     {
                         yield return number;
                     }
-                    else if (Lecturers != null && Lecturers.ContainsKey(request))
+                    else if (_lecturers != null && _lecturers.ContainsKey(request))
                     {
-                        yield return Lecturers[request];
+                        yield return _lecturers[request];
                     }
                 }
             }
@@ -157,10 +166,10 @@ namespace SmtuSchedule.Core
                     }
 
                     Boolean isLecturerScheduleExists = name != null
-                        && Lecturers != null
-                        && Lecturers.ContainsKey(name);
+                        && _lecturers != null
+                        && _lecturers.ContainsKey(name);
 
-                    id = isLecturerScheduleExists ? Lecturers[name] : 0;
+                    id = isLecturerScheduleExists ? _lecturers[name] : 0;
                 }
             }
 
@@ -169,8 +178,9 @@ namespace SmtuSchedule.Core
 
             Schedule schedule = new Schedule()
             {
+                Type = scheduleType,
                 ScheduleId = scheduleId,
-                Timetable = new Timetable(),
+                Timetable = new Timetable()
             };
 
             String baseUrl = (scheduleType == ScheduleType.Group) ? GroupScheduleBaseUrl
@@ -256,5 +266,7 @@ namespace SmtuSchedule.Core
 
             return schedule;
         }
+
+        private readonly Dictionary<String, Int32> _lecturers;
     }
 }

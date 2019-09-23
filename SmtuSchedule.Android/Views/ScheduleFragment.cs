@@ -172,7 +172,7 @@ namespace SmtuSchedule.Android.Views
                 SpannableString spannable = new SpannableString(text);
 
                 CustomClickableSpan span = new CustomClickableSpan(_primaryText);
-                span.Click += () => _switchScheduleCallback(scheduleId);
+                span.Click += () => _switchScheduleCallback?.Invoke(scheduleId);
 
                 spannable.SetSpan(span, 0, spannable.Length(), SpanTypes.ExclusiveExclusive);
                 return spannable;
@@ -200,7 +200,7 @@ namespace SmtuSchedule.Android.Views
                 {
                     lecturer.SetText(
                         CreateSwitchScheduleClickableLink(lecturerOrGroup.Name, lecturerOrGroup.ScheduleId),
-                        TextView.BufferType.Normal
+                        TextView.BufferType.Spannable
                     );
                 }
             }

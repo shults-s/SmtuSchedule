@@ -60,7 +60,7 @@ namespace SmtuSchedule.Android
         public void SetCurrentScheduleId(Int32 currentScheduleId)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutInt("CurrentScheduleId", CurrentScheduleId);
+            editor.PutInt("CurrentScheduleId", currentScheduleId);
             editor.Apply();
 
             CurrentScheduleId = currentScheduleId;

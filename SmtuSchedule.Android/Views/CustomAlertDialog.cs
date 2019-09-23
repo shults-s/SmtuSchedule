@@ -3,15 +3,22 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
-using Android.Graphics;
+using Android.Runtime;
 using Android.Text.Method;
 using Android.Support.V7.App;
 using SmtuSchedule.Android.Utilities;
+
 
 namespace SmtuSchedule.Android.Views
 {
     internal class CustomAlertDialog : AlertDialog
     {
+        // Bugfix: Unable to activate instance of type ... from native handle ...
+        public CustomAlertDialog(IntPtr javaReference, JniHandleOwnership transfer)
+            : base(javaReference, transfer)
+        {
+        }
+
         public CustomAlertDialog(Context context) : base(context)
         {
             _layout = View.Inflate(Context, Resource.Layout.customDialog, null);

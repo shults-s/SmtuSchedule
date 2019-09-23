@@ -24,10 +24,14 @@ namespace SmtuSchedule.Core
             {
                 IsDownloadingInProgress = true;
 
-                ServerSchedulesLoader loader = new ServerSchedulesLoader()
+                if (_lecturers == null)
                 {
-                    Logger = Logger,
-                    Lecturers = _lecturers
+                    _lecturers = await LecturersLoader.Download(Logger);
+                }
+
+                ServerSchedulesLoader loader = new ServerSchedulesLoader(_lecturers)
+                {
+                    Logger = Logger
                 };
 
                 Dictionary<Int32, Schedule> schedules = await loader.DownloadAsync(searchRequests)
