@@ -27,19 +27,6 @@ namespace SmtuSchedule.Android.Views
             Schedule schedule = _application.Manager.Schedules[_application.Preferences.CurrentScheduleId];
             Subject[] subjects = schedule.GetSubjects(_application.Preferences.UpperWeekDate, Date);
 
-            Int32 FindCurrentSubjectIndex()
-            {
-                if (subjects == null)
-                {
-                    return -1;
-                }
-
-                DateTime now = DateTime.Now;
-                return Array.FindIndex(subjects, e => e.IsTimeInside(now));
-            }
-
-            Int32 currentIndex = (Date == DateTime.Today) ? FindCurrentSubjectIndex() : -1;
-
             View layout = null;
 
             if (subjects == null)
@@ -53,6 +40,10 @@ namespace SmtuSchedule.Android.Views
             }
 
             layout = inflater.Inflate(Resource.Layout.schedule, container, false);
+
+            Int32 currentSubjectIndex = (Date != DateTime.Today)
+                ? -1
+                : Array.FindIndex(subjects, s => s.IsTimeInside(DateTime.Now));
 
             TableLayout table = layout.FindViewById<TableLayout>(Resource.Id.scheduleTableLayout);
             for (Int32 i = 0; i < subjects.Length; )
@@ -86,7 +77,7 @@ namespace SmtuSchedule.Android.Views
                     table,
                     subject,
                     (numberOfRelatedSubjects != 0) ? relatedSubjects : null,
-                    i == currentIndex
+                    i == currentSubjectIndex
                 ));
 
                 i += (numberOfRelatedSubjects == 0) ? 1 : numberOfRelatedSubjects + 1;
@@ -99,12 +90,12 @@ namespace SmtuSchedule.Android.Views
         {
             base.OnAttach(context);
 
+            _application = Context.ApplicationContext as ScheduleApplication;
+
             if (Activity is ISchedulesViewer viewer)
             {
                 _switchScheduleCallback = viewer.ShowSchedule;
             }
-
-            _application = Context.ApplicationContext as ScheduleApplication;
 
             _multiGroupPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
             _primaryText = new Color(ContextCompat.GetColor(Context, Resource.Color.primaryText));
@@ -142,7 +133,7 @@ namespace SmtuSchedule.Android.Views
 
             TextView audience = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
             audience.Text = current.Audience;
- 
+
             if (_application.Preferences.DisplaySubjectEndTime)
             {
                 // Высота левой ячейки (match_parent) определяется высотой правой ячейки (wrap_content),

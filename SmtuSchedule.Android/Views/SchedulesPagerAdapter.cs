@@ -17,10 +17,9 @@ namespace SmtuSchedule.Android.Views
         //    _cachedFragments = new Dictionary<(DateTime, Int32), ScheduleFragment>();
         //}
 
-        public SchedulesPagerAdapter(FragmentManager manager, DateTime dateRangeCenter)
-            : base(manager)
+        public SchedulesPagerAdapter(FragmentManager manager, DateTime initialDate) : base(manager)
         {
-            RenderingDateRange = new DateRange(dateRangeCenter);
+            RenderingDateRange = new DateRange(initialDate);
         }
 
         public override Java.Lang.ICharSequence GetPageTitleFormatted(Int32 position)

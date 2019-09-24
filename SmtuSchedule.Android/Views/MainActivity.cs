@@ -380,7 +380,7 @@ namespace SmtuSchedule.Android.Views
 
             SetSchedulesMenu(schedules);
 
-            // Пересоздавать адаптер необходимо при каждом перезапуске MainActivity, иначе
+            // Пересоздавать адаптер необходимо при каждом перезапуске подсистемы рендеринга, иначе
             // на активной в момент перезапуска вкладке не отрисуется фрагмент.
             _pagerAdapter = new SchedulesPagerAdapter(
                 SupportFragmentManager,
@@ -389,7 +389,7 @@ namespace SmtuSchedule.Android.Views
 
             ShowViewPager();
             _viewPager = FindViewById<ViewPager>(Resource.Id.scheduleViewPager);
-            _viewPager.OffscreenPageLimit = 1;
+            //_viewPager.OffscreenPageLimit = 1;
 
             // Bug: если после запуска приложения перелистнуть страницу расписания влево или вправо, то
             // затем при изменении ориентации устройства событие по неизвестной причине срабатывает
@@ -490,13 +490,13 @@ namespace SmtuSchedule.Android.Views
 
         private void ShowCustomDatePickerDialog()
         {
-            DateTime initialDate = _application.Preferences.CurrentScheduleDate;
+            CustomDatePickerDialog dialog = new CustomDatePickerDialog(
+                this,
+                _application.Preferences.CurrentScheduleDate
+            );
 
-            using (CustomDatePickerDialog dialog = new CustomDatePickerDialog(this, initialDate))
-            {
-                dialog.DateChanged += (date) => ViewPagerMoveToDate(date);
-                dialog.Show();
-            }
+            dialog.DateChanged += (date) => ViewPagerMoveToDate(date);
+            dialog.Show();
         }
 
         private void ShowSnackbar(Int32 messageId, Int32 actionId = 0, Action callback = null)

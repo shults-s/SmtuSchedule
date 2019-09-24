@@ -8,7 +8,6 @@ using Android.Text.Method;
 using Android.Support.V7.App;
 using SmtuSchedule.Android.Utilities;
 
-
 namespace SmtuSchedule.Android.Views
 {
     internal class CustomAlertDialog : AlertDialog

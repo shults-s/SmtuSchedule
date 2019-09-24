@@ -40,7 +40,11 @@ namespace SmtuSchedule.Android.Views
         public CustomDatePickerDialog(Context context, DateTime initialDate) : base(context)
         {
             DateChangingListener listener = new DateChangingListener(initialDate);
-            listener.DateChanged += (selectedDate) => DateChanged?.Invoke(selectedDate);
+            listener.DateChanged += (selectedDate) =>
+            {
+                Dismiss();
+                DateChanged?.Invoke(selectedDate);
+            };
 
             // В View.Inflate(...) передается Dialog.Context, к которому уже (!) применена тема.
             View pickerView = View.Inflate(Context, Resource.Layout.customDatePicker, null);

@@ -9,9 +9,9 @@ namespace SmtuSchedule.Android.Utilities
 {
     internal static class ICharSequenceExtension
     {
-        private class UrlSpanNoUnderline : URLSpan
+        private class UrlSpanNoUnderlines : URLSpan
         {
-            public UrlSpanNoUnderline(System.String url) : base(url)
+            public UrlSpanNoUnderlines(System.String url) : base(url)
             {
             }
 
@@ -38,7 +38,7 @@ namespace SmtuSchedule.Android.Utilities
                 Int32 end = spannable.GetSpanEnd(span);
                 spannable.RemoveSpan(span);
 
-                UrlSpanNoUnderline customSpan = new UrlSpanNoUnderline(span.URL);
+                UrlSpanNoUnderlines customSpan = new UrlSpanNoUnderlines(span.URL);
                 spannable.SetSpan(customSpan, start, end, 0);
             }
 
