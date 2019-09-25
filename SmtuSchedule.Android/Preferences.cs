@@ -10,6 +10,8 @@ namespace SmtuSchedule.Android
 
         public Boolean UseFabDateSelector { get; private set; }
 
+        public Boolean UseDarkTheme { get; private set; }
+
         public Boolean DisplaySubjectEndTime { get; private set; }
 
         public DateTime UpperWeekDate { get; private set; }
@@ -69,6 +71,7 @@ namespace SmtuSchedule.Android
         public void Read()
         {
             UpperWeekDate = new DateTime(_preferences.GetLong("UpperWeekDate", 0));
+            UseDarkTheme = _preferences.GetBoolean("UseDarkTheme", false);
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", false);
             CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
             DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);

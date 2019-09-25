@@ -50,6 +50,8 @@ namespace SmtuSchedule.Android
             //    SaveLog(true);
             //};
 
+            Preferences = new Preferences(this);
+
             IsInitialized = false;
         }
 
@@ -86,7 +88,6 @@ namespace SmtuSchedule.Android
                 }
             }
 
-            Preferences = new Preferences(this);
             Manager = new SchedulesManager(externalStoragePath) { Logger = Logger };
 
             return IsInitialized = true;

@@ -158,6 +158,9 @@ namespace SmtuSchedule.Android.Views
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            _application = ApplicationContext as ScheduleApplication;
+            SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.MainTheme : Resource.Style.DarkMainTheme);
+
             _activityState = MainActivityState.NotInitialized;
 
             base.OnCreate(savedInstanceState);
@@ -168,8 +171,6 @@ namespace SmtuSchedule.Android.Views
 
             SetSupportActionBar(FindViewById<Toolbar>(Resource.Id.mainToolbar));
             SupportActionBar.SetDisplayShowTitleEnabled(false);
-
-            _application = ApplicationContext as ScheduleApplication;
 
             String[] deniedPermissions = StoragePermissions.Where(p => IsPermissionDenied(p))
                 .ToArray();
