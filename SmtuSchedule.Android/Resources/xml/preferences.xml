@@ -7,6 +7,11 @@
         android:summary="@string/preferenceUpperWeekDateSummary"
         android:layout="@layout/customPreference" />
     <SwitchPreferenceCompat
+        android:key="UseDarkTheme"
+        android:title="@string/preferenceUseDarkThemeTitle"
+        android:defaultValue="false"
+        android:layout="@layout/customPreference" />
+    <SwitchPreferenceCompat
         android:key="UseFabDateSelector"
         android:title="@string/preferenceUseFabDateSelectorTitle"
         android:summary="@string/preferenceUseFabDateSelectorSummary"

@@ -5301,6 +5301,9 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0d0022
 			public const int CardView_Light = 2131558434;
 			
+			// aapt resource value: 0x7f0d0215
+			public const int DarkMainTheme = 2131558933;
+			
 			// aapt resource value: 0x7f0d020e
 			public const int MainTheme = 2131558926;
 			
