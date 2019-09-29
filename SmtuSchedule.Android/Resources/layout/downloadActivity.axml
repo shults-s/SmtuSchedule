@@ -6,15 +6,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <android.support.v7.widget.Toolbar
-        android:id="@+id/downloadToolbar"
+        android:id="@+id/downloadActivityToolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:theme="@style/MainTheme.AppBar"
-        android:background="@color/primary"
         android:elevation="@dimen/toolbarElevation"
+        style="?attr/toolbarStyle"
         app:titleMargin="0dp"
         app:title="@string/downloadToolbarTitle"
-        app:titleTextAppearance="@style/Toolbar.Title"
+        app:titleTextAppearance="?attr/titleTextAppearance"
         app:contentInsetStartWithNavigation="0dp"
         app:navigationIcon="@drawable/close" />
     <LinearLayout
@@ -25,7 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondaryText"
+            android:textColor="?attr/textColorSecondary"
             android:textSize="@dimen/normalTextSize"
             android:text="@string/downloadRequestHintMessage" />
         <MultiAutoCompleteTextView
@@ -36,7 +35,7 @@
             android:scrollbars="none"
             android:scrollHorizontally="false"
             android:completionThreshold="2"
-            android:textColor="@color/primaryText"
+            android:textColor="?attr/textColorPrimary"
             android:textSize="@dimen/normalTextSize"
             android:inputType="textMultiLine|textCapWords" />
         <TextView
@@ -45,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/smallPadding"
             android:visibility="gone"
-            android:textColor="@color/errorText"
+            android:textColor="?attr/textColorError"
             android:textSize="@dimen/normalTextSize"
             android:text="@string/lecturersDownloadErrorMessage" />
     </LinearLayout>

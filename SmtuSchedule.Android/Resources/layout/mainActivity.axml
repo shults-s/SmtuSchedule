@@ -8,13 +8,11 @@
         android:id="@+id/mainAppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/MainTheme.AppBar">
+        style="?attr/toolbarStyle">
         <android.support.v7.widget.Toolbar
-            android:id="@+id/mainToolbar"
+            android:id="@+id/mainActivityToolbar"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="@color/primary"
-            app:popupTheme="@style/MainTheme.Popup">
+            android:layout_height="?android:attr/actionBarSize">
             <TextView
                 android:id="@+id/mainToolbarTitleTextView"
                 android:layout_width="wrap_content"
@@ -23,20 +21,19 @@
                 android:layout_gravity="left"
                 android:ellipsize="end"
                 android:text="@string/welcomeToolbarTitle"
-                android:textAppearance="@style/Toolbar.Title" />
+                android:textAppearance="?attr/titleTextAppearance" />
         </android.support.v7.widget.Toolbar>
         <android.support.design.widget.TabLayout
             android:id="@+id/mainTabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:background="@color/primary"
             android:textSize="@dimen/normalTextSize"
             app:tabMode="scrollable"
             app:tabGravity="fill"
-            app:tabTextColor="@color/toolbarText"
-            app:tabIndicatorColor="@color/toolbarText"
-            app:tabSelectedTextColor="@color/toolbarText" />
+            app:tabTextColor="?attr/textColorToolbar"
+            app:tabIndicatorColor="?attr/textColorToolbar"
+            app:tabSelectedTextColor="?attr/textColorToolbar" />
     </android.support.design.widget.AppBarLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/mainSelectScheduleDateFab"
@@ -48,7 +45,7 @@
         android:visibility="gone"
         android:src="@drawable/calendar"
         app:fabSize="normal"
-        app:backgroundTint="@color/primary" />
+        app:backgroundTint="?attr/colorAccent" />
     <RelativeLayout
         android:id="@+id/mainContentRelativeLayout"
         android:layout_width="match_parent"

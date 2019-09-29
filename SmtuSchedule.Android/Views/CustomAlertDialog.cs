@@ -12,6 +12,16 @@ namespace SmtuSchedule.Android.Views
 {
     internal class CustomAlertDialog : AlertDialog
     {
+        //private class ScrollChangeListener : Java.Lang.Object, View.IOnScrollChangeListener
+        //{
+        //    public event Action<Int32> ScrollChanged;
+        //
+        //    public void OnScrollChange(View view, Int32 scrollX, Int32 scrollY, Int32 oldScrollX, Int32 oldScrollY)
+        //    {
+        //        ScrollChanged?.Invoke(scrollY);
+        //    }
+        //}
+
         // Bugfix: Unable to activate instance of type ... from native handle ...
         public CustomAlertDialog(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
@@ -100,21 +110,43 @@ namespace SmtuSchedule.Android.Views
             return this;
         }
 
-        public CustomAlertDialog SetPositiveButtonEnabledOnlyThenContentScrolledToBottom()
+        public CustomAlertDialog SetPositiveButtonEnabledOnlyWhenContentScrolledToBottom()
         {
+            // В настоящий момент реализовать это поведение для API < 22 невозможно из-за бага в Xamarin.
+            // Событие ScrollChange не поддерживается и приводит к исключению:
+            // Java.Lang.ClassNotFoundException: mono.android.view.View_OnScrollChangeListenerImplementor.
+            // Реализация интерфейса View.IOnScrollChangeListener где бы то ни было приводит к исключению:
+            // Java.Lang.ClassNotFoundException: Didn't find class ... on path: DexPathList[...].
+            if (Build.VERSION.SdkInt < BuildVersionCodes.LollipopMr1)
+            {
+                return this;
+            }
+
             ScrollView view = _layout.FindViewById<ScrollView>(Resource.Id.customDialogScrollView);
             if (view == null)
             {
                 return this;
             }
 
-            ShowEvent += (s, e) => GetButton((Int32)DialogButtonType.Positive).Enabled = false;
-
-            view.ScrollChange += (s, e) =>
+            void OnScrollChanged(Int32 scrollY)
             {
                 Double scrollingSpace = view.GetChildAt(0).Height - view.Height;
-                GetButton((Int32)DialogButtonType.Positive).Enabled = (scrollingSpace <= e.ScrollY);
-            };
+                GetButton((Int32)DialogButtonType.Positive).Enabled = (scrollingSpace <= scrollY);
+            }
+
+            //if (Build.VERSION.SdkInt < BuildVersionCodes.LollipopMr1)
+            //{
+            //    ScrollChangeListener listener = new ScrollChangeListener();
+            //    listener.ScrollChanged += OnScrollChanged;
+            //    view.SetOnScrollChangeListener(listener);
+            //}
+            //else
+            //{
+            //    view.ScrollChange += (s, e) => OnScrollChanged(e.ScrollY);
+            //}
+
+            view.ScrollChange += (s, e) => OnScrollChanged(e.ScrollY);
+            ShowEvent += (s, e) => base.GetButton((Int32)DialogButtonType.Positive).Enabled = false;
 
             return this;
         }

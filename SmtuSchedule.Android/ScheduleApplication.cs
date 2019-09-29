@@ -51,11 +51,10 @@ namespace SmtuSchedule.Android
             //};
 
             Preferences = new Preferences(this);
+            Preferences.Read();
 
             IsInitialized = false;
         }
-
-        ~ScheduleApplication() => Logger.Dispose();
 
         public String GetVersion()
         {

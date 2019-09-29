@@ -20,6 +20,7 @@ using SmtuSchedule.Android.Interfaces;
 using PopupMenu = Android.Support.V7.Widget.PopupMenu;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
 using Uri = Android.Net.Uri;
+using Android.Content.Res;
 
 namespace SmtuSchedule.Android.Views
 {
@@ -33,12 +34,6 @@ namespace SmtuSchedule.Android.Views
 
         private const Int32 StartPreferencesActivityRequestCode = 33;
         private const Int32 StartDownloadActivityRequestCode = 35;
-
-        private static readonly String[] StoragePermissions = new String[]
-        {
-            Manifest.Permission.ReadExternalStorage,
-            Manifest.Permission.WriteExternalStorage
-        };
 
         public override Boolean OnPrepareOptionsMenu(IMenu menu)
         {
@@ -158,30 +153,30 @@ namespace SmtuSchedule.Android.Views
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            base.OnCreate(savedInstanceState);
+
             _application = ApplicationContext as ScheduleApplication;
-            SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.MainTheme_Dark : Resource.Style.MainTheme_Light);
+
+            SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark
+                : Resource.Style.Theme_SmtuSchedule_Light);
 
             _activityState = MainActivityState.NotInitialized;
-
-            base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.mainActivity);
 
             _content = FindViewById<RelativeLayout>(Resource.Id.mainContentRelativeLayout);
 
-            SetSupportActionBar(FindViewById<Toolbar>(Resource.Id.mainToolbar));
+            SetSupportActionBar(FindViewById<Toolbar>(Resource.Id.mainActivityToolbar));
             SupportActionBar.SetDisplayShowTitleEnabled(false);
 
-            String[] deniedPermissions = StoragePermissions.Where(p => IsPermissionDenied(p))
-                .ToArray();
-
-            if (deniedPermissions.Length == 0)
+            if (IsPermissionDenied(Manifest.Permission.WriteExternalStorage))
             {
                 ContinueActivityInitializationAsync();
             }
             else
             {
-                RequestPermissions(ExternalStoragePermissionsRequestCode, deniedPermissions);
+                RequestPermissions(ExternalStoragePermissionsRequestCode,
+                    Manifest.Permission.ReadExternalStorage, Manifest.Permission.WriteExternalStorage);
             }
         }
 
@@ -209,8 +204,22 @@ namespace SmtuSchedule.Android.Views
         {
             if (requestCode == StartPreferencesActivityRequestCode && resultCode == Result.Ok)
             {
+                Boolean useDarkThemeOldValue = _application.Preferences.UseDarkTheme;
+
                 _application.Preferences.Read();
-                RestartSchedulesRenderingSubsystem();
+
+                if (_application.Preferences.UseDarkTheme != useDarkThemeOldValue)
+                {
+                    Recreate();
+                }
+                else if (IsPreferencesValid())
+                {
+                    RestartSchedulesRenderingSubsystem();
+                }
+                else
+                {
+                    ShowDialogWithSuggestionToConfigureApplication();
+                }
             }
             else if (requestCode == StartDownloadActivityRequestCode && resultCode == Result.Ok)
             {
@@ -239,33 +248,15 @@ namespace SmtuSchedule.Android.Views
                 }
             }
 
-            _application.Preferences.Read();
+            //_application.Preferences.Read();
 
-            String current = _application.GetVersion();
+            String currentVersion = _application.GetVersion();
             if (_application.Preferences.LastSeenUpdateVersion == null)
             {
-                _application.Preferences.SetLastSeenUpdateVersion(current);
+                _application.Preferences.SetLastSeenUpdateVersion(currentVersion);
             }
 
-            if (_application.Preferences.CheckUpdatesOnStart)
-            {
-                CheckForUpdatesAsync();
-            }
-
-            if (_application.Preferences.LastSeenWelcomeVersion != current)
-            {
-                new CustomAlertDialog(this)
-                    .SetTitle(Resource.String.introductionTitle)
-                    .SetMessage(Resource.String.introductionMessage)
-                    .SetPositiveButton(
-                        Resource.String.gotItActionText,
-                        () => _application.Preferences.SetLastSeenWelcomeVersion(current)
-                    )
-                    .SetPositiveButtonEnabledOnlyThenContentScrolledToBottom()
-                    .Show();
-            }
-
-            MigrateSchedulesAsync();
+            MigrateSchedulesAsync(currentVersion);
 
             _toolbarTitle = FindViewById<TextView>(Resource.Id.mainToolbarTitleTextView);
             _schedulesMenu = new PopupMenu(this, _toolbarTitle);
@@ -293,18 +284,46 @@ namespace SmtuSchedule.Android.Views
 
             _activityState = MainActivityState.Initialized;
 
+            if (!IsPreferencesValid())
+            {
+                ShowDialogWithSuggestionToConfigureApplication();
+                return ;
+            }
+
             RestartSchedulesRenderingSubsystem();
+
+            if (_application.Preferences.CheckUpdatesOnStart)
+            {
+                CheckForUpdatesAsync(currentVersion);
+            }
+
+            if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
+            {
+                new CustomAlertDialog(this)
+                    .SetTitle(Resource.String.introductionTitle)
+                    .SetMessage(Resource.String.introductionMessage)
+                    .SetPositiveButton(
+                        Resource.String.gotItActionText,
+                        () => _application.Preferences.SetLastSeenWelcomeVersion(currentVersion)
+                    )
+                    .SetPositiveButtonEnabledOnlyWhenContentScrolledToBottom()
+                    .Show();
+            }
         }
 
-        private async void MigrateSchedulesAsync()
+        private Boolean IsPreferencesValid()
         {
-            if (_application.Preferences.LastMigrationVersion == _application.GetVersion())
+            return _application.Preferences.UpperWeekDate != default(DateTime);
+        }
+
+        private async void MigrateSchedulesAsync(String currentVersion)
+        {
+            if (_application.Preferences.LastMigrationVersion == currentVersion)
             {
                 return ;
             }
 
             Boolean haveMigrationErrors = await _application.Manager.MigrateSchedulesAsync();
-
             if (haveMigrationErrors)
             {
                 ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
@@ -312,11 +331,11 @@ namespace SmtuSchedule.Android.Views
             }
             else
             {
-                _application.Preferences.SetLastMigrationVersion(_application.GetVersion());
+                _application.Preferences.SetLastMigrationVersion(currentVersion);
             }
         }
 
-        private async void CheckForUpdatesAsync()
+        private async void CheckForUpdatesAsync(String currentVersion)
         {
             if (IsPermissionDenied(Manifest.Permission.Internet))
             {
@@ -324,20 +343,20 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            String latest = await ApplicationHelper.GetLatestVersionAsync();
-            if (latest == null || latest == _application.Preferences.LastSeenUpdateVersion)
+            String latestVersion = await ApplicationHelper.GetLatestVersionAsync();
+            if (latestVersion == null || latestVersion == _application.Preferences.LastSeenUpdateVersion)
             {
                 return ;
             }
 
-            if (ApplicationHelper.CompareVersions(latest, _application.GetVersion()) > 0)
+            if (ApplicationHelper.CompareVersions(latestVersion, currentVersion) > 0)
             {
                 new CustomAlertDialog(this)
                     .SetTitle(Resource.String.updateApplicationTitle)
                     .SetMessage(Resource.String.applicationUpdateAvailableMessage)
                     .SetPositiveButton(
                         Resource.String.gotItActionText,
-                        () => _application.Preferences.SetLastSeenUpdateVersion(latest)
+                        () => _application.Preferences.SetLastSeenUpdateVersion(latestVersion)
                     )
                     .SetNegativeButton(
                         Resource.String.updateActionText,
@@ -353,15 +372,6 @@ namespace SmtuSchedule.Android.Views
 
         private void RestartSchedulesRenderingSubsystem()
         {
-            if (_application.Preferences.UpperWeekDate == default(DateTime))
-            {
-                new CustomAlertDialog(this)
-                    .SetPositiveButton(Resource.String.configureActionText, OpenPreferences)
-                    .SetMessage(Resource.String.configureApplicationMessage)
-                    .SetCancelable(false)
-                    .Show();
-            }
-
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
 
             InvalidateOptionsMenu();
@@ -486,6 +496,15 @@ namespace SmtuSchedule.Android.Views
                 .SetMessage(message)
                 .SetPositiveButton(Resource.String.removeActionText, RemoveCurrentScheduleAsync)
                 .SetNegativeButton(Resource.String.cancelActionText)
+                .Show();
+        }
+
+        private void ShowDialogWithSuggestionToConfigureApplication()
+        {
+            new CustomAlertDialog(this)
+                .SetPositiveButton(Resource.String.configureActionText, OpenPreferences)
+                .SetMessage(Resource.String.configureApplicationMessage)
+                .SetCancelable(false)
                 .Show();
         }
 

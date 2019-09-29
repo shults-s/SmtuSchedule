@@ -29,15 +29,15 @@ namespace SmtuSchedule.Core
                     _lecturers = await LecturersLoader.Download(Logger);
                 }
 
-                ServerSchedulesLoader loader = new ServerSchedulesLoader(_lecturers)
+                ServerSchedulesLoader schedulesLoader = new ServerSchedulesLoader(_lecturers)
                 {
                     Logger = Logger
                 };
 
-                Dictionary<Int32, Schedule> schedules = await loader.DownloadAsync(searchRequests)
+                Dictionary<Int32, Schedule> schedules = await schedulesLoader.DownloadAsync(searchRequests)
                     .ConfigureAwait(false);
 
-                LocalSchedulesWriter writer = new LocalSchedulesWriter(_storagePath)
+                LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
                 {
                     Logger = Logger
                 };
@@ -46,7 +46,7 @@ namespace SmtuSchedule.Core
 
                 foreach ((Int32 scheduleId, Schedule schedule) in schedules)
                 {
-                    if (!writer.Save(schedule))
+                    if (!schedulesWriter.Save(schedule))
                     {
                         haveSavingErrors = true;
                     }
@@ -57,7 +57,7 @@ namespace SmtuSchedule.Core
                 }
 
                 IsDownloadingInProgress = false;
-                return loader.HaveDownloadingErrors || haveSavingErrors;
+                return schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
             });
         }
 
@@ -76,18 +76,18 @@ namespace SmtuSchedule.Core
         {
             return await Task.Run(() =>
             {
-                IEnumerable<Schedule> affected = SchedulesMigrator.Migrate(_schedules.Values);
+                IEnumerable<Schedule> affectedSchedules = SchedulesMigrator.Migrate(_schedules.Values);
 
-                LocalSchedulesWriter writer = new LocalSchedulesWriter(_storagePath)
+                LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
                 {
                     Logger = Logger
                 };
 
                 Boolean haveSavingErrors = false;
 
-                foreach (Schedule schedule in affected)
+                foreach (Schedule schedule in affectedSchedules)
                 {
-                    if (!writer.Save(schedule))
+                    if (!schedulesWriter.Save(schedule))
                     {
                         haveSavingErrors = true;
                     }
@@ -101,12 +101,12 @@ namespace SmtuSchedule.Core
         {
             return await Task.Run(() =>
             {
-                LocalSchedulesWriter writer = new LocalSchedulesWriter(_storagePath)
+                LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
                 {
                     Logger = Logger
                 };
 
-                if (!writer.Remove(_schedules[scheduleId]))
+                if (!schedulesWriter.Remove(_schedules[scheduleId]))
                 {
                     return true;
                 }
@@ -120,13 +120,13 @@ namespace SmtuSchedule.Core
         {
             return await Task.Run(() =>
             {
-                LocalSchedulesReader reader = new LocalSchedulesReader()
+                LocalSchedulesReader schedulesReader = new LocalSchedulesReader()
                 {
                     Logger = Logger
                 };
 
-                _schedules = new ConcurrentDictionary<Int32, Schedule>(reader.Read(_storagePath));
-                return reader.HaveReadingErrors;
+                _schedules = new ConcurrentDictionary<Int32, Schedule>(schedulesReader.Read(_storagePath));
+                return schedulesReader.HaveReadingErrors;
             });
         }
 

@@ -564,6 +564,9 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0100e0
 			public const int colorControlNormal = 2130772192;
 			
+			// aapt resource value: 0x7f01021b
+			public const int colorDivider = 2130772507;
+			
 			// aapt resource value: 0x7f0100ff
 			public const int colorError = 2130772223;
 			
@@ -1599,8 +1602,29 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0100eb
 			public const int textColorAlertDialogListItem = 2130772203;
 			
+			// aapt resource value: 0x7f01021c
+			public const int textColorError = 2130772508;
+			
+			// aapt resource value: 0x7f01021d
+			public const int textColorPrimary = 2130772509;
+			
 			// aapt resource value: 0x7f0100cd
 			public const int textColorSearchUrl = 2130772173;
+			
+			// aapt resource value: 0x7f01021e
+			public const int textColorSecondary = 2130772510;
+			
+			// aapt resource value: 0x7f010220
+			public const int textColorSubjectPrimary = 2130772512;
+			
+			// aapt resource value: 0x7f010222
+			public const int textColorSubjectSecondary = 2130772514;
+			
+			// aapt resource value: 0x7f010221
+			public const int textColorSubjectTertiary = 2130772513;
+			
+			// aapt resource value: 0x7f01021f
+			public const int textColorToolbar = 2130772511;
 			
 			// aapt resource value: 0x7f010199
 			public const int textEndPadding = 2130772377;
@@ -1725,6 +1749,9 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f01008d
 			public const int windowActionModeOverlay = 2130772109;
 			
+			// aapt resource value: 0x7f01021a
+			public const int windowColorBackground = 2130772506;
+			
 			// aapt resource value: 0x7f010091
 			public const int windowFixedHeightMajor = 2130772113;
 			
@@ -1790,44 +1817,44 @@ namespace SmtuSchedule.Android
 		public partial class Color
 		{
 			
-			// aapt resource value: 0x7f0e0060
-			public const int abc_background_cache_hint_selector_material_dark = 2131624032;
+			// aapt resource value: 0x7f0e006e
+			public const int abc_background_cache_hint_selector_material_dark = 2131624046;
 			
-			// aapt resource value: 0x7f0e0061
-			public const int abc_background_cache_hint_selector_material_light = 2131624033;
+			// aapt resource value: 0x7f0e006f
+			public const int abc_background_cache_hint_selector_material_light = 2131624047;
 			
-			// aapt resource value: 0x7f0e0062
-			public const int abc_btn_colored_borderless_text_material = 2131624034;
+			// aapt resource value: 0x7f0e0070
+			public const int abc_btn_colored_borderless_text_material = 2131624048;
 			
-			// aapt resource value: 0x7f0e0063
-			public const int abc_btn_colored_text_material = 2131624035;
+			// aapt resource value: 0x7f0e0071
+			public const int abc_btn_colored_text_material = 2131624049;
 			
-			// aapt resource value: 0x7f0e0064
-			public const int abc_color_highlight_material = 2131624036;
+			// aapt resource value: 0x7f0e0072
+			public const int abc_color_highlight_material = 2131624050;
 			
-			// aapt resource value: 0x7f0e0065
-			public const int abc_hint_foreground_material_dark = 2131624037;
+			// aapt resource value: 0x7f0e0073
+			public const int abc_hint_foreground_material_dark = 2131624051;
 			
-			// aapt resource value: 0x7f0e0066
-			public const int abc_hint_foreground_material_light = 2131624038;
+			// aapt resource value: 0x7f0e0074
+			public const int abc_hint_foreground_material_light = 2131624052;
 			
 			// aapt resource value: 0x7f0e0005
 			public const int abc_input_method_navigation_guard = 2131623941;
 			
-			// aapt resource value: 0x7f0e0067
-			public const int abc_primary_text_disable_only_material_dark = 2131624039;
+			// aapt resource value: 0x7f0e0075
+			public const int abc_primary_text_disable_only_material_dark = 2131624053;
 			
-			// aapt resource value: 0x7f0e0068
-			public const int abc_primary_text_disable_only_material_light = 2131624040;
+			// aapt resource value: 0x7f0e0076
+			public const int abc_primary_text_disable_only_material_light = 2131624054;
 			
-			// aapt resource value: 0x7f0e0069
-			public const int abc_primary_text_material_dark = 2131624041;
+			// aapt resource value: 0x7f0e0077
+			public const int abc_primary_text_material_dark = 2131624055;
 			
-			// aapt resource value: 0x7f0e006a
-			public const int abc_primary_text_material_light = 2131624042;
+			// aapt resource value: 0x7f0e0078
+			public const int abc_primary_text_material_light = 2131624056;
 			
-			// aapt resource value: 0x7f0e006b
-			public const int abc_search_url_text = 2131624043;
+			// aapt resource value: 0x7f0e0079
+			public const int abc_search_url_text = 2131624057;
 			
 			// aapt resource value: 0x7f0e0006
 			public const int abc_search_url_text_normal = 2131623942;
@@ -1838,32 +1865,35 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0e0008
 			public const int abc_search_url_text_selected = 2131623944;
 			
-			// aapt resource value: 0x7f0e006c
-			public const int abc_secondary_text_material_dark = 2131624044;
+			// aapt resource value: 0x7f0e007a
+			public const int abc_secondary_text_material_dark = 2131624058;
 			
-			// aapt resource value: 0x7f0e006d
-			public const int abc_secondary_text_material_light = 2131624045;
+			// aapt resource value: 0x7f0e007b
+			public const int abc_secondary_text_material_light = 2131624059;
 			
-			// aapt resource value: 0x7f0e006e
-			public const int abc_tint_btn_checkable = 2131624046;
+			// aapt resource value: 0x7f0e007c
+			public const int abc_tint_btn_checkable = 2131624060;
 			
-			// aapt resource value: 0x7f0e006f
-			public const int abc_tint_default = 2131624047;
+			// aapt resource value: 0x7f0e007d
+			public const int abc_tint_default = 2131624061;
 			
-			// aapt resource value: 0x7f0e0070
-			public const int abc_tint_edittext = 2131624048;
+			// aapt resource value: 0x7f0e007e
+			public const int abc_tint_edittext = 2131624062;
 			
-			// aapt resource value: 0x7f0e0071
-			public const int abc_tint_seek_thumb = 2131624049;
+			// aapt resource value: 0x7f0e007f
+			public const int abc_tint_seek_thumb = 2131624063;
 			
-			// aapt resource value: 0x7f0e0072
-			public const int abc_tint_spinner = 2131624050;
+			// aapt resource value: 0x7f0e0080
+			public const int abc_tint_spinner = 2131624064;
 			
-			// aapt resource value: 0x7f0e0073
-			public const int abc_tint_switch_track = 2131624051;
+			// aapt resource value: 0x7f0e0081
+			public const int abc_tint_switch_track = 2131624065;
 			
 			// aapt resource value: 0x7f0e0059
-			public const int accent = 2131624025;
+			public const int accentDay = 2131624025;
+			
+			// aapt resource value: 0x7f0e0065
+			public const int accentNight = 2131624037;
 			
 			// aapt resource value: 0x7f0e0009
 			public const int accent_material_dark = 2131623945;
@@ -1928,8 +1958,8 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0e0043
 			public const int design_default_color_primary_dark = 2131624003;
 			
-			// aapt resource value: 0x7f0e0074
-			public const int design_error = 2131624052;
+			// aapt resource value: 0x7f0e0082
+			public const int design_error = 2131624066;
 			
 			// aapt resource value: 0x7f0e0044
 			public const int design_fab_shadow_end_color = 2131624004;
@@ -1955,8 +1985,8 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0e004b
 			public const int design_snackbar_background_color = 2131624011;
 			
-			// aapt resource value: 0x7f0e0075
-			public const int design_tint_password_toggle = 2131624053;
+			// aapt resource value: 0x7f0e0083
+			public const int design_tint_password_toggle = 2131624067;
 			
 			// aapt resource value: 0x7f0e0017
 			public const int dim_foreground_disabled_material_dark = 2131623959;
@@ -1971,10 +2001,16 @@ namespace SmtuSchedule.Android
 			public const int dim_foreground_material_light = 2131623962;
 			
 			// aapt resource value: 0x7f0e005a
-			public const int divider = 2131624026;
+			public const int dividerDay = 2131624026;
+			
+			// aapt resource value: 0x7f0e0066
+			public const int dividerNight = 2131624038;
 			
 			// aapt resource value: 0x7f0e005b
-			public const int errorText = 2131624027;
+			public const int errorTextDay = 2131624027;
+			
+			// aapt resource value: 0x7f0e0067
+			public const int errorTextNight = 2131624039;
 			
 			// aapt resource value: 0x7f0e001b
 			public const int error_color_material_dark = 2131623963;
@@ -2030,71 +2066,71 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0e002c
 			public const int material_grey_900 = 2131623980;
 			
-			// aapt resource value: 0x7f0e0076
-			public const int mtrl_bottom_nav_colored_item_tint = 2131624054;
+			// aapt resource value: 0x7f0e0084
+			public const int mtrl_bottom_nav_colored_item_tint = 2131624068;
 			
-			// aapt resource value: 0x7f0e0077
-			public const int mtrl_bottom_nav_item_tint = 2131624055;
+			// aapt resource value: 0x7f0e0085
+			public const int mtrl_bottom_nav_item_tint = 2131624069;
 			
 			// aapt resource value: 0x7f0e004c
 			public const int mtrl_btn_bg_color_disabled = 2131624012;
 			
-			// aapt resource value: 0x7f0e0078
-			public const int mtrl_btn_bg_color_selector = 2131624056;
+			// aapt resource value: 0x7f0e0086
+			public const int mtrl_btn_bg_color_selector = 2131624070;
 			
-			// aapt resource value: 0x7f0e0079
-			public const int mtrl_btn_ripple_color = 2131624057;
+			// aapt resource value: 0x7f0e0087
+			public const int mtrl_btn_ripple_color = 2131624071;
 			
-			// aapt resource value: 0x7f0e007a
-			public const int mtrl_btn_stroke_color_selector = 2131624058;
+			// aapt resource value: 0x7f0e0088
+			public const int mtrl_btn_stroke_color_selector = 2131624072;
 			
-			// aapt resource value: 0x7f0e007b
-			public const int mtrl_btn_text_btn_ripple_color = 2131624059;
+			// aapt resource value: 0x7f0e0089
+			public const int mtrl_btn_text_btn_ripple_color = 2131624073;
 			
 			// aapt resource value: 0x7f0e004d
 			public const int mtrl_btn_text_color_disabled = 2131624013;
 			
-			// aapt resource value: 0x7f0e007c
-			public const int mtrl_btn_text_color_selector = 2131624060;
+			// aapt resource value: 0x7f0e008a
+			public const int mtrl_btn_text_color_selector = 2131624074;
 			
 			// aapt resource value: 0x7f0e004e
 			public const int mtrl_btn_transparent_bg_color = 2131624014;
 			
-			// aapt resource value: 0x7f0e007d
-			public const int mtrl_chip_background_color = 2131624061;
+			// aapt resource value: 0x7f0e008b
+			public const int mtrl_chip_background_color = 2131624075;
 			
-			// aapt resource value: 0x7f0e007e
-			public const int mtrl_chip_close_icon_tint = 2131624062;
+			// aapt resource value: 0x7f0e008c
+			public const int mtrl_chip_close_icon_tint = 2131624076;
 			
-			// aapt resource value: 0x7f0e007f
-			public const int mtrl_chip_ripple_color = 2131624063;
+			// aapt resource value: 0x7f0e008d
+			public const int mtrl_chip_ripple_color = 2131624077;
 			
-			// aapt resource value: 0x7f0e0080
-			public const int mtrl_chip_text_color = 2131624064;
+			// aapt resource value: 0x7f0e008e
+			public const int mtrl_chip_text_color = 2131624078;
 			
-			// aapt resource value: 0x7f0e0081
-			public const int mtrl_fab_ripple_color = 2131624065;
+			// aapt resource value: 0x7f0e008f
+			public const int mtrl_fab_ripple_color = 2131624079;
 			
 			// aapt resource value: 0x7f0e004f
 			public const int mtrl_scrim_color = 2131624015;
 			
-			// aapt resource value: 0x7f0e0082
-			public const int mtrl_tabs_colored_ripple_color = 2131624066;
+			// aapt resource value: 0x7f0e0090
+			public const int mtrl_tabs_colored_ripple_color = 2131624080;
 			
-			// aapt resource value: 0x7f0e0083
-			public const int mtrl_tabs_icon_color_selector = 2131624067;
+			// aapt resource value: 0x7f0e0091
+			public const int mtrl_tabs_icon_color_selector = 2131624081;
 			
-			// aapt resource value: 0x7f0e0084
-			public const int mtrl_tabs_icon_color_selector_colored = 2131624068;
+			// aapt resource value: 0x7f0e0092
+			public const int mtrl_tabs_icon_color_selector_colored = 2131624082;
 			
-			// aapt resource value: 0x7f0e0085
-			public const int mtrl_tabs_legacy_text_color_selector = 2131624069;
+			// aapt resource value: 0x7f0e0093
+			public const int mtrl_tabs_legacy_text_color_selector = 2131624083;
 			
-			// aapt resource value: 0x7f0e0086
-			public const int mtrl_tabs_ripple_color = 2131624070;
+			// aapt resource value: 0x7f0e0094
+			public const int mtrl_tabs_ripple_color = 2131624084;
 			
-			// aapt resource value: 0x7f0e0087
-			public const int mtrl_text_btn_text_color_selector = 2131624071;
+			// aapt resource value: 0x7f0e0095
+			public const int mtrl_text_btn_text_color_selector = 2131624085;
 			
 			// aapt resource value: 0x7f0e0050
 			public const int mtrl_textinput_default_box_stroke_color = 2131624016;
@@ -2117,14 +2153,23 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0e0000
 			public const int preference_fallback_accent_color = 2131623936;
 			
-			// aapt resource value: 0x7f0e0058
-			public const int primary = 2131624024;
-			
 			// aapt resource value: 0x7f0e0057
-			public const int primaryDark = 2131624023;
+			public const int primaryDarkDay = 2131624023;
 			
-			// aapt resource value: 0x7f0e005d
-			public const int primaryText = 2131624029;
+			// aapt resource value: 0x7f0e0063
+			public const int primaryDarkNight = 2131624035;
+			
+			// aapt resource value: 0x7f0e0058
+			public const int primaryDay = 2131624024;
+			
+			// aapt resource value: 0x7f0e0064
+			public const int primaryNight = 2131624036;
+			
+			// aapt resource value: 0x7f0e005c
+			public const int primaryTextDay = 2131624028;
+			
+			// aapt resource value: 0x7f0e0068
+			public const int primaryTextNight = 2131624040;
 			
 			// aapt resource value: 0x7f0e002d
 			public const int primary_dark_material_dark = 2131623981;
@@ -2156,8 +2201,11 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0e0036
 			public const int ripple_material_light = 2131623990;
 			
-			// aapt resource value: 0x7f0e005e
-			public const int secondaryText = 2131624030;
+			// aapt resource value: 0x7f0e005d
+			public const int secondaryTextDay = 2131624029;
+			
+			// aapt resource value: 0x7f0e0069
+			public const int secondaryTextNight = 2131624041;
 			
 			// aapt resource value: 0x7f0e0037
 			public const int secondary_text_default_material_dark = 2131623991;
@@ -2172,7 +2220,22 @@ namespace SmtuSchedule.Android
 			public const int secondary_text_disabled_material_light = 2131623994;
 			
 			// aapt resource value: 0x7f0e005f
-			public const int subjectTitleText = 2131624031;
+			public const int subjectPrimaryTextDay = 2131624031;
+			
+			// aapt resource value: 0x7f0e006b
+			public const int subjectPrimaryTextNight = 2131624043;
+			
+			// aapt resource value: 0x7f0e0061
+			public const int subjectSecondaryTextDay = 2131624033;
+			
+			// aapt resource value: 0x7f0e006d
+			public const int subjectSecondaryTextNight = 2131624045;
+			
+			// aapt resource value: 0x7f0e0060
+			public const int subjectTertiaryTextDay = 2131624032;
+			
+			// aapt resource value: 0x7f0e006c
+			public const int subjectTertiaryTextNight = 2131624044;
 			
 			// aapt resource value: 0x7f0e003b
 			public const int switch_thumb_disabled_material_dark = 2131623995;
@@ -2180,11 +2243,11 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0e003c
 			public const int switch_thumb_disabled_material_light = 2131623996;
 			
-			// aapt resource value: 0x7f0e0088
-			public const int switch_thumb_material_dark = 2131624072;
+			// aapt resource value: 0x7f0e0096
+			public const int switch_thumb_material_dark = 2131624086;
 			
-			// aapt resource value: 0x7f0e0089
-			public const int switch_thumb_material_light = 2131624073;
+			// aapt resource value: 0x7f0e0097
+			public const int switch_thumb_material_light = 2131624087;
 			
 			// aapt resource value: 0x7f0e003d
 			public const int switch_thumb_normal_material_dark = 2131623997;
@@ -2192,8 +2255,11 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0e003e
 			public const int switch_thumb_normal_material_light = 2131623998;
 			
-			// aapt resource value: 0x7f0e005c
-			public const int toolbarText = 2131624028;
+			// aapt resource value: 0x7f0e005e
+			public const int toolbarTitleTextDay = 2131624030;
+			
+			// aapt resource value: 0x7f0e006a
+			public const int toolbarTitleTextNight = 2131624042;
 			
 			// aapt resource value: 0x7f0e003f
 			public const int tooltip_background_dark = 2131623999;
@@ -2202,7 +2268,10 @@ namespace SmtuSchedule.Android
 			public const int tooltip_background_light = 2131624000;
 			
 			// aapt resource value: 0x7f0e0056
-			public const int windowBackground = 2131624022;
+			public const int windowBackgroundDay = 2131624022;
+			
+			// aapt resource value: 0x7f0e0062
+			public const int windowBackgroundNight = 2131624034;
 			
 			static Color()
 			{
@@ -3497,6 +3566,9 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0a0027
 			public const int disableHome = 2131361831;
 			
+			// aapt resource value: 0x7f0a00ad
+			public const int downloadActivityToolbar = 2131361965;
+			
 			// aapt resource value: 0x7f0a00af
 			public const int downloadLecturersErrorTextView = 2131361967;
 			
@@ -3505,9 +3577,6 @@ namespace SmtuSchedule.Android
 			
 			// aapt resource value: 0x7f0a00d6
 			public const int downloadSchedulesMenuItem = 2131362006;
-			
-			// aapt resource value: 0x7f0a00ad
-			public const int downloadToolbar = 2131361965;
 			
 			// aapt resource value: 0x7f0a008f
 			public const int edit_query = 2131361935;
@@ -3605,6 +3674,9 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0a0070
 			public const int list_item = 2131361904;
 			
+			// aapt resource value: 0x7f0a00b2
+			public const int mainActivityToolbar = 2131361970;
+			
 			// aapt resource value: 0x7f0a00b1
 			public const int mainAppBarLayout = 2131361969;
 			
@@ -3616,9 +3688,6 @@ namespace SmtuSchedule.Android
 			
 			// aapt resource value: 0x7f0a00b4
 			public const int mainTabLayout = 2131361972;
-			
-			// aapt resource value: 0x7f0a00b2
-			public const int mainToolbar = 2131361970;
 			
 			// aapt resource value: 0x7f0a00b3
 			public const int mainToolbarTitleTextView = 2131361971;
@@ -3686,11 +3755,11 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0a0058
 			public const int pin = 2131361880;
 			
+			// aapt resource value: 0x7f0a00cc
+			public const int preferencesActivityToolbar = 2131361996;
+			
 			// aapt resource value: 0x7f0a00cd
 			public const int preferencesContentFrameLayout = 2131361997;
-			
-			// aapt resource value: 0x7f0a00cc
-			public const int preferencesToolbar = 2131361996;
 			
 			// aapt resource value: 0x7f0a0006
 			public const int progress_circular = 2131361798;
@@ -4337,7 +4406,7 @@ namespace SmtuSchedule.Android
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int icon = 2130903040;
+			public const int applicationIcon = 2130903040;
 			
 			static Mipmap()
 			{
@@ -4490,8 +4559,8 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0b003b
 			public const int applicationLabel = 2131427387;
 			
-			// aapt resource value: 0x7f0b0072
-			public const int applicationUpdateAvailableMessage = 2131427442;
+			// aapt resource value: 0x7f0b0073
+			public const int applicationUpdateAvailableMessage = 2131427443;
 			
 			// aapt resource value: 0x7f0b003c
 			public const int applicationVersion = 2131427388;
@@ -4511,8 +4580,8 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0b0050
 			public const int configureActionText = 2131427408;
 			
-			// aapt resource value: 0x7f0b0070
-			public const int configureApplicationMessage = 2131427440;
+			// aapt resource value: 0x7f0b0071
+			public const int configureApplicationMessage = 2131427441;
 			
 			// aapt resource value: 0x7f0b004f
 			public const int downloadActionText = 2131427407;
@@ -4544,11 +4613,11 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0b0032
 			public const int hide_bottom_view_on_scroll_behavior = 2131427378;
 			
-			// aapt resource value: 0x7f0b0063
-			public const int internetPermissionRationaleMessage = 2131427427;
+			// aapt resource value: 0x7f0b0064
+			public const int internetPermissionRationaleMessage = 2131427428;
 			
-			// aapt resource value: 0x7f0b0071
-			public const int introductionMessage = 2131427441;
+			// aapt resource value: 0x7f0b0072
+			public const int introductionMessage = 2131427442;
 			
 			// aapt resource value: 0x7f0b003e
 			public const int introductionTitle = 2131427390;
@@ -4583,29 +4652,32 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0b0038
 			public const int path_password_strike_through = 2131427384;
 			
-			// aapt resource value: 0x7f0b005c
-			public const int preferenceCheckUpdatesOnStartSummary = 2131427420;
+			// aapt resource value: 0x7f0b005d
+			public const int preferenceCheckUpdatesOnStartSummary = 2131427421;
 			
-			// aapt resource value: 0x7f0b005b
-			public const int preferenceCheckUpdatesOnStartTitle = 2131427419;
+			// aapt resource value: 0x7f0b005c
+			public const int preferenceCheckUpdatesOnStartTitle = 2131427420;
+			
+			// aapt resource value: 0x7f0b0063
+			public const int preferenceDisplaySubjectEndTimeSummary = 2131427427;
 			
 			// aapt resource value: 0x7f0b0062
-			public const int preferenceDisplaySubjectEndTimeSummary = 2131427426;
-			
-			// aapt resource value: 0x7f0b0061
-			public const int preferenceDisplaySubjectEndTimeTitle = 2131427425;
-			
-			// aapt resource value: 0x7f0b005e
-			public const int preferenceUpperWeekDateSummary = 2131427422;
-			
-			// aapt resource value: 0x7f0b005d
-			public const int preferenceUpperWeekDateTitle = 2131427421;
-			
-			// aapt resource value: 0x7f0b0060
-			public const int preferenceUseFabDateSelectorSummary = 2131427424;
+			public const int preferenceDisplaySubjectEndTimeTitle = 2131427426;
 			
 			// aapt resource value: 0x7f0b005f
-			public const int preferenceUseFabDateSelectorTitle = 2131427423;
+			public const int preferenceUpperWeekDateSummary = 2131427423;
+			
+			// aapt resource value: 0x7f0b005e
+			public const int preferenceUpperWeekDateTitle = 2131427422;
+			
+			// aapt resource value: 0x7f0b005b
+			public const int preferenceUseDarkThemeTitle = 2131427419;
+			
+			// aapt resource value: 0x7f0b0061
+			public const int preferenceUseFabDateSelectorSummary = 2131427425;
+			
+			// aapt resource value: 0x7f0b0060
+			public const int preferenceUseFabDateSelectorTitle = 2131427424;
 			
 			// aapt resource value: 0x7f0b0041
 			public const int preferencesToolbarTitle = 2131427393;
@@ -4616,23 +4688,23 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0b0047
 			public const int removeCurrentScheduleMenuItem = 2131427399;
 			
-			// aapt resource value: 0x7f0b0067
-			public const int removeCurrentScheduleMessage = 2131427431;
+			// aapt resource value: 0x7f0b0068
+			public const int removeCurrentScheduleMessage = 2131427432;
 			
 			// aapt resource value: 0x7f0b0055
 			public const int scheduleDownloadErrorMessage = 2131427413;
 			
+			// aapt resource value: 0x7f0b006c
+			public const int scheduleDownloadedSuccessfullyMessage = 2131427436;
+			
 			// aapt resource value: 0x7f0b006b
-			public const int scheduleDownloadedSuccessfullyMessage = 2131427435;
+			public const int scheduleNotAvailableMessage = 2131427435;
+			
+			// aapt resource value: 0x7f0b006e
+			public const int scheduleNotYetDownloadedMessage = 2131427438;
 			
 			// aapt resource value: 0x7f0b006a
-			public const int scheduleNotAvailableMessage = 2131427434;
-			
-			// aapt resource value: 0x7f0b006d
-			public const int scheduleNotYetDownloadedMessage = 2131427437;
-			
-			// aapt resource value: 0x7f0b0069
-			public const int scheduleRemovedSuccessfullyMessage = 2131427433;
+			public const int scheduleRemovedSuccessfullyMessage = 2131427434;
 			
 			// aapt resource value: 0x7f0b0052
 			public const int scheduleRemovingErrorMessage = 2131427410;
@@ -4640,14 +4712,14 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0b0056
 			public const int schedulesDownloadErrorMessage = 2131427414;
 			
-			// aapt resource value: 0x7f0b006c
-			public const int schedulesDownloadedSuccessfullyMessage = 2131427436;
+			// aapt resource value: 0x7f0b006d
+			public const int schedulesDownloadedSuccessfullyMessage = 2131427437;
 			
-			// aapt resource value: 0x7f0b0068
-			public const int schedulesDownloadingStarted = 2131427432;
+			// aapt resource value: 0x7f0b0069
+			public const int schedulesDownloadingStarted = 2131427433;
 			
-			// aapt resource value: 0x7f0b006f
-			public const int schedulesMigratedSuccessfullyMessage = 2131427439;
+			// aapt resource value: 0x7f0b0070
+			public const int schedulesMigratedSuccessfullyMessage = 2131427440;
 			
 			// aapt resource value: 0x7f0b0054
 			public const int schedulesMigrationErrorMessage = 2131427412;
@@ -4664,8 +4736,8 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0b0039
 			public const int status_bar_notification_info_overflow = 2131427385;
 			
-			// aapt resource value: 0x7f0b0064
-			public const int storagePermissionsRationaleMessage = 2131427428;
+			// aapt resource value: 0x7f0b0065
+			public const int storagePermissionsRationaleMessage = 2131427429;
 			
 			// aapt resource value: 0x7f0b0001
 			public const int summary_collapsed_preference_list = 2131427329;
@@ -4685,14 +4757,14 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0b0003
 			public const int v7_preference_on = 2131427331;
 			
-			// aapt resource value: 0x7f0b006e
-			public const int waitUntilSchedulesFinishDownloading = 2131427438;
-			
-			// aapt resource value: 0x7f0b0065
-			public const int weekendMessage = 2131427429;
+			// aapt resource value: 0x7f0b006f
+			public const int waitUntilSchedulesFinishDownloading = 2131427439;
 			
 			// aapt resource value: 0x7f0b0066
-			public const int welcomeMessage = 2131427430;
+			public const int weekendMessage = 2131427430;
+			
+			// aapt resource value: 0x7f0b0067
+			public const int welcomeMessage = 2131427431;
 			
 			// aapt resource value: 0x7f0b0043
 			public const int welcomeToolbarTitle = 2131427395;
@@ -5301,24 +5373,6 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0d0022
 			public const int CardView_Light = 2131558434;
 			
-			// aapt resource value: 0x7f0d0215
-			public const int DarkMainTheme = 2131558933;
-			
-			// aapt resource value: 0x7f0d020e
-			public const int MainTheme = 2131558926;
-			
-			// aapt resource value: 0x7f0d0212
-			public const int MainTheme_AppBar = 2131558930;
-			
-			// aapt resource value: 0x7f0d020f
-			public const int MainTheme_Dialog = 2131558927;
-			
-			// aapt resource value: 0x7f0d0210
-			public const int MainTheme_Dialog_Content = 2131558928;
-			
-			// aapt resource value: 0x7f0d0211
-			public const int MainTheme_Popup = 2131558929;
-			
 			// aapt resource value: 0x7f0d0092
 			public const int Platform_AppCompat = 2131558546;
 			
@@ -5360,9 +5414,6 @@ namespace SmtuSchedule.Android
 			
 			// aapt resource value: 0x7f0d00e5
 			public const int Platform_Widget_AppCompat_Spinner = 2131558629;
-			
-			// aapt resource value: 0x7f0d0213
-			public const int PopupMenu = 2131558931;
 			
 			// aapt resource value: 0x7f0d0003
 			public const int Preference = 2131558403;
@@ -5745,6 +5796,12 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0d0117
 			public const int TextAppearance_Widget_AppCompat_Toolbar_Title = 2131558679;
 			
+			// aapt resource value: 0x7f0d020f
+			public const int TextAppearance_Widget_SmtuSchedule_Dark_Toolbar_Title = 2131558927;
+			
+			// aapt resource value: 0x7f0d0218
+			public const int TextAppearance_Widget_SmtuSchedule_Light_Toolbar_Title = 2131558936;
+			
 			// aapt resource value: 0x7f0d0118
 			public const int Theme_AppCompat = 2131558680;
 			
@@ -5889,6 +5946,18 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0d01cc
 			public const int Theme_MaterialComponents_NoActionBar_Bridge = 2131558860;
 			
+			// aapt resource value: 0x7f0d020e
+			public const int Theme_SmtuSchedule_Dark = 2131558926;
+			
+			// aapt resource value: 0x7f0d0214
+			public const int Theme_SmtuSchedule_Dark_Dialog = 2131558932;
+			
+			// aapt resource value: 0x7f0d0217
+			public const int Theme_SmtuSchedule_Light = 2131558935;
+			
+			// aapt resource value: 0x7f0d021b
+			public const int Theme_SmtuSchedule_Light_Dialog = 2131558939;
+			
 			// aapt resource value: 0x7f0d0126
 			public const int ThemeOverlay_AppCompat = 2131558694;
 			
@@ -5946,8 +6015,17 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7f0d01d8
 			public const int ThemeOverlay_MaterialComponents_TextInputEditText_OutlinedBox_Dense = 2131558872;
 			
-			// aapt resource value: 0x7f0d0214
-			public const int Toolbar_Title = 2131558932;
+			// aapt resource value: 0x7f0d0215
+			public const int ThemeOverlay_SmtuSchedule_Dark_Popup = 2131558933;
+			
+			// aapt resource value: 0x7f0d0216
+			public const int ThemeOverlay_SmtuSchedule_Dark_Preference = 2131558934;
+			
+			// aapt resource value: 0x7f0d021c
+			public const int ThemeOverlay_SmtuSchedule_Light_Popup = 2131558940;
+			
+			// aapt resource value: 0x7f0d021d
+			public const int ThemeOverlay_SmtuSchedule_Light_Preference = 2131558941;
 			
 			// aapt resource value: 0x7f0d012d
 			public const int Widget_AppCompat_ActionBar = 2131558701;
@@ -6308,6 +6386,24 @@ namespace SmtuSchedule.Android
 			
 			// aapt resource value: 0x7f0d0205
 			public const int Widget_MaterialComponents_Toolbar = 2131558917;
+			
+			// aapt resource value: 0x7f0d0213
+			public const int Widget_SmtuSchedule_Dark_DatePicker = 2131558931;
+			
+			// aapt resource value: 0x7f0d0212
+			public const int Widget_SmtuSchedule_Dark_PopupMenu = 2131558930;
+			
+			// aapt resource value: 0x7f0d0211
+			public const int Widget_SmtuSchedule_Dark_Snackbar = 2131558929;
+			
+			// aapt resource value: 0x7f0d0210
+			public const int Widget_SmtuSchedule_Dark_Toolbar = 2131558928;
+			
+			// aapt resource value: 0x7f0d021a
+			public const int Widget_SmtuSchedule_Light_PopupMenu = 2131558938;
+			
+			// aapt resource value: 0x7f0d0219
+			public const int Widget_SmtuSchedule_Light_Toolbar = 2131558937;
 			
 			// aapt resource value: 0x7f0d0206
 			public const int Widget_Support_CoordinatorLayout = 2131558918;

@@ -61,7 +61,7 @@ namespace SmtuSchedule.Core.Utilities
             IPStatus status = IPStatus.Success;
             try
             {
-                // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping может не работать.
+                // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому это может не работать.
                 status = new Ping().Send("www.smtu.ru").Status;
 
                 failReason = (status != IPStatus.Success)

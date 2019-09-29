@@ -9,7 +9,6 @@ using Android.Content;
 using Android.Graphics;
 using Android.Text.Method;
 using Android.Support.V4.App;
-using Android.Support.V4.Content;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Enumerations;
 using SmtuSchedule.Android.Utilities;
@@ -97,9 +96,19 @@ namespace SmtuSchedule.Android.Views
                 _switchScheduleCallback = viewer.ShowSchedule;
             }
 
-            _multiGroupPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
-            _primaryText = new Color(ContextCompat.GetColor(Context, Resource.Color.primaryText));
-            _secondaryText = new Color(ContextCompat.GetColor(Context, Resource.Color.secondaryText));
+            _multiGroupsPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
+
+            _tertiaryTextColor = new Color(UiUtilities.GetAttribute(
+                Context,
+                Resource.Attribute.textColorSubjectTertiary
+            ));
+
+            _secondaryTextColor = new Color(UiUtilities.GetAttribute(
+                Context,
+                Resource.Attribute.textColorSubjectSecondary
+            ));
+
+            _dividerColor = new Color(UiUtilities.GetAttribute(Context, Resource.Attribute.colorDivider));
         }
 
         public override void OnDetach()
@@ -107,32 +116,32 @@ namespace SmtuSchedule.Android.Views
             base.OnDetach();
 
             _application = null;
-            _multiGroupPrefix = null;
+            _multiGroupsPrefix = null;
             _switchScheduleCallback = null;
         }
 
-        private View CreateSubjectView(LayoutInflater inflater, ViewGroup container, Subject current,
+        private View CreateSubjectView(LayoutInflater inflater, ViewGroup container, Subject subject,
             IEnumerable<Subject> relatedSubjects, Boolean needHighlight)
         {
             View layout = inflater.Inflate(Resource.Layout.subject, container, false);
 
             if (needHighlight)
             {
-                layout.SetBackgroundResource(Resource.Color.accent);
+                layout.SetBackgroundColor(_dividerColor);
             }
 
             TextView times = layout.FindViewById<TextView>(Resource.Id.subjectTimesTextView);
-            times.Text = current.From.ToString("HH:mm");
+            times.Text = subject.From.ToString("HH:mm");
 
             TextView title = layout.FindViewById<TextView>(Resource.Id.subjectTitleTextView);
-            title.Text = current.Title;
+            title.Text = subject.Title;
 
             TextView lecturer = layout.FindViewById<TextView>(Resource.Id.subjectLecturerTextView);
             lecturer.MovementMethod = LinkMovementMethod.Instance;
             lecturer.Text = @"¯\_(ツ)_/¯";
 
             TextView audience = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
-            audience.Text = current.Audience;
+            audience.Text = subject.Audience;
 
             if (_application.Preferences.DisplaySubjectEndTime)
             {
@@ -155,15 +164,16 @@ namespace SmtuSchedule.Android.Views
                 };
 
                 times.Append("\n");
-                times.Append(current.To.ToString("HH:mm").ToColored(_secondaryText));
+                times.Append(subject.To.ToString("HH:mm").ToColored(_tertiaryTextColor));
             }
 
             Java.Lang.ICharSequence CreateSwitchScheduleClickableLink(String text, Int32 scheduleId)
             {
                 SpannableString spannable = new SpannableString(text);
 
-                CustomClickableSpan span = new CustomClickableSpan(_primaryText);
-                span.Click += () => _switchScheduleCallback?.Invoke(scheduleId);
+                CustomClickableSpan span = new CustomClickableSpan(_secondaryTextColor);
+                //span.Click += () => _switchScheduleCallback?.Invoke(scheduleId);
+                span.Click += () => _switchScheduleCallback(scheduleId);
 
                 spannable.SetSpan(span, 0, spannable.Length(), SpanTypes.ExclusiveExclusive);
                 return spannable;
@@ -171,14 +181,14 @@ namespace SmtuSchedule.Android.Views
 
             if (relatedSubjects != null)
             {
-                lecturer.Text = _multiGroupPrefix + " ";
+                lecturer.Text = _multiGroupsPrefix + " ";
 
-                Int32 scheduleId = current.Group.ScheduleId;
+                Int32 scheduleId = subject.Group.ScheduleId;
                 lecturer.Append(CreateSwitchScheduleClickableLink(scheduleId.ToString(), scheduleId));
 
-                foreach (Subject subject in relatedSubjects)
+                foreach (Subject related in relatedSubjects)
                 {
-                    scheduleId = subject.Group.ScheduleId;
+                    scheduleId = related.Group.ScheduleId;
 
                     lecturer.Append(", ");
                     lecturer.Append(CreateSwitchScheduleClickableLink(scheduleId.ToString(), scheduleId));
@@ -186,7 +196,7 @@ namespace SmtuSchedule.Android.Views
             }
             else
             {
-                Lecturer lecturerOrGroup = current.Lecturer ?? current.Group;
+                Lecturer lecturerOrGroup = subject.Lecturer ?? subject.Group;
                 if (lecturerOrGroup != null)
                 {
                     lecturer.SetText(
@@ -199,9 +209,11 @@ namespace SmtuSchedule.Android.Views
             return layout;
         }
 
-        private Color _primaryText;
-        private Color _secondaryText;
-        private String _multiGroupPrefix;
+        private String _multiGroupsPrefix;
+
+        private Color _dividerColor;
+        private Color _tertiaryTextColor;
+        private Color _secondaryTextColor;
 
         private ScheduleApplication _application;
         private Action<Int32> _switchScheduleCallback;

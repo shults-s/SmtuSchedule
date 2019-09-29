@@ -10,11 +10,11 @@ namespace SmtuSchedule.Android.Views
     {
         public event Action<DateTime> DateChanged;
 
-        private class DateChangingListener : Java.Lang.Object, DatePicker.IOnDateChangedListener
+        private class DateChangeListener : Java.Lang.Object, DatePicker.IOnDateChangedListener
         {
             public event Action<DateTime> DateChanged;
 
-            public DateChangingListener(DateTime initialDate) => _last = initialDate;
+            public DateChangeListener(DateTime initialDate) => _last = initialDate;
 
             public void OnDateChanged(DatePicker view, Int32 year, Int32 month, Int32 day)
             {
@@ -39,7 +39,7 @@ namespace SmtuSchedule.Android.Views
 
         public CustomDatePickerDialog(Context context, DateTime initialDate) : base(context)
         {
-            DateChangingListener listener = new DateChangingListener(initialDate);
+            DateChangeListener listener = new DateChangeListener(initialDate);
             listener.DateChanged += (selectedDate) =>
             {
                 Dismiss();

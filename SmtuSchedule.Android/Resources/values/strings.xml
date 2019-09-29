@@ -40,7 +40,7 @@
     <!-- Сообщения об ошибках -->
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
     <string name="schedulesReadingErrorMessage">Не все расписания удалось открыть.</string>
-    <string name="schedulesMigrationErrorMessage">Не все расписания удалось преобразовать в новый формат.</string>
+    <string name="schedulesMigrationErrorMessage">Не все расписания удалось преобразовать к актуальному формату.</string>
     <string name="scheduleDownloadErrorMessage">Ошибка при загрузке расписания.</string>
     <string name="schedulesDownloadErrorMessage">Не все расписания удалось загрузить.</string>
     <string name="lecturersDownloadErrorMessage">

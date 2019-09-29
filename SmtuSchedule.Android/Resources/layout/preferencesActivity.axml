@@ -6,15 +6,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <android.support.v7.widget.Toolbar
-        android:id="@+id/preferencesToolbar"
+        android:id="@+id/preferencesActivityToolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:theme="@style/MainTheme.AppBar"
-        android:background="@color/primary"
         android:elevation="@dimen/toolbarElevation"
+        style="?attr/toolbarStyle"
         app:titleMargin="0dp"
         app:title="@string/preferencesToolbarTitle"
-        app:titleTextAppearance="@style/Toolbar.Title"
+        app:titleTextAppearance="?attr/titleTextAppearance"
         app:contentInsetStartWithNavigation="0dp"
         app:navigationIcon="?android:attr/homeAsUpIndicator" />
     <FrameLayout
