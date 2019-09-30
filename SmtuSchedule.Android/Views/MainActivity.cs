@@ -20,7 +20,6 @@ using SmtuSchedule.Android.Interfaces;
 using PopupMenu = Android.Support.V7.Widget.PopupMenu;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
 using Uri = Android.Net.Uri;
-using Android.Content.Res;
 
 namespace SmtuSchedule.Android.Views
 {
@@ -34,6 +33,12 @@ namespace SmtuSchedule.Android.Views
 
         private const Int32 StartPreferencesActivityRequestCode = 33;
         private const Int32 StartDownloadActivityRequestCode = 35;
+
+        private static readonly String[] ExternalStoragePermissions = new String[]
+        {
+            Manifest.Permission.ReadExternalStorage,
+            Manifest.Permission.WriteExternalStorage
+        };
 
         public override Boolean OnPrepareOptionsMenu(IMenu menu)
         {
@@ -160,6 +165,9 @@ namespace SmtuSchedule.Android.Views
             SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark
                 : Resource.Style.Theme_SmtuSchedule_Light);
 
+            _isThemeChanged = false;
+            _application.Preferences.ThemeChanged += () => _isThemeChanged = !_isThemeChanged;
+
             _activityState = MainActivityState.NotInitialized;
 
             SetContentView(Resource.Layout.mainActivity);
@@ -175,8 +183,7 @@ namespace SmtuSchedule.Android.Views
             }
             else
             {
-                RequestPermissions(ExternalStoragePermissionsRequestCode,
-                    Manifest.Permission.ReadExternalStorage, Manifest.Permission.WriteExternalStorage);
+                RequestPermissions(ExternalStoragePermissionsRequestCode, ExternalStoragePermissions);
             }
         }
 
@@ -186,7 +193,7 @@ namespace SmtuSchedule.Android.Views
 
             if (_activityState == MainActivityState.DisplaysSchedule)
             {
-                _currentSubjectHighlightTimer?.Start();
+                //_currentSubjectHighlightTimer?.Start();
             }
         }
 
@@ -196,7 +203,7 @@ namespace SmtuSchedule.Android.Views
 
             if (_activityState == MainActivityState.DisplaysSchedule)
             {
-                _currentSubjectHighlightTimer?.Stop();
+                //_currentSubjectHighlightTimer?.Stop();
             }
         }
 
@@ -204,15 +211,12 @@ namespace SmtuSchedule.Android.Views
         {
             if (requestCode == StartPreferencesActivityRequestCode && resultCode == Result.Ok)
             {
-                Boolean useDarkThemeOldValue = _application.Preferences.UseDarkTheme;
-
-                _application.Preferences.Read();
-
-                if (_application.Preferences.UseDarkTheme != useDarkThemeOldValue)
+                if (_isThemeChanged)
                 {
                     Recreate();
                 }
-                else if (IsPreferencesValid())
+
+                if (IsPreferencesValid())
                 {
                     RestartSchedulesRenderingSubsystem();
                 }
@@ -248,8 +252,6 @@ namespace SmtuSchedule.Android.Views
                 }
             }
 
-            //_application.Preferences.Read();
-
             String currentVersion = _application.GetVersion();
             if (_application.Preferences.LastSeenUpdateVersion == null)
             {
@@ -275,9 +277,9 @@ namespace SmtuSchedule.Android.Views
                 }
             }
 
-            const Int32 UpdatingIntervalInMilliseconds = 60000;
-            _currentSubjectHighlightTimer = new Timer(UpdatingIntervalInMilliseconds);
-            _currentSubjectHighlightTimer.Elapsed += (s, e) => UpdateSubjectsHighlighting();
+            //const Int32 UpdatingIntervalInMilliseconds = 60000;
+            //_currentSubjectHighlightTimer = new Timer(UpdatingIntervalInMilliseconds);
+            //_currentSubjectHighlightTimer.Elapsed += (s, e) => UpdateSubjectsHighlighting();
 
             _fab = FindViewById<FloatingActionButton>(Resource.Id.mainSelectScheduleDateFab);
             _fab.Click += (s, e) => ShowCustomDatePickerDialog();
@@ -382,7 +384,7 @@ namespace SmtuSchedule.Android.Views
                 _tabLayout.Visibility = ViewStates.Gone;
                 _fab.Visibility = ViewStates.Gone;
 
-                _currentSubjectHighlightTimer.Stop();
+                //_currentSubjectHighlightTimer.Stop();
 
                 ShowLayoutMessage(Resource.String.welcomeMessage);
                 _activityState = MainActivityState.DisplaysMessage;
@@ -433,7 +435,7 @@ namespace SmtuSchedule.Android.Views
             _fab.Visibility = _application.Preferences.UseFabDateSelector ? ViewStates.Visible
                 : ViewStates.Gone;
 
-            _currentSubjectHighlightTimer.Start();
+            //_currentSubjectHighlightTimer.Start();
         }
 
         private void RequestPermissions(Int32 requestCode, params String[] permissions)
@@ -685,10 +687,11 @@ namespace SmtuSchedule.Android.Views
             ShowSnackbar(messageId);
         }
 
+        private Boolean _isThemeChanged;
         private MainActivityState _activityState;
 
         private ScheduleApplication _application;
-        private Timer _currentSubjectHighlightTimer;
+        //private Timer _currentSubjectHighlightTimer;
 
         private ViewPager _viewPager;
         private TabLayout _tabLayout;

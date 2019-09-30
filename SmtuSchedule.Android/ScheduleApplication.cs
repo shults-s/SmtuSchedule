@@ -51,7 +51,6 @@ namespace SmtuSchedule.Android
             //};
 
             Preferences = new Preferences(this);
-            Preferences.Read();
 
             IsInitialized = false;
         }
@@ -95,7 +94,6 @@ namespace SmtuSchedule.Android
         public void SaveLog(Boolean isCrashLog = false)
         {
             String logsPath = GetExternalStoragePath() + "Logs/";
-
             if (!Directory.Exists(logsPath))
             {
                 Directory.CreateDirectory(logsPath);

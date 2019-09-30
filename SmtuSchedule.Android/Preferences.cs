@@ -4,8 +4,10 @@ using Android.Support.V7.Preferences;
 
 namespace SmtuSchedule.Android
 {
-    public class Preferences
+    public class Preferences : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
     {
+        public event Action ThemeChanged;
+
         public Boolean CheckUpdatesOnStart { get; private set; }
 
         public Boolean UseFabDateSelector { get; private set; }
@@ -29,7 +31,20 @@ namespace SmtuSchedule.Android
         public Preferences(Context context)
         {
             _preferences = PreferenceManager.GetDefaultSharedPreferences(context);
+            _preferences.RegisterOnSharedPreferenceChangeListener(this);
+
             CurrentScheduleDate = DateTime.Today;
+
+            UpperWeekDate = new DateTime(_preferences.GetLong("UpperWeekDate", 0));
+            UseDarkTheme = _preferences.GetBoolean("UseDarkTheme", false);
+            UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", false);
+            CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
+            DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
+
+            CurrentScheduleId = _preferences.GetInt("CurrentScheduleId", 0);
+            LastMigrationVersion = _preferences.GetString("LastMigrationVersion", null);
+            LastSeenUpdateVersion = _preferences.GetString("LastSeenUpdateVersion", null);
+            LastSeenWelcomeVersion = _preferences.GetString("LastSeenWelcomeVersion", null);
         }
 
         public void SetLastSeenWelcomeVersion(String lastSeenWelcomeVersion)
@@ -68,18 +83,35 @@ namespace SmtuSchedule.Android
             CurrentScheduleId = currentScheduleId;
         }
 
-        public void Read()
+        public void OnSharedPreferenceChanged(ISharedPreferences preferences, String key)
         {
-            UpperWeekDate = new DateTime(_preferences.GetLong("UpperWeekDate", 0));
-            UseDarkTheme = _preferences.GetBoolean("UseDarkTheme", false);
-            UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", false);
-            CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
-            DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
+            switch (key)
+            {
+                case "CheckUpdatesOnStart":
+                    CheckUpdatesOnStart = preferences.GetBoolean("CheckUpdatesOnStart", true);
+                    break;
 
-            CurrentScheduleId = _preferences.GetInt("CurrentScheduleId", 0);
-            LastMigrationVersion = _preferences.GetString("LastMigrationVersion", null);
-            LastSeenUpdateVersion = _preferences.GetString("LastSeenUpdateVersion", null);
-            LastSeenWelcomeVersion = _preferences.GetString("LastSeenWelcomeVersion", null);
+                case "UseFabDateSelector":
+                    UseFabDateSelector = preferences.GetBoolean("UseFabDateSelector", false);
+                    break;
+
+                case "UseDarkTheme":
+                    UseDarkTheme = preferences.GetBoolean("UseDarkTheme", false);
+                    ThemeChanged?.Invoke();
+                    break;
+
+                case "DisplaySubjectEndTime":
+                    DisplaySubjectEndTime = preferences.GetBoolean("DisplaySubjectEndTime", false);
+                    break;
+
+                case "UpperWeekDate":
+                    UpperWeekDate = new DateTime(preferences.GetLong("UpperWeekDate", 0));
+                    break;
+
+                //default:
+                //    throw new NotSupportedException(
+                //        $"Changing parameter \"{key}\" via preferences screen is not supported.");
+            }
         }
 
         private readonly ISharedPreferences _preferences;

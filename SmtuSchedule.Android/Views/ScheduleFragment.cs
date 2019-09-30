@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Diagnostics;
 using System.Collections.Generic;
 using Android.OS;
 using Android.Text;
@@ -16,6 +17,9 @@ using SmtuSchedule.Android.Interfaces;
 
 namespace SmtuSchedule.Android.Views
 {
+    // To do: Добавить логгер и залоггировать все события каждого фрагмента, начиная с конструктора и OnAttach,
+    // и заканчивая логгированием события, приводящего к вылету.
+    [DebuggerDisplay("Schedule fragment for {Date.ToShortDateString()}")]
     public class ScheduleFragment : Fragment
     {
         public DateTime Date { get; set; }
@@ -85,15 +89,19 @@ namespace SmtuSchedule.Android.Views
             return layout;
         }
 
-        public override void OnAttach(Context context)
+        public override void OnCreate(Bundle savedInstanceState)
         {
-            base.OnAttach(context);
+            base.OnCreate(savedInstanceState);
 
             _application = Context.ApplicationContext as ScheduleApplication;
 
             if (Activity is ISchedulesViewer viewer)
             {
                 _switchScheduleCallback = viewer.ShowSchedule;
+            }
+            else
+            {
+                ;
             }
 
             _multiGroupsPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
@@ -111,9 +119,19 @@ namespace SmtuSchedule.Android.Views
             _dividerColor = new Color(UiUtilities.GetAttribute(Context, Resource.Attribute.colorDivider));
         }
 
-        public override void OnDetach()
+        //public ScheduleFragment()
+        //{
+        //    ;
+        //}
+
+        //~ScheduleFragment()
+        //{
+        //    ;
+        //}
+
+        public override void OnDestroy()
         {
-            base.OnDetach();
+            base.OnDestroy();
 
             _application = null;
             _multiGroupsPrefix = null;
@@ -123,6 +141,8 @@ namespace SmtuSchedule.Android.Views
         private View CreateSubjectView(LayoutInflater inflater, ViewGroup container, Subject subject,
             IEnumerable<Subject> relatedSubjects, Boolean needHighlight)
         {
+            String t = DateTime.Now.ToString("HH:mm:ss.fff");
+
             View layout = inflater.Inflate(Resource.Layout.subject, container, false);
 
             if (needHighlight)
@@ -134,11 +154,11 @@ namespace SmtuSchedule.Android.Views
             times.Text = subject.From.ToString("HH:mm");
 
             TextView title = layout.FindViewById<TextView>(Resource.Id.subjectTitleTextView);
-            title.Text = subject.Title;
+            title.Text = subject.Title + " " + t;
 
             TextView lecturer = layout.FindViewById<TextView>(Resource.Id.subjectLecturerTextView);
             lecturer.MovementMethod = LinkMovementMethod.Instance;
-            lecturer.Text = @"¯\_(ツ)_/¯";
+            lecturer.Text = @"¯\_(ツ)_/¯" + " " + t;
 
             TextView audience = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
             audience.Text = subject.Audience;
@@ -200,7 +220,7 @@ namespace SmtuSchedule.Android.Views
                 if (lecturerOrGroup != null)
                 {
                     lecturer.SetText(
-                        CreateSwitchScheduleClickableLink(lecturerOrGroup.Name, lecturerOrGroup.ScheduleId),
+                        CreateSwitchScheduleClickableLink(lecturerOrGroup.Name + " " + t, lecturerOrGroup.ScheduleId),
                         TextView.BufferType.Spannable
                     );
                 }
