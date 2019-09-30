@@ -8,7 +8,7 @@
         android:minSdkVersion="21"
         android:targetSdkVersion="28" />
     <application
-        android:icon="@mipmap/applicationIcon"
+        android:icon="@mipmap/launcherIcon"
         android:label="@string/applicationLabel"
         android:theme="@style/Theme.SmtuSchedule.Light" />
     <uses-permission

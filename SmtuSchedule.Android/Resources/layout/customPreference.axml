@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/normalPadding"
     android:orientation="horizontal"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:background="@drawable/borderBottom">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

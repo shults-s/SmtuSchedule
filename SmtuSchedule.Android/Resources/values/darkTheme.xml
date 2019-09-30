@@ -17,17 +17,20 @@
         <item name="textColorSubjectTertiary">@color/subjectTertiaryTextNight</item>
         <item name="textColorSubjectSecondary">@color/subjectSecondaryTextNight</item>
 
-        <item name="android:itemBackground">@color/primaryDarkNight</item>
+        <!--<item name="android:itemBackground">@color/primaryDarkNight</item>-->
+        <item name="android:itemBackground">@color/primaryNight</item>
         <item name="android:windowBackground">@color/windowBackgroundNight</item>
+
+        <item name="alertDialogTheme">@style/Theme.SmtuSchedule.Dark.Dialog</item>
+        <item name="preferenceTheme">@style/ThemeOverlay.SmtuSchedule.Dark.Preference</item>
 
         <item name="toolbarStyle">@style/Widget.SmtuSchedule.Dark.Toolbar</item>
         <item name="snackbarStyle">@style/Widget.SmtuSchedule.Dark.Snackbar</item>
         <item name="popupMenuStyle">@style/Widget.SmtuSchedule.Dark.PopupMenu</item>
 
-        <!--<item name="popupTheme">@style/ThemeOverlay.SmtuSchedule.Dark.Popup</item>-->
-        <item name="alertDialogTheme">@style/Theme.SmtuSchedule.Dark.Dialog</item>
-        <!--<item name="android:dialogTheme">@style/Theme.SmtuSchedule.Dark.Dialog</item>-->
-        <item name="preferenceTheme">@style/ThemeOverlay.SmtuSchedule.Dark.Preference</item>
+        <item name="android:textColorPrimaryInverse">@color/primaryTextNight</item>
+        <item name="android:textColorSecondaryInverse">@color/secondaryTextNight</item>
+        <item name="android:datePickerStyle">@style/Widget.SmtuSchedule.Dark.DatePicker</item>
     </style>
 
     <style name="TextAppearance.Widget.SmtuSchedule.Dark.Toolbar.Title"
@@ -43,12 +46,14 @@
     </style>
 
     <style name="Widget.SmtuSchedule.Dark.Snackbar" parent="Widget.MaterialComponents.Snackbar">
-        <item name="android:background">@color/primaryDarkNight</item>
+        <!--<item name="android:background">@color/primaryDarkNight</item>-->
+        <item name="android:background">@color/primaryNight</item>
     </style>
 
     <style name="Widget.SmtuSchedule.Dark.PopupMenu" parent="Widget.AppCompat.PopupMenu">
         <item name="overlapAnchor">true</item>
-        <item name="android:popupBackground">@color/primaryDarkNight</item>
+        <!--<item name="android:popupBackground">@color/primaryDarkNight</item>-->
+        <item name="android:popupBackground">@color/primaryNight</item>
     </style>
 
     <style name="Widget.SmtuSchedule.Dark.DatePicker" parent="@android:style/Widget.Material.DatePicker">
@@ -56,11 +61,11 @@
     </style>
 
     <style name="Theme.SmtuSchedule.Dark.Dialog" parent="Theme.AppCompat.Dialog">
-        <item name="android:textColorPrimaryInverse">@color/primaryTextNight</item>
-        <item name="android:textColorSecondaryInverse">@color/secondaryTextNight</item>
-
         <item name="colorAccent">@color/accentNight</item>
         <item name="android:windowBackground">@color/primaryNight</item>
+
+        <item name="android:textColorPrimaryInverse">@color/primaryTextNight</item>
+        <item name="android:textColorSecondaryInverse">@color/secondaryTextNight</item>
         <item name="android:datePickerStyle">@style/Widget.SmtuSchedule.Dark.DatePicker</item>
     </style>
 
