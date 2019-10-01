@@ -108,6 +108,12 @@ namespace SmtuSchedule.Android
                     UpperWeekDate = new DateTime(preferences.GetLong("UpperWeekDate", 0));
                     break;
 
+                case "CurrentScheduleId":
+                case "LastMigrationVersion":
+                case "LastSeenUpdateVersion":
+                case "LastSeenWelcomeVersion":
+                    break;
+
                 //default:
                 //    throw new NotSupportedException(
                 //        $"Changing parameter \"{key}\" via preferences screen is not supported.");

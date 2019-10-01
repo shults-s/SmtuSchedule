@@ -17,25 +17,14 @@ using SmtuSchedule.Android.Interfaces;
 
 namespace SmtuSchedule.Android.Views
 {
-    // To do: Добавить логгер и залоггировать все события каждого фрагмента, начиная с конструктора и OnAttach,
-    // и заканчивая логгированием события, приводящего к вылету.
-    [DebuggerDisplay("Schedule fragment for {Date.ToShortDateString()}")]
+    [DebuggerDisplay("ScheduleFragment {Date.ToShortDateString()}")]
     public class ScheduleFragment : Fragment
     {
         public DateTime Date { get; set; }
 
-        //
-        private Core.Interfaces.ILogger _logger;
-        private String _fragmentId;
-        //
-
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
         {
-            //
-            _logger.Log(_fragmentId + "OnCreateView");
-            //
-
             Schedule schedule = _application.Manager.Schedules[_application.Preferences.CurrentScheduleId];
             Subject[] subjects = schedule.GetSubjects(_application.Preferences.UpperWeekDate, Date);
 
@@ -104,19 +93,9 @@ namespace SmtuSchedule.Android.Views
 
             _application = Context.ApplicationContext as ScheduleApplication;
 
-            //
-            _fragmentId = $"Fragment[{_application.Preferences.CurrentScheduleId}, {Date.ToShortDateString()}, {this.Class}]: ";
-            _logger = _application.Logger;
-            _logger.Log(_fragmentId + "OnAttach");
-            //
-
             if (Activity is ISchedulesViewer viewer)
             {
                 _switchScheduleCallback = viewer.ShowSchedule;
-            }
-            else
-            {
-                ;
             }
 
             _multiGroupsPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
@@ -134,24 +113,9 @@ namespace SmtuSchedule.Android.Views
             _dividerColor = new Color(UiUtilities.GetAttribute(Context, Resource.Attribute.colorDivider));
         }
 
-        //public ScheduleFragment()
-        //{
-        //    ;
-        //}
-
-        //~ScheduleFragment()
-        //{
-        //    ;
-        //}
-
         public override void OnDetach()
         {
             base.OnDetach();
-
-            //
-            _logger.Log(_fragmentId + "OnDetach");
-            _fragmentId = null;
-            //
 
             _application = null;
             _multiGroupsPrefix = null;
@@ -161,8 +125,6 @@ namespace SmtuSchedule.Android.Views
         private View CreateSubjectView(LayoutInflater inflater, ViewGroup container, Subject subject,
             IEnumerable<Subject> relatedSubjects, Boolean needHighlight)
         {
-            String t = DateTime.Now.ToString("HH:mm:ss.fff");
-
             View layout = inflater.Inflate(Resource.Layout.subject, container, false);
 
             if (needHighlight)
@@ -174,11 +136,17 @@ namespace SmtuSchedule.Android.Views
             times.Text = subject.From.ToString("HH:mm");
 
             TextView title = layout.FindViewById<TextView>(Resource.Id.subjectTitleTextView);
-            title.Text = subject.Title + " " + t;
+            title.Text = subject.Title;
 
             TextView lecturer = layout.FindViewById<TextView>(Resource.Id.subjectLecturerTextView);
-            lecturer.MovementMethod = LinkMovementMethod.Instance;
-            lecturer.Text = @"¯\_(ツ)_/¯" + " " + t;
+            lecturer.Text = @"¯\_(ツ)_/¯";
+
+            // Критически важно создавать новый экземпляр LinkMovementMethod для каждого предмета
+            // в отдельности или хотя бы для каждого экземпляра фрагмента, то есть использовать
+            // не LinkMovementMethod.Instance, а конструктор.
+            // В противном случае, при переходе на другое расписание по ссылке, все поля lecturer
+            // фрагмента заполнятся значением, которое содержалось в поле, по которому щелкнули.
+            lecturer.MovementMethod = new LinkMovementMethod();
 
             TextView audience = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
             audience.Text = subject.Audience;
@@ -212,7 +180,6 @@ namespace SmtuSchedule.Android.Views
                 SpannableString spannable = new SpannableString(text);
 
                 CustomClickableSpan span = new CustomClickableSpan(_secondaryTextColor);
-                //span.Click += () => _switchScheduleCallback?.Invoke(scheduleId);
                 span.Click += () => _switchScheduleCallback(scheduleId);
 
                 spannable.SetSpan(span, 0, spannable.Length(), SpanTypes.ExclusiveExclusive);
@@ -240,7 +207,7 @@ namespace SmtuSchedule.Android.Views
                 if (lecturerOrGroup != null)
                 {
                     lecturer.SetText(
-                        CreateSwitchScheduleClickableLink(lecturerOrGroup.Name + " " + t, lecturerOrGroup.ScheduleId),
+                        CreateSwitchScheduleClickableLink(lecturerOrGroup.Name, lecturerOrGroup.ScheduleId),
                         TextView.BufferType.Spannable
                     );
                 }
