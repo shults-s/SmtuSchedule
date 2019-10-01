@@ -5,7 +5,7 @@
     <string name="applicationLabel">Расписание</string>
     <string name="applicationVersion">0.9</string>
     <string name="aboutApplicationMessage">
-        Версия 0.9 от XX сентября 2019.
+        Версия 0.9 от XX октября 2019.
         \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>, поддержать можно <a href="#">тут</a>.
         \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
     </string>
