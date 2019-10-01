@@ -24,9 +24,18 @@ namespace SmtuSchedule.Android.Views
     {
         public DateTime Date { get; set; }
 
+        //
+        private Core.Interfaces.ILogger _logger;
+        private String _fragmentId;
+        //
+
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
         {
+            //
+            _logger.Log(_fragmentId + "OnCreateView");
+            //
+
             Schedule schedule = _application.Manager.Schedules[_application.Preferences.CurrentScheduleId];
             Subject[] subjects = schedule.GetSubjects(_application.Preferences.UpperWeekDate, Date);
 
@@ -89,11 +98,17 @@ namespace SmtuSchedule.Android.Views
             return layout;
         }
 
-        public override void OnCreate(Bundle savedInstanceState)
+        public override void OnAttach(Context context)
         {
-            base.OnCreate(savedInstanceState);
+            base.OnAttach(context);
 
             _application = Context.ApplicationContext as ScheduleApplication;
+
+            //
+            _fragmentId = $"Fragment[{_application.Preferences.CurrentScheduleId}, {Date.ToShortDateString()}, {this.Class}]: ";
+            _logger = _application.Logger;
+            _logger.Log(_fragmentId + "OnAttach");
+            //
 
             if (Activity is ISchedulesViewer viewer)
             {
@@ -129,9 +144,14 @@ namespace SmtuSchedule.Android.Views
         //    ;
         //}
 
-        public override void OnDestroy()
+        public override void OnDetach()
         {
-            base.OnDestroy();
+            base.OnDetach();
+
+            //
+            _logger.Log(_fragmentId + "OnDetach");
+            _fragmentId = null;
+            //
 
             _application = null;
             _multiGroupsPrefix = null;
