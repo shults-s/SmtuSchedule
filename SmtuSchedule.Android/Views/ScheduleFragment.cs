@@ -95,7 +95,7 @@ namespace SmtuSchedule.Android.Views
 
             if (Activity is ISchedulesViewer viewer)
             {
-                _switchScheduleCallback = viewer.ShowSchedule;
+                _switchSchedulesCallback = viewer.ShowSchedule;
             }
 
             _multiGroupsPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
@@ -119,7 +119,7 @@ namespace SmtuSchedule.Android.Views
 
             _application = null;
             _multiGroupsPrefix = null;
-            _switchScheduleCallback = null;
+            _switchSchedulesCallback = null;
         }
 
         private View CreateSubjectView(LayoutInflater inflater, ViewGroup container, Subject subject,
@@ -140,13 +140,6 @@ namespace SmtuSchedule.Android.Views
 
             TextView lecturer = layout.FindViewById<TextView>(Resource.Id.subjectLecturerTextView);
             lecturer.Text = @"¯\_(ツ)_/¯";
-
-            // Критически важно создавать новый экземпляр LinkMovementMethod для каждого предмета
-            // в отдельности или хотя бы для каждого экземпляра фрагмента, то есть использовать
-            // не LinkMovementMethod.Instance, а конструктор.
-            // В противном случае, при переходе на другое расписание по ссылке, все поля lecturer
-            // фрагмента заполнятся значением, которое содержалось в поле, по которому щелкнули.
-            lecturer.MovementMethod = new LinkMovementMethod();
 
             TextView audience = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
             audience.Text = subject.Audience;
@@ -175,41 +168,40 @@ namespace SmtuSchedule.Android.Views
                 times.Append(subject.To.ToString("HH:mm").ToColored(_tertiaryTextColor));
             }
 
-            Java.Lang.ICharSequence CreateSwitchScheduleClickableLink(String text, Int32 scheduleId)
+            Java.Lang.ICharSequence CreateSwitchSchedulesClickableSpan(String text, Int32 scheduleId)
             {
                 SpannableString spannable = new SpannableString(text);
 
                 CustomClickableSpan span = new CustomClickableSpan(_secondaryTextColor);
-                span.Click += () => _switchScheduleCallback(scheduleId);
+                span.Click += () => _switchSchedulesCallback(scheduleId);
 
-                spannable.SetSpan(span, 0, spannable.Length(), SpanTypes.ExclusiveExclusive);
+                spannable.SetSpan(span, 0, text.Length, SpanTypes.ExclusiveExclusive);
                 return spannable;
             }
 
-            if (relatedSubjects != null)
+            if (relatedSubjects == null)
             {
+                Lecturer lecturerOrGroup = subject.Lecturer ?? subject.Group;
+                if (lecturerOrGroup != null)
+                {
+                    lecturer.Text = lecturerOrGroup.Name;
+                    lecturer.Click += (s, e) => _switchSchedulesCallback(lecturerOrGroup.ScheduleId);
+                }
+            }
+            else
+            {
+                lecturer.MovementMethod = LinkMovementMethod.Instance;
                 lecturer.Text = _multiGroupsPrefix + " ";
 
                 Int32 scheduleId = subject.Group.ScheduleId;
-                lecturer.Append(CreateSwitchScheduleClickableLink(scheduleId.ToString(), scheduleId));
+                lecturer.Append(CreateSwitchSchedulesClickableSpan(scheduleId.ToString(), scheduleId));
 
                 foreach (Subject related in relatedSubjects)
                 {
                     scheduleId = related.Group.ScheduleId;
 
                     lecturer.Append(", ");
-                    lecturer.Append(CreateSwitchScheduleClickableLink(scheduleId.ToString(), scheduleId));
-                }
-            }
-            else
-            {
-                Lecturer lecturerOrGroup = subject.Lecturer ?? subject.Group;
-                if (lecturerOrGroup != null)
-                {
-                    lecturer.SetText(
-                        CreateSwitchScheduleClickableLink(lecturerOrGroup.Name, lecturerOrGroup.ScheduleId),
-                        TextView.BufferType.Spannable
-                    );
+                    lecturer.Append(CreateSwitchSchedulesClickableSpan(scheduleId.ToString(), scheduleId));
                 }
             }
 
@@ -223,6 +215,6 @@ namespace SmtuSchedule.Android.Views
         private Color _secondaryTextColor;
 
         private ScheduleApplication _application;
-        private Action<Int32> _switchScheduleCallback;
+        private Action<Int32> _switchSchedulesCallback;
     }
 }

@@ -410,7 +410,6 @@ namespace SmtuSchedule.Android.Views
 
             ShowViewPager();
             _viewPager = FindViewById<ViewPager>(Resource.Id.scheduleViewPager);
-            //_viewPager.OffscreenPageLimit = 1;
 
             // Bug: если после запуска приложения перелистнуть страницу расписания влево или вправо, то
             // затем при изменении ориентации устройства событие по неизвестной причине срабатывает
