@@ -132,17 +132,19 @@ namespace SmtuSchedule.Android.Views
                 layout.SetBackgroundColor(_dividerColor);
             }
 
-            TextView times = layout.FindViewById<TextView>(Resource.Id.subjectTimesTextView);
-            times.Text = subject.From.ToString("HH:mm");
+            TextView timesView = layout.FindViewById<TextView>(Resource.Id.subjectTimesTextView);
+            timesView.Text = subject.From.ToString("HH:mm");
 
-            TextView title = layout.FindViewById<TextView>(Resource.Id.subjectTitleTextView);
-            title.Text = subject.Title;
+            TextView titleView = layout.FindViewById<TextView>(Resource.Id.subjectTitleTextView);
+            titleView.Text = subject.Title;
 
             TextView lecturer = layout.FindViewById<TextView>(Resource.Id.subjectLecturerTextView);
+            lecturer.MovementMethod = LinkMovementMethod.Instance;
+            lecturer.Id = View.GenerateViewId();
             lecturer.Text = @"¯\_(ツ)_/¯";
 
-            TextView audience = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
-            audience.Text = subject.Audience;
+            TextView audienceView = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
+            audienceView.Text = subject.Audience;
 
             if (_application.Preferences.DisplaySubjectEndTime)
             {
@@ -154,55 +156,56 @@ namespace SmtuSchedule.Android.Views
                 // задается так, чтобы высота правой ячейки превосходила высоту содержимого левой.
                 // Эта ситуация возникает только если включено отображаение времени окончания занятий
                 // и при этом название предмета умещается в одну строку.
-                title.ViewTreeObserver.PreDraw += (s, e) =>
+                titleView.ViewTreeObserver.PreDraw += (s, e) =>
                 {
-                    if (title.LineCount < 2)
+                    if (titleView.LineCount < 2)
                     {
-                        title.SetLines(2);
+                        titleView.SetLines(2);
                     }
 
                     e.Handled = true;
                 };
 
-                times.Append("\n");
-                times.Append(subject.To.ToString("HH:mm").ToColored(_tertiaryTextColor));
+                timesView.Append("\n");
+                timesView.Append(subject.To.ToString("HH:mm").ToColored(_tertiaryTextColor));
             }
 
-            Java.Lang.ICharSequence CreateSwitchSchedulesClickableSpan(String text, Int32 scheduleId)
+            Java.Lang.ICharSequence CreateSwitchSchedulesClickableSpan(String text, Int32 scheduleId2)
             {
                 SpannableString spannable = new SpannableString(text);
 
                 CustomClickableSpan span = new CustomClickableSpan(_secondaryTextColor);
-                span.Click += () => _switchSchedulesCallback(scheduleId);
+                span.Click += () => _switchSchedulesCallback(scheduleId2);
 
                 spannable.SetSpan(span, 0, text.Length, SpanTypes.ExclusiveExclusive);
                 return spannable;
             }
 
-            if (relatedSubjects == null)
+            if (relatedSubjects != null)
             {
                 Lecturer lecturerOrGroup = subject.Lecturer ?? subject.Group;
                 if (lecturerOrGroup != null)
                 {
-                    lecturer.Text = lecturerOrGroup.Name;
-                    lecturer.Click += (s, e) => _switchSchedulesCallback(lecturerOrGroup.ScheduleId);
+                    lecturer.SetText(
+                        CreateSwitchSchedulesClickableSpan(lecturerOrGroup.Name, lecturerOrGroup.ScheduleId),
+                        TextView.BufferType.Spannable
+                    );
                 }
+
+                return layout;
             }
-            else
+
+            lecturer.Text = _multiGroupsPrefix + " ";
+
+            Int32 scheduleId = subject.Group.ScheduleId;
+            lecturer.Append(CreateSwitchSchedulesClickableSpan(scheduleId.ToString(), scheduleId));
+
+            foreach (Subject related in relatedSubjects)
             {
-                lecturer.MovementMethod = LinkMovementMethod.Instance;
-                lecturer.Text = _multiGroupsPrefix + " ";
+                scheduleId = related.Group.ScheduleId;
 
-                Int32 scheduleId = subject.Group.ScheduleId;
+                lecturer.Append(", ");
                 lecturer.Append(CreateSwitchSchedulesClickableSpan(scheduleId.ToString(), scheduleId));
-
-                foreach (Subject related in relatedSubjects)
-                {
-                    scheduleId = related.Group.ScheduleId;
-
-                    lecturer.Append(", ");
-                    lecturer.Append(CreateSwitchSchedulesClickableSpan(scheduleId.ToString(), scheduleId));
-                }
             }
 
             return layout;
