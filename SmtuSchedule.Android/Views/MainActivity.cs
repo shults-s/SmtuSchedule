@@ -176,7 +176,7 @@ namespace SmtuSchedule.Android.Views
 
             SetContentView(Resource.Layout.mainActivity);
 
-            _content = FindViewById<RelativeLayout>(Resource.Id.mainContentRelativeLayout);
+            _contentLayout = FindViewById<RelativeLayout>(Resource.Id.mainContentRelativeLayout);
 
             SetSupportActionBar(FindViewById<Toolbar>(Resource.Id.mainActivityToolbar));
             SupportActionBar.SetDisplayShowTitleEnabled(false);
@@ -530,7 +530,7 @@ namespace SmtuSchedule.Android.Views
 
         private void ShowSnackbar(Int32 messageId, Int32 actionId = 0, Action callback = null)
         {
-            Snackbar snackbar = Snackbar.Make(_content, messageId, Snackbar.LengthLong);
+            Snackbar snackbar = Snackbar.Make(_contentLayout, messageId, Snackbar.LengthLong);
 
             if (actionId != 0)
             {
@@ -546,21 +546,21 @@ namespace SmtuSchedule.Android.Views
 
         private void ShowProgressBar()
         {
-            _content.RemoveAllViews();
-            View.Inflate(this, Resource.Layout.progress, _content);
+            _contentLayout.RemoveAllViews();
+            View.Inflate(this, Resource.Layout.progress, _contentLayout);
         }
 
         private void ShowViewPager()
         {
-            _content.RemoveAllViews();
-            View.Inflate(this, Resource.Layout.pager, _content);
+            _contentLayout.RemoveAllViews();
+            View.Inflate(this, Resource.Layout.pager, _contentLayout);
         }
 
         private void ShowLayoutMessage(Int32 messageId)
         {
-            _content.RemoveAllViews();
+            _contentLayout.RemoveAllViews();
 
-            View layout = View.Inflate(this, Resource.Layout.message, _content);
+            View layout = View.Inflate(this, Resource.Layout.message, _contentLayout);
 
             TextView message = layout.FindViewById<TextView>(Resource.Id.messageTextView);
             message.SetText(messageId);
@@ -704,9 +704,9 @@ namespace SmtuSchedule.Android.Views
         private ViewPager _viewPager;
         private TabLayout _tabLayout;
         private TextView _toolbarTitle;
-        private RelativeLayout _content;
         private PopupMenu _schedulesMenu;
         private FloatingActionButton _fab;
+        private RelativeLayout _contentLayout;
         private SchedulesPagerAdapter _pagerAdapter;
     }
 }

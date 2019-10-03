@@ -47,6 +47,7 @@ namespace SmtuSchedule.Android.Views
                 : Array.FindIndex(subjects, s => s.IsTimeInside(DateTime.Now));
 
             TableLayout table = layout.FindViewById<TableLayout>(Resource.Id.scheduleTableLayout);
+
             for (Int32 i = 0; i < subjects.Length; )
             {
                 Subject subject = subjects[i];
@@ -95,7 +96,7 @@ namespace SmtuSchedule.Android.Views
 
             if (Activity is ISchedulesViewer viewer)
             {
-                _switchSchedulesCallback = viewer.ShowSchedule;
+                _schedulesSwitcherCallback = viewer.ShowSchedule;
             }
 
             _multiGroupsPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
@@ -119,7 +120,7 @@ namespace SmtuSchedule.Android.Views
 
             _application = null;
             _multiGroupsPrefix = null;
-            _switchSchedulesCallback = null;
+            _schedulesSwitcherCallback = null;
         }
 
         private View CreateSubjectView(LayoutInflater inflater, ViewGroup container, Subject subject,
@@ -140,8 +141,13 @@ namespace SmtuSchedule.Android.Views
 
             TextView lecturer = layout.FindViewById<TextView>(Resource.Id.subjectLecturerTextView);
             lecturer.MovementMethod = LinkMovementMethod.Instance;
-            lecturer.Id = View.GenerateViewId();
             lecturer.Text = @"¯\_(ツ)_/¯";
+
+            // Из-за одинаковых идентификаторов в разных фрагментах в LinkMovementMethod вероятно возникает
+            // конфликт, в результате которого при переходе на другое расписание по щелчку на нем, все поля
+            // lecturer нового фрагмента принимают значение, которое содержалось в поле, по которому ранее
+            // щелкнули. Проблема решается присвоением каждому экземпляру поля уникального идентификатора.
+            lecturer.Id = View.GenerateViewId();
 
             TextView audienceView = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
             audienceView.Text = subject.Audience;
@@ -170,42 +176,43 @@ namespace SmtuSchedule.Android.Views
                 timesView.Append(subject.To.ToString("HH:mm").ToColored(_tertiaryTextColor));
             }
 
-            Java.Lang.ICharSequence CreateSwitchSchedulesClickableSpan(String text, Int32 scheduleId2)
-            {
-                SpannableString spannable = new SpannableString(text);
-
-                CustomClickableSpan span = new CustomClickableSpan(_secondaryTextColor);
-                span.Click += () => _switchSchedulesCallback(scheduleId2);
-
-                spannable.SetSpan(span, 0, text.Length, SpanTypes.ExclusiveExclusive);
-                return spannable;
-            }
-
-            if (relatedSubjects != null)
+            if (relatedSubjects == null)
             {
                 Lecturer lecturerOrGroup = subject.Lecturer ?? subject.Group;
                 if (lecturerOrGroup != null)
                 {
-                    lecturer.SetText(
-                        CreateSwitchSchedulesClickableSpan(lecturerOrGroup.Name, lecturerOrGroup.ScheduleId),
-                        TextView.BufferType.Spannable
-                    );
+                    lecturer.Text = lecturerOrGroup.Name;
+                    lecturer.Click += (s, e) => _schedulesSwitcherCallback(lecturerOrGroup.ScheduleId);
                 }
 
                 return layout;
             }
 
-            lecturer.Text = _multiGroupsPrefix + " ";
-
-            Int32 scheduleId = subject.Group.ScheduleId;
-            lecturer.Append(CreateSwitchSchedulesClickableSpan(scheduleId.ToString(), scheduleId));
-
-            foreach (Subject related in relatedSubjects)
+            CustomClickableSpan CreateSwitchSchedulesClickableSpan(Int32 scheduleId)
             {
-                scheduleId = related.Group.ScheduleId;
+                CustomClickableSpan span = new CustomClickableSpan(_secondaryTextColor);
+                span.Click += () => _schedulesSwitcherCallback?.Invoke(scheduleId);
+                return span;
+            }
 
-                lecturer.Append(", ");
-                lecturer.Append(CreateSwitchSchedulesClickableSpan(scheduleId.ToString(), scheduleId));
+            using (SpannableStringBuilder builder = new SpannableStringBuilder(_multiGroupsPrefix + " "))
+            {
+                Int32 scheduleId = subject.Group.ScheduleId;
+
+                CustomClickableSpan schedulesSwitcher = CreateSwitchSchedulesClickableSpan(scheduleId);
+                builder.Append(scheduleId.ToString(), schedulesSwitcher, SpanTypes.ExclusiveExclusive);
+
+                foreach (Subject relatedSubject in relatedSubjects)
+                {
+                    scheduleId = relatedSubject.Group.ScheduleId;
+
+                    builder.Append(", ");
+
+                    schedulesSwitcher = CreateSwitchSchedulesClickableSpan(scheduleId);
+                    builder.Append(scheduleId.ToString(), schedulesSwitcher, SpanTypes.ExclusiveExclusive);
+                }
+
+                lecturer.SetText(builder, TextView.BufferType.Spannable);
             }
 
             return layout;
@@ -218,6 +225,6 @@ namespace SmtuSchedule.Android.Views
         private Color _secondaryTextColor;
 
         private ScheduleApplication _application;
-        private Action<Int32> _switchSchedulesCallback;
+        private Action<Int32> _schedulesSwitcherCallback;
     }
 }
