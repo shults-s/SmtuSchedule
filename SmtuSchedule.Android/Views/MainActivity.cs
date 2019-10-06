@@ -475,124 +475,6 @@ namespace SmtuSchedule.Android.Views
             StartActivityForResult(typeof(DownloadActivity), StartDownloadActivityRequestCode);
         }
 
-        private void ShowCurrentScheduleActionsDialog()
-        {
-            new CustomAlertDialog(this)
-                .SetTitle(Resource.String.currentScheduleActionsDialogTitle)
-                .SetActions(
-                    Resources.GetStringArray(Resource.Array.currentScheduleActionsTitles),
-                    (index) =>
-                    {
-                        Int32 scheduleId = _application.Preferences.CurrentScheduleId;
-                        switch (index)
-                        {
-                            case 0:
-                                ShowScheduleRemoveDialog(scheduleId);
-                                break;
-
-                            case 1:
-                                DownloadScheduleWithCheckPermission(scheduleId);
-                                break;
-                        }
-                    }
-                )
-                .Show();
-        }
-
-        private void ShowScheduleRemoveDialog(Int32 scheduleId)
-        {
-            if (!_application.Manager.Schedules.TryGetValue(scheduleId, out Schedule schedule))
-            {
-                return ;
-            }
-
-            String displayedName = schedule.DisplayedName;
-
-            String message = Resources.GetString(
-                Resource.String.removeCurrentScheduleMessage,
-                displayedName
-            );
-
-            new CustomAlertDialog(this)
-                .SetMessage(message)
-                .SetPositiveButton(Resource.String.removeActionText, RemoveCurrentScheduleAsync)
-                .SetNegativeButton(Resource.String.cancelActionText)
-                .Show();
-        }
-
-        private void ShowDialogWithSuggestionToConfigureApplication()
-        {
-            new CustomAlertDialog(this)
-                .SetPositiveButton(Resource.String.configureActionText, StartPreferencesActivity)
-                .SetMessage(Resource.String.configureApplicationMessage)
-                .SetCancelable(false)
-                .Show();
-        }
-
-        private void ShowViewingWeekTypeSnackbar()
-        {
-            DateTime viewingDate = _application.Preferences.CurrentScheduleDate;
-
-            Int32 type = (Int32)Schedule.GetWeekType(_application.Preferences.UpperWeekDate, viewingDate);
-            String[] weeksNames = Resources.GetStringArray(Resource.Array.weeksTypesInNominativeCase);
-
-            ShowSnackbar(String.Format("{0}: {1}.", viewingDate.ToString("d MMMM"), weeksNames[type - 1]));
-        }
-
-        private void ShowCustomDatePickerDialog()
-        {
-            CustomDatePickerDialog dialog = new CustomDatePickerDialog(
-                this,
-                _application.Preferences.CurrentScheduleDate
-            );
-
-            dialog.DateChanged += (date) => ViewPagerMoveToDate(date);
-            dialog.Show();
-        }
-
-        private void ShowSnackbar(Int32 messageId, Int32 actionId = 0, Action callback = null)
-        {
-            ShowSnackbar(Resources.GetString(messageId), actionId, callback);
-        }
-
-        private void ShowSnackbar(String message, Int32 actionId = 0, Action callback = null)
-        {
-            Snackbar snackbar = Snackbar.Make(_contentLayout, message, Snackbar.LengthLong);
-
-            if (actionId != 0)
-            {
-                snackbar.SetAction(actionId, (v) => callback());
-            }
-
-            TextView text = snackbar.View.FindViewById<TextView>(Resource.Id.snackbar_text);
-            text.SetTextSize(ComplexUnitType.Px, Resources.GetDimension(Resource.Dimension.normalTextSize));
-            text.SetMaxLines(3);
-
-            snackbar.Show();
-        }
-
-        private void ShowProgressBar()
-        {
-            _contentLayout.RemoveAllViews();
-            View.Inflate(this, Resource.Layout.progress, _contentLayout);
-        }
-
-        private void ShowViewPager()
-        {
-            _contentLayout.RemoveAllViews();
-            View.Inflate(this, Resource.Layout.pager, _contentLayout);
-        }
-
-        private void ShowLayoutMessage(Int32 messageId)
-        {
-            _contentLayout.RemoveAllViews();
-
-            View layout = View.Inflate(this, Resource.Layout.message, _contentLayout);
-
-            TextView message = layout.FindViewById<TextView>(Resource.Id.messageTextView);
-            message.SetText(messageId);
-        }
-
         public void ShowSchedule(Int32 scheduleId)
         {
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
@@ -719,6 +601,124 @@ namespace SmtuSchedule.Android.Views
             }
 
             ShowSnackbar(messageId);
+        }
+
+        private void ShowProgressBar()
+        {
+            _contentLayout.RemoveAllViews();
+            View.Inflate(this, Resource.Layout.progress, _contentLayout);
+        }
+
+        private void ShowViewPager()
+        {
+            _contentLayout.RemoveAllViews();
+            View.Inflate(this, Resource.Layout.pager, _contentLayout);
+        }
+
+        private void ShowLayoutMessage(Int32 messageId)
+        {
+            _contentLayout.RemoveAllViews();
+
+            View layout = View.Inflate(this, Resource.Layout.message, _contentLayout);
+
+            TextView message = layout.FindViewById<TextView>(Resource.Id.messageTextView);
+            message.SetText(messageId);
+        }
+
+        private void ShowCurrentScheduleActionsDialog()
+        {
+            new CustomAlertDialog(this)
+                .SetTitle(Resource.String.currentScheduleActionsDialogTitle)
+                .SetActions(
+                    Resources.GetStringArray(Resource.Array.currentScheduleActionsTitles),
+                    (index) =>
+                    {
+                        Int32 scheduleId = _application.Preferences.CurrentScheduleId;
+                        switch (index)
+                        {
+                            case 0:
+                                ShowScheduleRemoveDialog(scheduleId);
+                                break;
+
+                            case 1:
+                                DownloadScheduleWithCheckPermission(scheduleId);
+                                break;
+                        }
+                    }
+                )
+                .Show();
+        }
+
+        private void ShowScheduleRemoveDialog(Int32 scheduleId)
+        {
+            if (!_application.Manager.Schedules.TryGetValue(scheduleId, out Schedule schedule))
+            {
+                return;
+            }
+
+            String displayedName = schedule.DisplayedName;
+
+            String message = Resources.GetString(
+                Resource.String.removeCurrentScheduleMessage,
+                displayedName
+            );
+
+            new CustomAlertDialog(this)
+                .SetMessage(message)
+                .SetPositiveButton(Resource.String.removeActionText, RemoveCurrentScheduleAsync)
+                .SetNegativeButton(Resource.String.cancelActionText)
+                .Show();
+        }
+
+        private void ShowDialogWithSuggestionToConfigureApplication()
+        {
+            new CustomAlertDialog(this)
+                .SetPositiveButton(Resource.String.configureActionText, StartPreferencesActivity)
+                .SetMessage(Resource.String.configureApplicationMessage)
+                .SetCancelable(false)
+                .Show();
+        }
+
+        private void ShowViewingWeekTypeSnackbar()
+        {
+            DateTime viewingDate = _application.Preferences.CurrentScheduleDate;
+
+            Int32 type = (Int32)Schedule.GetWeekType(_application.Preferences.UpperWeekDate, viewingDate);
+            String[] weeksNames = Resources.GetStringArray(Resource.Array.weeksTypesInNominativeCase);
+
+            ShowSnackbar(String.Format("{0}: {1}.", viewingDate.ToString("dd MMMM"), weeksNames[type - 1]));
+        }
+
+        private void ShowCustomDatePickerDialog()
+        {
+            CustomDatePickerDialog dialog = new CustomDatePickerDialog(
+                this,
+                _application.Preferences.CurrentScheduleDate
+            );
+
+            dialog.DateChanged += (date) => ViewPagerMoveToDate(date);
+            dialog.Show();
+        }
+
+        private void ShowSnackbar(Int32 messageId, Int32 actionId = 0, Action callback = null)
+        {
+            ShowSnackbar(Resources.GetString(messageId), actionId, callback);
+        }
+
+        private void ShowSnackbar(String message, Int32 actionId = 0, Action callback = null)
+        {
+            Snackbar snackbar = Snackbar.Make(_contentLayout, message, Snackbar.LengthLong);
+
+            if (actionId != 0)
+            {
+                snackbar.SetAction(actionId, (v) => callback());
+            }
+
+            TextView text = snackbar.View.FindViewById<TextView>(Resource.Id.snackbar_text);
+            text.SetTextSize(ComplexUnitType.Px, Resources.GetDimension(Resource.Dimension.normalTextSize));
+            text.SetMaxLines(3);
+
+            snackbar.Show();
         }
 
         private Boolean _isThemeChanged;
