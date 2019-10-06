@@ -41,7 +41,7 @@
     </style>
 
     <style name="Widget.SmtuSchedule.Light.Snackbar" parent="Widget.MaterialComponents.Snackbar">
-        <item name="android:background">@color/snackbarBackgroundDay</item>
+        <!--<item name="android:background">@color/snackbarBackgroundDay</item>-->
     </style>
 
     <style name="Widget.SmtuSchedule.Light.PopupMenu" parent="Widget.AppCompat.Light.PopupMenu">
