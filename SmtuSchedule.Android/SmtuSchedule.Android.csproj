@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="Interfaces\ISchedulesViewer.cs" />
     <Compile Include="Preferences.cs" />
+    <Compile Include="Views\CustomArrayAdapter.cs" />
     <Compile Include="Views\CustomClickableSpan.cs" />
     <Compile Include="Utilities\ICharSequenceExtension.cs" />
     <Compile Include="Utilities\UiUtilities.cs" />
@@ -159,7 +160,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\customDatePicker.axml" />
+    <AndroidResource Include="Resources\layout\dialogDatePicker.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\download.xml" />
@@ -180,7 +181,7 @@
     <AndroidResource Include="Resources\layout\customPreference.axml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\customDialog.axml" />
+    <AndroidResource Include="Resources\layout\customDialogLayout.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\downloadActivity.axml">
@@ -220,6 +221,24 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\darkTheme.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\dialogListItem.axml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\dialogMessage.axml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\dialogListView.axml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>

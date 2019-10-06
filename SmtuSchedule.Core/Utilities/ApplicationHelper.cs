@@ -26,9 +26,9 @@ namespace SmtuSchedule.Core.Utilities
             Int32 major = (v1[0] > v2[0]) ? 1 : (v1[0] < v2[0] ? -1 : 0);
             Int32 minor = (v1[1] > v2[1]) ? 1 : (v1[1] < v2[1] ? -1 : 0);
 
-            Int32 patch = (v1.Length < 3 || v2.Length < 3)
-                ? (v1.Length > v2.Length ? 1 : -1)
-                : (v1[2] > v2[2] ? 1 : v1[2] < v2[2] ? -1 : 0);
+            Int32 patch = (v1.Length == 3 && v2.Length == 3)
+                ? (v1[2] > v2[2] ? 1 : v1[2] < v2[2] ? -1 : 0)
+                : (v1.Length == v2.Length ? 0 : v1.Length > v2.Length ? 1 : -1);
 
             return (major == 0) ? (minor == 0 ? patch : minor) : major;
         }

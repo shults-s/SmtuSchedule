@@ -43,6 +43,20 @@ namespace SmtuSchedule.Android.Views
             return fragment;
         }
 
+        //public override void NotifyDataSetChanged()
+        //{
+        //    _currentDayPosition = RenderingDateRange.GetIndexByDate(DateTime.Today);
+        //    base.NotifyDataSetChanged();
+        //}
+
+        //public override Int32 GetItemPosition(Java.Lang.Object @object)
+        //{
+        //    Int32 position = base.GetItemPosition(@object);
+        //    return (position != _currentDayPosition) ? PositionUnchanged : PositionNone;
+        //}
+
+        //private Int32 _currentDayPosition;
+
         private static readonly CultureInfo _culture = new CultureInfo("ru-RU");
 
         // (date, scheduleId) => fragment

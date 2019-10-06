@@ -133,11 +133,11 @@ namespace SmtuSchedule.Android.Views
                 layout.SetBackgroundColor(_dividerColor);
             }
 
-            TextView timesView = layout.FindViewById<TextView>(Resource.Id.subjectTimesTextView);
-            timesView.Text = subject.From.ToString("HH:mm");
+            TextView times = layout.FindViewById<TextView>(Resource.Id.subjectTimesTextView);
+            times.Text = subject.From.ToString("HH:mm");
 
-            TextView titleView = layout.FindViewById<TextView>(Resource.Id.subjectTitleTextView);
-            titleView.Text = subject.Title;
+            TextView title = layout.FindViewById<TextView>(Resource.Id.subjectTitleTextView);
+            title.Text = subject.Title;
 
             TextView lecturer = layout.FindViewById<TextView>(Resource.Id.subjectLecturerTextView);
             lecturer.MovementMethod = LinkMovementMethod.Instance;
@@ -162,18 +162,18 @@ namespace SmtuSchedule.Android.Views
                 // задается так, чтобы высота правой ячейки превосходила высоту содержимого левой.
                 // Эта ситуация возникает только если включено отображаение времени окончания занятий
                 // и при этом название предмета умещается в одну строку.
-                titleView.ViewTreeObserver.PreDraw += (s, e) =>
+                title.ViewTreeObserver.PreDraw += (s, e) =>
                 {
-                    if (titleView.LineCount < 2)
+                    if (title.LineCount < 2)
                     {
-                        titleView.SetLines(2);
+                        title.SetLines(2);
                     }
 
                     e.Handled = true;
                 };
 
-                timesView.Append("\n");
-                timesView.Append(subject.To.ToString("HH:mm").ToColored(_tertiaryTextColor));
+                times.Append("\n");
+                times.Append(subject.To.ToString("HH:mm").ToColored(_tertiaryTextColor));
             }
 
             if (relatedSubjects == null)

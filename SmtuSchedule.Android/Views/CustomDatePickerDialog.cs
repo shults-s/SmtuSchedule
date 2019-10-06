@@ -3,6 +3,7 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
+using Android.Runtime;
 
 namespace SmtuSchedule.Android.Views
 {
@@ -37,6 +38,12 @@ namespace SmtuSchedule.Android.Views
             private DateTime _last;
         }
 
+        // Preventive bugfix: Unable to activate instance of type ... from native handle ...
+        public CustomDatePickerDialog(IntPtr javaReference, JniHandleOwnership transfer)
+            : base(javaReference, transfer)
+        {
+        }
+
         public CustomDatePickerDialog(Context context, DateTime initialDate) : base(context)
         {
             DateChangeListener listener = new DateChangeListener(initialDate);
@@ -47,10 +54,10 @@ namespace SmtuSchedule.Android.Views
             };
 
             // В View.Inflate(...) передается Dialog.Context, к которому уже (!) применена тема.
-            View pickerView = View.Inflate(Context, Resource.Layout.customDatePicker, null);
-            SetView(pickerView);
+            View layout = View.Inflate(Context, Resource.Layout.dialogDatePicker, null);
+            SetView(layout);
 
-            DatePicker picker = pickerView.FindViewById<DatePicker>(Resource.Id.customDatePicker);
+            DatePicker picker = layout.FindViewById<DatePicker>(Resource.Id.dialogDatePicker);
             picker.Init(initialDate.Year, initialDate.Month - 1, initialDate.Day, listener);
 
             // Из-за бага в Android 5.0 событие изменения даты не срабатывает, если DatePicker
@@ -58,7 +65,6 @@ namespace SmtuSchedule.Android.Views
             if (Build.VERSION.SdkInt < BuildVersionCodes.LollipopMr1)
             {
                 SetNegativeButton(global::Android.Resource.String.Cancel, () => Dismiss());
-
                 SetPositiveButton(
                     global::Android.Resource.String.Ok,
                     () => listener.OnDateChanged(picker, picker.Year, picker.Month, picker.DayOfMonth)

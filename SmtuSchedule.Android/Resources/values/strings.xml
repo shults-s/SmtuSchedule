@@ -3,20 +3,32 @@
     <!-- Для каждой релизной версии необходимо вручную обновлять versionCode в манифесте приложения -->
     <string name="applicationCompleteName">Расписание СПбГМТУ</string>
     <string name="applicationLabel">Расписание</string>
-    <string name="applicationVersion">0.9</string>
+    <string name="applicationVersion">0.9-α</string>
     <string name="aboutApplicationMessage">
-        Версия 0.9 от XX октября 2019.
-        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>, поддержать можно <a href="#">тут</a>.
+        Версия 0.9-α от 06 октября 2019.
+        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>, поддержать меня можно <a href="#">тут</a> :)
         \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
     </string>
 
     <!-- Заголовки диалогов и панелей инструментов -->
-    <string name="introductionTitle">Что нового?</string>
-    <string name="aboutApplicationTitle">О приложении</string>
-    <string name="updateApplicationTitle">Загрузить новую версию?</string>
     <string name="preferencesToolbarTitle">Настройки</string>
     <string name="downloadToolbarTitle">Загрузка расписаний</string>
     <string name="welcomeToolbarTitle">@string/applicationCompleteName</string>
+    <string name="introductionDialogTitle">Что нового?</string>
+    <string name="aboutApplicationDialogTitle">О приложении</string>
+    <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
+    <string name="updateApplicationDialogTitle">Загрузить новую версию?</string>
+
+    <!-- Массивы строк -->
+    <string-array name="currentScheduleActionsTitles">
+        <item>Удалить расписание</item>
+        <item>Загрузить расписание повторно</item>
+    </string-array>
+
+    <string-array name="weeksTypesInNominativeCase">
+        <item>верхняя неделя</item>
+        <item>нижняя неделя</item>
+    </string-array>
 
     <string name="multiGroupSubjectPrefix">Группы</string>
 
@@ -24,12 +36,12 @@
     <string name="selectScheduleDateMenuItem">Выбрать дату</string>
     <string name="downloadSchedulesMenuItem">Загрузить расписания</string>
     <string name="removeCurrentScheduleMenuItem">Удалить расписание</string>
-    <string name="aboutApplicationMenuItem">@string/aboutApplicationTitle</string>
     <string name="openPreferencesMenuItem">@string/preferencesToolbarTitle</string>
+    <string name="aboutApplicationMenuItem">@string/aboutApplicationDialogTitle</string>
 
     <!-- Названия действий Snackbar'ов и кнопок -->
     <string name="gotItActionText">Понял</string>
-    <string name="updateActionText">Обновить</string>
+    <string name="updateActionText">Google Play</string>
     <string name="cancelActionText">Отмена</string>
     <string name="removeActionText">Удалить</string>
     <string name="thanksActionText">Спасибо</string>
@@ -49,6 +61,10 @@
     <string name="applicationInitializationErrorMessage">Ошибка при инициализации приложения.</string>
     <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с сайтом университета.</string>
 
+    <!-- Обоснования для запроса разрешений -->
+    <string name="internetPermissionRationaleMessage">Доступ к интернету необходим для загрузки расписаний.</string>
+    <string name="storagePermissionsRationaleMessage">Доступ к памяти смартфона необходим для загрузки расписаний.</string>
+
     <!-- Подсказки ввода -->
     <string name="downloadRequestHintMessage">Введите номера групп и/или ФИО преподавателей через запятую:</string>
 
@@ -62,10 +78,6 @@
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
     <string name="preferenceDisplaySubjectEndTimeTitle">Время окончания занятий</string>
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
-
-    <!-- Обоснования для запроса разрешений -->
-    <string name="internetPermissionRationaleMessage">Доступ к интернету необходим для загрузки расписаний.</string>
-    <string name="storagePermissionsRationaleMessage">Доступ к памяти смартфона необходим для загрузки расписаний.</string>
 
     <!-- Сообщения уведомительного характера -->
     <string name="weekendMessage">Выходной день :)</string>
@@ -87,13 +99,15 @@
         \n1. Поддержка Android 5.0;
         \n2. Ночной режим;
         \n3. Отображение времени окончания занятий;
-        \n4. Поточные занятия в расписаниях преподавателей теперь группируются.
+        \n4. Поточные занятия в расписаниях преподавателей теперь группируются;
+        \n5. Удержание пальца на заголовке расписания открывает диалог действий над расписанием;
+        \n6. Удержание пальца на плавающей кнопке выводит сообщение с типом недели просматриваемой даты.
         \n\nВерсия 0.9 – последняя перед глобальными изменениями. Начиная с версии 1.0 часть функционала будет вынесена
         на сервер, а значит, приложение станет «легче» и получит новые, ранее технически нереализуемые возможности,
-        такие как расписания аудиторий (такой функции нет даже на сайте).
-        \n\nПриложение разрабатывается мной в свободное от работы и учебы время, поэтому сколько времени потребуют эти
-        изменения, сказать сложно.
-        \n\nЕсли Вам понравилось или помогло это приложение, можете <a href="#"><b>поддержать меня</b></a>.
+        такие как расписания аудиторий (такой функции нет даже на сайте). Или, к примеру, уведомления о предстоящих занятиях.
+        \n\nПриложение разрабатывается мной – студентом-энтузиастом в свободное от работы и учебы время, поэтому сколько
+        времени потребуют эти изменения, сказать сложно.
+        \n\nЕсли Вам понравилось или помогло это приложение, можете <a href="#">поддержать меня материально</a>.
         \nЭту ссылку можно найти также в окне «О приложении».
     </string>
     <string name="applicationUpdateAvailableMessage">

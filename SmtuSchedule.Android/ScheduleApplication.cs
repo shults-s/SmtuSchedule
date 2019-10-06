@@ -13,24 +13,21 @@ namespace SmtuSchedule.Android
     [Application]
     public sealed class ScheduleApplication : Application
     {
+        public SchedulesManager Manager { get; private set; }
+
         public InMemoryLogger Logger { get; private set; }
 
+        public Preferences Preferences { get; private set; }
+
         public Boolean IsInitialized { get; private set; }
-
-        public SchedulesManager Manager { get; set; }
-
-        public Preferences Preferences { get; set; }
 
         // Bugfix: Unable to activate instance of type ... from native handle ...
         public ScheduleApplication(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
         {
-            PreInitialize();
         }
 
-        public ScheduleApplication() => PreInitialize();
-
-        private void PreInitialize()
+        public ScheduleApplication()
         {
             Logger = new InMemoryLogger();
             Logger.Log(
@@ -44,11 +41,11 @@ namespace SmtuSchedule.Android
 
             // У AndroidEnvironment.UnhandledExceptionRaiser трассировка стека подробнее,
             // чем у AppDomain.CurrentDomain.UnhandledException.
-            //AndroidEnvironment.UnhandledExceptionRaiser += (s, a) =>
-            //{
-            //    Logger.Log(a.Exception);
-            //    SaveLog(true);
-            //};
+            AndroidEnvironment.UnhandledExceptionRaiser += (s, a) =>
+            {
+                Logger.Log(a.Exception);
+                SaveLog(true);
+            };
 
             Preferences = new Preferences(this);
 

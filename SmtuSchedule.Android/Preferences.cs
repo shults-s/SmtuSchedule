@@ -37,7 +37,7 @@ namespace SmtuSchedule.Android
 
             UpperWeekDate = new DateTime(_preferences.GetLong("UpperWeekDate", 0));
             UseDarkTheme = _preferences.GetBoolean("UseDarkTheme", false);
-            UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", false);
+            UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", true);
             CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
             DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
 
@@ -92,7 +92,7 @@ namespace SmtuSchedule.Android
                     break;
 
                 case "UseFabDateSelector":
-                    UseFabDateSelector = preferences.GetBoolean("UseFabDateSelector", false);
+                    UseFabDateSelector = preferences.GetBoolean("UseFabDateSelector", true);
                     break;
 
                 case "UseDarkTheme":

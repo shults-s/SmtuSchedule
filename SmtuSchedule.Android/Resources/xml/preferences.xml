@@ -15,7 +15,7 @@
         android:key="UseFabDateSelector"
         android:title="@string/preferenceUseFabDateSelectorTitle"
         android:summary="@string/preferenceUseFabDateSelectorSummary"
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:layout="@layout/customPreference" />
     <SwitchPreferenceCompat
         android:key="DisplaySubjectEndTime"

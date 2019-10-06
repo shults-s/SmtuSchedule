@@ -58,7 +58,7 @@ namespace SmtuSchedule.Core.Models
             return (subjects.Length == 0) ? null : subjects;
         }
 
-        private static WeekType GetWeekType(DateTime upperWeekDate, DateTime date)
+        public static WeekType GetWeekType(DateTime upperWeekDate, DateTime date)
         {
             DayOfWeek upperWeekDayType = upperWeekDate.DayOfWeek;
             DayOfWeek targetDayType = date.DayOfWeek;

@@ -17,7 +17,6 @@
         <item name="textColorSubjectTertiary">@color/subjectTertiaryTextNight</item>
         <item name="textColorSubjectSecondary">@color/subjectSecondaryTextNight</item>
 
-        <!--<item name="android:itemBackground">@color/primaryDarkNight</item>-->
         <item name="android:itemBackground">@color/primaryNight</item>
         <item name="android:windowBackground">@color/windowBackgroundNight</item>
 
@@ -46,13 +45,11 @@
     </style>
 
     <style name="Widget.SmtuSchedule.Dark.Snackbar" parent="Widget.MaterialComponents.Snackbar">
-        <!--<item name="android:background">@color/primaryDarkNight</item>-->
         <item name="android:background">@color/primaryNight</item>
     </style>
 
     <style name="Widget.SmtuSchedule.Dark.PopupMenu" parent="Widget.AppCompat.PopupMenu">
         <item name="overlapAnchor">true</item>
-        <!--<item name="android:popupBackground">@color/primaryDarkNight</item>-->
         <item name="android:popupBackground">@color/primaryNight</item>
     </style>
 

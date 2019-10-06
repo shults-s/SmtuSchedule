@@ -42,16 +42,22 @@ namespace SmtuSchedule.Android.Views
                     ? DateTime.Today
                     : preference.Date;
 
-                _picker = view.FindViewById<DatePicker>(Resource.Id.customDatePicker);
+                _picker = view.FindViewById<DatePicker>(Resource.Id.dialogDatePicker);
                 _picker.DateTime = initialDate;
             }
 
             private DatePicker _picker;
         }
 
-        public override Int32 DialogLayoutResource => Resource.Layout.customDatePicker;
+        public override Int32 DialogLayoutResource => Resource.Layout.dialogDatePicker;
 
         public DateTime Date { get; private set; }
+
+        // Preventive bugfix: Unable to activate instance of type ... from native handle ...
+        public DatePreference(IntPtr javaReference, JniHandleOwnership transfer)
+            : base(javaReference, transfer)
+        {
+        }
 
         public DatePreference(Context context, IAttributeSet attributes) : base(context, attributes,
             Resource.Attribute.dialogPreferenceStyle, Resource.Attribute.dialogPreferenceStyle)

@@ -6,7 +6,7 @@ using Android.Text.Style;
 
 namespace SmtuSchedule.Android.Views
 {
-    class CustomClickableSpan : ClickableSpan
+    internal class CustomClickableSpan : ClickableSpan
     {
         public event Action Click;
 
