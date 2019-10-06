@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
     <!-- Цвета, относящиеся к светлой (дневной) теме -->
+    <color name="snackbarBackgroundDay">#323232</color>
     <color name="windowBackgroundDay">#FAFAFA</color>
 
     <color name="primaryDarkDay">#455273</color>
