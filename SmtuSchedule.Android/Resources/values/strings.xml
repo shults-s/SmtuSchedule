@@ -3,23 +3,13 @@
     <!-- Для каждой релизной версии необходимо вручную обновлять versionCode в манифесте приложения -->
     <string name="applicationCompleteName">Расписание СПбГМТУ</string>
     <string name="applicationLabel">Расписание</string>
-    <string name="applicationVersion">0.9</string>
+    <string name="applicationVersion">0.9-α</string>
     <string name="aboutApplicationMessage">
-        Версия 0.9 от XX октября 2019.
+        Версия 0.9-α от 10 октября 2019.
         \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>, поддержать меня можно <a href="#">тут</a> :)
         \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
     </string>
 
-    <!-- Заголовки диалогов и панелей инструментов -->
-    <string name="preferencesToolbarTitle">Настройки</string>
-    <string name="downloadToolbarTitle">Загрузка расписаний</string>
-    <string name="welcomeToolbarTitle">@string/applicationCompleteName</string>
-    <string name="introductionDialogTitle">Что нового?</string>
-    <string name="aboutApplicationDialogTitle">О приложении</string>
-    <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
-    <string name="updateApplicationDialogTitle">Загрузить новую версию?</string>
-
-    <!-- Массивы строк -->
     <string-array name="currentScheduleActionsTitles">
         <item>Удалить расписание</item>
         <item>Загрузить расписание повторно</item>
@@ -31,6 +21,15 @@
     </string-array>
 
     <string name="multiGroupSubjectPrefix">Группы</string>
+
+    <!-- Заголовки диалогов и панелей инструментов -->
+    <string name="preferencesToolbarTitle">Настройки</string>
+    <string name="downloadToolbarTitle">Загрузка расписаний</string>
+    <string name="welcomeToolbarTitle">@string/applicationCompleteName</string>
+    <string name="introductionDialogTitle">Что нового?</string>
+    <string name="aboutApplicationDialogTitle">О приложении</string>
+    <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
+    <string name="updateApplicationDialogTitle">Загрузить новую версию?</string>
 
     <!-- Названия пунктов меню в панели инстументов -->
     <string name="selectScheduleDateMenuItem">Выбрать дату</string>
@@ -102,12 +101,11 @@
         \n4. Поточные занятия в расписаниях преподавателей теперь группируются;
         \n5. Удержание пальца на заголовке расписания открывает диалог действий над расписанием;
         \n6. Удержание пальца на плавающей кнопке выводит сообщение с типом недели просматриваемой даты.
-        \n\nВерсия 0.9 – последняя перед глобальными изменениями. Начиная с версии 1.0 часть функционала будет вынесена
-        на сервер, а значит, приложение станет «легче» и получит новые, ранее технически нереализуемые возможности,
-        такие как расписания аудиторий (такой функции нет даже на сайте). Или, к примеру, уведомления о предстоящих занятиях.
-        \n\nПриложение разрабатывается мной – студентом-энтузиастом в свободное от работы и учебы время, поэтому сколько
-        времени потребуют эти изменения, сказать сложно.
-        \n\nЕсли Вам понравилось или помогло это приложение, можете <a href="#">поддержать меня материально</a>.
+        \n\nВ следующем релизе часть функционала будет вынесена на сервер, а значит, приложение станет «легче» и получит новые,
+        ранее технически нереализуемые возможности, такие как расписания аудиторий (такой функции нет даже на сайте).
+        \nИли, к примеру, уведомления о предстоящих занятиях.
+        \n\nПриложение разрабатывается мной в свободное от работы и учебы время, поэтому эти изменения займут длительное время.
+        \n\nЕсли Вам понравилось или помогло это приложение, можете <a href="#">поддержать меня</a>.
         \nЭту ссылку можно найти также в окне «О приложении».
     </string>
     <string name="applicationUpdateAvailableMessage">

@@ -60,11 +60,19 @@ namespace SmtuSchedule.Core.Models
 
         public static WeekType GetWeekType(DateTime upperWeekDate, DateTime date)
         {
-            DayOfWeek upperWeekDayType = upperWeekDate.DayOfWeek;
-            DayOfWeek targetDayType = date.DayOfWeek;
+            // Неприятность заключается в том, что у нас неделя начинается с понедельника,
+            // а в DayOfWeek – с воскресенья. Из-за чего воскресенье считается не по той
+            // неделе, к которой оно в действительности относится.
+            Int32 GetCorrectDayOfWeekIndex(DayOfWeek dayOfWeek)
+            {
+                return (dayOfWeek == DayOfWeek.Sunday) ? 6 : (Int32)(dayOfWeek - 1);
+            }
+
+            Int32 upperWeekDayIndex = GetCorrectDayOfWeekIndex(upperWeekDate.DayOfWeek);
+            Int32 targetDayIndex = GetCorrectDayOfWeekIndex(date.DayOfWeek);
 
             Int32 numberOfDaysBetweenDates;
-            if (targetDayType == upperWeekDayType)
+            if (targetDayIndex == upperWeekDayIndex)
             {
                 numberOfDaysBetweenDates = (upperWeekDate - date).Days;
             }
@@ -72,7 +80,7 @@ namespace SmtuSchedule.Core.Models
             {
                 // Вычисляем день, который относится к той же неделе, что и date,
                 // но имеет день недели, совпадающий с днем недели upperWeekDate.
-                Int32 difference = upperWeekDayType - targetDayType;
+                Int32 difference = upperWeekDayIndex - targetDayIndex;
                 DateTime normalizedDate = date.AddDays(difference);
 
                 numberOfDaysBetweenDates = (upperWeekDate - normalizedDate).Days;

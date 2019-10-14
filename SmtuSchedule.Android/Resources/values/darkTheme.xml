@@ -39,7 +39,8 @@
     </style>
 
     <style name="Widget.SmtuSchedule.Dark.Toolbar" parent="Widget.AppCompat.Toolbar">
-        <item name="android:background">@color/primaryNight</item>
+        <!--<item name="android:background">@color/primaryNight</item>-->
+        <item name="android:background">@mipmap/carbonTexture</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat</item>
         <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>

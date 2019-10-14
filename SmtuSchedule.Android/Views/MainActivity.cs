@@ -686,7 +686,7 @@ namespace SmtuSchedule.Android.Views
             Int32 type = (Int32)Schedule.GetWeekType(_application.Preferences.UpperWeekDate, viewingDate);
             String[] weeksNames = Resources.GetStringArray(Resource.Array.weeksTypesInNominativeCase);
 
-            ShowSnackbar(String.Format("{0}: {1}.", viewingDate.ToString("dd MMMM"), weeksNames[type - 1]));
+            ShowSnackbar(String.Format("{0}: {1}.", viewingDate.ToString("d MMMM"), weeksNames[type - 1]));
         }
 
         private void ShowCustomDatePickerDialog()
