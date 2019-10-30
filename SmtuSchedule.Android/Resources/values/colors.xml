@@ -1,18 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
-    <color name="windowBackground">#FAFAFA</color>
+    <!-- Цвета, относящиеся к светлой (дневной) теме -->
+    <!--<color name="snackbarBackgroundDay">#323232</color>-->
+    <color name="windowBackgroundDay">#FAFAFA</color>
 
-    <!-- В билде для Семы primaryDark = #0028A3 -->
-    <color name="primaryDark">#455273</color>
+    <color name="primaryDarkDay">#455273</color>
+    <color name="primaryDay">#517CB3</color>
+    <color name="accentDay">#517CB3</color>
+    <color name="dividerDay">#E1F7F4</color>
 
-    <color name="primary">#517CB3</color>
-    <color name="accent">#E1F7F4</color>
+    <color name="errorTextDay">#B00020</color>
+    <color name="primaryTextDay">#202020</color>
+    <color name="secondaryTextDay">#727272</color>
 
-    <color name="divider">#E1F7F4</color>
+    <color name="toolbarTitleTextDay">#FFFFFF</color>
+    <color name="subjectPrimaryTextDay">#455273</color>
+    <color name="subjectTertiaryTextDay">#727272</color>
+    <color name="subjectSecondaryTextDay">#202020</color>
 
-    <color name="errorText">#B00020</color>
-    <color name="toolbarText">#FFFFFF</color>
-    <color name="primaryText">#202020</color>
-    <color name="secondaryText">#727272</color>
-    <color name="subjectTitleText">#455273</color>
+    <!-- Цвета, относящиеся к темной (ночной) теме -->
+    <color name="windowBackgroundNight">#161817</color>
+
+    <color name="primaryDarkNight">#101211</color>
+    <color name="primaryNight">#232728</color>
+    <color name="accentNight">#517CB3</color>
+    <color name="dividerNight">#232728</color>
+
+    <color name="errorTextNight">#B00020</color>
+    <color name="primaryTextNight">#E1E3E6</color>
+    <color name="secondaryTextNight">#909499</color>
+
+    <color name="toolbarTitleTextNight">#E1E3E6</color>
+    <color name="subjectPrimaryTextNight">#E1E3E6</color>
+    <color name="subjectTertiaryTextNight">#5D5F61</color>
+    <color name="subjectSecondaryTextNight">#909499</color>
 </resources>

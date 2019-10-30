@@ -6,7 +6,7 @@ namespace SmtuSchedule.Core.Utilities
     {
         public const Int32 DefaultHalfRangeInDays = 15;
 
-        public Int32 TotalDaysNumber => (Int32)(_maximumDate - _minimumDate).TotalDays;
+        public Int32 TotalDaysNumber => (Int32)(_maximumDate - _minimumDate).TotalDays + 1;
 
         public DateRange(DateTime date, Int32 halfRangeInDays = DefaultHalfRangeInDays)
         {

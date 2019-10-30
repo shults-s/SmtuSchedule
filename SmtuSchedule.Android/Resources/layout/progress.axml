@@ -8,4 +8,4 @@
     android:minHeight="32dp"
     android:indeterminate="true"
     android:indeterminateTintMode="src_atop"
-    android:indeterminateTint="@color/primary" />
+    android:indeterminateTint="?attr/colorAccent" />

@@ -47,14 +47,25 @@ namespace SmtuSchedule.Core
 
         private const String GroupNamePrefixInLecturerSchedule = "Группа ";
 
-        public Boolean HasDownloadingErrors { get; private set; }
+        public Boolean HaveDownloadingErrors { get; private set; }
 
         public ILogger Logger { get; set; }
+
+        public ServerSchedulesLoader(Dictionary<String, Int32> lecturers) => _lecturers = lecturers;
 
         public async Task<Dictionary<Int32, Schedule>> DownloadAsync(IEnumerable<String> requests)
         {
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
-            HasDownloadingErrors = false;
+            HaveDownloadingErrors = false;
+
+            if (_lecturers == null)
+            {
+                Logger?.Log("Lecturers property is null, therefore, in any loaded schedule, " +
+                    "the lecturers id's will be zero. So, switching between schedules will be impossible.");
+
+                HaveDownloadingErrors = true;
+                return schedules;
+            }
 
             IEnumerable<Int32> ConvertRequestsToIds(IEnumerable<String> searchRequests)
             {
@@ -80,75 +91,12 @@ namespace SmtuSchedule.Core
                 }
                 catch(Exception exception)
                 {
-                    HasDownloadingErrors = true;
+                    HaveDownloadingErrors = true;
                     Logger?.Log($"Error of downloading schedule with id {scheduleId}: ", exception);
                 }
             }
 
             return schedules;
-        }
-
-        public async Task<IEnumerable<String>> DownloadLecturers(Boolean forced = false)
-        {
-            const String SearchScheduleUrl = "https://www.smtu.ru/ru/searchschedule/";
-
-            if (_lecturers != null && !forced)
-            {
-                return _lecturers.Keys;
-            }
-
-            // На входе: Фамилия Имя Отчество (Должность в университете)
-            String GetPureLecturerName(String name) => name.Substring(0, name.IndexOf('(') - 1);
-
-            // На входе: /ru/viewschedule/teacher/Идентификатор/
-            Int32 GetScheduleIdFromUrl(String url)
-            {
-                url = url.TrimEnd('/');
-                return Int32.Parse(url.Substring(url.LastIndexOf('/') + 1));
-            }
-
-            try
-            {
-                String html = await HttpHelper.GetAsync(SearchScheduleUrl).ConfigureAwait(false);
-
-                HtmlDocument document = new HtmlDocument();
-                document.LoadHtml(html);
-
-                HtmlNode searchKeyField = document.DocumentNode.Descendants("input")
-                    .Where(f => f.Attributes["name"]?.Value == "search_key")
-                    .First();
-
-                Dictionary<String, String> parameters = new Dictionary<String, String>()
-                {
-                    ["whatsearch"] = " ",
-                    ["search_key"] = searchKeyField.Attributes["value"].Value
-                };
-
-                html = await HttpHelper.PostAsync(SearchScheduleUrl, parameters).ConfigureAwait(false);
-                document.LoadHtml(html);
-
-                IEnumerable<HtmlNode> links = document.DocumentNode.Descendants("article")
-                    .First()
-                    .Elements("li")
-                    .Select(e => e.Element("a"))
-                    .Distinct(new UrlComparer());
-
-                _lecturers = new Dictionary<String, Int32>();
-
-                foreach (HtmlNode link in links)
-                {
-                    Int32 scheduleId = GetScheduleIdFromUrl(link.Attributes["href"].Value);
-                    String name = GetPureLecturerName(link.InnerHtml);
-                    _lecturers[name] = scheduleId;
-                }
-
-                return _lecturers.Keys;
-            }
-            catch (Exception exception)
-            {
-                Logger?.Log($"Error of downloading lecturers with their schedules id's: ", exception);
-                return null;
-            }
         }
 
         private async Task<Schedule> DownloadScheduleAsync(Int32 scheduleId)
@@ -226,12 +174,13 @@ namespace SmtuSchedule.Core
             }
 
             // Групп с большим номером у нас нет, значит это расписание преподавателя.
-            ScheduleType scheduleType = scheduleId > 10000 ? ScheduleType.Lecturer : ScheduleType.Group;
+            ScheduleType scheduleType = (scheduleId > 10000) ? ScheduleType.Lecturer : ScheduleType.Group;
 
             Schedule schedule = new Schedule()
             {
+                Type = scheduleType,
                 ScheduleId = scheduleId,
-                Timetable = new Timetable(),
+                Timetable = new Timetable()
             };
 
             String baseUrl = (scheduleType == ScheduleType.Group) ? GroupScheduleBaseUrl
@@ -318,6 +267,6 @@ namespace SmtuSchedule.Core
             return schedule;
         }
 
-        private Dictionary<String, Int32> _lecturers;
+        private readonly Dictionary<String, Int32> _lecturers;
     }
 }

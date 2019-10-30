@@ -48,9 +48,15 @@ namespace SmtuSchedule.Android.Views
         {
             base.OnCreate(savedInstanceState);
 
+            ScheduleApplication application = ApplicationContext as ScheduleApplication;
+            application.Preferences.ThemeChanged += Recreate;
+
+            SetTheme(application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark
+                : Resource.Style.Theme_SmtuSchedule_Light);
+
             SetContentView(Resource.Layout.preferencesActivity);
 
-            Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.preferencesToolbar);
+            Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.preferencesActivityToolbar);
             toolbar.NavigationClick += (s, e) => OnBackPressed();
 
             SupportFragmentManager.BeginTransaction()

@@ -29,26 +29,31 @@ namespace SmtuSchedule.Android.Views
 
             base.OnCreate(savedInstanceState);
 
+            _application = ApplicationContext as ScheduleApplication;
+
+            SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark
+                : Resource.Style.Theme_SmtuSchedule_Light);
+
             SetContentView(Resource.Layout.downloadActivity);
 
-            Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.downloadToolbar);
+            Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.downloadActivityToolbar);
             toolbar.NavigationClick += (s, e) => OnBackPressed();
 
             toolbar.InflateMenu(Resource.Menu.downloadMenu);
             toolbar.MenuItemClick += (s, e) =>
             {
                 Intent intent = new Intent();
-                intent.PutExtra(IntentSearchRequestsKey, SplitSearchRequest(_downloadRequest.Text));
+                intent.PutExtra(IntentSearchRequestsKey, SplitSearchRequest(_searchRequestTextView.Text));
 
                 SetResult(Result.Ok, intent);
                 Finish();
             };
 
-            _downloadRequest = FindViewById<MultiAutoCompleteTextView>(
+            _searchRequestTextView = FindViewById<MultiAutoCompleteTextView>(
                 Resource.Id.downloadMultiAutoCompleteTextView
             );
 
-            if (_downloadRequest.RequestFocus())
+            if (_searchRequestTextView.RequestFocus())
             {
                 Window.SetSoftInputMode(SoftInput.StateAlwaysVisible);
             }
@@ -56,10 +61,10 @@ namespace SmtuSchedule.Android.Views
             IMenuItem downloadMenuItem = toolbar.Menu.GetItem(0);
             downloadMenuItem.SetEnabled(false);
 
-            _downloadRequest.SetTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-            _downloadRequest.TextChanged += (s, e) =>
+            _searchRequestTextView.SetTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+            _searchRequestTextView.TextChanged += (s, e) =>
             {
-                Boolean isUserInputValid = !String.IsNullOrWhiteSpace(_downloadRequest.Text);
+                Boolean isUserInputValid = !String.IsNullOrWhiteSpace(_searchRequestTextView.Text);
                 downloadMenuItem.SetEnabled(isUserInputValid);
             };
 
@@ -68,24 +73,22 @@ namespace SmtuSchedule.Android.Views
 
         private async void DownloadLecturersAsync()
         {
-            ScheduleApplication application = ApplicationContext as ScheduleApplication;
-
-            IEnumerable<String> lecturers = await application.Manager.DownloadLecturersAsync();
-
+            IEnumerable<String> lecturers = await _application.Manager.DownloadLecturersNamesAsync();
             if (lecturers == null)
             {
-                application.SaveLog();
+                _application.SaveLog();
 
                 TextView error = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
                 error.Visibility = ViewStates.Visible;
+
+                return ;
             }
-            else
-            {
-                Int32 layoutId = Resource.Layout.support_simple_spinner_dropdown_item;
-                _downloadRequest.Adapter = new ArrayAdapter<String>(this, layoutId, lecturers.ToArray());
-            }
+
+            Int32 layoutId = Resource.Layout.support_simple_spinner_dropdown_item;
+            _searchRequestTextView.Adapter = new ArrayAdapter<String>(this, layoutId, lecturers.ToArray());
         }
 
-        private MultiAutoCompleteTextView _downloadRequest;
+        private ScheduleApplication _application;
+        private MultiAutoCompleteTextView _searchRequestTextView;
     }
 }

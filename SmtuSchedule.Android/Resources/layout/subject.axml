@@ -5,26 +5,25 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="1dp"
     android:padding="@dimen/normalPadding"
-    android:background="@color/windowBackground">
+    android:background="?android:attr/windowBackground">
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginRight="@dimen/normalPadding">
         <TextView
-            android:id="@+id/subjectFromTextView"
+            android:id="@+id/subjectTimesTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/smallPadding"
             android:textSize="@dimen/normalTextSize"
-            android:textColor="@color/primaryText" />
+            android:textColor="?attr/textColorSubjectSecondary" />
         <TextView
             android:id="@+id/subjectAudienceTextView"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="bottom"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:textSize="@dimen/normalTextSize"
-            android:textColor="@color/primaryText"
-            android:layout_below="@id/subjectFromTextView" />
+            android:textColor="?attr/textColorSubjectSecondary" />
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -36,15 +35,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/smallPadding"
             android:textSize="@dimen/normalTextSize"
-            android:textColor="@color/subjectTitleText" />
+            android:textColor="?attr/textColorSubjectPrimary" />
         <TextView
             android:id="@+id/subjectLecturerTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
+            android:linksClickable="true"
             android:textSize="@dimen/normalTextSize"
-            android:textColor="@color/primaryText"
+            android:textColor="?attr/textColorSubjectSecondary"
             android:layout_below="@id/subjectTitleTextView" />
     </RelativeLayout>
 </TableRow>

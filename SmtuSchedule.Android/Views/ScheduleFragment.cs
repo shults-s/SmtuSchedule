@@ -1,46 +1,36 @@
 using System;
+using System.Linq;
+using System.Diagnostics;
+using System.Collections.Generic;
 using Android.OS;
+using Android.Text;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
+using Android.Graphics;
+using Android.Text.Method;
 using Android.Support.V4.App;
 using SmtuSchedule.Core.Models;
+using SmtuSchedule.Core.Enumerations;
+using SmtuSchedule.Android.Utilities;
 using SmtuSchedule.Android.Interfaces;
 
 namespace SmtuSchedule.Android.Views
 {
+    [DebuggerDisplay("ScheduleFragment {Date.ToShortDateString()}")]
     public class ScheduleFragment : Fragment
     {
-        public void SetFragmentData(Subject[] subjects, Boolean needHighlightCurrentSubject)
-        {
-            _subjects = subjects;
-            _highlightCurrentSubject = needHighlightCurrentSubject;
-        }
-
-        public override void OnAttach(Context context)
-        {
-            base.OnAttach(context);
-
-            if (Activity is ISchedulesViewer viewer)
-            {
-                _switchScheduleCallback = viewer.ShowSchedule;
-            }
-        }
-
-        public override void OnDetach()
-        {
-            base.OnDetach();
-            _switchScheduleCallback = null;
-        }
+        public DateTime Date { get; set; }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
         {
-            Int32 currentIndex = _highlightCurrentSubject ? FindCurrentSubjectIndex(_subjects) : -1;
+            Schedule schedule = _application.Manager.Schedules[_application.Preferences.CurrentScheduleId];
+            Subject[] subjects = schedule.GetSubjects(_application.Preferences.UpperWeekDate, Date);
 
-            View layout;
+            View layout = null;
 
-            if (_subjects == null)
+            if (subjects == null)
             {
                 layout = inflater.Inflate(Resource.Layout.message, container, false);
 
@@ -52,65 +42,189 @@ namespace SmtuSchedule.Android.Views
 
             layout = inflater.Inflate(Resource.Layout.schedule, container, false);
 
+            Int32 currentSubjectIndex = (Date != DateTime.Today)
+                ? -1
+                : Array.FindIndex(subjects, s => s.IsTimeInside(DateTime.Now));
+
             TableLayout table = layout.FindViewById<TableLayout>(Resource.Id.scheduleTableLayout);
-            for (Int32 i = 0; i < _subjects.Length; i++)
+
+            for (Int32 i = 0; i < subjects.Length; )
             {
-                if (!_subjects[i].IsDisplayed)
+                Subject subject = subjects[i];
+
+                if (!subject.IsDisplayed)
                 {
                     continue;
                 }
 
-                table.AddView(GetSubjectViewByIndex(inflater, table, i, currentIndex));
+                // В расписании группы или аудитории может возникнуть ситуация, когда в одно и то же время
+                // одно и то же занятие проходит у нескольких групп (поток). Для удобства восприятия имеет
+                // смысл свернуть их отображение в одну строку таблицы.
+                IEnumerable<Subject> relatedSubjects = null;
+                Int32 numberOfRelatedSubjects = 0;
+
+                if (schedule.Type == ScheduleType.Lecturer || schedule.Type == ScheduleType.Audience)
+                {
+                    relatedSubjects = subjects.Skip(i + 1).Where(
+                        s => s.From == subject.From
+                        && s.To == subject.To
+                        && s.Audience == subject.Audience
+                    );
+
+                    numberOfRelatedSubjects = relatedSubjects.Count();
+                }
+
+                table.AddView(CreateSubjectView(
+                    inflater,
+                    table,
+                    subject,
+                    (numberOfRelatedSubjects != 0) ? relatedSubjects : null,
+                    i == currentSubjectIndex
+                ));
+
+                i += (numberOfRelatedSubjects == 0) ? 1 : numberOfRelatedSubjects + 1;
             }
 
             return layout;
         }
 
-        private Int32 FindCurrentSubjectIndex(Subject[] subjects)
+        public override void OnAttach(Context context)
         {
-            if (subjects == null)
+            base.OnAttach(context);
+
+            _application = Context.ApplicationContext as ScheduleApplication;
+
+            if (Activity is ISchedulesViewer viewer)
             {
-                return -1;
+                _schedulesSwitcherCallback = viewer.ShowSchedule;
             }
 
-            DateTime now = DateTime.Now;
-            return Array.FindIndex(subjects, e => e.IsTimeInside(now));
+            _multiGroupsPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
+
+            _tertiaryTextColor = new Color(UiUtilities.GetAttribute(
+                Context,
+                Resource.Attribute.textColorSubjectTertiary
+            ));
+
+            _secondaryTextColor = new Color(UiUtilities.GetAttribute(
+                Context,
+                Resource.Attribute.textColorSubjectSecondary
+            ));
+
+            _dividerColor = new Color(UiUtilities.GetAttribute(Context, Resource.Attribute.colorDivider));
         }
 
-        private View GetSubjectViewByIndex(LayoutInflater inflater, ViewGroup container, Int32 index,
-            Int32 currentIndex)
+        public override void OnDetach()
+        {
+            base.OnDetach();
+
+            _application = null;
+            _multiGroupsPrefix = null;
+            _schedulesSwitcherCallback = null;
+        }
+
+        private View CreateSubjectView(LayoutInflater inflater, ViewGroup container, Subject subject,
+            IEnumerable<Subject> relatedSubjects, Boolean needHighlight)
         {
             View layout = inflater.Inflate(Resource.Layout.subject, container, false);
 
-            if (index == currentIndex)
+            if (needHighlight)
             {
-                layout.SetBackgroundResource(Resource.Color.accent);
+                layout.SetBackgroundColor(_dividerColor);
             }
 
-            TextView from = layout.FindViewById<TextView>(Resource.Id.subjectFromTextView);
-            from.Text = _subjects[index].From.ToString("HH:mm");
+            TextView times = layout.FindViewById<TextView>(Resource.Id.subjectTimesTextView);
+            times.Text = subject.From.ToString("HH:mm");
 
             TextView title = layout.FindViewById<TextView>(Resource.Id.subjectTitleTextView);
-            title.Text = _subjects[index].Title;
+            title.Text = subject.Title;
 
             TextView lecturer = layout.FindViewById<TextView>(Resource.Id.subjectLecturerTextView);
+            lecturer.MovementMethod = LinkMovementMethod.Instance;
             lecturer.Text = @"¯\_(ツ)_/¯";
 
-            Lecturer lecturerOrGroup = _subjects[index].Lecturer ?? _subjects[index].Group;
-            if (lecturerOrGroup != null)
+            // Из-за одинаковых идентификаторов в разных фрагментах в LinkMovementMethod вероятно возникает
+            // конфликт, в результате которого при переходе на другое расписание по щелчку на нем, все поля
+            // lecturer нового фрагмента принимают значение, которое содержалось в поле, по которому ранее
+            // щелкнули. Проблема решается присвоением каждому экземпляру поля уникального идентификатора.
+            lecturer.Id = View.GenerateViewId();
+
+            TextView audienceView = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
+            audienceView.Text = subject.Audience;
+
+            if (_application.Preferences.DisplaySubjectEndTime)
             {
-                lecturer.Text = lecturerOrGroup.Name;
-                lecturer.Click += (s, e) => _switchScheduleCallback(lecturerOrGroup.ScheduleId);
+                // Высота левой ячейки (match_parent) определяется высотой правой ячейки (wrap_content),
+                // с целью выровнять их по высоте для корректного позиционирования номера аудитории.
+                // Если фактическая высота левой ячейки меньше, чем требуется ее содержимому,
+                // то оно будет перекрываться. На этапе рендеринга, когда уже известно сколько места
+                // при данном тексте и ширине экрана займет название предмета, высота его контейнера
+                // задается так, чтобы высота правой ячейки превосходила высоту содержимого левой.
+                // Эта ситуация возникает только если включено отображаение времени окончания занятий
+                // и при этом название предмета умещается в одну строку.
+                title.ViewTreeObserver.PreDraw += (s, e) =>
+                {
+                    if (title.LineCount < 2)
+                    {
+                        title.SetLines(2);
+                    }
+
+                    e.Handled = true;
+                };
+
+                times.Append("\n");
+                times.Append(subject.To.ToString("HH:mm").ToColored(_tertiaryTextColor));
             }
 
-            TextView audience = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
-            audience.Text = _subjects[index].Audience;
+            if (relatedSubjects == null)
+            {
+                Lecturer lecturerOrGroup = subject.Lecturer ?? subject.Group;
+                if (lecturerOrGroup != null)
+                {
+                    lecturer.Text = lecturerOrGroup.Name;
+                    lecturer.Click += (s, e) => _schedulesSwitcherCallback(lecturerOrGroup.ScheduleId);
+                }
+
+                return layout;
+            }
+
+            CustomClickableSpan CreateSwitchSchedulesClickableSpan(Int32 scheduleId)
+            {
+                CustomClickableSpan span = new CustomClickableSpan(_secondaryTextColor);
+                span.Click += () => _schedulesSwitcherCallback?.Invoke(scheduleId);
+                return span;
+            }
+
+            using (SpannableStringBuilder builder = new SpannableStringBuilder(_multiGroupsPrefix + " "))
+            {
+                Int32 scheduleId = subject.Group.ScheduleId;
+
+                CustomClickableSpan schedulesSwitcher = CreateSwitchSchedulesClickableSpan(scheduleId);
+                builder.Append(scheduleId.ToString(), schedulesSwitcher, SpanTypes.ExclusiveExclusive);
+
+                foreach (Subject relatedSubject in relatedSubjects)
+                {
+                    scheduleId = relatedSubject.Group.ScheduleId;
+
+                    builder.Append(", ");
+
+                    schedulesSwitcher = CreateSwitchSchedulesClickableSpan(scheduleId);
+                    builder.Append(scheduleId.ToString(), schedulesSwitcher, SpanTypes.ExclusiveExclusive);
+                }
+
+                lecturer.SetText(builder, TextView.BufferType.Spannable);
+            }
 
             return layout;
         }
 
-        private Subject[] _subjects;
-        private Boolean _highlightCurrentSubject;
-        private Action<Int32> _switchScheduleCallback;
+        private String _multiGroupsPrefix;
+
+        private Color _dividerColor;
+        private Color _tertiaryTextColor;
+        private Color _secondaryTextColor;
+
+        private ScheduleApplication _application;
+        private Action<Int32> _schedulesSwitcherCallback;
     }
 }

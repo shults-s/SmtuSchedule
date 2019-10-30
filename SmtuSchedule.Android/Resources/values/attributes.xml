@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <attr name="windowColorBackground" format="reference" />
+
+    <attr name="colorDivider" format="reference" />
+
+    <attr name="textColorError" format="reference" />
+    <attr name="textColorPrimary" format="reference" />
+    <attr name="textColorSecondary" format="reference" />
+
+    <attr name="textColorToolbar" format="reference" />
+    <attr name="textColorSubjectPrimary" format="reference" />
+    <attr name="textColorSubjectTertiary" format="reference" />
+    <attr name="textColorSubjectSecondary" format="reference" />
+</resources>

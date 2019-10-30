@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
@@ -15,83 +14,124 @@ namespace SmtuSchedule.Core
 
         public Boolean IsDownloadingInProgress { get; private set; }
 
-        public SchedulesManager(String storagePath)
+        public ILogger Logger { get; set; }
+
+        public SchedulesManager(String storagePath) => _storagePath = storagePath;
+
+        public async Task<Boolean> DownloadSchedulesAsync(IEnumerable<String> searchRequests)
         {
-            _storagePath = storagePath;
-            _reader = new LocalSchedulesReader();
-            _loader = new ServerSchedulesLoader();
+            return await Task.Run(async () =>
+            {
+                IsDownloadingInProgress = true;
+
+                if (_lecturers == null)
+                {
+                    _lecturers = await LecturersLoader.Download(Logger);
+                }
+
+                ServerSchedulesLoader schedulesLoader = new ServerSchedulesLoader(_lecturers)
+                {
+                    Logger = Logger
+                };
+
+                Dictionary<Int32, Schedule> schedules = await schedulesLoader.DownloadAsync(searchRequests)
+                    .ConfigureAwait(false);
+
+                LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
+                {
+                    Logger = Logger
+                };
+
+                Boolean haveSavingErrors = false;
+
+                foreach ((Int32 scheduleId, Schedule schedule) in schedules)
+                {
+                    if (!schedulesWriter.Save(schedule))
+                    {
+                        haveSavingErrors = true;
+                    }
+                    else
+                    {
+                        _schedules[scheduleId] = schedule;
+                    }
+                }
+
+                IsDownloadingInProgress = false;
+                return schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
+            });
         }
 
-        public void SetLogger(ILogger logger) => _logger = _reader.Logger = _loader.Logger = logger;
-
-        public async Task<IEnumerable<String>> DownloadLecturersAsync()
+        public async Task<IEnumerable<String>> DownloadLecturersNamesAsync()
         {
-            return await _loader.DownloadLecturers();
+            if (_lecturers != null)
+            {
+                return _lecturers.Keys;
+            }
+
+            _lecturers = await LecturersLoader.Download(Logger);
+            return _lecturers?.Keys;
+        }
+
+        public async Task<Boolean> MigrateSchedulesAsync()
+        {
+            return await Task.Run(() =>
+            {
+                IEnumerable<Schedule> affectedSchedules = SchedulesMigrator.Migrate(_schedules.Values);
+
+                LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
+                {
+                    Logger = Logger
+                };
+
+                Boolean haveSavingErrors = false;
+
+                foreach (Schedule schedule in affectedSchedules)
+                {
+                    if (!schedulesWriter.Save(schedule))
+                    {
+                        haveSavingErrors = true;
+                    }
+                }
+
+                return haveSavingErrors;
+            });
         }
 
         public async Task<Boolean> RemoveScheduleAsync(Int32 scheduleId)
         {
             return await Task.Run(() =>
             {
-                _schedules.TryRemove(scheduleId, out Schedule schedule);
+                LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
+                {
+                    Logger = Logger
+                };
 
-                String fileName = schedule.DisplayedName + ".json";
-                try
+                if (!schedulesWriter.Remove(_schedules[scheduleId]))
                 {
-                    File.Delete(_storagePath + fileName);
-                    return false;
-                }
-                catch (Exception exception)
-                {
-                    _schedules[scheduleId] = schedule;
-                    _logger?.Log($"Error of removing schedule file {fileName}: ", exception);
                     return true;
                 }
+
+                _schedules.TryRemove(scheduleId, out Schedule schedule);
+                return false;
             });
-        }
-
-        public async Task<Boolean> DownloadSchedulesAsync(IEnumerable<String> requests)
-        {
-            IsDownloadingInProgress = true;
-
-            Dictionary<Int32, Schedule> schedules = await _loader.DownloadAsync(requests)
-                .ConfigureAwait(false);
-
-            Boolean hasSavingErrors = false;
-
-            foreach ((Int32 scheduleId, Schedule schedule) in schedules)
-            {
-                String fileName = schedule.DisplayedName + ".json";
-                try
-                {
-                    File.WriteAllText(_storagePath + fileName, schedule.ToJson());
-                    _schedules[scheduleId] = schedule;
-                }
-                catch (Exception exception)
-                {
-                    hasSavingErrors = true;
-                    _logger?.Log($"Error of saving schedule to file {fileName}: ", exception);
-                }
-            }
-
-            IsDownloadingInProgress = false;
-            return _loader.HasDownloadingErrors || hasSavingErrors;
         }
 
         public async Task<Boolean> ReadSchedulesAsync()
         {
             return await Task.Run(() =>
             {
-                _schedules = new ConcurrentDictionary<Int32, Schedule>(_reader.Read(_storagePath));
-                return _reader.HasReadingErrors;
+                LocalSchedulesReader schedulesReader = new LocalSchedulesReader()
+                {
+                    Logger = Logger
+                };
+
+                _schedules = new ConcurrentDictionary<Int32, Schedule>(schedulesReader.Read(_storagePath));
+                return schedulesReader.HaveReadingErrors;
             });
         }
 
-        private LocalSchedulesReader _reader;
-        private ServerSchedulesLoader _loader;
-
-        private ILogger _logger;
         private readonly String _storagePath;
+        private Dictionary<String, Int32> _lecturers;
         private ConcurrentDictionary<Int32, Schedule> _schedules;
     }
 }

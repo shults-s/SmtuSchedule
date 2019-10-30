@@ -13,24 +13,16 @@ namespace SmtuSchedule.Android
     [Application]
     public sealed class ScheduleApplication : Application
     {
+        public SchedulesManager Manager { get; private set; }
+
         public InMemoryLogger Logger { get; private set; }
+
+        public Preferences Preferences { get; private set; }
 
         public Boolean IsInitialized { get; private set; }
 
-        public SchedulesManager Manager { get; set; }
-
-        public Preferences Preferences { get; set; }
-
-        // Bugfix: Unable to activate instance of type ... from native handle ...
         public ScheduleApplication(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
-        {
-            PreInitialize();
-        }
-
-        public ScheduleApplication() => PreInitialize();
-
-        private void PreInitialize()
         {
             Logger = new InMemoryLogger();
             Logger.Log(
@@ -50,10 +42,10 @@ namespace SmtuSchedule.Android
                 SaveLog(true);
             };
 
+            Preferences = new Preferences(this);
+
             IsInitialized = false;
         }
-
-        ~ScheduleApplication() => Logger.Dispose();
 
         public String GetVersion()
         {
@@ -86,10 +78,7 @@ namespace SmtuSchedule.Android
                 }
             }
 
-            Preferences = new Preferences(this);
-
-            Manager = new SchedulesManager(externalStoragePath);
-            Manager.SetLogger(Logger);
+            Manager = new SchedulesManager(externalStoragePath) { Logger = Logger };
 
             return IsInitialized = true;
         }
@@ -97,7 +86,6 @@ namespace SmtuSchedule.Android
         public void SaveLog(Boolean isCrashLog = false)
         {
             String logsPath = GetExternalStoragePath() + "Logs/";
-
             if (!Directory.Exists(logsPath))
             {
                 Directory.CreateDirectory(logsPath);

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialogMessageScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none">
-    <TableLayout
-        android:id="@+id/scheduleTableLayout"
-        android:background="?attr/colorDivider"
+    <TextView
+        android:id="@+id/dialogMessageTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:linksClickable="true"
+        android:textSize="@dimen/normalTextSize" />
 </ScrollView>

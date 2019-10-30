@@ -8,14 +8,14 @@ namespace SmtuSchedule.Core
 {
     internal class LocalSchedulesReader
     {
-        public Boolean HasReadingErrors { get; private set; }
+        public Boolean HaveReadingErrors { get; private set; }
 
         public ILogger Logger { get; set; }
 
         public Dictionary<Int32, Schedule> Read(String storagePath)
         {
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
-            HasReadingErrors = false;
+            HaveReadingErrors = false;
 
             String[] filePaths;
             try
@@ -24,7 +24,7 @@ namespace SmtuSchedule.Core
             }
             catch(Exception exception)
             {
-                HasReadingErrors = true;
+                HaveReadingErrors = true;
 
                 Logger?.Log("Error of reading local schedules list: ", exception);
                 return schedules;
@@ -45,7 +45,7 @@ namespace SmtuSchedule.Core
                 }
                 catch(Exception exception)
                 {
-                    HasReadingErrors = true;
+                    HaveReadingErrors = true;
 
                     String fileName = Path.GetFileName(filePath);
                     Logger?.Log($"Error of loading file \"{fileName}\": ", exception);

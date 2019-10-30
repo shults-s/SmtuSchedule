@@ -2,15 +2,15 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionName="@string/applicationVersion"
-    android:versionCode="11"
+    android:versionCode="12"
     package="Shults.SmtuSchedule">
     <uses-sdk
         android:minSdkVersion="21"
         android:targetSdkVersion="28" />
     <application
-        android:icon="@mipmap/icon"
-        android:theme="@style/MainTheme"
-        android:label="@string/applicationLabel" />
+        android:icon="@mipmap/launcherIcon"
+        android:label="@string/applicationLabel"
+        android:theme="@style/Theme.SmtuSchedule.Light" />
     <uses-permission
         android:name="android.permission.INTERNET" />
     <uses-permission

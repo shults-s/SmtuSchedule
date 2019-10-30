@@ -17,11 +17,9 @@ namespace SmtuSchedule.Android.Views
         //    _cachedFragments = new Dictionary<(DateTime, Int32), ScheduleFragment>();
         //}
 
-        public SchedulesPagerAdapter(FragmentManager manager, ScheduleApplication application)
-            : base(manager)
+        public SchedulesPagerAdapter(FragmentManager manager, DateTime initialDate) : base(manager)
         {
-            _application = application;
-            RenderingDateRange = new DateRange(application.Preferences.CurrentScheduleDate);
+            RenderingDateRange = new DateRange(initialDate);
         }
 
         public override Java.Lang.ICharSequence GetPageTitleFormatted(Int32 position)
@@ -32,7 +30,6 @@ namespace SmtuSchedule.Android.Views
 
         public override Fragment GetItem(Int32 position)
         {
-            Int32 scheduleId = _application.Preferences.CurrentScheduleId;
             DateTime date = RenderingDateRange.GetDateByIndex(position);
 
             //if (_cachedFragments.TryGetValue((date, scheduleId), out ScheduleFragment fragment))
@@ -40,22 +37,25 @@ namespace SmtuSchedule.Android.Views
             //    return fragment;
             //}
 
-            ScheduleFragment fragment = new ScheduleFragment();
-
-            DateTime upperWeekDate = _application.Preferences.UpperWeekDate;
-            Boolean needHighlightCurrentSubject = (date == DateTime.Today);
-
-            fragment.SetFragmentData(
-                _application.Manager.Schedules[scheduleId].GetSubjects(upperWeekDate, date),
-                needHighlightCurrentSubject
-            );
-
+            ScheduleFragment fragment = new ScheduleFragment() { Date = date };
             //_cachedFragments[(date, scheduleId)] = fragment;
 
             return fragment;
         }
 
-        private ScheduleApplication _application;
+        //public override void NotifyDataSetChanged()
+        //{
+        //    _currentDayPosition = RenderingDateRange.GetIndexByDate(DateTime.Today);
+        //    base.NotifyDataSetChanged();
+        //}
+
+        //public override Int32 GetItemPosition(Java.Lang.Object @object)
+        //{
+        //    Int32 position = base.GetItemPosition(@object);
+        //    return (position != _currentDayPosition) ? PositionUnchanged : PositionNone;
+        //}
+
+        //private Int32 _currentDayPosition;
 
         private static readonly CultureInfo _culture = new CultureInfo("ru-RU");
 
