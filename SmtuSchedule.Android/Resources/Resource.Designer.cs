@@ -4419,10 +4419,7 @@ namespace SmtuSchedule.Android
 		{
 			
 			// aapt resource value: 0x7F0E0000
-			public const int carbonTexture = 2131623936;
-			
-			// aapt resource value: 0x7F0E0001
-			public const int launcherIcon = 2131623937;
+			public const int launcherIcon = 2131623936;
 			
 			static Mipmap()
 			{
