@@ -10,11 +10,27 @@ namespace SmtuSchedule.Core.Utilities
     {
         public const String LatestReleaseUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest";
 
-        public const String GooglePlayUrl = "market://details?id=Shults.SmtuSchedule";
+        public const String DonationUrl = "https://vk.cc/9XYwXA";
 
-        public static String GetApkDownloadUrl(String version)
+        //public const String GooglePlayUrl = "market://details?id=Shults.SmtuSchedule";
+
+        //public static String GetApkDownloadUrl(String version)
+        //{
+        //    return $"https://github.com/shults-s/SmtuSchedule/releases/download/{version}/Shults.SmtuSchedule-{version}.apk";
+        //}
+
+        public static async Task<String> GetGooglePlayReleaseUrlIfAvailableAsync()
         {
-            return $"https://github.com/shults-s/SmtuSchedule/releases/download/{version}/Shults.SmtuSchedule-{version}.apk";
+            String url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/SmtuSchedule.Android/PackageId.txt";
+
+            try
+            {
+                return "market://details?id=" + await HttpHelper.GetAsync(url).ConfigureAwait(false);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static async Task<String> GetLatestVersionAsync()
@@ -62,6 +78,7 @@ namespace SmtuSchedule.Core.Utilities
         public static Boolean IsUniversitySiteConnectionAvailable(out String failReason)
         {
             IPStatus status = IPStatus.Success;
+
             try
             {
                 // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому это может не работать.

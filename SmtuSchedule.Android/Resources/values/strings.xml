@@ -6,13 +6,13 @@
     <string name="applicationVersion">0.9</string>
     <string name="aboutApplicationMessage">
         Версия 0.9 от 30 октября 2019.
-        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>, поддержать меня можно <a href="#">тут</a> :)
+        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>, поддержать меня можно <a href="%1s">тут</a> :)
         \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
     </string>
 
     <string-array name="currentScheduleActionsTitles">
         <item>Удалить расписание</item>
-        <item>Загрузить расписание повторно</item>
+        <item>Перезагрузить расписание</item>
     </string-array>
 
     <string-array name="weeksTypesInNominativeCase">
@@ -29,7 +29,8 @@
     <string name="introductionDialogTitle">Что нового?</string>
     <string name="aboutApplicationDialogTitle">О приложении</string>
     <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
-    <string name="updateApplicationDialogTitle">Загрузить новую версию?</string>
+    <string name="googlePlayReleaseAvailableDialogTitle">Релиз в Google Play</string>
+    <string name="applicationUpdateAvailableDialogTitle">Загрузить новую версию?</string>
 
     <!-- Названия пунктов меню в панели инстументов -->
     <string name="selectScheduleDateMenuItem">Выбрать дату</string>
@@ -41,6 +42,7 @@
     <!-- Названия действий Snackbar'ов и кнопок -->
     <string name="gotItActionText">Понял</string>
     <string name="updateActionText">Обновить</string>
+    <string name="installActionText">Установить</string>
     <string name="cancelActionText">Отмена</string>
     <string name="removeActionText">Удалить</string>
     <string name="thanksActionText">Спасибо</string>
@@ -61,7 +63,9 @@
     <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с сайтом университета.</string>
 
     <!-- Обоснования для запроса разрешений -->
-    <string name="internetPermissionRationaleMessage">Доступ к интернету необходим для загрузки расписаний.</string>
+    <string name="internetPermissionRationaleMessage">
+        Доступ к интернету необходим для загрузки расписаний и проверки обновлений.
+    </string>
     <string name="storagePermissionsRationaleMessage">Доступ к памяти смартфона необходим для загрузки расписаний.</string>
 
     <!-- Подсказки ввода -->
@@ -105,8 +109,12 @@
         ранее технически нереализуемые возможности, такие как расписания аудиторий (такой функции нет даже на сайте).
         \nИли, к примеру, уведомления о предстоящих занятиях.
         \n\nПриложение разрабатывается мной в свободное от работы и учебы время, поэтому эти изменения займут длительное время.
-        \n\nЕсли Вам понравилось или помогло это приложение, можете <a href="#">поддержать меня</a>.
+        \n\nЕсли Вам понравилось или помогло это приложение в нынешнем его виде, можете <a href="%1s">поддержать меня</a>.
         \nЭту ссылку можно найти также в окне «О приложении».
+    </string>
+    <string name="googlePlayReleaseAvailableMessage">
+        Приложение теперь доступно в Google Play. Настоятельно рекомендуется перейти на этот канал обновлений.
+        В дальнейшем он может стать единственным способом получать официальные версии приложения.
     </string>
     <string name="applicationUpdateAvailableMessage">
         Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md"><b>новая версия</b></a> приложения.

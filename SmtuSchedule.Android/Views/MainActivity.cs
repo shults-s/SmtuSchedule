@@ -139,9 +139,14 @@ namespace SmtuSchedule.Android.Views
                         break;
 
                     case Resource.Id.aboutApplicationMenuItem:
+                        String aboutApplicationMessage = Resources.GetString(
+                            Resource.String.aboutApplicationMessage,
+                            ApplicationHelper.DonationUrl
+                        );
+
                         new CustomAlertDialog(this)
                             .SetTitle(Resource.String.aboutApplicationDialogTitle)
-                            .SetMessage(Resource.String.aboutApplicationMessage)
+                            .SetMessage(aboutApplicationMessage)
                             .SetPositiveButton(Resource.String.thanksActionText)
                             .Show();
                         break;
@@ -266,16 +271,40 @@ namespace SmtuSchedule.Android.Views
 
             RestartSchedulesRenderingSubsystem();
 
-            if (_application.Preferences.CheckUpdatesOnStart)
+            if (IsPermissionDenied(Manifest.Permission.Internet))
             {
-                CheckForUpdatesAsync(currentVersion);
+                RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
+            }
+            else
+            {
+                String url = await ApplicationHelper.GetGooglePlayReleaseUrlIfAvailableAsync();
+                if (url != null)
+                {
+                    new CustomAlertDialog(this)
+                        .SetTitle(Resource.String.googlePlayReleaseAvailableDialogTitle)
+                        .SetMessage(Resource.String.googlePlayReleaseAvailableMessage)
+                        .SetPositiveButton(
+                            Resource.String.installActionText,
+                            () => StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)))
+                        )
+                        .Show();
+                }
+                else if (_application.Preferences.CheckUpdatesOnStart)
+                {
+                    CheckForUpdatesAsync(currentVersion);
+                }
             }
 
             if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
             {
+                String introductionMessage = Resources.GetString(
+                    Resource.String.introductionMessage,
+                    ApplicationHelper.DonationUrl
+                );
+
                 new CustomAlertDialog(this)
                     .SetTitle(Resource.String.introductionDialogTitle)
-                    .SetMessage(Resource.String.introductionMessage)
+                    .SetMessage(introductionMessage)
                     .SetPositiveButton(
                         Resource.String.gotItActionText,
                         () => _application.Preferences.SetLastSeenWelcomeVersion(currentVersion)
@@ -311,11 +340,11 @@ namespace SmtuSchedule.Android.Views
 
         private async void CheckForUpdatesAsync(String currentVersion)
         {
-            if (IsPermissionDenied(Manifest.Permission.Internet))
-            {
-                RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
-                return ;
-            }
+            //if (IsPermissionDenied(Manifest.Permission.Internet))
+            //{
+            //    RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
+            //    return ;
+            //}
 
             String latestVersion = await ApplicationHelper.GetLatestVersionAsync();
             if (latestVersion == null || latestVersion == _application.Preferences.LastSeenUpdateVersion)
@@ -326,7 +355,7 @@ namespace SmtuSchedule.Android.Views
             if (ApplicationHelper.CompareVersions(latestVersion, currentVersion) == 1)
             {
                 new CustomAlertDialog(this)
-                    .SetTitle(Resource.String.updateApplicationDialogTitle)
+                    .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
                     .SetMessage(Resource.String.applicationUpdateAvailableMessage)
                     .SetPositiveButton(
                         Resource.String.gotItActionText,
@@ -336,8 +365,8 @@ namespace SmtuSchedule.Android.Views
                         Resource.String.updateActionText,
                         () =>
                         {
-                            String googlePlayUrl = ApplicationHelper.GooglePlayUrl;
-                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(googlePlayUrl)));
+                            String latestReleaseUrl = ApplicationHelper.LatestReleaseUrl;
+                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(latestReleaseUrl)));
                         }
                     )
                     .Show();
