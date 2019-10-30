@@ -10,20 +10,18 @@ namespace SmtuSchedule.Core.Utilities
     {
         public const String LatestReleaseUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest";
 
-        //public const String GooglePlayUrl = "market://details?id=Shults.SmtuSchedule";
-
         //public static String GetApkDownloadUrl(String version)
         //{
         //    return $"https://github.com/shults-s/SmtuSchedule/releases/download/{version}/Shults.SmtuSchedule-{version}.apk";
         //}
 
-        public static async Task<String> GetGooglePlayReleaseUrlIfAvailableAsync()
+        public static async Task<String> GetGooglePlayMarketPackageIdAsync()
         {
             String url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/SmtuSchedule.Android/PackageId.txt";
 
             try
             {
-                return "market://details?id=" + await HttpHelper.GetAsync(url).ConfigureAwait(false);
+                return await HttpHelper.GetAsync(url).ConfigureAwait(false);
             }
             catch
             {

@@ -29,8 +29,8 @@
     <string name="introductionDialogTitle">Что нового?</string>
     <string name="aboutApplicationDialogTitle">О приложении</string>
     <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
-    <string name="googlePlayReleaseAvailableDialogTitle">Релиз в Google Play</string>
-    <string name="applicationUpdateAvailableDialogTitle">Загрузить новую версию?</string>
+    <string name="applicationUpdateAvailableDialogTitle">Загрузка обновления</string>
+    <string name="googlePlayMarketReleaseAvailableDialogTitle">Релиз в Play Маркет</string>
 
     <!-- Названия пунктов меню в панели инстументов -->
     <string name="selectScheduleDateMenuItem">Выбрать дату</string>
@@ -41,14 +41,14 @@
 
     <!-- Названия действий Snackbar'ов и кнопок -->
     <string name="gotItActionText">Понял</string>
-    <string name="updateActionText">Обновить</string>
-    <string name="installActionText">Установить</string>
     <string name="cancelActionText">Отмена</string>
     <string name="removeActionText">Удалить</string>
     <string name="thanksActionText">Спасибо</string>
     <string name="downloadActionText">Загрузить</string>
     <string name="configureActionText">Настроить</string>
     <string name="grantAccessActionText">Разрешить</string>
+    <string name="openPlayMarketActionText">Открыть Play Маркет</string>
+    <string name="openUpdateDownloadPageActionText">Страница загрузки</string>
 
     <!-- Сообщения об ошибках -->
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
@@ -113,9 +113,11 @@
         <a href="https://vk.cc/9XYwXA">поддержать меня</a>.
         \nЭту ссылку можно найти также в окне «О приложении».
     </string>
-    <string name="googlePlayReleaseAvailableMessage">
-        Приложение теперь доступно в Google Play. Настоятельно рекомендуется перейти на этот канал обновлений.
-        В дальнейшем он может стать единственным способом получать официальные версии приложения.
+    <string name="googlePlayMarketReleaseAvailableMessage">
+        Приложение теперь доступно в Google Play Маркет.
+        \nНастоятельно рекомендую вручную переустановить его оттуда, чтобы в дальнейшем получать обновления автоматически.
+        \nСохраненные расписания затронуты не будут.
+        \nСо временем Play Маркет может стать единственным источником официальных сборок приложения.
     </string>
     <string name="applicationUpdateAvailableMessage">
         Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md"><b>новая версия</b></a> приложения.

@@ -266,29 +266,7 @@ namespace SmtuSchedule.Android.Views
 
             RestartSchedulesRenderingSubsystem();
 
-            if (IsPermissionDenied(Manifest.Permission.Internet))
-            {
-                RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
-            }
-            else
-            {
-                String url = await ApplicationHelper.GetGooglePlayReleaseUrlIfAvailableAsync();
-                if (url != null)
-                {
-                    new CustomAlertDialog(this)
-                        .SetTitle(Resource.String.googlePlayReleaseAvailableDialogTitle)
-                        .SetMessage(Resource.String.googlePlayReleaseAvailableMessage)
-                        .SetPositiveButton(
-                            Resource.String.installActionText,
-                            () => StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)))
-                        )
-                        .Show();
-                }
-                else if (_application.Preferences.CheckUpdatesOnStart)
-                {
-                    CheckForUpdatesAsync(currentVersion);
-                }
-            }
+            CheckForUpdatesAsync(currentVersion);
 
             if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
             {
@@ -330,6 +308,47 @@ namespace SmtuSchedule.Android.Views
 
         private async void CheckForUpdatesAsync(String currentVersion)
         {
+            if (IsPermissionDenied(Manifest.Permission.Internet))
+            {
+                RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
+                return ;
+            }
+
+            String packageId = await ApplicationHelper.GetGooglePlayMarketPackageIdAsync();
+            if (packageId == null || packageId == PackageName)
+            {
+                if (_application.Preferences.CheckUpdatesOnStart)
+                {
+                    CheckForLatestVersionAsync(currentVersion);
+                }
+
+                return ;
+            }
+
+            new CustomAlertDialog(this)
+                .SetTitle(Resource.String.googlePlayMarketReleaseAvailableDialogTitle)
+                .SetMessage(Resource.String.googlePlayMarketReleaseAvailableMessage)
+                .SetPositiveButton(
+                    Resource.String.openPlayMarketActionText,
+                    () =>
+                    {
+                        try
+                        {
+                            String url = "market://details?id=" + packageId;
+                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
+                        }
+                        catch (ActivityNotFoundException) // Google Play не установлен.
+                        {
+                            String url = "https://play.google.com/store/apps/details?id=" + packageId;
+                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
+                        }
+                    }
+                )
+                .Show();
+        }
+
+        private async void CheckForLatestVersionAsync(String currentVersion)
+        {
             //if (IsPermissionDenied(Manifest.Permission.Internet))
             //{
             //    RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
@@ -339,7 +358,7 @@ namespace SmtuSchedule.Android.Views
             String latestVersion = await ApplicationHelper.GetLatestVersionAsync();
             if (latestVersion == null || latestVersion == _application.Preferences.LastSeenUpdateVersion)
             {
-                return ;
+                return;
             }
 
             if (ApplicationHelper.CompareVersions(latestVersion, currentVersion) == 1)
@@ -347,12 +366,12 @@ namespace SmtuSchedule.Android.Views
                 new CustomAlertDialog(this)
                     .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
                     .SetMessage(Resource.String.applicationUpdateAvailableMessage)
-                    .SetPositiveButton(
+                    .SetNegativeButton(
                         Resource.String.gotItActionText,
                         () => _application.Preferences.SetLastSeenUpdateVersion(latestVersion)
                     )
-                    .SetNegativeButton(
-                        Resource.String.updateActionText,
+                    .SetPositiveButton(
+                        Resource.String.openUpdateDownloadPageActionText,
                         () =>
                         {
                             String latestReleaseUrl = ApplicationHelper.LatestReleaseUrl;
@@ -437,7 +456,6 @@ namespace SmtuSchedule.Android.Views
             }
 
             IMenu menu = _toolbar.Menu;
-
             IMenuItem selectScheduleDateMenuItem = menu.FindItem(Resource.Id.selectScheduleDateMenuItem);
             IMenuItem downloadScheduleMenuItem = menu.FindItem(Resource.Id.downloadSchedulesMenuItem);
 
