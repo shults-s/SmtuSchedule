@@ -24,25 +24,25 @@ namespace SmtuSchedule.Android.Utilities
 
         public static ICharSequence StripUrlUnderlines(this ICharSequence formattedText)
         {
-            SpannableStringBuilder spannable = new SpannableStringBuilder(formattedText);
+            SpannableStringBuilder builder = new SpannableStringBuilder(formattedText);
 
-            Java.Lang.Object[] spans = spannable.GetSpans(
+            Java.Lang.Object[] spans = builder.GetSpans(
                 0,
-                spannable.Length(),
+                builder.Length(),
                 Class.FromType(typeof(URLSpan))
             );
 
             foreach (URLSpan span in spans)
             {
-                Int32 start = spannable.GetSpanStart(span);
-                Int32 end = spannable.GetSpanEnd(span);
-                spannable.RemoveSpan(span);
+                Int32 start = builder.GetSpanStart(span);
+                Int32 end = builder.GetSpanEnd(span);
+                builder.RemoveSpan(span);
 
                 UrlSpanNoUnderlines customSpan = new UrlSpanNoUnderlines(span.URL);
-                spannable.SetSpan(customSpan, start, end, 0);
+                builder.SetSpan(customSpan, start, end, 0);
             }
 
-            return spannable;
+            return builder;
         }
 
         public static ICharSequence Trim(this ICharSequence formattedText)

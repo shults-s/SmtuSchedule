@@ -139,14 +139,9 @@ namespace SmtuSchedule.Android.Views
                         break;
 
                     case Resource.Id.aboutApplicationMenuItem:
-                        String aboutApplicationMessage = Resources.GetString(
-                            Resource.String.aboutApplicationMessage,
-                            ApplicationHelper.DonationUrl
-                        );
-
                         new CustomAlertDialog(this)
                             .SetTitle(Resource.String.aboutApplicationDialogTitle)
-                            .SetMessage(aboutApplicationMessage)
+                            .SetMessage(Resource.String.aboutApplicationMessage)
                             .SetPositiveButton(Resource.String.thanksActionText)
                             .Show();
                         break;
@@ -155,11 +150,11 @@ namespace SmtuSchedule.Android.Views
 
             if (IsPermissionDenied(Manifest.Permission.WriteExternalStorage))
             {
-                ContinueActivityInitializationAsync();
+                RequestPermissions(ExternalStoragePermissionsRequestCode, ExternalStoragePermissions);
             }
             else
             {
-                RequestPermissions(ExternalStoragePermissionsRequestCode, ExternalStoragePermissions);
+                ContinueActivityInitializationAsync();
             }
         }
 
@@ -297,14 +292,9 @@ namespace SmtuSchedule.Android.Views
 
             if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
             {
-                String introductionMessage = Resources.GetString(
-                    Resource.String.introductionMessage,
-                    ApplicationHelper.DonationUrl
-                );
-
                 new CustomAlertDialog(this)
                     .SetTitle(Resource.String.introductionDialogTitle)
-                    .SetMessage(introductionMessage)
+                    .SetMessage(Resource.String.introductionMessage)
                     .SetPositiveButton(
                         Resource.String.gotItActionText,
                         () => _application.Preferences.SetLastSeenWelcomeVersion(currentVersion)

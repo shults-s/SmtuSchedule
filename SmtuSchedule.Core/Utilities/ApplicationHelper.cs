@@ -10,8 +10,6 @@ namespace SmtuSchedule.Core.Utilities
     {
         public const String LatestReleaseUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest";
 
-        public const String DonationUrl = "https://vk.cc/9XYwXA";
-
         //public const String GooglePlayUrl = "market://details?id=Shults.SmtuSchedule";
 
         //public static String GetApkDownloadUrl(String version)

@@ -6,7 +6,8 @@
     <string name="applicationVersion">0.9</string>
     <string name="aboutApplicationMessage">
         Версия 0.9 от 30 октября 2019.
-        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>, поддержать меня можно <a href="%1s">тут</a> :)
+        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>, поддержать меня можно
+        <a href="https://vk.cc/9XYwXA">тут</a> :)
         \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
     </string>
 
@@ -14,7 +15,6 @@
         <item>Удалить расписание</item>
         <item>Перезагрузить расписание</item>
     </string-array>
-
     <string-array name="weeksTypesInNominativeCase">
         <item>верхняя неделя</item>
         <item>нижняя неделя</item>
@@ -85,7 +85,7 @@
     <!-- Сообщения уведомительного характера -->
     <string name="weekendMessage">Выходной день :)</string>
     <string name="welcomeMessage">Ни одно расписание занятий еще не загружено.</string>
-    <string name="removeCurrentScheduleMessage">Удалить расписание «%1s»?</string>
+    <string name="removeCurrentScheduleMessage">Удалить расписание «%s»?</string>
     <string name="schedulesDownloadingStarted">Загрузка началась...</string>
     <string name="scheduleRemovedSuccessfullyMessage">Расписание удалено.</string>
     <string name="scheduleNotAvailableMessage">Это расписание недоступно.</string>
@@ -109,7 +109,8 @@
         ранее технически нереализуемые возможности, такие как расписания аудиторий (такой функции нет даже на сайте).
         \nИли, к примеру, уведомления о предстоящих занятиях.
         \n\nПриложение разрабатывается мной в свободное от работы и учебы время, поэтому эти изменения займут длительное время.
-        \n\nЕсли Вам понравилось или помогло это приложение в нынешнем его виде, можете <a href="%1s">поддержать меня</a>.
+        \n\nЕсли Вам понравилось или помогло это приложение в нынешнем его виде, можете
+        <a href="https://vk.cc/9XYwXA">поддержать меня</a>.
         \nЭту ссылку можно найти также в окне «О приложении».
     </string>
     <string name="googlePlayReleaseAvailableMessage">
