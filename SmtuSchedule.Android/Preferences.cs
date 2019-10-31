@@ -22,11 +22,11 @@ namespace SmtuSchedule.Android
 
         public DateTime CurrentScheduleDate { get; set; }
 
-        public String LastMigrationVersion { get; private set; }
+        public Int32 LastMigrationVersion { get; private set; }
 
-        public String LastSeenUpdateVersion { get; private set; }
+        public Int32 LastSeenUpdateVersion { get; private set; }
 
-        public String LastSeenWelcomeVersion { get; private set; }
+        public Int32 LastSeenWelcomeVersion { get; private set; }
 
         public Preferences(Context context)
         {
@@ -35,40 +35,40 @@ namespace SmtuSchedule.Android
 
             CurrentScheduleDate = DateTime.Today;
 
+            CurrentScheduleId = _preferences.GetInt("CurrentScheduleId", 0);
+            LastMigrationVersion = _preferences.GetInt("LastMigrationVersion", 0);
+            LastSeenUpdateVersion = _preferences.GetInt("LastSeenUpdateVersion", 0);
+            LastSeenWelcomeVersion = _preferences.GetInt("LastSeenWelcomeVersion", 0);
+
             UpperWeekDate = new DateTime(_preferences.GetLong("UpperWeekDate", 0));
             UseDarkTheme = _preferences.GetBoolean("UseDarkTheme", false);
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", true);
             CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
             DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
-
-            CurrentScheduleId = _preferences.GetInt("CurrentScheduleId", 0);
-            LastMigrationVersion = _preferences.GetString("LastMigrationVersion", null);
-            LastSeenUpdateVersion = _preferences.GetString("LastSeenUpdateVersion", null);
-            LastSeenWelcomeVersion = _preferences.GetString("LastSeenWelcomeVersion", null);
         }
 
-        public void SetLastSeenWelcomeVersion(String lastSeenWelcomeVersion)
+        public void SetLastSeenWelcomeVersion(Int32 lastSeenWelcomeVersion)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutString("LastSeenWelcomeVersion", lastSeenWelcomeVersion);
+            editor.PutInt("LastSeenWelcomeVersion", lastSeenWelcomeVersion);
             editor.Apply();
 
             LastSeenWelcomeVersion = lastSeenWelcomeVersion;
         }
 
-        public void SetLastMigrationVersion(String lastMigrationVersion)
+        public void SetLastMigrationVersion(Int32 lastMigrationVersion)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutString("LastMigrationVersion", lastMigrationVersion);
+            editor.PutInt("LastMigrationVersion", lastMigrationVersion);
             editor.Apply();
 
             LastMigrationVersion = lastMigrationVersion;
         }
 
-        public void SetLastSeenUpdateVersion(String lastSeenUpdateVersion)
+        public void SetLastSeenUpdateVersion(Int32 lastSeenUpdateVersion)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutString("LastSeenUpdateVersion", lastSeenUpdateVersion);
+            editor.PutInt("LastSeenUpdateVersion", lastSeenUpdateVersion);
             editor.Apply();
 
             LastSeenUpdateVersion = lastSeenUpdateVersion;

@@ -3,6 +3,7 @@ using System.IO;
 using Android.OS;
 using Android.App;
 using Android.Runtime;
+using Android.Content.PM;
 using SmtuSchedule.Core;
 using SmtuSchedule.Core.Utilities;
 
@@ -47,9 +48,10 @@ namespace SmtuSchedule.Android
             IsInitialized = false;
         }
 
-        public String GetVersion()
+        public Int32 GetVersion()
         {
-            return Resources.GetString(Resource.String.applicationVersion);
+            return PackageManager.GetPackageInfo(PackageName, PackageInfoFlags.Activities)
+                .VersionCode;
         }
 
         public String GetExternalStoragePath()

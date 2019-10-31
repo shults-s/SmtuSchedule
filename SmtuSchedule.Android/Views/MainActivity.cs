@@ -223,8 +223,8 @@ namespace SmtuSchedule.Android.Views
                 }
             }
 
-            String currentVersion = _application.GetVersion();
-            if (_application.Preferences.LastSeenUpdateVersion == null)
+            Int32 currentVersion = _application.GetVersion();
+            if (_application.Preferences.LastSeenUpdateVersion == 0)
             {
                 _application.Preferences.SetLastSeenUpdateVersion(currentVersion);
             }
@@ -266,7 +266,10 @@ namespace SmtuSchedule.Android.Views
 
             RestartSchedulesRenderingSubsystem();
 
-            CheckForUpdatesAsync(currentVersion);
+            if (_application.Preferences.CheckUpdatesOnStart)
+            {
+                CheckForUpdatesAsync(currentVersion);
+            }
 
             if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
             {
@@ -287,7 +290,7 @@ namespace SmtuSchedule.Android.Views
             return _application.Preferences.UpperWeekDate != default(DateTime);
         }
 
-        private async void MigrateSchedulesAsync(String currentVersion)
+        private async void MigrateSchedulesAsync(Int32 currentVersion)
         {
             if (_application.Preferences.LastMigrationVersion == currentVersion)
             {
@@ -306,7 +309,7 @@ namespace SmtuSchedule.Android.Views
             }
         }
 
-        private async void CheckForUpdatesAsync(String currentVersion)
+        private async void CheckForUpdatesAsync(Int32 currentVersion)
         {
             if (IsPermissionDenied(Manifest.Permission.Internet))
             {
@@ -314,20 +317,48 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            String packageId = await ApplicationHelper.GetGooglePlayMarketPackageIdAsync();
-            if (packageId == null || packageId == PackageName)
+            ReleaseDescription latest = await ApplicationHelper.GetLatestReleaseDescription();
+            if (latest == null)
             {
-                if (_application.Preferences.CheckUpdatesOnStart)
+                return ;
+            }
+
+            String packageId = latest.GooglePlayMarketPackageId;
+            if (packageId == null)
+            {
+                if (latest.VersionCode == _application.Preferences.LastSeenUpdateVersion
+                    || latest.VersionCode <= currentVersion)
                 {
-                    CheckForLatestVersionAsync(currentVersion);
+                    return ;
                 }
+
+                new CustomAlertDialog(this)
+                    .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
+                    .SetMessage(Resource.String.applicationUpdateAvailableMessage)
+                    .SetPositiveButton(
+                        Resource.String.openUpdateDownloadPageActionText,
+                        () =>
+                        {
+                            String url = ApplicationHelper.LatestReleaseUrl;
+                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
+                        }
+                    )
+                    .SetNegativeButton(
+                        Resource.String.gotItActionText,
+                        () => _application.Preferences.SetLastSeenUpdateVersion(latest.VersionCode)
+                    )
+                    .Show();
 
                 return ;
             }
 
+            Int32 messageId = (packageId != PackageName)
+                ? Resource.String.googlePlayMarketReleaseAvailableMessage
+                : Resource.String.googlePlayMarketReleaseReloadedMessage;
+
             new CustomAlertDialog(this)
                 .SetTitle(Resource.String.googlePlayMarketReleaseAvailableDialogTitle)
-                .SetMessage(Resource.String.googlePlayMarketReleaseAvailableMessage)
+                .SetMessage(messageId)
                 .SetPositiveButton(
                     Resource.String.openPlayMarketActionText,
                     () =>
@@ -345,41 +376,6 @@ namespace SmtuSchedule.Android.Views
                     }
                 )
                 .Show();
-        }
-
-        private async void CheckForLatestVersionAsync(String currentVersion)
-        {
-            //if (IsPermissionDenied(Manifest.Permission.Internet))
-            //{
-            //    RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
-            //    return ;
-            //}
-
-            String latestVersion = await ApplicationHelper.GetLatestVersionAsync();
-            if (latestVersion == null || latestVersion == _application.Preferences.LastSeenUpdateVersion)
-            {
-                return;
-            }
-
-            if (ApplicationHelper.CompareVersions(latestVersion, currentVersion) == 1)
-            {
-                new CustomAlertDialog(this)
-                    .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
-                    .SetMessage(Resource.String.applicationUpdateAvailableMessage)
-                    .SetNegativeButton(
-                        Resource.String.gotItActionText,
-                        () => _application.Preferences.SetLastSeenUpdateVersion(latestVersion)
-                    )
-                    .SetPositiveButton(
-                        Resource.String.openUpdateDownloadPageActionText,
-                        () =>
-                        {
-                            String latestReleaseUrl = ApplicationHelper.LatestReleaseUrl;
-                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(latestReleaseUrl)));
-                        }
-                    )
-                    .Show();
-            }
         }
 
         private void RestartSchedulesRenderingSubsystem()

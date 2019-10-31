@@ -4579,55 +4579,55 @@ namespace SmtuSchedule.Android
 			public const int applicationUpdateAvailableMessage = 2131689519;
 			
 			// aapt resource value: 0x7F0F0030
-			public const int applicationVersion = 2131689520;
+			public const int bottom_sheet_behavior = 2131689520;
 			
 			// aapt resource value: 0x7F0F0031
-			public const int bottom_sheet_behavior = 2131689521;
+			public const int cancelActionText = 2131689521;
 			
 			// aapt resource value: 0x7F0F0032
-			public const int cancelActionText = 2131689522;
+			public const int character_counter_content_description = 2131689522;
 			
 			// aapt resource value: 0x7F0F0033
-			public const int character_counter_content_description = 2131689523;
+			public const int character_counter_pattern = 2131689523;
 			
 			// aapt resource value: 0x7F0F0034
-			public const int character_counter_pattern = 2131689524;
+			public const int configureActionText = 2131689524;
 			
 			// aapt resource value: 0x7F0F0035
-			public const int configureActionText = 2131689525;
+			public const int configureApplicationMessage = 2131689525;
 			
 			// aapt resource value: 0x7F0F0036
-			public const int configureApplicationMessage = 2131689526;
+			public const int currentScheduleActionsDialogTitle = 2131689526;
 			
 			// aapt resource value: 0x7F0F0037
-			public const int currentScheduleActionsDialogTitle = 2131689527;
+			public const int downloadActionText = 2131689527;
 			
 			// aapt resource value: 0x7F0F0038
-			public const int downloadActionText = 2131689528;
+			public const int downloadRequestHintMessage = 2131689528;
 			
 			// aapt resource value: 0x7F0F0039
-			public const int downloadRequestHintMessage = 2131689529;
+			public const int downloadSchedulesMenuItem = 2131689529;
 			
 			// aapt resource value: 0x7F0F003A
-			public const int downloadSchedulesMenuItem = 2131689530;
+			public const int downloadToolbarTitle = 2131689530;
 			
 			// aapt resource value: 0x7F0F003B
-			public const int downloadToolbarTitle = 2131689531;
+			public const int expand_button_title = 2131689531;
 			
 			// aapt resource value: 0x7F0F003C
-			public const int expand_button_title = 2131689532;
+			public const int fab_transformation_scrim_behavior = 2131689532;
 			
 			// aapt resource value: 0x7F0F003D
-			public const int fab_transformation_scrim_behavior = 2131689533;
+			public const int fab_transformation_sheet_behavior = 2131689533;
 			
 			// aapt resource value: 0x7F0F003E
-			public const int fab_transformation_sheet_behavior = 2131689534;
+			public const int googlePlayMarketReleaseAvailableDialogTitle = 2131689534;
 			
 			// aapt resource value: 0x7F0F003F
-			public const int googlePlayMarketReleaseAvailableDialogTitle = 2131689535;
+			public const int googlePlayMarketReleaseAvailableMessage = 2131689535;
 			
 			// aapt resource value: 0x7F0F0040
-			public const int googlePlayMarketReleaseAvailableMessage = 2131689536;
+			public const int googlePlayMarketReleaseReloadedMessage = 2131689536;
 			
 			// aapt resource value: 0x7F0F0041
 			public const int gotItActionText = 2131689537;
