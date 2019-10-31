@@ -2,46 +2,18 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net.NetworkInformation;
-using System.Text.RegularExpressions;
+//using System.Text.RegularExpressions;
 using SmtuSchedule.Core.Models;
 
 namespace SmtuSchedule.Core.Utilities
 {
     public static class ApplicationHelper
     {
-        public const String LatestReleaseUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest";
-
-        //public static String GetApkDownloadUrl(String version)
-        //{
-        //    return $"https://github.com/shults-s/SmtuSchedule/releases/download/{version}/Shults.SmtuSchedule-{version}.apk";
-        //}
-
-        public static async Task<String> GetLatestVersionNameAsync()
-        {
-            const String Url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/CHANGELOG.md";
-
-            try
-            {
-                String changeLog = await HttpHelper.GetAsync(Url).ConfigureAwait(false);
-
-                // ## [Версия X.X.X]
-                Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");
-                if (!match.Success)
-                {
-                    return null;
-                }
-
-                return match.Groups["version"].Value;
-            }
-            catch
-            {
-                return null;
-            }
-        }
+        public const String LatestReleaseDownloadPageUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest";
 
         public static async Task<ReleaseDescription> GetLatestReleaseDescription()
         {
-            String url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/Release.json";
+            String url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/SmtuSchedule.Android/Release.json";
 
             try
             {
@@ -53,6 +25,29 @@ namespace SmtuSchedule.Core.Utilities
                 return null;
             }
         }
+
+        //public static async Task<String> GetLatestVersionAsync()
+        //{
+        //    const String Url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/CHANGELOG.md";
+
+        //    try
+        //    {
+        //        String changeLog = await HttpHelper.GetAsync(Url).ConfigureAwait(false);
+
+        //        // ## [Версия X.X.X]
+        //        Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");
+        //        if (!match.Success)
+        //        {
+        //            return null;
+        //        }
+
+        //        return match.Groups["version"].Value;
+        //    }
+        //    catch
+        //    {
+        //        return null;
+        //    }
+        //}
 
         // Если v1 > v2, вернется 1; если v1 = v2, вернется 0; если v1 < v2, вернется -1.
         public static Int32 CompareVersions(String version1, String version2)
@@ -79,11 +74,11 @@ namespace SmtuSchedule.Core.Utilities
 
             try
             {
-                // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому это может не работать.
+                // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping не работает.
                 status = new Ping().Send("www.smtu.ru").Status;
 
                 failReason = (status != IPStatus.Success)
-                    ? "Ping failed with status " + Enum.GetName(typeof(IPStatus), status) + " but didn't throw an exception."
+                    ? "Ping failed with status " + Enum.GetName(typeof(IPStatus), status) + " without throwing an exception."
                     : null;
 
                 return status == IPStatus.Success;

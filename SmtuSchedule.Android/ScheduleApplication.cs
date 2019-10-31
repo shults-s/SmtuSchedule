@@ -3,7 +3,9 @@ using System.IO;
 using Android.OS;
 using Android.App;
 using Android.Runtime;
-using Android.Content.PM;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Analytics;
 using SmtuSchedule.Core;
 using SmtuSchedule.Core.Utilities;
 
@@ -37,10 +39,11 @@ namespace SmtuSchedule.Android
 
             // У AndroidEnvironment.UnhandledExceptionRaiser трассировка стека подробнее,
             // чем у AppDomain.CurrentDomain.UnhandledException.
-            AndroidEnvironment.UnhandledExceptionRaiser += (s, a) =>
+            AndroidEnvironment.UnhandledExceptionRaiser += (s, e) =>
             {
-                Logger.Log(a.Exception);
+                Logger.Log(e.Exception);
                 SaveLog(true);
+                Crashes.TrackError(e.Exception);
             };
 
             Preferences = new Preferences(this);
@@ -48,10 +51,15 @@ namespace SmtuSchedule.Android
             IsInitialized = false;
         }
 
+        public override void OnCreate()
+        {
+            base.OnCreate();
+            AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
+        }
+
         public Int32 GetVersion()
         {
-            return PackageManager.GetPackageInfo(PackageName, PackageInfoFlags.Activities)
-                .VersionCode;
+            return PackageManager.GetPackageInfo(PackageName, 0).VersionCode;
         }
 
         public String GetExternalStoragePath()

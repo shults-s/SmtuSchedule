@@ -4,22 +4,11 @@
     <string name="applicationCompleteName">Расписание СПбГМТУ</string>
     <string name="applicationLabel">Расписание</string>
     <string name="aboutApplicationMessage">
-        Версия 0.9 от 30 октября 2019.
+        Версия 0.9 от 31 октября 2019.
         \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>, поддержать меня можно
         <a href="https://vk.cc/9XYwXA">тут</a> :)
         \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
     </string>
-
-    <string-array name="currentScheduleActionsTitles">
-        <item>Удалить расписание</item>
-        <item>Перезагрузить расписание</item>
-    </string-array>
-    <string-array name="weeksTypesInNominativeCase">
-        <item>верхняя неделя</item>
-        <item>нижняя неделя</item>
-    </string-array>
-
-    <string name="multiGroupSubjectPrefix">Группы</string>
 
     <!-- Заголовки диалогов и панелей инструментов -->
     <string name="preferencesToolbarTitle">Настройки</string>
@@ -29,25 +18,29 @@
     <string name="aboutApplicationDialogTitle">О приложении</string>
     <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
     <string name="applicationUpdateAvailableDialogTitle">Загрузка обновления</string>
-    <string name="googlePlayMarketReleaseAvailableDialogTitle">Релиз в Play Маркет</string>
+    <string name="googlePlayStoreReleaseAvailableDialogTitle">Релиз в Google Play</string>
 
-    <!-- Названия пунктов меню в панели инстументов -->
+    <!-- Названия пунктов меню в панелях инстументов -->
     <string name="selectScheduleDateMenuItem">Выбрать дату</string>
     <string name="downloadSchedulesMenuItem">Загрузить расписания</string>
     <string name="removeCurrentScheduleMenuItem">Удалить расписание</string>
     <string name="openPreferencesMenuItem">@string/preferencesToolbarTitle</string>
     <string name="aboutApplicationMenuItem">@string/aboutApplicationDialogTitle</string>
 
-    <!-- Названия действий Snackbar'ов и кнопок -->
-    <string name="gotItActionText">Понял</string>
-    <string name="cancelActionText">Отмена</string>
-    <string name="removeActionText">Удалить</string>
-    <string name="thanksActionText">Спасибо</string>
-    <string name="downloadActionText">Загрузить</string>
-    <string name="configureActionText">Настроить</string>
-    <string name="grantAccessActionText">Разрешить</string>
-    <string name="openPlayMarketActionText">Открыть Play Маркет</string>
-    <string name="openUpdateDownloadPageActionText">Страница загрузки</string>
+    <!-- Названия действий Snackbar'ов, кнопок и диалогов -->
+    <string-array name="currentScheduleActionsTitles">
+        <item>Удалить расписание</item>
+        <item>Перезагрузить расписание</item>
+    </string-array>
+    <string name="gotItActionTitle">Понял</string>
+    <string name="cancelActionTitle">Отмена</string>
+    <string name="removeActionTitle">Удалить</string>
+    <string name="thanksActionTitle">Спасибо</string>
+    <string name="downloadActionTitle">Загрузить</string>
+    <string name="configureActionTitle">Настроить</string>
+    <string name="grantAccessActionTitle">Разрешить</string>
+    <string name="openPlayMarketActionTitle">Открыть Play Маркет</string>
+    <string name="openUpdateDownloadPageActionTitle">Страница загрузки</string>
 
     <!-- Сообщения об ошибках -->
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
@@ -61,7 +54,7 @@
     <string name="applicationInitializationErrorMessage">Ошибка при инициализации приложения.</string>
     <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с сайтом университета.</string>
 
-    <!-- Обоснования для запроса разрешений -->
+    <!-- Обоснования для запросов разрешений -->
     <string name="internetPermissionRationaleMessage">
         Доступ к интернету необходим для загрузки расписаний и проверки обновлений.
     </string>
@@ -80,6 +73,13 @@
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
     <string name="preferenceDisplaySubjectEndTimeTitle">Время окончания занятий</string>
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
+
+    <!-- Фрагменты текстов сообщений и элементов интерфейса -->
+    <string-array name="weeksTypesInNominativeCase">
+        <item>верхняя неделя</item>
+        <item>нижняя неделя</item>
+    </string-array>
+    <string name="multiGroupSubjectPrefix">Группы</string>
 
     <!-- Сообщения уведомительного характера -->
     <string name="weekendMessage">Выходной день :)</string>
@@ -112,15 +112,15 @@
         <a href="https://vk.cc/9XYwXA">поддержать меня</a>.
         \nЭту ссылку можно найти также в окне «О приложении».
     </string>
-    <string name="googlePlayMarketReleaseAvailableMessage">
-        «Расписание СПбГМТУ» теперь доступно в Google Play Маркет.
-        \nОбновите приложение, в дальнейшем это будет происходить автоматически.
+    <string name="googlePlayStoreReleaseAvailableMessage">
+        Приложение теперь доступно в Google Play Маркет.
+        \nОбновление будет происходить автоматически.
     </string>
-    <string name="googlePlayMarketReleaseReloadedMessage">
-        Приложение было перевыпущено в Google Play Маркет.
-        \nНастоятельно рекомендую вручную установить его оттуда, предварительно удалив данную версию, чтобы в дальнейшем
+    <string name="googlePlayStoreReleaseRelocatedMessage">
+        Приложение было <b>перевыпущено</b> в Google Play Маркет.
+        \nНастоятельно рекомендуется переустановить его вручную, предварительно удалив данную версию, чтобы в дальнейшем
         получать обновления автоматически.
-        \nСохраненные расписания затронуты не будут.
+        \nЗагруженные расписания затронуты не будут.
     </string>
     <string name="applicationUpdateAvailableMessage">
         Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md"><b>новая версия</b></a> приложения.

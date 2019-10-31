@@ -4582,7 +4582,7 @@ namespace SmtuSchedule.Android
 			public const int bottom_sheet_behavior = 2131689520;
 			
 			// aapt resource value: 0x7F0F0031
-			public const int cancelActionText = 2131689521;
+			public const int cancelActionTitle = 2131689521;
 			
 			// aapt resource value: 0x7F0F0032
 			public const int character_counter_content_description = 2131689522;
@@ -4591,7 +4591,7 @@ namespace SmtuSchedule.Android
 			public const int character_counter_pattern = 2131689523;
 			
 			// aapt resource value: 0x7F0F0034
-			public const int configureActionText = 2131689524;
+			public const int configureActionTitle = 2131689524;
 			
 			// aapt resource value: 0x7F0F0035
 			public const int configureApplicationMessage = 2131689525;
@@ -4600,7 +4600,7 @@ namespace SmtuSchedule.Android
 			public const int currentScheduleActionsDialogTitle = 2131689526;
 			
 			// aapt resource value: 0x7F0F0037
-			public const int downloadActionText = 2131689527;
+			public const int downloadActionTitle = 2131689527;
 			
 			// aapt resource value: 0x7F0F0038
 			public const int downloadRequestHintMessage = 2131689528;
@@ -4621,19 +4621,19 @@ namespace SmtuSchedule.Android
 			public const int fab_transformation_sheet_behavior = 2131689533;
 			
 			// aapt resource value: 0x7F0F003E
-			public const int googlePlayMarketReleaseAvailableDialogTitle = 2131689534;
+			public const int googlePlayStoreReleaseAvailableDialogTitle = 2131689534;
 			
 			// aapt resource value: 0x7F0F003F
-			public const int googlePlayMarketReleaseAvailableMessage = 2131689535;
+			public const int googlePlayStoreReleaseAvailableMessage = 2131689535;
 			
 			// aapt resource value: 0x7F0F0040
-			public const int googlePlayMarketReleaseReloadedMessage = 2131689536;
+			public const int googlePlayStoreReleaseRelocatedMessage = 2131689536;
 			
 			// aapt resource value: 0x7F0F0041
-			public const int gotItActionText = 2131689537;
+			public const int gotItActionTitle = 2131689537;
 			
 			// aapt resource value: 0x7F0F0042
-			public const int grantAccessActionText = 2131689538;
+			public const int grantAccessActionTitle = 2131689538;
 			
 			// aapt resource value: 0x7F0F0043
 			public const int hide_bottom_view_on_scroll_behavior = 2131689539;
@@ -4660,13 +4660,13 @@ namespace SmtuSchedule.Android
 			public const int noUniversitySiteConnectionErrorMessage = 2131689546;
 			
 			// aapt resource value: 0x7F0F004B
-			public const int openPlayMarketActionText = 2131689547;
+			public const int openPlayMarketActionTitle = 2131689547;
 			
 			// aapt resource value: 0x7F0F004C
 			public const int openPreferencesMenuItem = 2131689548;
 			
 			// aapt resource value: 0x7F0F004D
-			public const int openUpdateDownloadPageActionText = 2131689549;
+			public const int openUpdateDownloadPageActionTitle = 2131689549;
 			
 			// aapt resource value: 0x7F0F004E
 			public const int password_toggle_content_description = 2131689550;
@@ -4714,7 +4714,7 @@ namespace SmtuSchedule.Android
 			public const int preferenceUseFabDateSelectorTitle = 2131689563;
 			
 			// aapt resource value: 0x7F0F005D
-			public const int removeActionText = 2131689565;
+			public const int removeActionTitle = 2131689565;
 			
 			// aapt resource value: 0x7F0F005E
 			public const int removeCurrentScheduleMenuItem = 2131689566;
@@ -4774,7 +4774,7 @@ namespace SmtuSchedule.Android
 			public const int summary_collapsed_preference_list = 2131689584;
 			
 			// aapt resource value: 0x7F0F0071
-			public const int thanksActionText = 2131689585;
+			public const int thanksActionTitle = 2131689585;
 			
 			// aapt resource value: 0x7F0F0072
 			public const int v7_preference_off = 2131689586;

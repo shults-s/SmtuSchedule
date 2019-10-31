@@ -5,7 +5,8 @@ namespace SmtuSchedule.Core.Models
 {
     public class ReleaseDescription
     {
-        public String GooglePlayMarketPackageId { get; private set; }
+        [JsonProperty]
+        public String GooglePlayStorePackageId { get; private set; }
 
         [JsonProperty(Required = Required.Always)]
         public String VersionName { get; private set; }

@@ -28,23 +28,60 @@ namespace SmtuSchedule.Android
 
         public Int32 LastSeenWelcomeVersion { get; private set; }
 
+        public Boolean StoreReleaseNoticeViewed { get; private set; }
+
         public Preferences(Context context)
         {
             _preferences = PreferenceManager.GetDefaultSharedPreferences(context);
             _preferences.RegisterOnSharedPreferenceChangeListener(this);
 
-            CurrentScheduleDate = DateTime.Today;
+            // Обработка конфигурации предыдущих релизов, где версия представляла из себя строку.
+            try
+            {
+                LastSeenWelcomeVersion = _preferences.GetInt("LastSeenWelcomeVersion", 0);
+            }
+            catch (Java.Lang.ClassCastException)
+            {
+                SetLastSeenWelcomeVersion(0);
+            }
 
+            try
+            {
+                LastSeenUpdateVersion = _preferences.GetInt("LastSeenUpdateVersion", 0);
+            }
+            catch (Java.Lang.ClassCastException)
+            {
+                SetLastSeenUpdateVersion(0);
+            }
+
+            try
+            {
+                LastMigrationVersion = _preferences.GetInt("LastMigrationVersion", 0);
+            }
+            catch (Java.Lang.ClassCastException)
+            {
+                SetLastMigrationVersion(0);
+            }
+
+            CurrentScheduleDate = DateTime.Today;
             CurrentScheduleId = _preferences.GetInt("CurrentScheduleId", 0);
-            LastMigrationVersion = _preferences.GetInt("LastMigrationVersion", 0);
-            LastSeenUpdateVersion = _preferences.GetInt("LastSeenUpdateVersion", 0);
-            LastSeenWelcomeVersion = _preferences.GetInt("LastSeenWelcomeVersion", 0);
 
             UpperWeekDate = new DateTime(_preferences.GetLong("UpperWeekDate", 0));
+
             UseDarkTheme = _preferences.GetBoolean("UseDarkTheme", false);
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", true);
             CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
             DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
+            StoreReleaseNoticeViewed = _preferences.GetBoolean("StoreReleaseNoticeViewed", false);
+        }
+
+        public void SetStoreReleaseNoticeViewed(Boolean storeReleaseNoticeViewed)
+        {
+            ISharedPreferencesEditor editor = _preferences.Edit();
+            editor.PutBoolean("StoreReleaseNoticeViewed", storeReleaseNoticeViewed);
+            editor.Apply();
+
+            StoreReleaseNoticeViewed = storeReleaseNoticeViewed;
         }
 
         public void SetLastSeenWelcomeVersion(Int32 lastSeenWelcomeVersion)
@@ -112,6 +149,7 @@ namespace SmtuSchedule.Android
                 case "LastMigrationVersion":
                 case "LastSeenUpdateVersion":
                 case "LastSeenWelcomeVersion":
+                case "StoreReleaseNoticeViewed":
                     break;
 
                 //default:

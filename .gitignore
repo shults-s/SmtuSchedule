@@ -6,3 +6,5 @@ Releases
 Development
 
 *.csproj.user
+
+PrivateKeys.cs
