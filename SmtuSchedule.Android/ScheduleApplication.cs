@@ -43,7 +43,10 @@ namespace SmtuSchedule.Android
             {
                 Logger.Log(e.Exception);
                 SaveLog(true);
+
+#if !DEBUG
                 Crashes.TrackError(e.Exception);
+#endif
             };
 
             Preferences = new Preferences(this);
@@ -54,7 +57,10 @@ namespace SmtuSchedule.Android
         public override void OnCreate()
         {
             base.OnCreate();
+
+#if !DEBUG
             AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
+#endif
         }
 
         public Int32 GetVersion()
