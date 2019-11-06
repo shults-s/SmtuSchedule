@@ -162,15 +162,18 @@ namespace SmtuSchedule.Android.Views
                 // задается так, чтобы высота правой ячейки превосходила высоту содержимого левой.
                 // Эта ситуация возникает только если включено отображаение времени окончания занятий
                 // и при этом название предмета умещается в одну строку.
-                title.ViewTreeObserver.PreDraw += (s, e) =>
-                {
-                    if (title.LineCount < 2)
-                    {
-                        title.SetLines(2);
-                    }
+                //title.ViewTreeObserver.PreDraw += (s, e) =>
+                //{
+                //    if (title.LineCount < 2)
+                //    {
+                //        title.SetLines(2);
+                //    }
 
-                    e.Handled = true;
-                };
+                //    e.Handled = true;
+                //};
+
+                // Эта реализация, в отличие от предыдущей, не вызывает лагов при перелистывании.
+                title.SetMinLines(2);
 
                 times.Append("\n");
                 times.Append(subject.To.ToString("HH:mm").ToColored(_tertiaryTextColor));
