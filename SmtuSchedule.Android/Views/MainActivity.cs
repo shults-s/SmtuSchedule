@@ -426,10 +426,30 @@ namespace SmtuSchedule.Android.Views
             // дважды, причем оба раза с разными значениями позиции. В результате, при каждом повороте
             // экрана дата увеличивается/уменьшается (в зависимости от того, куда изначально свайпнуть),
             // но таблица с расписанием не обновляется.
+            // Судя по нагугленному – это не баг, а "by design": перед переходом на запрошенную страницу
+            // активной делается либо одна из крайних, либо соседняя с запрашиваемой страница.
             _viewPager.PageSelected += (s, e) =>
             {
                 DateTime date = _pagerAdapter.RenderingDateRange.GetDateByIndex(e.Position);
                 _application.Preferences.CurrentScheduleDate = date;
+            };
+
+            // При приближении к границам отрисовываемого диапазона дат необходимо пересчитать его,
+            // чтобы пользователю не нужно было совершать лишние телодвижения для дальнейшего просмотра.
+            _viewPager.PageScrollStateChanged += (s, e) =>
+            {
+                if (e.State != ViewPager.ScrollStateIdle)
+                {
+                    return ;
+                }
+
+                Int32 lastPageIndex = _pagerAdapter.RenderingDateRange.TotalDaysNumber - 1;
+
+                // По две страницы с каждого края.
+                if (_viewPager.CurrentItem <= 1 || _viewPager.CurrentItem >= lastPageIndex - 1)
+                {
+                    ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate, true, true);
+                }
             };
 
             // Пересоздавать адаптер необходимо при каждом перезапуске подсистемы рендеринга, иначе
@@ -555,11 +575,12 @@ namespace SmtuSchedule.Android.Views
             _activityState = MainActivityState.DisplaysSchedule;
         }
 
-        private void ViewPagerMoveToDate(DateTime date, Boolean adapterResetRequired = true)
+        private void ViewPagerMoveToDate(DateTime date, Boolean adapterResetRequired = true,
+            Boolean forceRecomputeDateRange = false)
         {
             // Предотвращает ситуацию, когда диапазон отображаемых дат перерассчитывается каждый раз
             // при переходе между расписаниями, если перед этим перелистнуть страницу.
-            if (!_pagerAdapter.RenderingDateRange.IsDateInside(date))
+            if (!_pagerAdapter.RenderingDateRange.IsDateInside(date) || forceRecomputeDateRange)
             {
                 adapterResetRequired = true;
                 _pagerAdapter.RenderingDateRange.Recompute(date);
@@ -776,6 +797,7 @@ namespace SmtuSchedule.Android.Views
 
         private MainActivityState _activityState;
         private ScheduleApplication _application;
+
         private Timer _currentSubjectHighlightTimer;
 
         private Toolbar _toolbar;
