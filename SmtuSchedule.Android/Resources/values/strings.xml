@@ -17,7 +17,7 @@
     <string name="introductionDialogTitle">Что нового?</string>
     <string name="aboutApplicationDialogTitle">О приложении</string>
     <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
-    <string name="applicationUpdateAvailableDialogTitle">Загрузка обновления</string>
+    <string name="applicationUpdateAvailableDialogTitle">Вышло обновление</string>
     <string name="googlePlayStoreReleaseAvailableDialogTitle">Релиз в Google Play</string>
 
     <!-- Названия пунктов меню в панелях инстументов -->

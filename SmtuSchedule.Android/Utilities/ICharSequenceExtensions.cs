@@ -1,13 +1,12 @@
 using System;
 using Java.Lang;
-using Android.OS;
 using Android.Graphics;
 using Android.Text;
 using Android.Text.Style;
 
 namespace SmtuSchedule.Android.Utilities
 {
-    internal static class ICharSequenceExtension
+    internal static class ICharSequenceExtensions
     {
         private class UrlSpanNoUnderlines : URLSpan
         {
@@ -68,20 +67,6 @@ namespace SmtuSchedule.Android.Utilities
             }
 
             return formattedText.SubSequenceFormatted(start, end + 1);
-        }
-
-        public static ICharSequence FromHtml(this System.String html)
-        {
-            if (Build.VERSION.SdkInt < BuildVersionCodes.N)
-            {
-                #pragma warning disable CS0618
-                return Html.FromHtml(html);
-                #pragma warning restore CS0618
-            }
-            else
-            {
-                return Html.FromHtml(html, FromHtmlOptions.ModeLegacy);
-            }
         }
 
         public static ICharSequence ToColored(this System.String text, Color color)

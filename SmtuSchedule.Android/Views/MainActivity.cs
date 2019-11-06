@@ -16,6 +16,7 @@ using Android.Support.V4.View;
 using Android.Support.Design.Widget;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Utilities;
+using SmtuSchedule.Android.Utilities;
 using SmtuSchedule.Android.Interfaces;
 
 using PopupMenu = Android.Support.V7.Widget.PopupMenu;
@@ -314,13 +315,13 @@ namespace SmtuSchedule.Android.Views
             if (IsPermissionDenied(Manifest.Permission.Internet))
             {
                 RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
-                return;
+                return ;
             }
 
             ReleaseDescription latest = await ApplicationHelper.GetLatestReleaseDescription();
             if (latest == null)
             {
-                return;
+                return ;
             }
 
             String packageId = latest.GooglePlayStorePackageId;
@@ -329,12 +330,16 @@ namespace SmtuSchedule.Android.Views
                 if (latest.VersionCode == _application.Preferences.LastSeenUpdateVersion
                     || latest.VersionCode <= currentVersion)
                 {
-                    return;
+                    return ;
                 }
+
+                Java.Lang.ICharSequence message = (latest.VersionNotes != null)
+                    ? latest.VersionNotes.ParseHtml()
+                    : GetTextFormatted(Resource.String.applicationUpdateAvailableMessage);
 
                 new CustomAlertDialog(this)
                     .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
-                    .SetMessage(Resource.String.applicationUpdateAvailableMessage)
+                    .SetMessage(message)
                     .SetPositiveButton(
                         Resource.String.openUpdateDownloadPageActionTitle,
                         () =>
@@ -349,7 +354,7 @@ namespace SmtuSchedule.Android.Views
                     )
                     .Show();
 
-                return;
+                return ;
             }
 
             if (packageId == PackageName)
@@ -366,7 +371,7 @@ namespace SmtuSchedule.Android.Views
                         .Show();
                 }
 
-                return;
+                return ;
             }
 
             new CustomAlertDialog(this)
