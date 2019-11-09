@@ -8,6 +8,7 @@ using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Analytics;
 using SmtuSchedule.Core;
 using SmtuSchedule.Core.Utilities;
+using SmtuSchedule.Android.Utilities;
 
 using Environment = Android.OS.Environment;
 
@@ -30,7 +31,7 @@ namespace SmtuSchedule.Android
             Logger = new InMemoryLogger();
             Logger.Log(
                 "SmtuSchedule version {0}, running on {1} {2} (Android {4} – API {3}).",
-                GetVersion(),
+                GetVersionName(),
                 Build.Manufacturer,
                 Build.Model,
                 Build.VERSION.Sdk,
@@ -39,15 +40,13 @@ namespace SmtuSchedule.Android
 
             // У AndroidEnvironment.UnhandledExceptionRaiser трассировка стека подробнее,
             // чем у AppDomain.CurrentDomain.UnhandledException.
+#if !DEBUG
             AndroidEnvironment.UnhandledExceptionRaiser += (s, e) =>
             {
                 Logger.Log(e.Exception);
                 SaveLog(true);
-
-#if !DEBUG
-                Crashes.TrackError(e.Exception);
-#endif
             };
+#endif
 
             Preferences = new Preferences(this);
 
@@ -58,14 +57,24 @@ namespace SmtuSchedule.Android
         {
             base.OnCreate();
 
-#if !DEBUG
+#if !DEBUG && !USER_THAT_IS_WELL_MEOWS
             AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
+
+            ProcessLifecycleListener listener = new ProcessLifecycleListener();
+            listener.Started += () => Analytics.TrackEvent("The application is started");
+            listener.Stopped += () => Analytics.TrackEvent("The application is stopped");
+            RegisterActivityLifecycleCallbacks(listener);
 #endif
         }
 
         public Int32 GetVersion()
         {
             return PackageManager.GetPackageInfo(PackageName, 0).VersionCode;
+        }
+
+        public String GetVersionName()
+        {
+            return PackageManager.GetPackageInfo(PackageName, 0).VersionName;
         }
 
         public String GetExternalStoragePath()
