@@ -224,7 +224,7 @@ namespace SmtuSchedule.Android.Views
                 }
             }
 
-            Int32 currentVersion = _application.GetVersion();
+            Int32 currentVersion = _application.GetVersionCode();
             if (_application.Preferences.LastSeenUpdateVersion == 0)
             {
                 _application.Preferences.SetLastSeenUpdateVersion(currentVersion);

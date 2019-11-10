@@ -40,13 +40,11 @@ namespace SmtuSchedule.Android
 
             // У AndroidEnvironment.UnhandledExceptionRaiser трассировка стека подробнее,
             // чем у AppDomain.CurrentDomain.UnhandledException.
-#if !DEBUG
             AndroidEnvironment.UnhandledExceptionRaiser += (s, e) =>
             {
                 Logger.Log(e.Exception);
                 SaveLog(true);
             };
-#endif
 
             Preferences = new Preferences(this);
 
@@ -67,7 +65,7 @@ namespace SmtuSchedule.Android
 #endif
         }
 
-        public Int32 GetVersion()
+        public Int32 GetVersionCode()
         {
             return PackageManager.GetPackageInfo(PackageName, 0).VersionCode;
         }
