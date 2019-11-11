@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using HtmlAgilityPack;
 using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core
 {
@@ -29,7 +30,6 @@ namespace SmtuSchedule.Core
             try
             {
                 String html = await HttpHelper.GetAsync(SearchScheduleUrl).ConfigureAwait(false);
-
                 HtmlDocument document = new HtmlDocument();
                 document.LoadHtml(html);
 
@@ -65,7 +65,9 @@ namespace SmtuSchedule.Core
             }
             catch (Exception exception)
             {
-                logger.Log($"Error of downloading lecturers names with their schedules id's: ", exception);
+                logger.Log(
+                    new LecturersLoaderException("Error of downloading list of lecturers.", exception));
+
                 return null;
             }
         }

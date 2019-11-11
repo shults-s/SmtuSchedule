@@ -8,6 +8,8 @@ using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Analytics;
 using SmtuSchedule.Core;
 using SmtuSchedule.Core.Utilities;
+using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Android.Utilities;
 
 using Environment = Android.OS.Environment;
@@ -19,9 +21,9 @@ namespace SmtuSchedule.Android
     {
         public SchedulesManager Manager { get; private set; }
 
-        public InMemoryLogger Logger { get; private set; }
-
         public Preferences Preferences { get; private set; }
+
+        public ILogger Logger { get; private set; }
 
         public Boolean IsInitialized { get; private set; }
 
@@ -57,6 +59,14 @@ namespace SmtuSchedule.Android
 
 #if !DEBUG && !USER_THAT_IS_WELL_MEOWS
             AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
+
+            Logger.ExceptionLogged += (e) =>
+            {
+                if (e is LecturersLoaderException || e is SchedulesLoaderException)
+                {
+                    Crashes.TrackError(e);
+                }
+            };
 
             ProcessLifecycleListener listener = new ProcessLifecycleListener();
             listener.Started += () => Analytics.TrackEvent("The application is started");
@@ -117,7 +127,7 @@ namespace SmtuSchedule.Android
             String prefix = isCrashLog ? "CRASH " : String.Empty;
 
             String fileName = prefix + DateTime.Now.ToString("dd.MM.yyyy HH-mm") + ".log";
-            _ = Logger.Save(logsPath + fileName);
+            _ = (Logger as InMemoryLogger).Save(logsPath + fileName);
         }
     }
 }
