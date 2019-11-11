@@ -445,8 +445,8 @@ namespace SmtuSchedule.Android.Views
 
                 Int32 lastPageIndex = _pagerAdapter.RenderingDateRange.TotalDaysNumber - 1;
 
-                // По две страницы с каждого края.
-                if (_viewPager.CurrentItem <= 1 || _viewPager.CurrentItem >= lastPageIndex - 1)
+                // По одной странице с каждого края.
+                if (_viewPager.CurrentItem == 0 || _viewPager.CurrentItem == lastPageIndex)
                 {
                     ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate, true, true);
                 }
