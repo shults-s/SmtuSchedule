@@ -20,6 +20,8 @@ namespace SmtuSchedule.Android.Views
     [DebuggerDisplay("ScheduleFragment {Date.ToShortDateString()}")]
     public class ScheduleFragment : Fragment
     {
+        private const String DateSavedInstanceStateKey = "Date";
+
         public DateTime Date { get; set; }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,9 +34,21 @@ namespace SmtuSchedule.Android.Views
             // Возврат из фонового режима:
             //     ScheduleApplication --> ScheduleFragment #1 ... ScheduleFragment #N --> MainActivity.
             // В итоге данный метод может быть вызван еще до того как расписания будут считаны из памяти.
-            if (!_application.IsInitialized || Date == default(DateTime))
+            if (!_application.IsInitialized)
             {
                 return null;
+            }
+
+            if (Date == default(DateTime))
+            {
+                if (savedInstanceState != null && savedInstanceState.ContainsKey(DateSavedInstanceStateKey))
+                {
+                    Date = new DateTime(savedInstanceState.GetLong(DateSavedInstanceStateKey));
+                }
+                else
+                {
+                    throw new InvalidOperationException("Date property value is not set.");
+                }
             }
 
             Schedule schedule = _application.Manager.Schedules[_application.Preferences.CurrentScheduleId];
@@ -98,6 +112,12 @@ namespace SmtuSchedule.Android.Views
             }
 
             return layout;
+        }
+
+        public override void OnSaveInstanceState(Bundle outState)
+        {
+            base.OnSaveInstanceState(outState);
+            outState.PutLong(DateSavedInstanceStateKey, Date.Ticks);
         }
 
         public override void OnAttach(Context context)
