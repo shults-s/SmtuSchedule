@@ -34,7 +34,7 @@ namespace SmtuSchedule.Android.Views
             // Возврат из фонового режима:
             //     ScheduleApplication --> ScheduleFragment #1 ... ScheduleFragment #N --> MainActivity.
             // В итоге данный метод может быть вызван еще до того как расписания будут считаны из памяти.
-            if (!_application.IsInitialized)
+            if (_application.Manager?.Schedules == null)
             {
                 return null;
             }
