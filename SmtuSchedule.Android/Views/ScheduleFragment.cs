@@ -25,6 +25,18 @@ namespace SmtuSchedule.Android.Views
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
         {
+            // В фоновом режиме система может завершить процесс приложения, а при повторном запуске порядок
+            // создания объектов изменится.
+            // Холодный запуск:
+            //     ScheduleApplication --> MainActivity --> ScheduleFragment #1 ... ScheduleFragment #N.
+            // Возврат из фонового режима:
+            //     ScheduleApplication --> ScheduleFragment #1 ... ScheduleFragment #N --> MainActivity.
+            // В итоге данный метод может быть вызван еще до того как расписания будут считаны из памяти.
+            if (!_application.IsInitialized || Date == default(DateTime))
+            {
+                return null;
+            }
+
             Schedule schedule = _application.Manager.Schedules[_application.Preferences.CurrentScheduleId];
             Subject[] subjects = schedule.GetSubjects(_application.Preferences.UpperWeekDate, Date);
 
