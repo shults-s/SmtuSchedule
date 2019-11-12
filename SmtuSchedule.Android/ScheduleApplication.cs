@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Android.OS;
 using Android.App;
 using Android.Runtime;
@@ -58,6 +59,11 @@ namespace SmtuSchedule.Android
             base.OnCreate();
 
 #if !DEBUG && !USER_THAT_IS_WELL_MEOWS
+            if (!Preferences.AllowSendingCrashReports)
+            {
+                return ;
+            }
+
             AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
 
             Logger.ExceptionLogged += (e) =>
@@ -68,9 +74,40 @@ namespace SmtuSchedule.Android
                 }
             };
 
+            Crashes.GetErrorAttachments = (ErrorReport report) =>
+            {
+                FileInfo[] files = null;
+                try
+                {
+                    files = new DirectoryInfo(GetExternalStoragePath() + "Logs")
+                        .GetFiles();
+                }
+                catch
+                {
+                    return new ErrorAttachmentLog[0];
+                }
+
+                if (files.Length == 0)
+                {
+                    return new ErrorAttachmentLog[0];
+                }
+
+                FileInfo file = files.OrderByDescending(f => f.LastWriteTime).First();
+                if (file == null)
+                {
+                    return new ErrorAttachmentLog[0];
+                }
+
+                return new ErrorAttachmentLog[]
+                {
+                    ErrorAttachmentLog.AttachmentWithText("Crash log", file.FullName)
+                };
+            };
+
             ProcessLifecycleListener listener = new ProcessLifecycleListener();
             listener.Started += () => Analytics.TrackEvent("The application is started");
             listener.Stopped += () => Analytics.TrackEvent("The application is stopped");
+
             RegisterActivityLifecycleCallbacks(listener);
 #endif
         }
