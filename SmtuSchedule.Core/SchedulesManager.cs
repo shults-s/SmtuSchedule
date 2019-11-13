@@ -18,15 +18,15 @@ namespace SmtuSchedule.Core
 
         public SchedulesManager(String storagePath) => _storagePath = storagePath;
 
-        public async Task<Boolean> DownloadSchedulesAsync(IEnumerable<String> searchRequests)
+        public Task<Boolean> DownloadSchedulesAsync(IEnumerable<String> searchRequests)
         {
-            return await Task.Run(async () =>
+            return Task.Run(async () =>
             {
                 IsDownloadingInProgress = true;
 
                 if (_lecturers == null)
                 {
-                    _lecturers = await LecturersLoader.Download(Logger);
+                    _lecturers = await LecturersLoader.DownloadAsync(Logger).ConfigureAwait(false);
                 }
 
                 ServerSchedulesLoader schedulesLoader = new ServerSchedulesLoader(_lecturers)
@@ -68,13 +68,13 @@ namespace SmtuSchedule.Core
                 return _lecturers.Keys;
             }
 
-            _lecturers = await LecturersLoader.Download(Logger);
+            _lecturers = await LecturersLoader.DownloadAsync(Logger).ConfigureAwait(false);
             return _lecturers?.Keys;
         }
 
-        public async Task<Boolean> MigrateSchedulesAsync()
+        public Task<Boolean> MigrateSchedulesAsync()
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 IEnumerable<Schedule> affectedSchedules = SchedulesMigrator.Migrate(_schedules.Values);
 
@@ -97,9 +97,9 @@ namespace SmtuSchedule.Core
             });
         }
 
-        public async Task<Boolean> RemoveScheduleAsync(Int32 scheduleId)
+        public Task<Boolean> RemoveScheduleAsync(Int32 scheduleId)
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
                 {
@@ -116,9 +116,9 @@ namespace SmtuSchedule.Core
             });
         }
 
-        public async Task<Boolean> ReadSchedulesAsync()
+        public Task<Boolean> ReadSchedulesAsync()
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 LocalSchedulesReader schedulesReader = new LocalSchedulesReader()
                 {

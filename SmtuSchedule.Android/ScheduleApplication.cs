@@ -164,7 +164,7 @@ namespace SmtuSchedule.Android
             String prefix = isCrashLog ? "CRASH " : String.Empty;
 
             String fileName = prefix + DateTime.Now.ToString("dd.MM.yyyy HH-mm") + ".log";
-            _ = (Logger as InMemoryLogger).Save(logsPath + fileName);
+            _ = (Logger as InMemoryLogger).SaveAsync(logsPath + fileName);
         }
     }
 }

@@ -68,10 +68,10 @@ namespace SmtuSchedule.Android.Views
                 downloadMenuItem.SetEnabled(isUserInputValid);
             };
 
-            DownloadLecturersAsync();
+            DownloadLecturersNamesAsync();
         }
 
-        private async void DownloadLecturersAsync()
+        private async void DownloadLecturersNamesAsync()
         {
             IEnumerable<String> lecturers = await _application.Manager.DownloadLecturersNamesAsync();
             if (lecturers == null)

@@ -30,7 +30,7 @@ namespace SmtuSchedule.Core.Utilities
             Write(format, parameters);
         }
 
-        public Task Save(String fileName)
+        public Task SaveAsync(String fileName)
         {
             return Task.Run(() => File.WriteAllLines(fileName, _entries));
         }

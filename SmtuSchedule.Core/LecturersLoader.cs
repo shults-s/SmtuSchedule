@@ -11,7 +11,7 @@ namespace SmtuSchedule.Core
 {
     internal static class LecturersLoader
     {
-        public static async Task<Dictionary<String, Int32>> Download(ILogger logger)
+        public static async Task<Dictionary<String, Int32>> DownloadAsync(ILogger logger)
         {
             Dictionary<String, Int32> lecturers = null;
 
