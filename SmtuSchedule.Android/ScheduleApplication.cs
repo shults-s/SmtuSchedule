@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Android.OS;
 using Android.App;
 using Android.Runtime;
@@ -8,6 +9,9 @@ using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Analytics;
 using SmtuSchedule.Core;
 using SmtuSchedule.Core.Utilities;
+using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Exceptions;
+using SmtuSchedule.Android.Utilities;
 
 using Environment = Android.OS.Environment;
 
@@ -18,9 +22,9 @@ namespace SmtuSchedule.Android
     {
         public SchedulesManager Manager { get; private set; }
 
-        public InMemoryLogger Logger { get; private set; }
-
         public Preferences Preferences { get; private set; }
+
+        public ILogger Logger { get; private set; }
 
         public Boolean IsInitialized { get; private set; }
 
@@ -30,7 +34,7 @@ namespace SmtuSchedule.Android
             Logger = new InMemoryLogger();
             Logger.Log(
                 "SmtuSchedule version {0}, running on {1} {2} (Android {4} – API {3}).",
-                GetVersion(),
+                GetVersionName(),
                 Build.Manufacturer,
                 Build.Model,
                 Build.VERSION.Sdk,
@@ -43,7 +47,6 @@ namespace SmtuSchedule.Android
             {
                 Logger.Log(e.Exception);
                 SaveLog(true);
-                Crashes.TrackError(e.Exception);
             };
 
             Preferences = new Preferences(this);
@@ -54,12 +57,69 @@ namespace SmtuSchedule.Android
         public override void OnCreate()
         {
             base.OnCreate();
+
+#if !DEBUG && !USER_THAT_IS_WELL_MEOWS
+            if (!Preferences.AllowSendingCrashReports)
+            {
+                return ;
+            }
+
             AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
+
+            Logger.ExceptionLogged += (e) =>
+            {
+                if (e is LecturersLoaderException || e is SchedulesLoaderException)
+                {
+                    Crashes.TrackError(e);
+                }
+            };
+
+            Crashes.GetErrorAttachments = (ErrorReport report) =>
+            {
+                FileInfo[] files = null;
+                try
+                {
+                    files = new DirectoryInfo(GetExternalStoragePath() + "Logs")
+                        .GetFiles();
+                }
+                catch
+                {
+                    return new ErrorAttachmentLog[0];
+                }
+
+                if (files.Length == 0)
+                {
+                    return new ErrorAttachmentLog[0];
+                }
+
+                FileInfo file = files.OrderByDescending(f => f.LastWriteTime).First();
+                if (file == null)
+                {
+                    return new ErrorAttachmentLog[0];
+                }
+
+                return new ErrorAttachmentLog[]
+                {
+                    ErrorAttachmentLog.AttachmentWithText("Crash log", file.FullName)
+                };
+            };
+
+            ProcessLifecycleListener listener = new ProcessLifecycleListener();
+            listener.Started += () => Analytics.TrackEvent("The application is started");
+            listener.Stopped += () => Analytics.TrackEvent("The application is stopped");
+
+            RegisterActivityLifecycleCallbacks(listener);
+#endif
         }
 
-        public Int32 GetVersion()
+        public Int32 GetVersionCode()
         {
             return PackageManager.GetPackageInfo(PackageName, 0).VersionCode;
+        }
+
+        public String GetVersionName()
+        {
+            return PackageManager.GetPackageInfo(PackageName, 0).VersionName;
         }
 
         public String GetExternalStoragePath()
@@ -104,7 +164,7 @@ namespace SmtuSchedule.Android
             String prefix = isCrashLog ? "CRASH " : String.Empty;
 
             String fileName = prefix + DateTime.Now.ToString("dd.MM.yyyy HH-mm") + ".log";
-            _ = Logger.Save(logsPath + fileName);
+            _ = (Logger as InMemoryLogger).Save(logsPath + fileName);
         }
     }
 }

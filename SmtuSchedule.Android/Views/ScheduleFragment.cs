@@ -20,11 +20,37 @@ namespace SmtuSchedule.Android.Views
     [DebuggerDisplay("ScheduleFragment {Date.ToShortDateString()}")]
     public class ScheduleFragment : Fragment
     {
+        private const String DateSavedInstanceStateKey = "Date";
+
         public DateTime Date { get; set; }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
         {
+            // В фоновом режиме система может завершить процесс приложения, а при повторном запуске порядок
+            // создания объектов изменится.
+            // Холодный запуск:
+            //     ScheduleApplication --> MainActivity --> ScheduleFragment #1 ... ScheduleFragment #N.
+            // Возврат из фонового режима:
+            //     ScheduleApplication --> ScheduleFragment #1 ... ScheduleFragment #N --> MainActivity.
+            // В итоге данный метод может быть вызван еще до того как расписания будут считаны из памяти.
+            if (_application.Manager?.Schedules == null)
+            {
+                return null;
+            }
+
+            if (Date == default(DateTime))
+            {
+                if (savedInstanceState != null && savedInstanceState.ContainsKey(DateSavedInstanceStateKey))
+                {
+                    Date = new DateTime(savedInstanceState.GetLong(DateSavedInstanceStateKey));
+                }
+                else
+                {
+                    throw new InvalidOperationException("Date property value is not set.");
+                }
+            }
+
             Schedule schedule = _application.Manager.Schedules[_application.Preferences.CurrentScheduleId];
             Subject[] subjects = schedule.GetSubjects(_application.Preferences.UpperWeekDate, Date);
 
@@ -86,6 +112,12 @@ namespace SmtuSchedule.Android.Views
             }
 
             return layout;
+        }
+
+        public override void OnSaveInstanceState(Bundle outState)
+        {
+            base.OnSaveInstanceState(outState);
+            outState.PutLong(DateSavedInstanceStateKey, Date.Ticks);
         }
 
         public override void OnAttach(Context context)
@@ -162,15 +194,18 @@ namespace SmtuSchedule.Android.Views
                 // задается так, чтобы высота правой ячейки превосходила высоту содержимого левой.
                 // Эта ситуация возникает только если включено отображаение времени окончания занятий
                 // и при этом название предмета умещается в одну строку.
-                title.ViewTreeObserver.PreDraw += (s, e) =>
-                {
-                    if (title.LineCount < 2)
-                    {
-                        title.SetLines(2);
-                    }
+                //title.ViewTreeObserver.PreDraw += (s, e) =>
+                //{
+                //    if (title.LineCount < 2)
+                //    {
+                //        title.SetLines(2);
+                //    }
 
-                    e.Handled = true;
-                };
+                //    e.Handled = true;
+                //};
+
+                // Эта реализация, в отличие от предыдущей, не вызывает лагов при перелистывании.
+                title.SetMinLines(2);
 
                 times.Append("\n");
                 times.Append(subject.To.ToString("HH:mm").ToColored(_tertiaryTextColor));

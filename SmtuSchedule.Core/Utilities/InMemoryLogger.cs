@@ -8,9 +8,15 @@ namespace SmtuSchedule.Core.Utilities
 {
     public class InMemoryLogger : ILogger, IDisposable
     {
+        public event Action<Exception> ExceptionLogged;
+
         public InMemoryLogger() => _entries = new BlockingCollection<String>();
 
-        public void Log(Exception exception) => Write(exception.Format());
+        public void Log(Exception exception)
+        {
+            Write(exception.Format());
+            ExceptionLogged?.Invoke(exception);
+        }
 
         public void Log(String message) => Write(message);
 
@@ -29,7 +35,12 @@ namespace SmtuSchedule.Core.Utilities
             return Task.Run(() => File.WriteAllLines(fileName, _entries));
         }
 
-        public void Dispose() => _entries.Dispose();
+        public override String ToString()
+        {
+            return String.Join(Environment.NewLine, _entries);
+        }
+
+        public void Dispose() =>_entries.Dispose();
 
         private void Write(String format, params Object[] parameters)
         {

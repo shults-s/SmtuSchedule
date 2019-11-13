@@ -8,6 +8,7 @@ using HtmlAgilityPack;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core
@@ -60,8 +61,12 @@ namespace SmtuSchedule.Core
 
             if (_lecturers == null)
             {
-                Logger?.Log("Lecturers property is null, therefore, in any loaded schedule, " +
-                    "the lecturers id's will be zero. So, switching between schedules will be impossible.");
+                Logger?.Log(
+                    new SchedulesLoaderException(
+                        "Provided lecturers list is null, therefore, in any loaded schedule, the "
+                        + "lecturers id's will be zero. So, switching between schedules will be impossible."
+                    )
+                );
 
                 HaveDownloadingErrors = true;
                 return schedules;
@@ -92,7 +97,10 @@ namespace SmtuSchedule.Core
                 catch(Exception exception)
                 {
                     HaveDownloadingErrors = true;
-                    Logger?.Log($"Error of downloading schedule with id {scheduleId}: ", exception);
+                    Logger?.Log(
+                        new SchedulesLoaderException(
+                            $"Error of downloading schedule with id {scheduleId}.", exception)
+                    );
                 }
             }
 

@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core
 {
@@ -26,7 +27,9 @@ namespace SmtuSchedule.Core
             {
                 HaveReadingErrors = true;
 
-                Logger?.Log("Error of reading local schedules list: ", exception);
+                Logger?.Log(
+                    new SchedulesReaderException("Error of reading list of local schedules.", exception));
+
                 return schedules;
             }
 
@@ -48,7 +51,8 @@ namespace SmtuSchedule.Core
                     HaveReadingErrors = true;
 
                     String fileName = Path.GetFileName(filePath);
-                    Logger?.Log($"Error of loading file \"{fileName}\": ", exception);
+                    Logger?.Log(
+                        new SchedulesReaderException($"Error of reading file \"{fileName}\".", exception));
                 }
             }
 

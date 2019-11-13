@@ -16,6 +16,7 @@ using Android.Support.V4.View;
 using Android.Support.Design.Widget;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Utilities;
+using SmtuSchedule.Android.Utilities;
 using SmtuSchedule.Android.Interfaces;
 
 using PopupMenu = Android.Support.V7.Widget.PopupMenu;
@@ -223,7 +224,7 @@ namespace SmtuSchedule.Android.Views
                 }
             }
 
-            Int32 currentVersion = _application.GetVersion();
+            Int32 currentVersion = _application.GetVersionCode();
             if (_application.Preferences.LastSeenUpdateVersion == 0)
             {
                 _application.Preferences.SetLastSeenUpdateVersion(currentVersion);
@@ -314,13 +315,13 @@ namespace SmtuSchedule.Android.Views
             if (IsPermissionDenied(Manifest.Permission.Internet))
             {
                 RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
-                return;
+                return ;
             }
 
             ReleaseDescription latest = await ApplicationHelper.GetLatestReleaseDescription();
             if (latest == null)
             {
-                return;
+                return ;
             }
 
             String packageId = latest.GooglePlayStorePackageId;
@@ -329,12 +330,16 @@ namespace SmtuSchedule.Android.Views
                 if (latest.VersionCode == _application.Preferences.LastSeenUpdateVersion
                     || latest.VersionCode <= currentVersion)
                 {
-                    return;
+                    return ;
                 }
+
+                Java.Lang.ICharSequence message = (latest.VersionNotes != null)
+                    ? latest.VersionNotes.ParseHtml()
+                    : GetTextFormatted(Resource.String.applicationUpdateAvailableMessage);
 
                 new CustomAlertDialog(this)
                     .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
-                    .SetMessage(Resource.String.applicationUpdateAvailableMessage)
+                    .SetMessage(message)
                     .SetPositiveButton(
                         Resource.String.openUpdateDownloadPageActionTitle,
                         () =>
@@ -349,7 +354,7 @@ namespace SmtuSchedule.Android.Views
                     )
                     .Show();
 
-                return;
+                return ;
             }
 
             if (packageId == PackageName)
@@ -366,7 +371,7 @@ namespace SmtuSchedule.Android.Views
                         .Show();
                 }
 
-                return;
+                return ;
             }
 
             new CustomAlertDialog(this)
@@ -421,10 +426,30 @@ namespace SmtuSchedule.Android.Views
             // дважды, причем оба раза с разными значениями позиции. В результате, при каждом повороте
             // экрана дата увеличивается/уменьшается (в зависимости от того, куда изначально свайпнуть),
             // но таблица с расписанием не обновляется.
+            // Судя по нагугленному – это не баг, а "by design": перед переходом на запрошенную страницу
+            // активной делается либо одна из крайних, либо соседняя с запрашиваемой страница.
             _viewPager.PageSelected += (s, e) =>
             {
                 DateTime date = _pagerAdapter.RenderingDateRange.GetDateByIndex(e.Position);
                 _application.Preferences.CurrentScheduleDate = date;
+            };
+
+            // При приближении к границам отрисовываемого диапазона дат необходимо пересчитать его,
+            // чтобы пользователю не нужно было совершать лишние телодвижения для дальнейшего просмотра.
+            _viewPager.PageScrollStateChanged += (s, e) =>
+            {
+                if (e.State != ViewPager.ScrollStateIdle)
+                {
+                    return ;
+                }
+
+                Int32 lastPageIndex = _pagerAdapter.RenderingDateRange.TotalDaysNumber - 1;
+
+                // По одной странице с каждого края.
+                if (_viewPager.CurrentItem == 0 || _viewPager.CurrentItem == lastPageIndex)
+                {
+                    ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate, true, true);
+                }
             };
 
             // Пересоздавать адаптер необходимо при каждом перезапуске подсистемы рендеринга, иначе
@@ -550,11 +575,12 @@ namespace SmtuSchedule.Android.Views
             _activityState = MainActivityState.DisplaysSchedule;
         }
 
-        private void ViewPagerMoveToDate(DateTime date, Boolean adapterResetRequired = true)
+        private void ViewPagerMoveToDate(DateTime date, Boolean adapterResetRequired = true,
+            Boolean forceRecomputeDateRange = false)
         {
             // Предотвращает ситуацию, когда диапазон отображаемых дат перерассчитывается каждый раз
             // при переходе между расписаниями, если перед этим перелистнуть страницу.
-            if (!_pagerAdapter.RenderingDateRange.IsDateInside(date))
+            if (!_pagerAdapter.RenderingDateRange.IsDateInside(date) || forceRecomputeDateRange)
             {
                 adapterResetRequired = true;
                 _pagerAdapter.RenderingDateRange.Recompute(date);
@@ -771,6 +797,7 @@ namespace SmtuSchedule.Android.Views
 
         private MainActivityState _activityState;
         private ScheduleApplication _application;
+
         private Timer _currentSubjectHighlightTimer;
 
         private Toolbar _toolbar;

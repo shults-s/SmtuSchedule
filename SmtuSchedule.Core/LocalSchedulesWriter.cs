@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core
 {
@@ -23,7 +24,8 @@ namespace SmtuSchedule.Core
             catch (Exception exception)
             {
                 hasNoRemovingError = false;
-                Logger?.Log($"Error of removing schedule file {fileName}: ", exception);
+                Logger?.Log(
+                    new SchedulesWriterException($"Error of removing schedule file {fileName}.", exception));
             }
 
             return hasNoRemovingError;
@@ -41,7 +43,8 @@ namespace SmtuSchedule.Core
             catch (Exception exception)
             {
                 hasNoSavingError = false;
-                Logger?.Log($"Error of saving schedule to file {fileName}: ", exception);
+                Logger?.Log(
+                    new SchedulesWriterException($"Error of saving schedule to file {fileName}.", exception));
             }
 
             return hasNoSavingError;
