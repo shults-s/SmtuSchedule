@@ -18,7 +18,7 @@ using Environment = Android.OS.Environment;
 namespace SmtuSchedule.Android
 {
     [Application]
-    public sealed class ScheduleApplication : Application
+    internal class ScheduleApplication : Application
     {
         public SchedulesManager Manager { get; private set; }
 

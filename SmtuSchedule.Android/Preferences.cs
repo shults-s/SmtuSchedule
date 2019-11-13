@@ -4,7 +4,7 @@ using Android.Support.V7.Preferences;
 
 namespace SmtuSchedule.Android
 {
-    public class Preferences : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
+    internal class Preferences : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
     {
         public event Action ThemeChanged;
 

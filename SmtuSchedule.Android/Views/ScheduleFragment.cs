@@ -18,7 +18,7 @@ using SmtuSchedule.Android.Interfaces;
 namespace SmtuSchedule.Android.Views
 {
     [DebuggerDisplay("ScheduleFragment {Date.ToShortDateString()}")]
-    public class ScheduleFragment : Fragment
+    internal class ScheduleFragment : Fragment
     {
         private const String DateSavedInstanceStateKey = "Date";
 

@@ -9,7 +9,7 @@ using Android.Support.V7.Preferences;
 namespace SmtuSchedule.Android.Views
 {
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
-    public class PreferencesActivity : AppCompatActivity
+    internal class PreferencesActivity : AppCompatActivity
     {
         private class PreferencesFragment : PreferenceFragmentCompat
         {

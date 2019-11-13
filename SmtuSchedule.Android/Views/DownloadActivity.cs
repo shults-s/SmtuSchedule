@@ -15,7 +15,7 @@ using Toolbar = Android.Support.V7.Widget.Toolbar;
 namespace SmtuSchedule.Android.Views
 {
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
-    public class DownloadActivity : AppCompatActivity
+    internal class DownloadActivity : AppCompatActivity
     {
         public const String IntentSearchRequestsKey = "requests";
 

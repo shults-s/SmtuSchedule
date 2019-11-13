@@ -2,7 +2,7 @@ using System;
 
 namespace SmtuSchedule.Android.Interfaces
 {
-    interface ISchedulesViewer
+    internal interface ISchedulesViewer
     {
         void ShowSchedule(Int32 scheduleId);
     }

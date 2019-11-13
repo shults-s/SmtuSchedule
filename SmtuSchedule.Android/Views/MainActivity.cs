@@ -26,7 +26,7 @@ using Uri = Android.Net.Uri;
 namespace SmtuSchedule.Android.Views
 {
     [Activity(MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait)]
-    public class MainActivity : AppCompatActivity, ISchedulesViewer
+    internal class MainActivity : AppCompatActivity, ISchedulesViewer
     {
         private enum MainActivityState { NotInitialized, Initialized, DisplaysMessage, DisplaysSchedule }
 
