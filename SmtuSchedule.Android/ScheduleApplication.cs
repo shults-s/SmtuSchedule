@@ -158,12 +158,20 @@ namespace SmtuSchedule.Android
             String logsPath = GetExternalStoragePath() + "Logs/";
             if (!Directory.Exists(logsPath))
             {
-                Directory.CreateDirectory(logsPath);
+                try
+                {
+                    Directory.CreateDirectory(logsPath);
+                }
+                catch
+                {
+                    return ;
+                }
             }
 
             String prefix = isCrashLog ? "CRASH " : String.Empty;
-
             String fileName = prefix + DateTime.Now.ToString("dd.MM.yyyy HH-mm") + ".log";
+
+            // Здесь подавляются исключения, которые могут возникнуть при сохранении лога.
             _ = (Logger as InMemoryLogger).SaveAsync(logsPath + fileName);
         }
     }
