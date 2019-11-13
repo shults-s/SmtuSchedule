@@ -59,10 +59,10 @@ namespace SmtuSchedule.Android
             base.OnCreate();
 
 #if !DEBUG && !USER_THAT_IS_WELL_MEOWS
-            if (!Preferences.AllowSendingCrashReports)
-            {
-                return ;
-            }
+            //if (!Preferences.AllowSendingCrashReports)
+            //{
+            //    return ;
+            //}
 
             AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
 

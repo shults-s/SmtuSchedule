@@ -8,7 +8,7 @@ namespace SmtuSchedule.Android
     {
         public event Action ThemeChanged;
 
-        public Boolean AllowSendingCrashReports { get; private set; }
+        //public Boolean AllowSendingCrashReports { get; private set; }
 
         public Boolean CheckUpdatesOnStart { get; private set; }
 
@@ -74,7 +74,7 @@ namespace SmtuSchedule.Android
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", true);
             CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
             DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
-            AllowSendingCrashReports = _preferences.GetBoolean("AllowSendingCrashReports", true);
+            //AllowSendingCrashReports = _preferences.GetBoolean("AllowSendingCrashReports", true);
             StoreReleaseNoticeViewed = _preferences.GetBoolean("StoreReleaseNoticeViewed", false);
         }
 
@@ -148,9 +148,9 @@ namespace SmtuSchedule.Android
                     UpperWeekDate = new DateTime(preferences.GetLong("UpperWeekDate", 0));
                     break;
 
-                case "AllowSendingCrashReports":
-                    AllowSendingCrashReports = preferences.GetBoolean("AllowSendingCrashReports", true);
-                    break;
+                //case "AllowSendingCrashReports":
+                //    AllowSendingCrashReports = preferences.GetBoolean("AllowSendingCrashReports", true);
+                //    break;
 
                 case "CurrentScheduleId":
                 case "LastMigrationVersion":
