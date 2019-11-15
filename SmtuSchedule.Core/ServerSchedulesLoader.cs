@@ -182,7 +182,7 @@ namespace SmtuSchedule.Core
             }
 
             // Групп с большим номером у нас нет, значит это расписание преподавателя.
-            ScheduleType scheduleType = (scheduleId > 10000) ? ScheduleType.Lecturer : ScheduleType.Group;
+            ScheduleType scheduleType = (scheduleId > 100000) ? ScheduleType.Lecturer : ScheduleType.Group;
 
             Schedule schedule = new Schedule()
             {
