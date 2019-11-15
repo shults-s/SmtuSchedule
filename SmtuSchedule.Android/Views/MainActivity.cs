@@ -599,7 +599,8 @@ namespace SmtuSchedule.Android.Views
         {
             IEnumerable<(Int32 scheduleId, String displayedName)> Fetch(IEnumerable<Schedule> values)
             {
-                return values.Select<Schedule, (Int32, String)>(s => (s.ScheduleId, s.DisplayedName));
+                return values.OrderBy(s => s, new SchedulesComparer())
+                             .Select<Schedule, (Int32, String)>(s => (s.ScheduleId, s.DisplayedName));
             }
 
             _schedulesMenu.Menu.Clear();
@@ -792,12 +793,11 @@ namespace SmtuSchedule.Android.Views
             snackbar.Show();
         }
 
-        private Boolean _isThemeChanged;
-        private Boolean _currentlyUsedDarkTheme;
-
-        private MainActivityState _activityState;
         private ScheduleApplication _application;
 
+        private Boolean _isThemeChanged;
+        private Boolean _currentlyUsedDarkTheme;
+        private MainActivityState _activityState;
         private Timer _currentSubjectHighlightTimer;
 
         private Toolbar _toolbar;
