@@ -156,11 +156,11 @@ namespace SmtuSchedule.Android.Views
         }
 
         private View CreateSubjectView(LayoutInflater inflater, ViewGroup container, Subject subject,
-            IEnumerable<Subject> relatedSubjects, Boolean needHighlight)
+            IEnumerable<Subject> relatedSubjects, Boolean shouldHighlightSubject)
         {
             View layout = inflater.Inflate(Resource.Layout.subject, container, false);
 
-            if (needHighlight)
+            if (shouldHighlightSubject)
             {
                 layout.SetBackgroundColor(_dividerColor);
             }
