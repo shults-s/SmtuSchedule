@@ -18,7 +18,33 @@ namespace SmtuSchedule.Core
 
         public SchedulesManager(String storagePath) => _storagePath = storagePath;
 
-        public Task<Boolean> DownloadSchedulesAsync(IEnumerable<String> searchRequests)
+        public Task<Boolean> MigrateSchedulesAsync()
+        {
+            return Task.Run(() =>
+            {
+                IEnumerable<Schedule> affectedSchedules = SchedulesMigrator.Migrate(_schedules.Values);
+
+                LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
+                {
+                    Logger = Logger
+                };
+
+                Boolean haveSavingErrors = false;
+
+                foreach (Schedule schedule in affectedSchedules)
+                {
+                    if (!schedulesWriter.Save(schedule))
+                    {
+                        haveSavingErrors = true;
+                    }
+                }
+
+                return haveSavingErrors;
+            });
+        }
+
+        public Task<Boolean> DownloadSchedulesAsync(IEnumerable<String> searchRequests,
+            Boolean shouldDownloadRelatedSchedules)
         {
             return Task.Run(async () =>
             {
@@ -34,8 +60,10 @@ namespace SmtuSchedule.Core
                     Logger = Logger
                 };
 
-                Dictionary<Int32, Schedule> schedules = await schedulesLoader.DownloadAsync(searchRequests)
-                    .ConfigureAwait(false);
+                Dictionary<Int32, Schedule> schedules = await schedulesLoader.DownloadAsync(
+                    searchRequests,
+                    shouldDownloadRelatedSchedules
+                ).ConfigureAwait(false);
 
                 LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
                 {
@@ -70,31 +98,6 @@ namespace SmtuSchedule.Core
 
             _lecturers = await LecturersLoader.DownloadAsync(Logger).ConfigureAwait(false);
             return _lecturers?.Keys;
-        }
-
-        public Task<Boolean> MigrateSchedulesAsync()
-        {
-            return Task.Run(() =>
-            {
-                IEnumerable<Schedule> affectedSchedules = SchedulesMigrator.Migrate(_schedules.Values);
-
-                LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
-                {
-                    Logger = Logger
-                };
-
-                Boolean haveSavingErrors = false;
-
-                foreach (Schedule schedule in affectedSchedules)
-                {
-                    if (!schedulesWriter.Save(schedule))
-                    {
-                        haveSavingErrors = true;
-                    }
-                }
-
-                return haveSavingErrors;
-            });
         }
 
         public Task<Boolean> RemoveScheduleAsync(Int32 scheduleId)

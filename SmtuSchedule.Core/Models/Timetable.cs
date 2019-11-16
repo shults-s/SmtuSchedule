@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace SmtuSchedule.Core.Models
@@ -77,7 +79,47 @@ namespace SmtuSchedule.Core.Models
                 case DayOfWeek.Saturday:
                     Saturday = subjects;
                     break;
+
+                default:
+                    throw new ArgumentException("Sunday is a day off.");
             }
+        }
+
+        public IEnumerable<Lecturer> GetLecturers()
+        {
+            List<Subject> subjects = new List<Subject>();
+
+            if (Monday != null)
+            {
+                subjects.AddRange(Monday);
+            }
+
+            if (Tuesday != null)
+            {
+                subjects.AddRange(Tuesday);
+            }
+
+            if (Wednesday != null)
+            {
+                subjects.AddRange(Wednesday);
+            }
+
+            if (Thursday != null)
+            {
+                subjects.AddRange(Thursday);
+            }
+
+            if (Friday != null)
+            {
+                subjects.AddRange(Friday);
+            }
+
+            if (Saturday != null)
+            {
+                subjects.AddRange(Saturday);
+            }
+
+            return subjects.Select(s => s.Lecturer).Where(l => l != null);
         }
     }
 }

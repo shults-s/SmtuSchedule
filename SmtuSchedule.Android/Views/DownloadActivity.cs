@@ -17,6 +17,8 @@ namespace SmtuSchedule.Android.Views
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
     internal class DownloadActivity : AppCompatActivity
     {
+        public const String IntentShouldDownloadRelatedSchedulesKey = "shouldDownloadRelatedSchedules";
+
         public const String IntentSearchRequestsKey = "requests";
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -36,6 +38,10 @@ namespace SmtuSchedule.Android.Views
 
             SetContentView(Resource.Layout.downloadActivity);
 
+            _downloadRelatedSchedulesCheckBox = FindViewById<CheckBox>(
+                Resource.Id.downloadRelatedSchedulesCheckBox
+            );
+
             Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.downloadActivityToolbar);
             toolbar.NavigationClick += (s, e) => OnBackPressed();
 
@@ -43,6 +49,12 @@ namespace SmtuSchedule.Android.Views
             toolbar.MenuItemClick += (s, e) =>
             {
                 Intent intent = new Intent();
+
+                intent.PutExtra(
+                    IntentShouldDownloadRelatedSchedulesKey,
+                    _downloadRelatedSchedulesCheckBox.Checked
+                );
+
                 intent.PutExtra(IntentSearchRequestsKey, SplitSearchRequest(_searchRequestTextView.Text));
 
                 SetResult(Result.Ok, intent);
@@ -78,6 +90,9 @@ namespace SmtuSchedule.Android.Views
             {
                 _application.SaveLog();
 
+                _downloadRelatedSchedulesCheckBox.Visibility = ViewStates.Gone;
+                _downloadRelatedSchedulesCheckBox.Checked = false;
+
                 TextView error = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
                 error.Visibility = ViewStates.Visible;
 
@@ -89,6 +104,7 @@ namespace SmtuSchedule.Android.Views
         }
 
         private ScheduleApplication _application;
+        private CheckBox _downloadRelatedSchedulesCheckBox;
         private MultiAutoCompleteTextView _searchRequestTextView;
     }
 }

@@ -47,5 +47,14 @@
             android:textColor="?attr/textColorError"
             android:textSize="@dimen/normalTextSize"
             android:text="@string/lecturersDownloadErrorMessage" />
+        <CheckBox
+            android:id="@+id/downloadRelatedSchedulesCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/smallPadding"
+            android:checked="false"
+            android:textColor="?attr/textColorPrimary"
+            android:textSize="@dimen/normalTextSize"
+            android:text="@string/downloadRelatedSchedulesMessage" />
     </LinearLayout>
 </LinearLayout>

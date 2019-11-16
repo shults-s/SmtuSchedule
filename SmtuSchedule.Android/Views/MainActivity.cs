@@ -200,7 +200,13 @@ namespace SmtuSchedule.Android.Views
             else if (requestCode == StartDownloadActivityRequestCode && resultCode == Result.Ok)
             {
                 String[] requests = data.GetStringArrayExtra(DownloadActivity.IntentSearchRequestsKey);
-                DownloadSchedulesAsync(requests);
+
+                Boolean shouldDownloadRelatedSchedules = data.GetBooleanExtra(
+                    DownloadActivity.IntentShouldDownloadRelatedSchedulesKey,
+                    false
+                );
+
+                DownloadSchedulesAsync(requests, shouldDownloadRelatedSchedules);
             }
         }
 
@@ -642,10 +648,10 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            DownloadSchedulesAsync(scheduleId.ToString());
+            DownloadSchedulesAsync(new String[] { scheduleId.ToString() }, false);
         }
 
-        private async void DownloadSchedulesAsync(params String[] requests)
+        private async void DownloadSchedulesAsync(String[] requests, Boolean shouldDownloadRelatedSchedules)
         {
             if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
             {
@@ -657,7 +663,11 @@ namespace SmtuSchedule.Android.Views
 
             ShowSnackbar(Resource.String.schedulesDownloadingStarted);
 
-            Boolean haveDownloadingErrors = await _application.Manager.DownloadSchedulesAsync(requests);
+            Boolean haveDownloadingErrors = await _application.Manager.DownloadSchedulesAsync(
+                requests,
+                shouldDownloadRelatedSchedules
+            );
+
             RestartSchedulesRenderingSubsystem();
 
             Int32 messageId;
@@ -798,6 +808,7 @@ namespace SmtuSchedule.Android.Views
         private Boolean _isThemeChanged;
         private Boolean _currentlyUsedDarkTheme;
         private MainActivityState _activityState;
+
         private Timer _currentSubjectHighlightTimer;
 
         private Toolbar _toolbar;

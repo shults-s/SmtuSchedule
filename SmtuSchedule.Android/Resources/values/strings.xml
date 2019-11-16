@@ -62,6 +62,9 @@
 
     <!-- Подсказки ввода -->
     <string name="downloadRequestHintMessage">Введите номера групп и/или ФИО преподавателей через запятую:</string>
+    <string name="downloadRelatedSchedulesMessage">
+        Загрузить также расписания преподавателей, присутствующих в перечисленных выше расписаниях групп
+    </string>
 
     <!-- Заголовки и описания настроек приложения -->
     <string name="preferenceUseDarkThemeTitle">Ночной режим</string>

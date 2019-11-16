@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -54,7 +55,8 @@ namespace SmtuSchedule.Core
 
         public ServerSchedulesLoader(Dictionary<String, Int32> lecturers) => _lecturers = lecturers;
 
-        public async Task<Dictionary<Int32, Schedule>> DownloadAsync(IEnumerable<String> requests)
+        public async Task<Dictionary<Int32, Schedule>> DownloadAsync(IEnumerable<String> requests,
+            Boolean shouldDownloadRelatedLecturersSchedules)
         {
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
             HaveDownloadingErrors = false;
@@ -87,21 +89,63 @@ namespace SmtuSchedule.Core
                 }
             }
 
-            foreach (Int32 scheduleId in ConvertRequestsToIds(requests))
+            async Task<Boolean> DownloadAsync(IEnumerable<Int32> schedulesIds)
             {
-                try
+                foreach (Int32 scheduleId in schedulesIds)
                 {
-                    Schedule schedule = await DownloadScheduleAsync(scheduleId).ConfigureAwait(false);
-                    schedules[scheduleId] = schedule;
+                    try
+                    {
+                        Schedule schedule = await DownloadScheduleAsync(scheduleId).ConfigureAwait(false);
+                        schedules[scheduleId] = schedule;
+                    }
+                    catch(HttpRequestException exception)
+                    {
+                        HaveDownloadingErrors = true;
+                        Logger?.Log(
+                            new SchedulesLoaderException(
+                                $"Error of downloading schedules: network error.", exception)
+                        );
+
+                        return true;
+                    }
+                    catch (Exception exception)
+                    {
+                        HaveDownloadingErrors = true;
+                        Logger?.Log(
+                            new SchedulesLoaderException(
+                                $"Error of downloading schedule with id {scheduleId}.", exception)
+                        );
+                    }
                 }
-                catch(Exception exception)
+
+                return false;
+            }
+
+            IEnumerable<Int32> GetRelatedLecturersSchedulesIds(IEnumerable<Schedule> downloadedSchedules)
+            {
+                List<Int32> schedulesIds = new List<Int32>();
+
+                foreach (Schedule schedule in downloadedSchedules)
                 {
-                    HaveDownloadingErrors = true;
-                    Logger?.Log(
-                        new SchedulesLoaderException(
-                            $"Error of downloading schedule with id {scheduleId}.", exception)
-                    );
+                    if (schedule.Type != ScheduleType.Group)
+                    {
+                        continue;
+                    }
+
+                    schedulesIds.AddRange(
+                        schedule.Timetable.GetLecturers().Select(l => l.ScheduleId).Where(l => l != 0));
                 }
+
+                return schedulesIds;
+            }
+
+            IEnumerable<Int32> requestedSchedulesIds = ConvertRequestsToIds(requests);
+            Boolean hasNetworkError = await DownloadAsync(requestedSchedulesIds).ConfigureAwait(false);
+
+            if (!hasNetworkError && shouldDownloadRelatedLecturersSchedules)
+            {
+                IEnumerable<Int32> relatedSchedulesIds = GetRelatedLecturersSchedulesIds(schedules.Values);
+                await DownloadAsync(relatedSchedulesIds).ConfigureAwait(false);
             }
 
             return schedules;
