@@ -3568,7 +3568,7 @@ namespace SmtuSchedule.Android
 			public const int downloadMultiAutoCompleteTextView = 2131296321;
 			
 			// aapt resource value: 0x7F090042
-			public const int downloadRelatedSchedulesCheckBox = 2131296322;
+			public const int downloadRelatedSchedulesCheckedTextView = 2131296322;
 			
 			// aapt resource value: 0x7F090043
 			public const int downloadSchedulesMenuItem = 2131296323;

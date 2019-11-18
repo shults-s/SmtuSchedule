@@ -47,15 +47,17 @@
             android:textColor="?attr/textColorError"
             android:textSize="@dimen/normalTextSize"
             android:text="@string/lecturersDownloadErrorMessage" />
-        <CheckBox
-            android:id="@+id/downloadRelatedSchedulesCheckBox"
+        <CheckedTextView
+            android:id="@+id/downloadRelatedSchedulesCheckedTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/smallPadding"
             android:paddingLeft="@dimen/smallPadding"
+            android:gravity="center_vertical"
             android:checked="false"
             android:textColor="?attr/textColorPrimary"
             android:textSize="@dimen/normalTextSize"
-            android:text="@string/downloadRelatedSchedulesMessage" />
+            android:text="@string/downloadRelatedSchedulesMessage"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple" />
     </LinearLayout>
 </LinearLayout>

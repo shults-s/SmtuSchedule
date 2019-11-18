@@ -38,9 +38,14 @@ namespace SmtuSchedule.Android.Views
 
             SetContentView(Resource.Layout.downloadActivity);
 
-            _downloadRelatedSchedulesCheckBox = FindViewById<CheckBox>(
-                Resource.Id.downloadRelatedSchedulesCheckBox
+            _downloadRelatedSchedulesTextView = FindViewById<CheckedTextView>(
+                Resource.Id.downloadRelatedSchedulesCheckedTextView
             );
+
+            _downloadRelatedSchedulesTextView.Click += (s, e) =>
+            {
+                _downloadRelatedSchedulesTextView.Checked = !_downloadRelatedSchedulesTextView.Checked;
+            };
 
             Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.downloadActivityToolbar);
             toolbar.NavigationClick += (s, e) => OnBackPressed();
@@ -52,7 +57,7 @@ namespace SmtuSchedule.Android.Views
 
                 intent.PutExtra(
                     IntentShouldDownloadRelatedSchedulesKey,
-                    _downloadRelatedSchedulesCheckBox.Checked
+                    _downloadRelatedSchedulesTextView.Checked
                 );
 
                 intent.PutExtra(IntentSearchRequestsKey, SplitSearchRequest(_searchRequestTextView.Text));
@@ -90,8 +95,8 @@ namespace SmtuSchedule.Android.Views
             {
                 _application.SaveLog();
 
-                _downloadRelatedSchedulesCheckBox.Visibility = ViewStates.Gone;
-                _downloadRelatedSchedulesCheckBox.Checked = false;
+                _downloadRelatedSchedulesTextView.Visibility = ViewStates.Gone;
+                _downloadRelatedSchedulesTextView.Checked = false;
 
                 TextView error = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
                 error.Visibility = ViewStates.Visible;
@@ -104,7 +109,7 @@ namespace SmtuSchedule.Android.Views
         }
 
         private ScheduleApplication _application;
-        private CheckBox _downloadRelatedSchedulesCheckBox;
         private MultiAutoCompleteTextView _searchRequestTextView;
+        private CheckedTextView _downloadRelatedSchedulesTextView;
     }
 }
