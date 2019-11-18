@@ -26,7 +26,7 @@ namespace SmtuSchedule.Core.Utilities
                 return -1;
             }
 
-            return 0;
+            return schedule1.DisplayedName.CompareTo(schedule2.DisplayedName);
         }
     }
 }
