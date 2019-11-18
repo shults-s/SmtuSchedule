@@ -673,14 +673,16 @@ namespace SmtuSchedule.Android.Views
             Int32 messageId;
             if (haveDownloadingErrors)
             {
-                messageId = (requests.Length == 1) ? Resource.String.scheduleDownloadErrorMessage
+                messageId = (requests.Length == 1 && !shouldDownloadRelatedSchedules)
+                    ? Resource.String.scheduleDownloadErrorMessage
                     : Resource.String.schedulesDownloadErrorMessage;
 
                 _application.SaveLog();
             }
             else
             {
-                messageId = (requests.Length == 1) ? Resource.String.scheduleDownloadedSuccessfullyMessage
+                messageId = (requests.Length == 1 && !shouldDownloadRelatedSchedules)
+                    ? Resource.String.scheduleDownloadedSuccessfullyMessage
                     : Resource.String.schedulesDownloadedSuccessfullyMessage;
             }
 
