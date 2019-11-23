@@ -27,7 +27,7 @@ namespace SmtuSchedule.Android.Views
             // Вместо "?android:attr/dialogPreferredPadding" в customDialogLayout.axml для уровней API ниже 22.
             _preferredPadding = Build.VERSION.SdkInt < BuildVersionCodes.LollipopMr1
                 ? Context.Resources.GetDimensionPixelSize(Resource.Dimension.dialogPreferredPaddingApiLess22)
-                : UiUtilities.GetAttributePixelSize(Context, Resource.Attribute.dialogPreferredPadding);
+                : UiUtilities.GetAttributeValuePixelSize(Context, Resource.Attribute.dialogPreferredPadding);
 
             ShowEvent += (s, e) =>
             {

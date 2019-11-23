@@ -131,19 +131,22 @@ namespace SmtuSchedule.Android.Views
                 _schedulesSwitcherCallback = viewer.ShowSchedule;
             }
 
-            _multiGroupsPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
+            _dividerColor = new Color(UiUtilities.GetAttributeValue(
+                Context,
+                Resource.Attribute.colorDivider
+            ));
 
-            _tertiaryTextColor = new Color(UiUtilities.GetAttribute(
+            _tertiaryTextColor = new Color(UiUtilities.GetAttributeValue(
                 Context,
                 Resource.Attribute.textColorSubjectTertiary
             ));
 
-            _secondaryTextColor = new Color(UiUtilities.GetAttribute(
+            _secondaryTextColor = new Color(UiUtilities.GetAttributeValue(
                 Context,
                 Resource.Attribute.textColorSubjectSecondary
             ));
 
-            _dividerColor = new Color(UiUtilities.GetAttribute(Context, Resource.Attribute.colorDivider));
+            _multiGroupsPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
         }
 
         public override void OnDetach()
