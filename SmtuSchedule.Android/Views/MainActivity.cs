@@ -98,8 +98,6 @@ namespace SmtuSchedule.Android.Views
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            base.OnCreate(savedInstanceState);
-
             _application = ApplicationContext as ScheduleApplication;
 
             _currentlyUsedDarkTheme = _application.Preferences.UseDarkTheme;
@@ -111,6 +109,8 @@ namespace SmtuSchedule.Android.Views
 
             SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark
                 : Resource.Style.Theme_SmtuSchedule_Light);
+
+            base.OnCreate(savedInstanceState);
 
             _activityState = MainActivityState.NotInitialized;
 
