@@ -14,7 +14,6 @@
     <string name="preferencesToolbarTitle">Настройки</string>
     <string name="downloadToolbarTitle">Загрузка расписаний</string>
     <string name="welcomeToolbarTitle">@string/applicationCompleteName</string>
-    <string name="introductionDialogTitle">Как использовать?</string>
     <string name="aboutApplicationDialogTitle">О приложении</string>
     <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
     <string name="applicationUpdateAvailableDialogTitle">Вышло обновление</string>
@@ -81,6 +80,32 @@
     <string name="preferenceDisplaySubjectEndTimeTitle">Время окончания занятий</string>
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
 
+    <!-- Заголовки и описания обучающих экранов -->
+    <string name="applicationSettingsFeatureDiscoveryTitle">Настройте приложение</string>
+    <string name="applicationSettingsFeatureDiscoveryMessage">
+        Задайте первым параметром любой день текущего семестра, принадлежащий верхней неделе.
+        \n\nОбновляйте значение каждый семестр.
+    </string>
+    <string name="schedulesDownloadFeatureDiscoveryTitle">Загрузите расписания</string>
+    <string name="schedulesDownloadFeatureDiscoveryMessage">
+        Введите номера нужных групп и ФИО преподавателей.
+        \n\nВпоследствии загружать нужные расписания можно будет прямо из просматриваемого расписания нажав на имя преподавателя
+        или номер группы.
+    </string>
+    <string name="schedulesManagementFeatureDiscoveryTitle">Управление и переключение между расписаниями</string>
+    <string name="schedulesManagementFeatureDiscoveryMessage">
+        Короткое нажатие покажет список загруженных расписаний.
+        \n\nДлительное – откроет меню действий над выбранным расписанием: удалить или перезагрузить.
+        \n\nМежду расписаниями можно переключаться быстрее: нажав на имя преподавателя или номер группы в просматриваемом
+        расписании.
+    </string>
+    <string name="scheduleChangeDateFeatureDiscoveryTitle">Изменение просматриваемой даты</string>
+    <string name="scheduleChangeDateFeatureDiscoveryMessage">
+        Короткое нажатие откроет календарь для выбора произвольной даты.
+        \n\nДлительное – покажет тип просматриваемой недели: верхняя или нижняя.
+        \n\nМежду смежными датами проще переключаться с помощью вкладок, либо перелистывая страницы расписания влево-вправо.
+    </string>
+
     <!-- Фрагменты текстов сообщений и элементов интерфейса -->
     <string-array name="weeksTypesInNominativeCase">
         <item>верхняя неделя</item>
@@ -101,25 +126,6 @@
     <string name="waitUntilSchedulesFinishDownloading">Дождитесь окончания загрузки расписаний.</string>
     <string name="schedulesMigratedSuccessfullyMessage">Расписания преобразованы в новый формат.</string>
     <string name="configureApplicationMessage">Настройте приложение для корректного отображения занятий.</string>
-    <string name="introductionMessage">
-        <b>Прочитайте, это важно.</b>
-        \nЗакрыть этот диалог можно нажав кнопку «Назад».
-        \n\n<b>Настройка приложения</b>
-        \nЗадайте значение параметра «Любой день семестра по числителю»: выберите любой день текущего семестра, принадлежащий
-        верхней неделе. Обновлять значение нужно каждый семестр.
-        \n\n<b>Загрузка расписаний</b>
-        \nНажмите на значок загрузки в правой верхней части экрана и в открывшемся окне введите через запятую номера нужных
-        групп и/или ФИО преподавателей, затем нажмите на галочку в правой верхней части окна.
-        \n\n<b>Удаление расписаний</b>
-        \nЕсли расписаний несколько, выберите нужное из списка, затем длительным нажатием на его заголовке вызовите диалог
-        действий и выберите пункт «Удалить расписание».
-        \n\n<b>Быстрый переход между расписаниями</b>
-        \nНажмите на имя преподавателя или номер одной из групп в расписании.
-        \n\n<b>Отображение типа недели</b>
-        \nНажмите и удерживайте плавающую кнопку.
-        \n\n<b>Изменение просматриваемой даты</b>
-        \nПерелистывайте страницы расписания влево-вправо, переключитесь на нужную вкладку или воспользуйтесь плавающей кнопкой.
-    </string>
     <string name="googlePlayStoreReleaseAvailableMessage">
         Приложение теперь доступно в Google Play Маркет.
         \nОбновление будет происходить автоматически.

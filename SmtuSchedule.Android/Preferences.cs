@@ -1,12 +1,15 @@
 using System;
 using Android.Content;
 using Android.Support.V7.Preferences;
+using SmtuSchedule.Android.Enumerations;
 
 namespace SmtuSchedule.Android
 {
     internal class Preferences : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
     {
         public event Action ThemeChanged;
+
+        public FeatureDiscoveryState FeatureDiscoveryState { get; private set; }
 
         //public Boolean AllowSendingCrashReports { get; private set; }
 
@@ -28,7 +31,7 @@ namespace SmtuSchedule.Android
 
         public Int32 LastSeenUpdateVersion { get; private set; }
 
-        public Int32 LastSeenWelcomeVersion { get; private set; }
+        //public Int32 LastSeenWelcomeVersion { get; private set; }
 
         public Boolean StoreReleaseNoticeViewed { get; private set; }
 
@@ -37,15 +40,17 @@ namespace SmtuSchedule.Android
             _preferences = PreferenceManager.GetDefaultSharedPreferences(context);
             _preferences.RegisterOnSharedPreferenceChangeListener(this);
 
+            FeatureDiscoveryState = (FeatureDiscoveryState)_preferences.GetInt("FeatureDiscoveryState", 0);
+
             // Обработка конфигурации предыдущих релизов, где версия представляла из себя строку.
-            try
-            {
-                LastSeenWelcomeVersion = _preferences.GetInt("LastSeenWelcomeVersion", 0);
-            }
-            catch (Java.Lang.ClassCastException)
-            {
-                SetLastSeenWelcomeVersion(0);
-            }
+            //try
+            //{
+            //    LastSeenWelcomeVersion = _preferences.GetInt("LastSeenWelcomeVersion", 0);
+            //}
+            //catch (Java.Lang.ClassCastException)
+            //{
+            //    SetLastSeenWelcomeVersion(0);
+            //}
 
             try
             {
@@ -78,6 +83,15 @@ namespace SmtuSchedule.Android
             StoreReleaseNoticeViewed = _preferences.GetBoolean("StoreReleaseNoticeViewed", false);
         }
 
+        public void SetFeatureDiscoveryState(FeatureDiscoveryState featureDiscoveryState)
+        {
+            ISharedPreferencesEditor editor = _preferences.Edit();
+            editor.PutInt("FeatureDiscoveryState", (Int32)featureDiscoveryState);
+            editor.Apply();
+
+            FeatureDiscoveryState = featureDiscoveryState;
+        }
+
         public void SetStoreReleaseNoticeViewed(Boolean storeReleaseNoticeViewed)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
@@ -87,14 +101,14 @@ namespace SmtuSchedule.Android
             StoreReleaseNoticeViewed = storeReleaseNoticeViewed;
         }
 
-        public void SetLastSeenWelcomeVersion(Int32 lastSeenWelcomeVersion)
-        {
-            ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutInt("LastSeenWelcomeVersion", lastSeenWelcomeVersion);
-            editor.Apply();
+        //public void SetLastSeenWelcomeVersion(Int32 lastSeenWelcomeVersion)
+        //{
+        //    ISharedPreferencesEditor editor = _preferences.Edit();
+        //    editor.PutInt("LastSeenWelcomeVersion", lastSeenWelcomeVersion);
+        //    editor.Apply();
 
-            LastSeenWelcomeVersion = lastSeenWelcomeVersion;
-        }
+        //    LastSeenWelcomeVersion = lastSeenWelcomeVersion;
+        //}
 
         public void SetLastMigrationVersion(Int32 lastMigrationVersion)
         {
@@ -153,15 +167,16 @@ namespace SmtuSchedule.Android
                 //    break;
 
                 case "CurrentScheduleId":
+                case "FeatureDiscoveryState":
                 case "LastMigrationVersion":
                 case "LastSeenUpdateVersion":
-                case "LastSeenWelcomeVersion":
+                //case "LastSeenWelcomeVersion":
                 case "StoreReleaseNoticeViewed":
                     break;
 
                 //default:
                 //    throw new NotSupportedException(
-                //        $"Changing parameter \"{key}\" via preferences screen now is not supported.");
+                //        $"Changing parameter \"{key}\" via preferences screen is not supported for now.");
             }
         }
 

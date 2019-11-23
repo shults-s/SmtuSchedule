@@ -60,6 +60,8 @@ namespace SmtuSchedule.Android.Views
             SetView(_layout);
         }
 
+        public Button GetButton(DialogButtonType type) => GetButton((Int32)type);
+
         public new CustomAlertDialog SetTitle(String title)
         {
             Int32 size = Context.Resources.GetDimensionPixelSize(Resource.Dimension.dialogContentTopPadding);

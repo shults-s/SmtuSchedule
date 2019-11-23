@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
-    <!-- Цвета, относящиеся к светлой (дневной) теме -->
-    <!--<color name="snackbarBackgroundDay">#323232</color>-->
+    <!-- Цвета, не зависящие от темы -->
+    <color name="tapTargetViewOuterCircle">#517CB3</color>
+    <color name="tapTargetViewTarget">#FFFFFF</color>
+    <color name="tapTargetViewDim">#FFFFFF</color>
+    <color name="tapTargetViewText">#FFFFFF</color>
+
+    <!-- Цвета светлой (дневной) темы -->
     <color name="windowBackgroundDay">#FAFAFA</color>
 
     <color name="primaryDarkDay">#455273</color>
@@ -18,7 +23,7 @@
     <color name="subjectTertiaryTextDay">#727272</color>
     <color name="subjectSecondaryTextDay">#202020</color>
 
-    <!-- Цвета, относящиеся к темной (ночной) теме -->
+    <!-- Цвета темной (ночной) темы -->
     <color name="windowBackgroundNight">#161817</color>
 
     <color name="primaryDarkNight">#101211</color>

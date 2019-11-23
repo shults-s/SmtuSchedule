@@ -14,10 +14,12 @@ using Android.Support.V4.App;
 using Android.Support.V7.App;
 using Android.Support.V4.View;
 using Android.Support.Design.Widget;
+using Com.Getkeepsafe.Taptargetview;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Android.Utilities;
 using SmtuSchedule.Android.Interfaces;
+using SmtuSchedule.Android.Enumerations;
 
 using PopupMenu = Android.Support.V7.Widget.PopupMenu;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
@@ -268,28 +270,23 @@ namespace SmtuSchedule.Android.Views
             if (!IsPreferencesValid())
             {
                 ShowDialogWithSuggestionToConfigureApplication();
-                //return ;
+                return ;
             }
 
             RestartSchedulesRenderingSubsystem();
 
-            if (_application.Preferences.CheckUpdatesOnStart)
-            {
-                CheckForUpdatesAsync(currentVersion);
-            }
-
-            if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
-            {
-                new CustomAlertDialog(this)
-                    .SetTitle(Resource.String.introductionDialogTitle)
-                    .SetMessage(Resource.String.introductionMessage)
-                    .SetPositiveButton(
-                        Resource.String.gotItActionTitle,
-                        () => _application.Preferences.SetLastSeenWelcomeVersion(currentVersion)
-                    )
-                    .SetPositiveButtonEnabledOnlyWhenMessageScrolledToBottom()
-                    .Show();
-            }
+            //if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
+            //{
+            //    new CustomAlertDialog(this)
+            //        .SetTitle(Resource.String.introductionDialogTitle)
+            //        .SetMessage(Resource.String.introductionMessage)
+            //        .SetPositiveButton(
+            //            Resource.String.gotItActionTitle,
+            //            () => _application.Preferences.SetLastSeenWelcomeVersion(currentVersion)
+            //        )
+            //        .SetPositiveButtonEnabledOnlyWhenMessageScrolledToBottom()
+            //        .Show();
+            //}
         }
 
         private Boolean IsPreferencesValid()
@@ -409,6 +406,8 @@ namespace SmtuSchedule.Android.Views
 
             UpdateToolbarMenu();
 
+            ShowSchedulesFeatureDiscoveryTargetsSequence(schedules.Count);
+
             if (schedules.Count == 0)
             {
                 _toolbarTitle.SetText(Resource.String.welcomeToolbarTitle);
@@ -419,6 +418,7 @@ namespace SmtuSchedule.Android.Views
 
                 ShowLayoutMessage(Resource.String.welcomeMessage);
                 _activityState = MainActivityState.DisplaysMessage;
+
                 return ;
             }
 
@@ -486,6 +486,81 @@ namespace SmtuSchedule.Android.Views
                 : ViewStates.Gone;
 
             _currentSubjectHighlightTimer.Start();
+        }
+
+        private void ShowSchedulesFeatureDiscoveryTargetsSequence(Int32 numberOfSchedules)
+        {
+            FeatureDiscoveryState state = _application.Preferences.FeatureDiscoveryState;
+            List<TapTarget> targets = new List<TapTarget>();
+
+            if (!state.HasFlag(FeatureDiscoveryState.SchedulesDownload))
+            {
+                targets.Add(
+                    TapTarget.ForToolbarMenuItem(
+                        _toolbar,
+                        Resource.Id.downloadSchedulesMenuItem,
+                        GetString(Resource.String.schedulesDownloadFeatureDiscoveryTitle),
+                        GetString(Resource.String.schedulesDownloadFeatureDiscoveryMessage)
+                    )
+                    .Stylize()
+                    .Id((Int32)FeatureDiscoveryState.SchedulesDownload)
+                );
+            }
+
+            if (numberOfSchedules != 0)
+            {
+                if (!state.HasFlag(FeatureDiscoveryState.SchedulesManagement))
+                {
+                    targets.Add(
+                        TapTarget.ForView(
+                            _toolbarTitle,
+                            GetString(Resource.String.schedulesManagementFeatureDiscoveryTitle),
+                            GetString(Resource.String.schedulesManagementFeatureDiscoveryMessage)
+                        )
+                        .Stylize()
+                        .Id((Int32)FeatureDiscoveryState.SchedulesManagement)
+                    );
+                }
+
+                if (!state.HasFlag(FeatureDiscoveryState.ScheduleChangeDate))
+                {
+                    TapTarget dateTarget;
+                    if (_application.Preferences.UseFabDateSelector)
+                    {
+                        dateTarget = TapTarget.ForView(
+                            _fab,
+                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
+                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
+                        )
+                        .TintTarget(false);
+                    }
+                    else
+                    {
+                        dateTarget = TapTarget.ForToolbarMenuItem(
+                            _toolbar,
+                            Resource.Id.selectScheduleDateMenuItem,
+                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
+                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
+                        );
+                    }
+
+                    dateTarget.Stylize().Id((Int32)FeatureDiscoveryState.ScheduleChangeDate);
+                    targets.Add(dateTarget);
+                }
+            }
+
+            if (targets.Count == 0)
+            {
+                return ;
+            }
+
+            TapTargetSequenceListener listener = new TapTargetSequenceListener();
+            listener.Clicked += (Int32 id) => _application.Preferences.SetFeatureDiscoveryState(
+                state |= (FeatureDiscoveryState)id
+            );
+
+            new TapTargetSequence(this).Targets(targets).Listener(listener).ContinueOnCancel(true)
+                .Start();
         }
 
         private void UpdateToolbarMenu()
@@ -756,11 +831,31 @@ namespace SmtuSchedule.Android.Views
 
         private void ShowDialogWithSuggestionToConfigureApplication()
         {
-            new CustomAlertDialog(this)
+            CustomAlertDialog dialog = new CustomAlertDialog(this)
                 .SetPositiveButton(Resource.String.configureActionTitle, StartPreferencesActivity)
                 .SetMessage(Resource.String.configureApplicationMessage)
-                .SetCancelable(false)
-                .Show();
+                .SetCancelable(false);
+
+            dialog.Show();
+
+            FeatureDiscoveryState state = _application.Preferences.FeatureDiscoveryState;
+            if (!state.HasFlag(FeatureDiscoveryState.ApplicationSettings))
+            {
+                Button positiveButton = dialog.GetButton(DialogButtonType.Positive);
+                TapTarget settingsTarget = TapTarget.ForView(
+                    positiveButton,
+                    GetString(Resource.String.applicationSettingsFeatureDiscoveryTitle),
+                    GetString(Resource.String.applicationSettingsFeatureDiscoveryMessage)
+                )
+                .Stylize();
+
+                TapTargetViewListener listener = new TapTargetViewListener();
+                listener.Clicked += () => _application.Preferences.SetFeatureDiscoveryState(
+                    state | FeatureDiscoveryState.ApplicationSettings
+                );
+
+                TapTargetView.ShowFor(dialog, settingsTarget, listener);
+            }
         }
 
         private void ShowViewingWeekTypeSnackbar()
