@@ -161,6 +161,16 @@ namespace SmtuSchedule.Android.Views
             }
         }
 
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            if (_application.Preferences.CheckUpdatesOnStart)
+            {
+                CheckForUpdatesAsync(_application.GetVersionCode());
+            }
+        }
+
         protected override void OnResume()
         {
             base.OnResume();
