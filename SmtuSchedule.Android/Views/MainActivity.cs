@@ -201,12 +201,12 @@ namespace SmtuSchedule.Android.Views
             }
             else if (requestCode == StartDownloadActivityRequestCode && resultCode == Result.Ok)
             {
-                String[] requests = data.GetStringArrayExtra(DownloadActivity.IntentSearchRequestsKey);
-
                 Boolean shouldDownloadRelatedSchedules = data.GetBooleanExtra(
                     DownloadActivity.IntentShouldDownloadRelatedSchedulesKey,
                     false
                 );
+
+                String[] requests = data.GetStringArrayExtra(DownloadActivity.IntentSearchRequestsKey);
 
                 DownloadSchedulesAsync(requests, shouldDownloadRelatedSchedules);
             }
