@@ -161,16 +161,6 @@ namespace SmtuSchedule.Android.Views
             }
         }
 
-        protected override void OnStart()
-        {
-            base.OnStart();
-
-            if (_application.Preferences.CheckUpdatesOnStart)
-            {
-                CheckForUpdatesAsync(_application.GetVersionCode());
-            }
-        }
-
         protected override void OnResume()
         {
             base.OnResume();
@@ -284,6 +274,11 @@ namespace SmtuSchedule.Android.Views
             }
 
             RestartSchedulesRenderingSubsystem();
+
+            if (_application.Preferences.CheckUpdatesOnStart)
+            {
+                CheckForUpdatesAsync(currentVersion);
+            }
 
             //if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
             //{
