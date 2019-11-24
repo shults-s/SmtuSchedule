@@ -342,7 +342,7 @@ namespace SmtuSchedule.Android.Views
                 }
 
                 Java.Lang.ICharSequence message = (latest.VersionNotes != null)
-                    ? latest.VersionNotes.ParseHtml()
+                    ? latest.VersionNotes.Replace("\n", "<br>").ParseHtml()
                     : GetTextFormatted(Resource.String.applicationUpdateAvailableMessage);
 
                 new CustomAlertDialog(this)
