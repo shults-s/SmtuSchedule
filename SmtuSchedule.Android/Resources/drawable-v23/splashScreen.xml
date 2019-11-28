@@ -4,9 +4,12 @@
     android:opacity="opaque">
     <item
         android:drawable="?attr/colorPrimaryDark" />
-    <item>
+    <item
+        android:gravity="center"
+        android:width="144dp"
+        android:height="144dp">
         <bitmap
-            android:gravity="center"
-            android:src="@mipmap/splashImage" />
+            android:gravity="fill"
+            android:src="@mipmap/launcherIcon" />
     </item>
 </layer-list>
