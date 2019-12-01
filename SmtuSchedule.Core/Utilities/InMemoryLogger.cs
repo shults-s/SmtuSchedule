@@ -1,12 +1,10 @@
 using System;
-using System.IO;
-using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using SmtuSchedule.Core.Interfaces;
 
 namespace SmtuSchedule.Core.Utilities
 {
-    public class InMemoryLogger : ILogger, IDisposable
+    public class InMemoryLogger : ILogger
     {
         public event Action<Exception> ExceptionLogged;
 
@@ -30,17 +28,10 @@ namespace SmtuSchedule.Core.Utilities
             Write(format, parameters);
         }
 
-        public Task SaveAsync(String fileName)
-        {
-            return Task.Run(() => File.WriteAllLines(fileName, _entries));
-        }
-
         public override String ToString()
         {
             return String.Join(Environment.NewLine, _entries);
         }
-
-        public void Dispose() =>_entries.Dispose();
 
         private void Write(String format, params Object[] parameters)
         {

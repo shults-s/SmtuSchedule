@@ -161,22 +161,19 @@ namespace SmtuSchedule.Android
 
         public Task SaveLogAsync(Boolean isCrashLog = false)
         {
-            if (!Directory.Exists(_logsDirectoryPath))
+            return Task.Run(() =>
             {
-                try
+                String timestamp = DateTime.Now.ToString("dd.MM.yyyy HH-mm");
+                String prefix = isCrashLog ? "CRASH " : String.Empty;
+
+                if (!Directory.Exists(_logsDirectoryPath))
                 {
                     Directory.CreateDirectory(_logsDirectoryPath);
                 }
-                catch(Exception exception)
-                {
-                    return Task.FromException(exception);
-                }
-            }
 
-            String prefix = isCrashLog ? "CRASH " : String.Empty;
-            String fileName = prefix + DateTime.Now.ToString("dd.MM.yyyy HH-mm") + ".log";
-
-            return (Logger as InMemoryLogger).SaveAsync(_logsDirectoryPath + fileName);
+                String fileName = prefix + timestamp + ".log";
+                File.WriteAllText(_logsDirectoryPath + fileName, Logger.ToString());
+            });
         }
 
         public Task ClearLogsAsync()
@@ -184,7 +181,6 @@ namespace SmtuSchedule.Android
             return Task.Run(() =>
             {
                 FileInfo[] files = new DirectoryInfo(_logsDirectoryPath).GetFiles("*.log");
-
                 if (files.Length == 0)
                 {
                     return;
