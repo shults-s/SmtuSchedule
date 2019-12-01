@@ -65,7 +65,7 @@ namespace SmtuSchedule.Android
         {
             base.OnCreate();
 
-#if !DEBUG && !USER_THAT_IS_WELL_MEOWS
+#if !DEBUG
             //if (!Preferences.AllowSendingCrashReports)
             //{
             //    return ;
@@ -183,7 +183,7 @@ namespace SmtuSchedule.Android
                 FileInfo[] files = new DirectoryInfo(_logsDirectoryPath).GetFiles("*.log");
                 if (files.Length == 0)
                 {
-                    return;
+                    return ;
                 }
 
                 DateTime storingTime = DateTime.Today.AddDays(-7);
