@@ -179,6 +179,22 @@ namespace SmtuSchedule.Android
             return (Logger as InMemoryLogger).SaveAsync(_logsDirectoryPath + fileName);
         }
 
+        public Task ClearLogsAsync()
+        {
+            return Task.Run(() =>
+            {
+                FileInfo[] files = new DirectoryInfo(_logsDirectoryPath).GetFiles("*.log");
+
+                if (files.Length == 0)
+                {
+                    return;
+                }
+
+                DateTime storingTime = DateTime.Today.AddDays(-7);
+                files.Where(f => f.LastWriteTime < storingTime).ForEach(f => f.Delete());
+            });
+        }
+
         private readonly String _logsDirectoryPath;
     }
 }

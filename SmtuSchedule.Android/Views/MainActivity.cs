@@ -280,6 +280,8 @@ namespace SmtuSchedule.Android.Views
                 CheckForUpdatesAsync(currentVersion);
             }
 
+            _ = _application.ClearLogsAsync();
+
             //if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
             //{
             //    new CustomAlertDialog(this)
