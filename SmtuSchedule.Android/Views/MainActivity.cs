@@ -383,32 +383,18 @@ namespace SmtuSchedule.Android.Views
 
             if (packageId == PackageName)
             {
-                if (!_application.Preferences.StoreReleaseNoticeViewed)
-                {
-                    new CustomAlertDialog(this)
-                        .SetTitle(Resource.String.googlePlayStoreReleaseAvailableDialogTitle)
-                        .SetMessage(Resource.String.googlePlayStoreReleaseAvailableMessage)
-                        .SetPositiveButton(
-                            Resource.String.gotItActionTitle,
-                            () => _application.Preferences.SetStoreReleaseNoticeViewed(true)
-                        )
-                        .Show();
-                }
-                else
-                {
-                    new CustomAlertDialog(this)
-                        .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
-                        .SetMessage(whatsNewMessage)
-                        .SetPositiveButton(
-                            Resource.String.openPlayMarketActionTitle,
-                            () => OpenInPlayMarket()
-                        )
-                        .SetNegativeButton(
-                            Resource.String.gotItActionTitle,
-                            () => _application.Preferences.SetLastSeenUpdateVersion(latest.VersionCode)
-                        )
-                        .Show();
-                }
+                new CustomAlertDialog(this)
+                    .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
+                    .SetMessage(whatsNewMessage)
+                    .SetPositiveButton(
+                        Resource.String.openPlayMarketActionTitle,
+                        () => OpenInPlayMarket()
+                    )
+                    .SetNegativeButton(
+                        Resource.String.gotItActionTitle,
+                        () => _application.Preferences.SetLastSeenUpdateVersion(latest.VersionCode)
+                    )
+                    .Show();
 
                 return ;
             }

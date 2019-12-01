@@ -126,10 +126,6 @@
     <string name="waitUntilSchedulesFinishDownloading">Дождитесь окончания загрузки расписаний.</string>
     <string name="schedulesMigratedSuccessfullyMessage">Расписания преобразованы в новый формат.</string>
     <string name="configureApplicationMessage">Настройте приложение для корректного отображения занятий.</string>
-    <string name="googlePlayStoreReleaseAvailableMessage">
-        Приложение теперь доступно в Google Play Маркет.
-        \nОбновление будет происходить автоматически.
-    </string>
     <string name="googlePlayStoreReleaseRelocatedMessage">
         Приложение было <b>перевыпущено</b> в Google Play Маркет.
         \nНастоятельно рекомендуется переустановить его вручную, предварительно удалив данную версию, чтобы в дальнейшем
