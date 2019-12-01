@@ -88,7 +88,7 @@ namespace SmtuSchedule.Android.Views
             IEnumerable<String> lecturers = await _application.Manager.DownloadLecturersNamesAsync();
             if (lecturers == null)
             {
-                _application.SaveLog();
+                _ = _application.SaveLogAsync();
 
                 _downloadRelatedSchedulesCheckBox.Visibility = ViewStates.Gone;
                 _downloadRelatedSchedulesCheckBox.Checked = false;

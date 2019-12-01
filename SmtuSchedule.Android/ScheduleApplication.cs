@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Android.OS;
 using Android.App;
 using Android.Runtime;
@@ -41,17 +42,23 @@ namespace SmtuSchedule.Android
                 Build.VERSION.Release
             );
 
-            // У AndroidEnvironment.UnhandledExceptionRaiser трассировка стека подробнее,
-            // чем у AppDomain.CurrentDomain.UnhandledException.
+            // В AndroidEnvironment.UnhandledExceptionRaiser трассировка стека подробнее,
+            // чем в AppDomain.CurrentDomain.UnhandledException.
             AndroidEnvironment.UnhandledExceptionRaiser += (s, e) =>
             {
                 Logger.Log(e.Exception);
-                SaveLog(true);
+
+                // WaitAny используется для подавления исключения, которое может возникнуть
+                // при сохранении лога. Если не подавить его, в AppCenter не придет
+                // краш репорт с исключением-первопричиной.
+                Task.WaitAny(SaveLogAsync(true));
             };
 
             Preferences = new Preferences(this);
 
             IsInitialized = false;
+
+            _logsDirectoryPath = GetExternalStoragePath() + "/Logs/";
         }
 
         public override void OnCreate()
@@ -79,8 +86,7 @@ namespace SmtuSchedule.Android
                 FileInfo[] files = null;
                 try
                 {
-                    files = new DirectoryInfo(GetExternalStoragePath() + "Logs")
-                        .GetFiles();
+                    files = new DirectoryInfo(_logsDirectoryPath).GetFiles();
                 }
                 catch
                 {
@@ -153,26 +159,26 @@ namespace SmtuSchedule.Android
             return IsInitialized = true;
         }
 
-        public void SaveLog(Boolean isCrashLog = false)
+        public Task SaveLogAsync(Boolean isCrashLog = false)
         {
-            String logsPath = GetExternalStoragePath() + "Logs/";
-            if (!Directory.Exists(logsPath))
+            if (!Directory.Exists(_logsDirectoryPath))
             {
                 try
                 {
-                    Directory.CreateDirectory(logsPath);
+                    Directory.CreateDirectory(_logsDirectoryPath);
                 }
-                catch
+                catch(Exception exception)
                 {
-                    return ;
+                    return Task.FromException(exception);
                 }
             }
 
             String prefix = isCrashLog ? "CRASH " : String.Empty;
             String fileName = prefix + DateTime.Now.ToString("dd.MM.yyyy HH-mm") + ".log";
 
-            // Здесь подавляются исключения, которые могут возникнуть при сохранении лога.
-            _ = (Logger as InMemoryLogger).SaveAsync(logsPath + fileName);
+            return (Logger as InMemoryLogger).SaveAsync(_logsDirectoryPath + fileName);
         }
+
+        private readonly String _logsDirectoryPath;
     }
 }

@@ -228,7 +228,7 @@ namespace SmtuSchedule.Android.Views
                 if (haveReadingErrors)
                 {
                     ShowSnackbar(Resource.String.schedulesReadingErrorMessage);
-                    _application.SaveLog();
+                    _ = _application.SaveLogAsync();
                 }
             }
 
@@ -310,7 +310,7 @@ namespace SmtuSchedule.Android.Views
             if (haveMigrationErrors)
             {
                 ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
-                _application.SaveLog();
+                _ = _application.SaveLogAsync();
             }
             else
             {
@@ -619,8 +619,8 @@ namespace SmtuSchedule.Android.Views
             if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
-                _application.Logger.Log(failReason);
-                _application.SaveLog();
+                //_application.Logger.Log(failReason);
+                //_ = _application.SaveLogAsync();
                 return ;
             }
 
@@ -736,8 +736,8 @@ namespace SmtuSchedule.Android.Views
             if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
-                _application.Logger.Log(failReason);
-                _application.SaveLog();
+                //_application.Logger.Log(failReason);
+                //_ = _application.SaveLogAsync();
                 return ;
             }
 
@@ -757,7 +757,7 @@ namespace SmtuSchedule.Android.Views
                     ? Resource.String.scheduleDownloadErrorMessage
                     : Resource.String.schedulesDownloadErrorMessage;
 
-                _application.SaveLog();
+                _ = _application.SaveLogAsync();
             }
             else
             {
