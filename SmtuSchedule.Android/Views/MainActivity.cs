@@ -70,7 +70,6 @@ namespace SmtuSchedule.Android.Views
                     ShowLayoutMessage(Resource.String.welcomeMessage);
 
                     String[] deniedPermissions = permissions.Where(p => IsPermissionDenied(p)).ToArray();
-
                     ShowSnackbar(
                         Resource.String.storagePermissionsRationaleMessage,
                         Resource.String.grantAccessActionTitle,
@@ -334,22 +333,22 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
+            if (latest.VersionCode == _application.Preferences.LastSeenUpdateVersion
+                || latest.VersionCode <= currentVersion)
+            {
+                return ;
+            }
+
+            Java.Lang.ICharSequence whatsNewMessage = (latest.VersionNotes != null)
+                ? latest.VersionNotes.Replace("\n", "<br>").ParseHtml()
+                : GetTextFormatted(Resource.String.applicationUpdateAvailableMessage);
+
             String packageId = latest.GooglePlayStorePackageId;
             if (packageId == null)
             {
-                if (latest.VersionCode == _application.Preferences.LastSeenUpdateVersion
-                    || latest.VersionCode <= currentVersion)
-                {
-                    return ;
-                }
-
-                Java.Lang.ICharSequence message = (latest.VersionNotes != null)
-                    ? latest.VersionNotes.Replace("\n", "<br>").ParseHtml()
-                    : GetTextFormatted(Resource.String.applicationUpdateAvailableMessage);
-
                 new CustomAlertDialog(this)
                     .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
-                    .SetMessage(message)
+                    .SetMessage(whatsNewMessage)
                     .SetPositiveButton(
                         Resource.String.openUpdateDownloadPageActionTitle,
                         () =>
@@ -367,6 +366,21 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
+            void OpenInPlayMarket()
+            {
+                try
+                {
+                    String url = "market://details?id=" + packageId;
+                    StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
+                }
+                // Google Play Маркет не установлен.
+                catch (ActivityNotFoundException)
+                {
+                    String url = "https://play.google.com/store/apps/details?id=" + packageId;
+                    StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
+                }
+            }
+
             if (packageId == PackageName)
             {
                 if (!_application.Preferences.StoreReleaseNoticeViewed)
@@ -380,6 +394,21 @@ namespace SmtuSchedule.Android.Views
                         )
                         .Show();
                 }
+                else
+                {
+                    new CustomAlertDialog(this)
+                        .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
+                        .SetMessage(whatsNewMessage)
+                        .SetPositiveButton(
+                            Resource.String.openPlayMarketActionTitle,
+                            () => OpenInPlayMarket()
+                        )
+                        .SetNegativeButton(
+                            Resource.String.gotItActionTitle,
+                            () => _application.Preferences.SetLastSeenUpdateVersion(latest.VersionCode)
+                        )
+                        .Show();
+                }
 
                 return ;
             }
@@ -387,23 +416,7 @@ namespace SmtuSchedule.Android.Views
             new CustomAlertDialog(this)
                 .SetTitle(Resource.String.googlePlayStoreReleaseAvailableDialogTitle)
                 .SetMessage(Resource.String.googlePlayStoreReleaseRelocatedMessage)
-                .SetPositiveButton(
-                    Resource.String.openPlayMarketActionTitle,
-                    () =>
-                    {
-                        try
-                        {
-                            String url = "market://details?id=" + packageId;
-                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
-                        }
-                        // Google Play Маркет не установлен.
-                        catch (ActivityNotFoundException)
-                        {
-                            String url = "https://play.google.com/store/apps/details?id=" + packageId;
-                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
-                        }
-                    }
-                )
+                .SetPositiveButton(Resource.String.openPlayMarketActionTitle, () => OpenInPlayMarket())
                 .Show();
         }
 
