@@ -6,8 +6,8 @@
         android:drawable="?attr/colorPrimaryDark" />
     <item
         android:gravity="center"
-        android:width="144dp"
-        android:height="144dp">
+        android:width="192dp"
+        android:height="192dp">
         <bitmap
             android:gravity="fill"
             android:src="@mipmap/launcherIcon" />
