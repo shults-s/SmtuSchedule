@@ -410,11 +410,15 @@ namespace SmtuSchedule.Android.Views
         {
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
 
+            IReadOnlyList<Schedule> sortedSchedules = schedules.Select(s => s.Value)
+                .OrderBy(s => s, new SchedulesComparer())
+                .ToList();
+
             UpdateToolbarMenu();
 
-            ShowSchedulesFeatureDiscoveryTargetsSequence(schedules.Count);
+            ShowSchedulesFeatureDiscoveryTargetsSequence(sortedSchedules.Count);
 
-            if (schedules.Count == 0)
+            if (sortedSchedules.Count == 0)
             {
                 _toolbarTitle.SetText(Resource.String.welcomeToolbarTitle);
                 _tabLayout.Visibility = ViewStates.Gone;
@@ -428,7 +432,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            SetSchedulesMenu(schedules);
+            SetSchedulesMenu(sortedSchedules);
 
             ShowViewPager();
             _viewPager = FindViewById<ViewPager>(Resource.Id.scheduleViewPager);
@@ -474,22 +478,22 @@ namespace SmtuSchedule.Android.Views
             _tabLayout.Visibility = ViewStates.Visible;
             _tabLayout.SetupWithViewPager(_viewPager);
 
+            _fab.Visibility = _application.Preferences.UseFabDateSelector ? ViewStates.Visible
+                : ViewStates.Gone;
+
             Int32 SelectScheduleToDisplay()
             {
                 Int32 currentId = _application.Preferences.CurrentScheduleId;
                 if (currentId == 0)
                 {
-                    return schedules.Keys.First();
+                    return sortedSchedules[0].ScheduleId;
                 }
 
-                return schedules.ContainsKey(currentId) ? currentId : schedules.Keys.First();
+                return schedules.ContainsKey(currentId) ? currentId : sortedSchedules[0].ScheduleId;
             }
 
             Int32 scheduleId = SelectScheduleToDisplay();
             ShowSchedule(scheduleId);
-
-            _fab.Visibility = _application.Preferences.UseFabDateSelector ? ViewStates.Visible
-                : ViewStates.Gone;
 
             _currentSubjectHighlightTimer.Start();
         }
@@ -497,6 +501,7 @@ namespace SmtuSchedule.Android.Views
         private void ShowSchedulesFeatureDiscoveryTargetsSequence(Int32 numberOfSchedules)
         {
             FeatureDiscoveryState state = _application.Preferences.FeatureDiscoveryState;
+
             List<TapTarget> targets = new List<TapTarget>();
 
             if (!state.HasFlag(FeatureDiscoveryState.SchedulesDownload))
@@ -682,12 +687,11 @@ namespace SmtuSchedule.Android.Views
             _viewPager.SetCurrentItem(_pagerAdapter.RenderingDateRange.GetIndexByDate(date), true);
         }
 
-        private void SetSchedulesMenu(IReadOnlyDictionary<Int32, Schedule> schedules)
+        private void SetSchedulesMenu(IReadOnlyList<Schedule> schedules)
         {
             IEnumerable<(Int32 scheduleId, String displayedName)> Fetch(IEnumerable<Schedule> values)
             {
-                return values.OrderBy(s => s, new SchedulesComparer())
-                             .Select<Schedule, (Int32, String)>(s => (s.ScheduleId, s.DisplayedName));
+                return values.Select<Schedule, (Int32, String)>(s => (s.ScheduleId, s.DisplayedName));
             }
 
             _schedulesMenu.Menu.Clear();
@@ -698,7 +702,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            foreach ((Int32 scheduleId, String displayedName) in Fetch(schedules.Values))
+            foreach ((Int32 scheduleId, String displayedName) in Fetch(schedules))
             {
                 _schedulesMenu.Menu.Add(Menu.None, scheduleId, Menu.None, displayedName);
             }
