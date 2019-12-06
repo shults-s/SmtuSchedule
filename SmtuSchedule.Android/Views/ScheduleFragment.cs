@@ -18,7 +18,7 @@ using SmtuSchedule.Android.Interfaces;
 namespace SmtuSchedule.Android.Views
 {
     [DebuggerDisplay("ScheduleFragment {Date.ToShortDateString()}")]
-    public class ScheduleFragment : Fragment
+    internal class ScheduleFragment : Fragment
     {
         private const String DateSavedInstanceStateKey = "Date";
 
@@ -131,19 +131,22 @@ namespace SmtuSchedule.Android.Views
                 _schedulesSwitcherCallback = viewer.ShowSchedule;
             }
 
-            _multiGroupsPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
+            _dividerColor = new Color(UiUtilities.GetAttributeValue(
+                Context,
+                Resource.Attribute.colorDivider
+            ));
 
-            _tertiaryTextColor = new Color(UiUtilities.GetAttribute(
+            _tertiaryTextColor = new Color(UiUtilities.GetAttributeValue(
                 Context,
                 Resource.Attribute.textColorSubjectTertiary
             ));
 
-            _secondaryTextColor = new Color(UiUtilities.GetAttribute(
+            _secondaryTextColor = new Color(UiUtilities.GetAttributeValue(
                 Context,
                 Resource.Attribute.textColorSubjectSecondary
             ));
 
-            _dividerColor = new Color(UiUtilities.GetAttribute(Context, Resource.Attribute.colorDivider));
+            _multiGroupsPrefix = Context.GetString(Resource.String.multiGroupSubjectPrefix);
         }
 
         public override void OnDetach()
@@ -156,11 +159,11 @@ namespace SmtuSchedule.Android.Views
         }
 
         private View CreateSubjectView(LayoutInflater inflater, ViewGroup container, Subject subject,
-            IEnumerable<Subject> relatedSubjects, Boolean needHighlight)
+            IEnumerable<Subject> relatedSubjects, Boolean shouldHighlightSubject)
         {
             View layout = inflater.Inflate(Resource.Layout.subject, container, false);
 
-            if (needHighlight)
+            if (shouldHighlightSubject)
             {
                 layout.SetBackgroundColor(_dividerColor);
             }

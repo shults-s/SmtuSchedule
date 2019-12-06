@@ -16,7 +16,7 @@ namespace SmtuSchedule.Android.Views
     [Register("shults.smtuschedule.SmtuSchedule.Android.Views.DatePreference")]
     internal class DatePreference : DialogPreference
     {
-        public class DatePreferenceDialogFragment : PreferenceDialogFragmentCompat
+        internal class DatePreferenceDialogFragment : PreferenceDialogFragmentCompat
         {
             public DatePreferenceDialogFragment(String key)
             {

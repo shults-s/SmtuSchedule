@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <style name="Theme.SmtuSchedule.Splash" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/primaryDarkDay</item>
+        <item name="colorPrimary">@color/primaryDay</item>
+        <item name="colorAccent">@color/accentDay</item>
+
+        <item name="android:windowBackground">@drawable/splashScreen</item>
+    </style>
+</resources>

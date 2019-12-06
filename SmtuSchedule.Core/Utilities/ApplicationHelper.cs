@@ -70,11 +70,16 @@ namespace SmtuSchedule.Core.Utilities
 
         public static Boolean IsUniversitySiteConnectionAvailable(out String failReason)
         {
+            // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping в нем не работает.
+#if DEBUG
+            failReason = null;
+            return true;
+#endif
+
             IPStatus status = IPStatus.Success;
 
             try
             {
-                // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping не работает.
                 status = new Ping().Send("www.smtu.ru").Status;
 
                 failReason = (status != IPStatus.Success)

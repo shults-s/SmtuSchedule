@@ -1,14 +1,17 @@
 using System;
 using Android.Content;
 using Android.Support.V7.Preferences;
+using SmtuSchedule.Android.Enumerations;
 
 namespace SmtuSchedule.Android
 {
-    public class Preferences : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
+    internal class Preferences : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
     {
         public event Action ThemeChanged;
 
-        public Boolean AllowSendingCrashReports { get; private set; }
+        public FeatureDiscoveryState FeatureDiscoveryState { get; private set; }
+
+        //public Boolean AllowSendingCrashReports { get; private set; }
 
         public Boolean CheckUpdatesOnStart { get; private set; }
 
@@ -28,7 +31,7 @@ namespace SmtuSchedule.Android
 
         public Int32 LastSeenUpdateVersion { get; private set; }
 
-        public Int32 LastSeenWelcomeVersion { get; private set; }
+        //public Int32 LastSeenWelcomeVersion { get; private set; }
 
         public Boolean StoreReleaseNoticeViewed { get; private set; }
 
@@ -37,15 +40,17 @@ namespace SmtuSchedule.Android
             _preferences = PreferenceManager.GetDefaultSharedPreferences(context);
             _preferences.RegisterOnSharedPreferenceChangeListener(this);
 
+            FeatureDiscoveryState = (FeatureDiscoveryState)_preferences.GetInt("FeatureDiscoveryState", 0);
+
             // Обработка конфигурации предыдущих релизов, где версия представляла из себя строку.
-            try
-            {
-                LastSeenWelcomeVersion = _preferences.GetInt("LastSeenWelcomeVersion", 0);
-            }
-            catch (Java.Lang.ClassCastException)
-            {
-                SetLastSeenWelcomeVersion(0);
-            }
+            //try
+            //{
+            //    LastSeenWelcomeVersion = _preferences.GetInt("LastSeenWelcomeVersion", 0);
+            //}
+            //catch (Java.Lang.ClassCastException)
+            //{
+            //    SetLastSeenWelcomeVersion(0);
+            //}
 
             try
             {
@@ -74,8 +79,17 @@ namespace SmtuSchedule.Android
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", true);
             CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
             DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
-            AllowSendingCrashReports = _preferences.GetBoolean("AllowSendingCrashReports", true);
+            //AllowSendingCrashReports = _preferences.GetBoolean("AllowSendingCrashReports", true);
             StoreReleaseNoticeViewed = _preferences.GetBoolean("StoreReleaseNoticeViewed", false);
+        }
+
+        public void SetFeatureDiscoveryState(FeatureDiscoveryState featureDiscoveryState)
+        {
+            ISharedPreferencesEditor editor = _preferences.Edit();
+            editor.PutInt("FeatureDiscoveryState", (Int32)featureDiscoveryState);
+            editor.Apply();
+
+            FeatureDiscoveryState = featureDiscoveryState;
         }
 
         public void SetStoreReleaseNoticeViewed(Boolean storeReleaseNoticeViewed)
@@ -87,14 +101,14 @@ namespace SmtuSchedule.Android
             StoreReleaseNoticeViewed = storeReleaseNoticeViewed;
         }
 
-        public void SetLastSeenWelcomeVersion(Int32 lastSeenWelcomeVersion)
-        {
-            ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutInt("LastSeenWelcomeVersion", lastSeenWelcomeVersion);
-            editor.Apply();
+        //public void SetLastSeenWelcomeVersion(Int32 lastSeenWelcomeVersion)
+        //{
+        //    ISharedPreferencesEditor editor = _preferences.Edit();
+        //    editor.PutInt("LastSeenWelcomeVersion", lastSeenWelcomeVersion);
+        //    editor.Apply();
 
-            LastSeenWelcomeVersion = lastSeenWelcomeVersion;
-        }
+        //    LastSeenWelcomeVersion = lastSeenWelcomeVersion;
+        //}
 
         public void SetLastMigrationVersion(Int32 lastMigrationVersion)
         {
@@ -148,20 +162,21 @@ namespace SmtuSchedule.Android
                     UpperWeekDate = new DateTime(preferences.GetLong("UpperWeekDate", 0));
                     break;
 
-                case "AllowSendingCrashReports":
-                    AllowSendingCrashReports = preferences.GetBoolean("AllowSendingCrashReports", true);
-                    break;
+                //case "AllowSendingCrashReports":
+                //    AllowSendingCrashReports = preferences.GetBoolean("AllowSendingCrashReports", true);
+                //    break;
 
                 case "CurrentScheduleId":
+                case "FeatureDiscoveryState":
                 case "LastMigrationVersion":
                 case "LastSeenUpdateVersion":
-                case "LastSeenWelcomeVersion":
+                //case "LastSeenWelcomeVersion":
                 case "StoreReleaseNoticeViewed":
                     break;
 
                 //default:
                 //    throw new NotSupportedException(
-                //        $"Changing parameter \"{key}\" via preferences screen now is not supported.");
+                //        $"Changing parameter \"{key}\" via preferences screen is not supported for now.");
             }
         }
 

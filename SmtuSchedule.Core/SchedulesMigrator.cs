@@ -15,7 +15,7 @@ namespace SmtuSchedule.Core
                     continue;
                 }
 
-                schedule.Type = (schedule.ScheduleId > 10000) ? ScheduleType.Lecturer : ScheduleType.Group;
+                schedule.Type = (schedule.ScheduleId > 100000) ? ScheduleType.Lecturer : ScheduleType.Group;
 
                 yield return schedule;
             }

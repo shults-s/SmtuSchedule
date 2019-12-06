@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Android.OS;
 using Android.App;
 using Android.Runtime;
@@ -18,7 +19,7 @@ using Environment = Android.OS.Environment;
 namespace SmtuSchedule.Android
 {
     [Application]
-    public sealed class ScheduleApplication : Application
+    internal class ScheduleApplication : Application
     {
         public SchedulesManager Manager { get; private set; }
 
@@ -41,28 +42,34 @@ namespace SmtuSchedule.Android
                 Build.VERSION.Release
             );
 
-            // У AndroidEnvironment.UnhandledExceptionRaiser трассировка стека подробнее,
-            // чем у AppDomain.CurrentDomain.UnhandledException.
+            // В AndroidEnvironment.UnhandledExceptionRaiser трассировка стека подробнее,
+            // чем в AppDomain.CurrentDomain.UnhandledException.
             AndroidEnvironment.UnhandledExceptionRaiser += (s, e) =>
             {
                 Logger.Log(e.Exception);
-                SaveLog(true);
+
+                // WaitAny используется для подавления исключения, которое может возникнуть
+                // при сохранении лога. Если не подавить его, в AppCenter не придет
+                // краш репорт с исключением-первопричиной.
+                Task.WaitAny(SaveLogAsync(true));
             };
 
             Preferences = new Preferences(this);
 
             IsInitialized = false;
+
+            _logsDirectoryPath = GetExternalStoragePath() + "/Logs/";
         }
 
         public override void OnCreate()
         {
             base.OnCreate();
 
-#if !DEBUG && !USER_THAT_IS_WELL_MEOWS
-            if (!Preferences.AllowSendingCrashReports)
-            {
-                return ;
-            }
+#if !DEBUG
+            //if (!Preferences.AllowSendingCrashReports)
+            //{
+            //    return ;
+            //}
 
             AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
 
@@ -79,8 +86,7 @@ namespace SmtuSchedule.Android
                 FileInfo[] files = null;
                 try
                 {
-                    files = new DirectoryInfo(GetExternalStoragePath() + "Logs")
-                        .GetFiles();
+                    files = new DirectoryInfo(_logsDirectoryPath).GetFiles();
                 }
                 catch
                 {
@@ -153,18 +159,38 @@ namespace SmtuSchedule.Android
             return IsInitialized = true;
         }
 
-        public void SaveLog(Boolean isCrashLog = false)
+        public Task SaveLogAsync(Boolean isCrashLog = false)
         {
-            String logsPath = GetExternalStoragePath() + "Logs/";
-            if (!Directory.Exists(logsPath))
+            return Task.Run(() =>
             {
-                Directory.CreateDirectory(logsPath);
-            }
+                String timestamp = DateTime.Now.ToString("dd.MM.yyyy HH-mm");
+                String prefix = isCrashLog ? "CRASH " : String.Empty;
 
-            String prefix = isCrashLog ? "CRASH " : String.Empty;
+                if (!Directory.Exists(_logsDirectoryPath))
+                {
+                    Directory.CreateDirectory(_logsDirectoryPath);
+                }
 
-            String fileName = prefix + DateTime.Now.ToString("dd.MM.yyyy HH-mm") + ".log";
-            _ = (Logger as InMemoryLogger).Save(logsPath + fileName);
+                String fileName = prefix + timestamp + ".log";
+                File.WriteAllText(_logsDirectoryPath + fileName, Logger.ToString());
+            });
         }
+
+        public Task ClearLogsAsync()
+        {
+            return Task.Run(() =>
+            {
+                FileInfo[] files = new DirectoryInfo(_logsDirectoryPath).GetFiles("*.log");
+                if (files.Length == 0)
+                {
+                    return ;
+                }
+
+                DateTime storingTime = DateTime.Today.AddDays(-7);
+                files.Where(f => f.LastWriteTime < storingTime).ForEach(f => f.Delete());
+            });
+        }
+
+        private readonly String _logsDirectoryPath;
     }
 }

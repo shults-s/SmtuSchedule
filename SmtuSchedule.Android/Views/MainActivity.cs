@@ -14,10 +14,12 @@ using Android.Support.V4.App;
 using Android.Support.V7.App;
 using Android.Support.V4.View;
 using Android.Support.Design.Widget;
+using Com.Getkeepsafe.Taptargetview;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Android.Utilities;
 using SmtuSchedule.Android.Interfaces;
+using SmtuSchedule.Android.Enumerations;
 
 using PopupMenu = Android.Support.V7.Widget.PopupMenu;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
@@ -26,7 +28,7 @@ using Uri = Android.Net.Uri;
 namespace SmtuSchedule.Android.Views
 {
     [Activity(MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait)]
-    public class MainActivity : AppCompatActivity, ISchedulesViewer
+    internal class MainActivity : AppCompatActivity, ISchedulesViewer
     {
         private enum MainActivityState { NotInitialized, Initialized, DisplaysMessage, DisplaysSchedule }
 
@@ -68,7 +70,6 @@ namespace SmtuSchedule.Android.Views
                     ShowLayoutMessage(Resource.String.welcomeMessage);
 
                     String[] deniedPermissions = permissions.Where(p => IsPermissionDenied(p)).ToArray();
-
                     ShowSnackbar(
                         Resource.String.storagePermissionsRationaleMessage,
                         Resource.String.grantAccessActionTitle,
@@ -96,8 +97,6 @@ namespace SmtuSchedule.Android.Views
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            base.OnCreate(savedInstanceState);
-
             _application = ApplicationContext as ScheduleApplication;
 
             _currentlyUsedDarkTheme = _application.Preferences.UseDarkTheme;
@@ -109,6 +108,8 @@ namespace SmtuSchedule.Android.Views
 
             SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark
                 : Resource.Style.Theme_SmtuSchedule_Light);
+
+            base.OnCreate(savedInstanceState);
 
             _activityState = MainActivityState.NotInitialized;
 
@@ -199,8 +200,14 @@ namespace SmtuSchedule.Android.Views
             }
             else if (requestCode == StartDownloadActivityRequestCode && resultCode == Result.Ok)
             {
+                Boolean shouldDownloadRelatedSchedules = data.GetBooleanExtra(
+                    DownloadActivity.IntentShouldDownloadRelatedSchedulesKey,
+                    false
+                );
+
                 String[] requests = data.GetStringArrayExtra(DownloadActivity.IntentSearchRequestsKey);
-                DownloadSchedulesAsync(requests);
+
+                DownloadSchedulesAsync(requests, shouldDownloadRelatedSchedules);
             }
         }
 
@@ -220,7 +227,7 @@ namespace SmtuSchedule.Android.Views
                 if (haveReadingErrors)
                 {
                     ShowSnackbar(Resource.String.schedulesReadingErrorMessage);
-                    _application.SaveLog();
+                    _ = _application.SaveLogAsync();
                 }
             }
 
@@ -262,7 +269,7 @@ namespace SmtuSchedule.Android.Views
             if (!IsPreferencesValid())
             {
                 ShowDialogWithSuggestionToConfigureApplication();
-                //return ;
+                return ;
             }
 
             RestartSchedulesRenderingSubsystem();
@@ -272,18 +279,20 @@ namespace SmtuSchedule.Android.Views
                 CheckForUpdatesAsync(currentVersion);
             }
 
-            if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
-            {
-                new CustomAlertDialog(this)
-                    .SetTitle(Resource.String.introductionDialogTitle)
-                    .SetMessage(Resource.String.introductionMessage)
-                    .SetPositiveButton(
-                        Resource.String.gotItActionTitle,
-                        () => _application.Preferences.SetLastSeenWelcomeVersion(currentVersion)
-                    )
-                    .SetPositiveButtonEnabledOnlyWhenMessageScrolledToBottom()
-                    .Show();
-            }
+            _ = _application.ClearLogsAsync();
+
+            //if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
+            //{
+            //    new CustomAlertDialog(this)
+            //        .SetTitle(Resource.String.introductionDialogTitle)
+            //        .SetMessage(Resource.String.introductionMessage)
+            //        .SetPositiveButton(
+            //            Resource.String.gotItActionTitle,
+            //            () => _application.Preferences.SetLastSeenWelcomeVersion(currentVersion)
+            //        )
+            //        .SetPositiveButtonEnabledOnlyWhenMessageScrolledToBottom()
+            //        .Show();
+            //}
         }
 
         private Boolean IsPreferencesValid()
@@ -302,7 +311,7 @@ namespace SmtuSchedule.Android.Views
             if (haveMigrationErrors)
             {
                 ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
-                _application.SaveLog();
+                _ = _application.SaveLogAsync();
             }
             else
             {
@@ -324,22 +333,22 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
+            if (latest.VersionCode == _application.Preferences.LastSeenUpdateVersion
+                || latest.VersionCode <= currentVersion)
+            {
+                return ;
+            }
+
+            Java.Lang.ICharSequence whatsNewMessage = (latest.VersionNotes != null)
+                ? latest.VersionNotes.Replace("\n", "<br>").ParseHtml()
+                : GetTextFormatted(Resource.String.applicationUpdateAvailableMessage);
+
             String packageId = latest.GooglePlayStorePackageId;
             if (packageId == null)
             {
-                if (latest.VersionCode == _application.Preferences.LastSeenUpdateVersion
-                    || latest.VersionCode <= currentVersion)
-                {
-                    return ;
-                }
-
-                Java.Lang.ICharSequence message = (latest.VersionNotes != null)
-                    ? latest.VersionNotes.ParseHtml()
-                    : GetTextFormatted(Resource.String.applicationUpdateAvailableMessage);
-
                 new CustomAlertDialog(this)
                     .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
-                    .SetMessage(message)
+                    .SetMessage(whatsNewMessage)
                     .SetPositiveButton(
                         Resource.String.openUpdateDownloadPageActionTitle,
                         () =>
@@ -357,19 +366,35 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
+            void OpenInPlayMarket()
+            {
+                try
+                {
+                    String url = "market://details?id=" + packageId;
+                    StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
+                }
+                // Google Play Маркет не установлен.
+                catch (ActivityNotFoundException)
+                {
+                    String url = "https://play.google.com/store/apps/details?id=" + packageId;
+                    StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
+                }
+            }
+
             if (packageId == PackageName)
             {
-                if (!_application.Preferences.StoreReleaseNoticeViewed)
-                {
-                    new CustomAlertDialog(this)
-                        .SetTitle(Resource.String.googlePlayStoreReleaseAvailableDialogTitle)
-                        .SetMessage(Resource.String.googlePlayStoreReleaseAvailableMessage)
-                        .SetPositiveButton(
-                            Resource.String.gotItActionTitle,
-                            () => _application.Preferences.SetStoreReleaseNoticeViewed(true)
-                        )
-                        .Show();
-                }
+                new CustomAlertDialog(this)
+                    .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
+                    .SetMessage(whatsNewMessage)
+                    .SetPositiveButton(
+                        Resource.String.openPlayMarketActionTitle,
+                        () => OpenInPlayMarket()
+                    )
+                    .SetNegativeButton(
+                        Resource.String.gotItActionTitle,
+                        () => _application.Preferences.SetLastSeenUpdateVersion(latest.VersionCode)
+                    )
+                    .Show();
 
                 return ;
             }
@@ -377,23 +402,7 @@ namespace SmtuSchedule.Android.Views
             new CustomAlertDialog(this)
                 .SetTitle(Resource.String.googlePlayStoreReleaseAvailableDialogTitle)
                 .SetMessage(Resource.String.googlePlayStoreReleaseRelocatedMessage)
-                .SetPositiveButton(
-                    Resource.String.openPlayMarketActionTitle,
-                    () =>
-                    {
-                        try
-                        {
-                            String url = "market://details?id=" + packageId;
-                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
-                        }
-                        // Google Play Маркет не установлен.
-                        catch (ActivityNotFoundException)
-                        {
-                            String url = "https://play.google.com/store/apps/details?id=" + packageId;
-                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
-                        }
-                    }
-                )
+                .SetPositiveButton(Resource.String.openPlayMarketActionTitle, () => OpenInPlayMarket())
                 .Show();
         }
 
@@ -401,9 +410,15 @@ namespace SmtuSchedule.Android.Views
         {
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
 
+            IReadOnlyList<Schedule> sortedSchedules = schedules.Select(s => s.Value)
+                .OrderBy(s => s, new SchedulesComparer())
+                .ToList();
+
             UpdateToolbarMenu();
 
-            if (schedules.Count == 0)
+            ShowSchedulesFeatureDiscoveryTargetsSequence(sortedSchedules.Count);
+
+            if (sortedSchedules.Count == 0)
             {
                 _toolbarTitle.SetText(Resource.String.welcomeToolbarTitle);
                 _tabLayout.Visibility = ViewStates.Gone;
@@ -413,10 +428,11 @@ namespace SmtuSchedule.Android.Views
 
                 ShowLayoutMessage(Resource.String.welcomeMessage);
                 _activityState = MainActivityState.DisplaysMessage;
+
                 return ;
             }
 
-            SetSchedulesMenu(schedules);
+            SetSchedulesMenu(sortedSchedules);
 
             ShowViewPager();
             _viewPager = FindViewById<ViewPager>(Resource.Id.scheduleViewPager);
@@ -462,24 +478,100 @@ namespace SmtuSchedule.Android.Views
             _tabLayout.Visibility = ViewStates.Visible;
             _tabLayout.SetupWithViewPager(_viewPager);
 
+            _fab.Visibility = _application.Preferences.UseFabDateSelector ? ViewStates.Visible
+                : ViewStates.Gone;
+
             Int32 SelectScheduleToDisplay()
             {
                 Int32 currentId = _application.Preferences.CurrentScheduleId;
                 if (currentId == 0)
                 {
-                    return schedules.Keys.First();
+                    return sortedSchedules[0].ScheduleId;
                 }
 
-                return schedules.ContainsKey(currentId) ? currentId : schedules.Keys.First();
+                return schedules.ContainsKey(currentId) ? currentId : sortedSchedules[0].ScheduleId;
             }
 
             Int32 scheduleId = SelectScheduleToDisplay();
             ShowSchedule(scheduleId);
 
-            _fab.Visibility = _application.Preferences.UseFabDateSelector ? ViewStates.Visible
-                : ViewStates.Gone;
-
             _currentSubjectHighlightTimer.Start();
+        }
+
+        private void ShowSchedulesFeatureDiscoveryTargetsSequence(Int32 numberOfSchedules)
+        {
+            FeatureDiscoveryState state = _application.Preferences.FeatureDiscoveryState;
+
+            List<TapTarget> targets = new List<TapTarget>();
+
+            if (!state.HasFlag(FeatureDiscoveryState.SchedulesDownload))
+            {
+                targets.Add(
+                    TapTarget.ForToolbarMenuItem(
+                        _toolbar,
+                        Resource.Id.downloadSchedulesMenuItem,
+                        GetString(Resource.String.schedulesDownloadFeatureDiscoveryTitle),
+                        GetString(Resource.String.schedulesDownloadFeatureDiscoveryMessage)
+                    )
+                    .Stylize()
+                    .Id((Int32)FeatureDiscoveryState.SchedulesDownload)
+                );
+            }
+
+            if (numberOfSchedules != 0)
+            {
+                if (!state.HasFlag(FeatureDiscoveryState.SchedulesManagement))
+                {
+                    targets.Add(
+                        TapTarget.ForView(
+                            _toolbarTitle,
+                            GetString(Resource.String.schedulesManagementFeatureDiscoveryTitle),
+                            GetString(Resource.String.schedulesManagementFeatureDiscoveryMessage)
+                        )
+                        .Stylize()
+                        .Id((Int32)FeatureDiscoveryState.SchedulesManagement)
+                    );
+                }
+
+                if (!state.HasFlag(FeatureDiscoveryState.ScheduleChangeDate))
+                {
+                    TapTarget dateTarget;
+                    if (_application.Preferences.UseFabDateSelector)
+                    {
+                        dateTarget = TapTarget.ForView(
+                            _fab,
+                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
+                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
+                        )
+                        .TintTarget(false);
+                    }
+                    else
+                    {
+                        dateTarget = TapTarget.ForToolbarMenuItem(
+                            _toolbar,
+                            Resource.Id.selectScheduleDateMenuItem,
+                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
+                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
+                        );
+                    }
+
+                    dateTarget.Stylize().Id((Int32)FeatureDiscoveryState.ScheduleChangeDate);
+                    targets.Add(dateTarget);
+                }
+            }
+
+            if (targets.Count == 0)
+            {
+                return ;
+            }
+
+            TapTargetSequenceListener listener = new TapTargetSequenceListener();
+            listener.Clicked += (Int32 id) => _application.Preferences.SetFeatureDiscoveryState(
+                state |= (FeatureDiscoveryState)id
+            );
+
+            new TapTargetSequence(this).Targets(targets).Listener(listener).ContinueOnCancel(true)
+                .Start();
         }
 
         private void UpdateToolbarMenu()
@@ -533,8 +625,8 @@ namespace SmtuSchedule.Android.Views
             if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
-                _application.Logger.Log(failReason);
-                _application.SaveLog();
+                //_application.Logger.Log(failReason);
+                //_ = _application.SaveLogAsync();
                 return ;
             }
 
@@ -595,7 +687,7 @@ namespace SmtuSchedule.Android.Views
             _viewPager.SetCurrentItem(_pagerAdapter.RenderingDateRange.GetIndexByDate(date), true);
         }
 
-        private void SetSchedulesMenu(IReadOnlyDictionary<Int32, Schedule> schedules)
+        private void SetSchedulesMenu(IReadOnlyList<Schedule> schedules)
         {
             IEnumerable<(Int32 scheduleId, String displayedName)> Fetch(IEnumerable<Schedule> values)
             {
@@ -610,7 +702,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            foreach ((Int32 scheduleId, String displayedName) in Fetch(schedules.Values))
+            foreach ((Int32 scheduleId, String displayedName) in Fetch(schedules))
             {
                 _schedulesMenu.Menu.Add(Menu.None, scheduleId, Menu.None, displayedName);
             }
@@ -641,35 +733,41 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            DownloadSchedulesAsync(scheduleId.ToString());
+            DownloadSchedulesAsync(new String[] { scheduleId.ToString() }, false);
         }
 
-        private async void DownloadSchedulesAsync(params String[] requests)
+        private async void DownloadSchedulesAsync(String[] requests, Boolean shouldDownloadRelatedSchedules)
         {
             if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
-                _application.Logger.Log(failReason);
-                _application.SaveLog();
+                //_application.Logger.Log(failReason);
+                //_ = _application.SaveLogAsync();
                 return ;
             }
 
             ShowSnackbar(Resource.String.schedulesDownloadingStarted);
 
-            Boolean haveDownloadingErrors = await _application.Manager.DownloadSchedulesAsync(requests);
+            Boolean haveDownloadingErrors = await _application.Manager.DownloadSchedulesAsync(
+                requests,
+                shouldDownloadRelatedSchedules
+            );
+
             RestartSchedulesRenderingSubsystem();
 
             Int32 messageId;
             if (haveDownloadingErrors)
             {
-                messageId = (requests.Length == 1) ? Resource.String.scheduleDownloadErrorMessage
+                messageId = (requests.Length == 1 && !shouldDownloadRelatedSchedules)
+                    ? Resource.String.scheduleDownloadErrorMessage
                     : Resource.String.schedulesDownloadErrorMessage;
 
-                _application.SaveLog();
+                _ = _application.SaveLogAsync();
             }
             else
             {
-                messageId = (requests.Length == 1) ? Resource.String.scheduleDownloadedSuccessfullyMessage
+                messageId = (requests.Length == 1 && !shouldDownloadRelatedSchedules)
+                    ? Resource.String.scheduleDownloadedSuccessfullyMessage
                     : Resource.String.schedulesDownloadedSuccessfullyMessage;
             }
 
@@ -743,11 +841,31 @@ namespace SmtuSchedule.Android.Views
 
         private void ShowDialogWithSuggestionToConfigureApplication()
         {
-            new CustomAlertDialog(this)
+            CustomAlertDialog dialog = new CustomAlertDialog(this)
                 .SetPositiveButton(Resource.String.configureActionTitle, StartPreferencesActivity)
                 .SetMessage(Resource.String.configureApplicationMessage)
-                .SetCancelable(false)
-                .Show();
+                .SetCancelable(false);
+
+            dialog.Show();
+
+            FeatureDiscoveryState state = _application.Preferences.FeatureDiscoveryState;
+            if (!state.HasFlag(FeatureDiscoveryState.ApplicationSettings))
+            {
+                Button positiveButton = dialog.GetButton(DialogButtonType.Positive);
+                TapTarget settingsTarget = TapTarget.ForView(
+                    positiveButton,
+                    GetString(Resource.String.applicationSettingsFeatureDiscoveryTitle),
+                    GetString(Resource.String.applicationSettingsFeatureDiscoveryMessage)
+                )
+                .Stylize();
+
+                TapTargetViewListener listener = new TapTargetViewListener();
+                listener.Clicked += () => _application.Preferences.SetFeatureDiscoveryState(
+                    state | FeatureDiscoveryState.ApplicationSettings
+                );
+
+                TapTargetView.ShowFor(dialog, settingsTarget, listener);
+            }
         }
 
         private void ShowViewingWeekTypeSnackbar()
@@ -792,11 +910,11 @@ namespace SmtuSchedule.Android.Views
             snackbar.Show();
         }
 
+        private ScheduleApplication _application;
+
         private Boolean _isThemeChanged;
         private Boolean _currentlyUsedDarkTheme;
-
         private MainActivityState _activityState;
-        private ScheduleApplication _application;
 
         private Timer _currentSubjectHighlightTimer;
 

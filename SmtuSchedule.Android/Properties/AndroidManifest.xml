@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="14"
-    android:versionName="0.9.1"
-    package="Shults.SmtuSchedule">
+    android:versionCode="16"
+    android:versionName="1.0.1"
+    package="shults.smtuschedule">
     <uses-sdk
         android:minSdkVersion="21"
         android:targetSdkVersion="28" />
     <application
         android:icon="@mipmap/launcherIcon"
         android:label="@string/applicationLabel"
-        android:theme="@style/Theme.SmtuSchedule.Light" />
+        android:theme="@style/Theme.SmtuSchedule.Splash" />
     <uses-permission
         android:name="android.permission.INTERNET" />
     <uses-permission

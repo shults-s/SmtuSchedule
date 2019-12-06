@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace SmtuSchedule.Core.Utilities
 {
-    internal static class ExceptionExtension
+    internal static class ExceptionExtensions
     {
         // Type. \n Message \n Data \n StackTrace \n InnerException
         public static String Format(this Exception exception)

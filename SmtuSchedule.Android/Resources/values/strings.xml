@@ -1,20 +1,41 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
     <!-- Для каждой релизной версии необходимо вручную обновлять versionCode и versionName в манифесте приложения -->
+
     <string name="applicationCompleteName">Расписание СПбГМТУ</string>
     <string name="applicationLabel">Расписание</string>
-    <string name="aboutApplicationMessage">
-        Версия 0.9.1 от 12 ноября 2019.
-        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>, поддержать меня можно
-        <a href="https://vk.cc/9XYwXA">тут</a> :)
-        \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
+
+    <!-- Заголовки и описания обучающих экранов -->
+    <string name="applicationSettingsFeatureDiscoveryTitle">Настройте приложение</string>
+    <string name="applicationSettingsFeatureDiscoveryMessage">
+        Задайте первым параметром любой день текущего семестра, принадлежащий верхней неделе.
+        \n\nОбновляйте значение каждый семестр.
+    </string>
+    <string name="schedulesDownloadFeatureDiscoveryTitle">Загрузите расписания</string>
+    <string name="schedulesDownloadFeatureDiscoveryMessage">
+        Введите номера нужных групп и ФИО преподавателей.
+        \n\nВпоследствии загружать нужные расписания можно будет прямо из просматриваемого расписания нажав на имя преподавателя
+        или номер группы.
+    </string>
+    <string name="schedulesManagementFeatureDiscoveryTitle">Управление и переключение между расписаниями</string>
+    <string name="schedulesManagementFeatureDiscoveryMessage">
+        Короткое нажатие покажет список загруженных расписаний.
+        \n\nДлительное – откроет меню действий над выбранным расписанием: удалить или перезагрузить.
+        \n\nМежду расписаниями можно переключаться быстрее: нажав на имя преподавателя или номер группы в просматриваемом
+        расписании.
+    </string>
+    <string name="scheduleChangeDateFeatureDiscoveryTitle">Изменение просматриваемой даты</string>
+    <string name="scheduleChangeDateFeatureDiscoveryMessage">
+        Короткое нажатие откроет календарь для выбора произвольной даты.
+        \n\nДлительное – покажет тип просматриваемой недели: верхняя или нижняя.
+        \n\nМежду смежными датами проще переключаться с помощью вкладок, либо перелистывая страницы расписания влево-вправо.
+        \n\nВернуться к текущей дате можно нажав кнопку «назад».
     </string>
 
     <!-- Заголовки диалогов и панелей инструментов -->
     <string name="preferencesToolbarTitle">Настройки</string>
     <string name="downloadToolbarTitle">Загрузка расписаний</string>
     <string name="welcomeToolbarTitle">@string/applicationCompleteName</string>
-    <string name="introductionDialogTitle">Что нового?</string>
     <string name="aboutApplicationDialogTitle">О приложении</string>
     <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
     <string name="applicationUpdateAvailableDialogTitle">Вышло обновление</string>
@@ -62,17 +83,20 @@
 
     <!-- Подсказки ввода -->
     <string name="downloadRequestHintMessage">Введите номера групп и/или ФИО преподавателей через запятую:</string>
+    <string name="downloadRelatedSchedulesMessage">
+        Загрузить расписания преподавателей, присутствующих в перечисленных расписаниях групп
+    </string>
 
     <!-- Заголовки и описания настроек приложения -->
-    <string name="preferenceUseDarkThemeTitle">Ночной режим</string>
+    <string name="preferenceUseDarkThemeTitle">Темная тема</string>
     <string name="preferenceCheckUpdatesOnStartTitle">Проверять обновления</string>
     <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string>
-    <string name="preferenceUpperWeekDateTitle">Первый день семестра по числителю</string>
+    <string name="preferenceUpperWeekDateTitle">Любой день семестра по числителю</string>
     <string name="preferenceUpperWeekDateSummary">Не задан</string>
-    <string name="preferenceAllowSendingCrashReportsTitle">Отправлять сообщения о падениях</string>
+    <!--<string name="preferenceAllowSendingCrashReportsTitle">Отправлять сообщения о падениях</string>
     <string name="preferenceAllowSendingCrashReportsSummary">
         Разрешить приложению отправлять разработчику анонимные сообщения о падениях приложения и их предтечах
-    </string>
+    </string>-->
     <string name="preferenceUseFabDateSelectorTitle">Плавающая кнопка</string>
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
     <string name="preferenceDisplaySubjectEndTimeTitle">Время окончания занятий</string>
@@ -98,39 +122,17 @@
     <string name="waitUntilSchedulesFinishDownloading">Дождитесь окончания загрузки расписаний.</string>
     <string name="schedulesMigratedSuccessfullyMessage">Расписания преобразованы в новый формат.</string>
     <string name="configureApplicationMessage">Настройте приложение для корректного отображения занятий.</string>
-    <string name="introductionMessage">
-        <b>Прочитайте, это важно.</b>
-        \nЗакрыть этот диалог можно нажав кнопку «Назад».
-        \n\nИсправления этой версии:
-        \n1. Исправлен критический баг в отображении расписания после переключения темы;
-        \n2. Исправлены вылеты при возвращении из фонового режима;
-        \n3. Исправлены лаги при перелистывании страниц расписания.
-        \n\nИзменения этой версии:
-        \n1. Диапазон отображаемых дат теперь автоматически перестраивается при достижении любой из двух границ.
-        \n\nНововведения этой версии:
-        \n1. Поддержка Android 5.0;
-        \n2. Ночной режим;
-        \n3. Отображение времени окончания занятий;
-        \n4. Поточные занятия в расписаниях преподавателей теперь группируются;
-        \n5. Удержание пальца на заголовке расписания открывает диалог действий над расписанием;
-        \n6. Удержание пальца на плавающей кнопке выводит сообщение с типом недели просматриваемой даты.
-        \n\nВ последующих релизах часть функционала будет вынесена на сервер, а значит, приложение станет «легче» и получит
-        новые, ранее технически нереализуемые возможности, такие как расписания аудиторий (такой функции нет даже на сайте).
-        \nИли, к примеру, уведомления о предстоящих занятиях.
-        \n\nПриложение разрабатывается мной в свободное от работы и учебы время, поэтому эти изменения займут длительное время.
-        \n\nЕсли Вам понравилось или помогло это приложение в нынешнем его виде, можете
-        <a href="https://vk.cc/9XYwXA">поддержать меня</a>.
-        \nЭту ссылку можно найти также в окне «О приложении».
-    </string>
-    <string name="googlePlayStoreReleaseAvailableMessage">
-        Приложение теперь доступно в Google Play Маркет.
-        \nОбновление будет происходить автоматически.
-    </string>
     <string name="googlePlayStoreReleaseRelocatedMessage">
         Приложение было <b>перевыпущено</b> в Google Play Маркет.
         \nНастоятельно рекомендуется переустановить его вручную, предварительно удалив данную версию, чтобы в дальнейшем
         получать обновления автоматически.
         \nЗагруженные расписания затронуты не будут.
+    </string>
+    <string name="aboutApplicationMessage">
+        Версия 1.0.1 от 6 декабря 2019.
+        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>.
+        \n\n<a href="https://github.com/shults-s/SmtuSchedule/wiki/Privacy-policy">Политика конфиденциальности</a>.
+        \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
     </string>
     <string name="applicationUpdateAvailableMessage">
         Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md"><b>новая версия</b></a> приложения.
