@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
     <!-- Для каждой релизной версии необходимо вручную обновлять versionCode и versionName в манифесте приложения -->
+
     <string name="applicationCompleteName">Расписание СПбГМТУ</string>
     <string name="applicationLabel">Расписание</string>
-    <string name="aboutApplicationMessage">
-        Версия 1.0.0 от 23 ноября 2019.
-        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>, поддержать меня можно
-        <a href="https://vk.cc/9XYwXA">тут</a> :)
-        \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
+
+    <!-- Заголовки и описания обучающих экранов -->
+    <string name="applicationSettingsFeatureDiscoveryTitle">Настройте приложение</string>
+    <string name="applicationSettingsFeatureDiscoveryMessage">
+        Задайте первым параметром любой день текущего семестра, принадлежащий верхней неделе.
+        \n\nОбновляйте значение каждый семестр.
+    </string>
+    <string name="schedulesDownloadFeatureDiscoveryTitle">Загрузите расписания</string>
+    <string name="schedulesDownloadFeatureDiscoveryMessage">
+        Введите номера нужных групп и ФИО преподавателей.
+        \n\nВпоследствии загружать нужные расписания можно будет прямо из просматриваемого расписания нажав на имя преподавателя
+        или номер группы.
+    </string>
+    <string name="schedulesManagementFeatureDiscoveryTitle">Управление и переключение между расписаниями</string>
+    <string name="schedulesManagementFeatureDiscoveryMessage">
+        Короткое нажатие покажет список загруженных расписаний.
+        \n\nДлительное – откроет меню действий над выбранным расписанием: удалить или перезагрузить.
+        \n\nМежду расписаниями можно переключаться быстрее: нажав на имя преподавателя или номер группы в просматриваемом
+        расписании.
+    </string>
+    <string name="scheduleChangeDateFeatureDiscoveryTitle">Изменение просматриваемой даты</string>
+    <string name="scheduleChangeDateFeatureDiscoveryMessage">
+        Короткое нажатие откроет календарь для выбора произвольной даты.
+        \n\nДлительное – покажет тип просматриваемой недели: верхняя или нижняя.
+        \n\nМежду смежными датами проще переключаться с помощью вкладок, либо перелистывая страницы расписания влево-вправо.
+        \n\nВернуться к текущей дате можно нажав кнопку «назад».
     </string>
 
     <!-- Заголовки диалогов и панелей инструментов -->
@@ -80,32 +102,6 @@
     <string name="preferenceDisplaySubjectEndTimeTitle">Время окончания занятий</string>
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
 
-    <!-- Заголовки и описания обучающих экранов -->
-    <string name="applicationSettingsFeatureDiscoveryTitle">Настройте приложение</string>
-    <string name="applicationSettingsFeatureDiscoveryMessage">
-        Задайте первым параметром любой день текущего семестра, принадлежащий верхней неделе.
-        \n\nОбновляйте значение каждый семестр.
-    </string>
-    <string name="schedulesDownloadFeatureDiscoveryTitle">Загрузите расписания</string>
-    <string name="schedulesDownloadFeatureDiscoveryMessage">
-        Введите номера нужных групп и ФИО преподавателей.
-        \n\nВпоследствии загружать нужные расписания можно будет прямо из просматриваемого расписания нажав на имя преподавателя
-        или номер группы.
-    </string>
-    <string name="schedulesManagementFeatureDiscoveryTitle">Управление и переключение между расписаниями</string>
-    <string name="schedulesManagementFeatureDiscoveryMessage">
-        Короткое нажатие покажет список загруженных расписаний.
-        \n\nДлительное – откроет меню действий над выбранным расписанием: удалить или перезагрузить.
-        \n\nМежду расписаниями можно переключаться быстрее: нажав на имя преподавателя или номер группы в просматриваемом
-        расписании.
-    </string>
-    <string name="scheduleChangeDateFeatureDiscoveryTitle">Изменение просматриваемой даты</string>
-    <string name="scheduleChangeDateFeatureDiscoveryMessage">
-        Короткое нажатие откроет календарь для выбора произвольной даты.
-        \n\nДлительное – покажет тип просматриваемой недели: верхняя или нижняя.
-        \n\nМежду смежными датами проще переключаться с помощью вкладок, либо перелистывая страницы расписания влево-вправо.
-    </string>
-
     <!-- Фрагменты текстов сообщений и элементов интерфейса -->
     <string-array name="weeksTypesInNominativeCase">
         <item>верхняя неделя</item>
@@ -131,6 +127,12 @@
         \nНастоятельно рекомендуется переустановить его вручную, предварительно удалив данную версию, чтобы в дальнейшем
         получать обновления автоматически.
         \nЗагруженные расписания затронуты не будут.
+    </string>
+    <string name="aboutApplicationMessage">
+        Версия 1.0.1 от 6 декабря 2019.
+        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>.
+        \n\n<a href="https://github.com/shults-s/SmtuSchedule/wiki/Privacy-policy">Политика конфиденциальности</a>.
+        \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
     </string>
     <string name="applicationUpdateAvailableMessage">
         Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md"><b>новая версия</b></a> приложения.
