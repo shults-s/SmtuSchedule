@@ -88,7 +88,7 @@
     </string>
 
     <!-- Заголовки и описания настроек приложения -->
-    <string name="preferenceUseDarkThemeTitle">Ночной режим</string>
+    <string name="preferenceUseDarkThemeTitle">Темная тема</string>
     <string name="preferenceCheckUpdatesOnStartTitle">Проверять обновления</string>
     <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string>
     <string name="preferenceUpperWeekDateTitle">Любой день семестра по числителю</string>
