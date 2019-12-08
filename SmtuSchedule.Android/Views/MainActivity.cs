@@ -694,7 +694,7 @@ namespace SmtuSchedule.Android.Views
 
         private void SetSchedulesMenu(IReadOnlyList<Schedule> schedules)
         {
-            IEnumerable<(Int32 scheduleId, String displayedName)> Fetch(IEnumerable<Schedule> values)
+            static IEnumerable<(Int32 scheduleId, String displayedName)> Fetch(IEnumerable<Schedule> values)
             {
                 return values.Select<Schedule, (Int32, String)>(s => (s.ScheduleId, s.DisplayedName));
             }
