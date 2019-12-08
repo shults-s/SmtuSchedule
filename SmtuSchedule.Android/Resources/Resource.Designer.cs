@@ -4849,49 +4849,46 @@ namespace SmtuSchedule.Android
 			public const int schedulesManagementFeatureDiscoveryTitle = 2131689582;
 			
 			// aapt resource value: 0x7F0F006F
-			public const int schedulesMigratedSuccessfullyMessage = 2131689583;
+			public const int schedulesMigrationErrorMessage = 2131689583;
 			
 			// aapt resource value: 0x7F0F0070
-			public const int schedulesMigrationErrorMessage = 2131689584;
+			public const int schedulesReadingErrorMessage = 2131689584;
 			
 			// aapt resource value: 0x7F0F0071
-			public const int schedulesReadingErrorMessage = 2131689585;
+			public const int search_menu_title = 2131689585;
 			
 			// aapt resource value: 0x7F0F0072
-			public const int search_menu_title = 2131689586;
+			public const int selectScheduleDateMenuItem = 2131689586;
 			
 			// aapt resource value: 0x7F0F0073
-			public const int selectScheduleDateMenuItem = 2131689587;
+			public const int status_bar_notification_info_overflow = 2131689587;
 			
 			// aapt resource value: 0x7F0F0074
-			public const int status_bar_notification_info_overflow = 2131689588;
+			public const int storagePermissionsRationaleMessage = 2131689588;
 			
 			// aapt resource value: 0x7F0F0075
-			public const int storagePermissionsRationaleMessage = 2131689589;
+			public const int summary_collapsed_preference_list = 2131689589;
 			
 			// aapt resource value: 0x7F0F0076
-			public const int summary_collapsed_preference_list = 2131689590;
+			public const int thanksActionTitle = 2131689590;
 			
 			// aapt resource value: 0x7F0F0077
-			public const int thanksActionTitle = 2131689591;
+			public const int v7_preference_off = 2131689591;
 			
 			// aapt resource value: 0x7F0F0078
-			public const int v7_preference_off = 2131689592;
+			public const int v7_preference_on = 2131689592;
 			
 			// aapt resource value: 0x7F0F0079
-			public const int v7_preference_on = 2131689593;
+			public const int waitUntilSchedulesFinishDownloading = 2131689593;
 			
 			// aapt resource value: 0x7F0F007A
-			public const int waitUntilSchedulesFinishDownloading = 2131689594;
+			public const int weekendMessage = 2131689594;
 			
 			// aapt resource value: 0x7F0F007B
-			public const int weekendMessage = 2131689595;
+			public const int welcomeMessage = 2131689595;
 			
 			// aapt resource value: 0x7F0F007C
-			public const int welcomeMessage = 2131689596;
-			
-			// aapt resource value: 0x7F0F007D
-			public const int welcomeToolbarTitle = 2131689597;
+			public const int welcomeToolbarTitle = 2131689596;
 			
 			static String()
 			{
