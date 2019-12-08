@@ -2,7 +2,7 @@
 
 ## [Версия 1.0.1](https://github.com/shults-s/SmtuSchedule/releases/tag/1.0.1) от 06.12.2019
 
-Приложение теперь можно загрузить из [Google Play Маркет](https://play.google.com/store/apps/details?id=shults.smtuschedule).
+Приложение теперь доступно в [Google Play Маркет](https://play.google.com/store/apps/details?id=shults.smtuschedule).
 
 ### Изменено:
 - Дополнен текст обучающего экрана;
