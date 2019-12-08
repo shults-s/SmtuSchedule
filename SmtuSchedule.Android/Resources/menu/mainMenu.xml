@@ -16,6 +16,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/downloadSchedulesMenuItem"
+        android:visible="false"
         android:icon="@drawable/download"
         android:title="@string/downloadSchedulesMenuItem"
         app:showAsAction="never" />

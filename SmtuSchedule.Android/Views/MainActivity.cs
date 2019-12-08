@@ -408,6 +408,11 @@ namespace SmtuSchedule.Android.Views
 
         private void RestartSchedulesRenderingSubsystem()
         {
+            if (_activityState == MainActivityState.NotInitialized)
+            {
+                return ;
+            }
+
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
 
             IReadOnlyList<Schedule> sortedSchedules = schedules.Select(s => s.Value)
@@ -905,7 +910,7 @@ namespace SmtuSchedule.Android.Views
 
             TextView text = snackbar.View.FindViewById<TextView>(Resource.Id.snackbar_text);
             text.SetTextSize(ComplexUnitType.Px, Resources.GetDimension(Resource.Dimension.normalTextSize));
-            text.SetMaxLines(3);
+            text.SetMaxLines(5);
 
             snackbar.Show();
         }
