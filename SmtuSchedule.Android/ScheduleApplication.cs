@@ -83,6 +83,8 @@ namespace SmtuSchedule.Android
 
             Crashes.GetErrorAttachments = (ErrorReport report) =>
             {
+                ErrorAttachmentLog[] emptyAttachment = new ErrorAttachmentLog[0];
+
                 FileInfo[] files = null;
                 try
                 {
@@ -90,23 +92,33 @@ namespace SmtuSchedule.Android
                 }
                 catch
                 {
-                    return new ErrorAttachmentLog[0];
+                    return emptyAttachment;
                 }
 
                 if (files.Length == 0)
                 {
-                    return new ErrorAttachmentLog[0];
+                    return emptyAttachment;
                 }
 
                 FileInfo file = files.OrderByDescending(f => f.LastWriteTime).First();
                 if (file == null)
                 {
-                    return new ErrorAttachmentLog[0];
+                    return emptyAttachment;
+                }
+
+                String lastCrashLogText = String.Empty;
+                try
+                {
+                    lastCrashLogText = File.ReadAllText(file.FullName);
+                }
+                catch
+                {
+                    return emptyAttachment;
                 }
 
                 return new ErrorAttachmentLog[]
                 {
-                    ErrorAttachmentLog.AttachmentWithText("Crash log", file.FullName)
+                    ErrorAttachmentLog.AttachmentWithText(lastCrashLogText, file.Name)
                 };
             };
 
