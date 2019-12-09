@@ -83,8 +83,6 @@ namespace SmtuSchedule.Android
 
             Crashes.GetErrorAttachments = (ErrorReport report) =>
             {
-                ErrorAttachmentLog[] emptyAttachment = new ErrorAttachmentLog[0];
-
                 FileInfo[] files = null;
                 try
                 {
@@ -92,18 +90,18 @@ namespace SmtuSchedule.Android
                 }
                 catch
                 {
-                    return emptyAttachment;
+                    return null;
                 }
 
                 if (files.Length == 0)
                 {
-                    return emptyAttachment;
+                    return null;
                 }
 
                 FileInfo file = files.OrderByDescending(f => f.LastWriteTime).First();
                 if (file == null)
                 {
-                    return emptyAttachment;
+                    return null;
                 }
 
                 String lastCrashLogText = String.Empty;
@@ -113,7 +111,7 @@ namespace SmtuSchedule.Android
                 }
                 catch
                 {
-                    return emptyAttachment;
+                    return null;
                 }
 
                 return new ErrorAttachmentLog[]
@@ -125,7 +123,6 @@ namespace SmtuSchedule.Android
             ProcessLifecycleListener listener = new ProcessLifecycleListener();
             listener.Started += () => Analytics.TrackEvent("The application is started");
             listener.Stopped += () => Analytics.TrackEvent("The application is stopped");
-
             RegisterActivityLifecycleCallbacks(listener);
 #endif
         }
