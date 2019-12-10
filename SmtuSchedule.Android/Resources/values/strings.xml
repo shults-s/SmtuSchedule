@@ -73,6 +73,10 @@
     </string>
     <string name="applicationInitializationErrorMessage">Ошибка при инициализации приложения.</string>
     <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с сайтом университета.</string>
+    <string name="externalStoragePermissionsDeclinedErrorMessage">
+        Приложение не может загружать и открывать расписания без разрешения на доступ к памяти.
+        \n\nПерезапустите приложение, чтобы увидеть диалог запроса разрешений снова.
+    </string>
 
     <!-- Обоснования для запросов разрешений -->
     <string name="internetPermissionRationaleMessage">

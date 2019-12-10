@@ -67,7 +67,10 @@ namespace SmtuSchedule.Android.Views
                 }
                 else
                 {
-                    ShowLayoutMessage(Resource.String.welcomeMessage);
+                    ShowLayoutMessage(
+                        Resource.String.externalStoragePermissionsDeclinedErrorMessage,
+                        GravityFlags.Left
+                    );
 
                     String[] deniedPermissions = permissions.Where(p => IsPermissionDenied(p)).ToArray();
                     ShowSnackbar(
@@ -791,13 +794,14 @@ namespace SmtuSchedule.Android.Views
             View.Inflate(this, Resource.Layout.pager, _contentLayout);
         }
 
-        private void ShowLayoutMessage(Int32 messageId)
+        private void ShowLayoutMessage(Int32 messageId, GravityFlags gravity = GravityFlags.Center)
         {
             _contentLayout.RemoveAllViews();
 
             View layout = View.Inflate(this, Resource.Layout.message, _contentLayout);
 
             TextView message = layout.FindViewById<TextView>(Resource.Id.messageTextView);
+            message.Gravity = gravity;
             message.SetText(messageId);
         }
 
