@@ -31,21 +31,19 @@ namespace SmtuSchedule.Android.Views
 
             ShowEvent += (s, e) =>
             {
-                IWindowManager windowManager = (context as AppCompatActivity).WindowManager;
-
-                DisplayMetrics displayMetrics = new DisplayMetrics();
-                windowManager.DefaultDisplay.GetMetrics(displayMetrics);
-
                 WindowManagerLayoutParams layoutParameters = new WindowManagerLayoutParams();
                 layoutParameters.CopyFrom(Window.Attributes);
 
-                //Int32 maxDialogWidth = (Int32)(displayMetrics.WidthPixels * 0.9);
+                IWindowManager windowManager = (context as AppCompatActivity).WindowManager;
+                (Int32 width, Int32 height) = UiUtilities.GetScreenPixelSize(windowManager);
+
+                //Int32 maxDialogWidth = (Int32)(width * 0.9);
                 //if (Window.DecorView.Width > maxDialogWidth)
                 //{
                 //    layoutParameters.Width = maxDialogWidth;
                 //}
 
-                Int32 maxDialogHeight = (Int32)(displayMetrics.HeightPixels * 0.9);
+                Int32 maxDialogHeight = (Int32)(height * 0.9);
                 if (Window.DecorView.Height > maxDialogHeight)
                 {
                     layoutParameters.Height = maxDialogHeight;
@@ -103,6 +101,7 @@ namespace SmtuSchedule.Android.Views
             TextView textView = _layout.FindViewById<TextView>(Resource.Id.dialogMessageTextView);
             textView.MovementMethod = LinkMovementMethod.Instance;
             textView.TextFormatted = message.Trim().StripUrlUnderlines();
+
             return this;
         }
 

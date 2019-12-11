@@ -1,11 +1,20 @@
 using System;
 using Android.Util;
+using Android.Views;
 using Android.Content;
 
 namespace SmtuSchedule.Android.Utilities
 {
     internal static class UiUtilities
     {
+        public static (Int32 width, Int32 height) GetScreenPixelSize(IWindowManager manager)
+        {
+            DisplayMetrics metrics = new DisplayMetrics();
+            manager.DefaultDisplay.GetMetrics(metrics);
+
+            return (metrics.WidthPixels, metrics.HeightPixels);
+        }
+
         public static Int32 GetAttributeValue(Context context, Int32 attributeId)
         {
             TypedValue value = new TypedValue();
