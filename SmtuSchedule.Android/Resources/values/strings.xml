@@ -74,15 +74,15 @@
     <string name="applicationInitializationErrorMessage">Ошибка при инициализации приложения.</string>
     <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с сайтом университета.</string>
     <string name="externalStoragePermissionsDeclinedErrorMessage">
-        Приложение не может загружать и открывать расписания без разрешения на доступ к памяти.
-        \n\nПерезапустите приложение, чтобы увидеть диалог запроса разрешений снова.
+        Приложение не может загружать и открывать расписания без разрешения на доступ к файлам.
+        \n\nПерезапустите приложение для повторного запроса разрешений.
     </string>
 
     <!-- Обоснования для запросов разрешений -->
     <string name="internetPermissionRationaleMessage">
         Доступ к интернету необходим для загрузки расписаний и проверки обновлений.
     </string>
-    <string name="storagePermissionsRationaleMessage">Доступ к памяти смартфона необходим для загрузки расписаний.</string>
+    <string name="storagePermissionsRationaleMessage">Доступ к файлам необходим для загрузки и открытия расписаний.</string>
 
     <!-- Подсказки ввода -->
     <string name="downloadRequestHintMessage">Введите номера групп и/или ФИО преподавателей через запятую:</string>
