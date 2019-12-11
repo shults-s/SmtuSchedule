@@ -67,10 +67,7 @@ namespace SmtuSchedule.Android.Views
                 }
                 else
                 {
-                    ShowLayoutMessage(
-                        Resource.String.externalStoragePermissionsDeclinedErrorMessage,
-                        GravityFlags.Left
-                    );
+                    ShowLayoutMessage(Resource.String.externalStoragePermissionsDeclinedErrorMessage);
 
                     String[] deniedPermissions = permissions.Where(p => IsPermissionDenied(p)).ToArray();
                     ShowSnackbar(
@@ -669,6 +666,7 @@ namespace SmtuSchedule.Android.Views
             }
 
             _toolbarTitle.Text = schedules[scheduleId].DisplayedName;
+
             _application.Preferences.SetCurrentScheduleId(scheduleId);
             ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate);
 
@@ -801,8 +799,9 @@ namespace SmtuSchedule.Android.Views
             View layout = View.Inflate(this, Resource.Layout.message, _contentLayout);
 
             TextView message = layout.FindViewById<TextView>(Resource.Id.messageTextView);
-            message.Gravity = gravity;
             message.SetText(messageId);
+            message.Gravity = gravity;
+            message.SetMaxWidth((Int32)(UiUtilities.GetScreenPixelSize(WindowManager).width * 0.9));
         }
 
         private void ShowCurrentScheduleActionsDialog()
