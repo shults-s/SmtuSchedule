@@ -8,6 +8,7 @@
         android:minSdkVersion="21"
         android:targetSdkVersion="29" />
     <application
+        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/launcherIcon"
         android:label="@string/applicationLabel"
         android:theme="@style/Theme.SmtuSchedule.Splash" />
