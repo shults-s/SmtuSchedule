@@ -274,10 +274,7 @@ namespace SmtuSchedule.Android.Views
 
             RestartSchedulesRenderingSubsystem();
 
-            if (_application.Preferences.CheckUpdatesOnStart)
-            {
-                CheckForUpdatesAsync(currentVersion);
-            }
+            CheckForUpdatesAsync(currentVersion);
 
             _ = _application.ClearLogsAsync();
 
@@ -333,22 +330,31 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
+            if (!latest.IsCriticalUpdate && !_application.Preferences.CheckUpdatesOnStart)
+            {
+                return ;
+            }
+
             if (latest.VersionCode == _application.Preferences.LastSeenUpdateVersion
                 || latest.VersionCode <= currentVersion)
             {
                 return ;
             }
 
-            Java.Lang.ICharSequence whatsNewMessage = (latest.VersionNotes != null)
+            Java.Lang.ICharSequence versionNotes = (latest.VersionNotes != null)
                 ? latest.VersionNotes.Replace("\n", "<br>").ParseHtml()
                 : GetTextFormatted(Resource.String.applicationUpdateAvailableMessage);
+
+            Int32 dialogTitleId = latest.IsCriticalUpdate
+                ? Resource.String.applicationCriticalUpdateAvailableDialogTitle
+                : Resource.String.applicationUpdateAvailableDialogTitle;
 
             String packageId = latest.GooglePlayStorePackageId;
             if (packageId == null)
             {
                 new CustomAlertDialog(this)
-                    .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
-                    .SetMessage(whatsNewMessage)
+                    .SetTitle(dialogTitleId)
+                    .SetMessage(versionNotes)
                     .SetPositiveButton(
                         Resource.String.openUpdateDownloadPageActionTitle,
                         () =>
@@ -384,8 +390,8 @@ namespace SmtuSchedule.Android.Views
             if (packageId == PackageName)
             {
                 new CustomAlertDialog(this)
-                    .SetTitle(Resource.String.applicationUpdateAvailableDialogTitle)
-                    .SetMessage(whatsNewMessage)
+                    .SetTitle(dialogTitleId)
+                    .SetMessage(versionNotes)
                     .SetPositiveButton(
                         Resource.String.openPlayMarketActionTitle,
                         () => OpenInPlayMarket()
@@ -728,6 +734,7 @@ namespace SmtuSchedule.Android.Views
             }
 
             ShowSnackbar(Resource.String.scheduleRemovedSuccessfullyMessage);
+
             RestartSchedulesRenderingSubsystem();
         }
 

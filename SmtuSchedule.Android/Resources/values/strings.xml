@@ -37,8 +37,9 @@
     <string name="welcomeToolbarTitle">@string/applicationCompleteName</string>
     <string name="aboutApplicationDialogTitle">О приложении</string>
     <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
-    <string name="applicationUpdateAvailableDialogTitle">Вышло обновление</string>
     <string name="googlePlayStoreReleaseAvailableDialogTitle">Релиз в Google Play</string>
+    <string name="applicationUpdateAvailableDialogTitle">Вышло обновление</string>
+    <string name="applicationCriticalUpdateAvailableDialogTitle">Критическое обновление</string>
 
     <!-- Названия пунктов меню в панелях инстументов -->
     <string name="selectScheduleDateMenuItem">Выбрать дату</string>

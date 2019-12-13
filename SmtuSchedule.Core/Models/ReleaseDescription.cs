@@ -17,6 +17,9 @@ namespace SmtuSchedule.Core.Models
         [JsonProperty(Required = Required.Always)]
         public Int32 VersionCode { get; private set; }
 
+        [JsonProperty(Required = Required.Always)]
+        public Boolean IsCriticalUpdate { get; private set; }
+
         public static ReleaseDescription FromJson(String json)
         {
             return JsonConvert.DeserializeObject<ReleaseDescription>(json);
