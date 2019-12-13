@@ -29,12 +29,12 @@ namespace SmtuSchedule.Android.Views
                 return request.Split(',').Select(r => r.Trim()).Where(r => r != String.Empty).ToArray();
             }
 
-            base.OnCreate(savedInstanceState);
-
             _application = ApplicationContext as ScheduleApplication;
 
             SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark
                 : Resource.Style.Theme_SmtuSchedule_Light);
+
+            base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.downloadActivity);
 
@@ -70,14 +70,14 @@ namespace SmtuSchedule.Android.Views
                 Window.SetSoftInputMode(SoftInput.StateAlwaysVisible);
             }
 
-            IMenuItem downloadMenuItem = toolbar.Menu.GetItem(0);
-            downloadMenuItem.SetEnabled(false);
+            _downloadMenuItem = toolbar.Menu.GetItem(0);
+            _downloadMenuItem.SetEnabled(false);
 
             _searchRequestTextView.SetTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
             _searchRequestTextView.TextChanged += (s, e) =>
             {
                 Boolean isUserInputValid = !String.IsNullOrWhiteSpace(_searchRequestTextView.Text);
-                downloadMenuItem.SetEnabled(isUserInputValid);
+                _downloadMenuItem.SetEnabled(isUserInputValid);
             };
 
             DownloadLecturersNamesAsync();
@@ -86,12 +86,15 @@ namespace SmtuSchedule.Android.Views
         private async void DownloadLecturersNamesAsync()
         {
             IEnumerable<String> lecturers = await _application.Manager.DownloadLecturersNamesAsync();
-            if (lecturers == null)
+            if (lecturers != null)
             {
                 _ = _application.SaveLogAsync();
 
                 _downloadRelatedSchedulesCheckBox.Visibility = ViewStates.Gone;
                 _downloadRelatedSchedulesCheckBox.Checked = false;
+
+                _downloadMenuItem.SetEnabled(false);
+                _searchRequestTextView.Enabled = false;
 
                 TextView error = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
                 error.Visibility = ViewStates.Visible;
@@ -104,6 +107,8 @@ namespace SmtuSchedule.Android.Views
         }
 
         private ScheduleApplication _application;
+
+        private IMenuItem _downloadMenuItem;
         private CheckBox _downloadRelatedSchedulesCheckBox;
         private MultiAutoCompleteTextView _searchRequestTextView;
     }

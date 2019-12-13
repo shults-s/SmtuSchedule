@@ -69,7 +69,9 @@
     <string name="scheduleDownloadErrorMessage">Ошибка при загрузке расписания.</string>
     <string name="schedulesDownloadErrorMessage">Не все расписания удалось загрузить.</string>
     <string name="lecturersDownloadErrorMessage">
-        Ошибка при получении списка с именами преподавателей. Будут загружены только расписания групп.
+        Ошибка при получении списка с именами преподавателей.
+        \n\nЕсли используется мобильный интернет, подключитесь через Wi-Fi, закройте это окно и откройте его снова.
+        \n\nПроблема замечена при использовании VPN, proxy-серверов и ряда операторов мобильной связи.
     </string>
     <string name="applicationInitializationErrorMessage">Ошибка при инициализации приложения.</string>
     <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с сайтом университета.</string>
