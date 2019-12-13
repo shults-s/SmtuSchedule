@@ -86,7 +86,7 @@ namespace SmtuSchedule.Android.Views
         private async void DownloadLecturersNamesAsync()
         {
             IEnumerable<String> lecturers = await _application.Manager.DownloadLecturersNamesAsync();
-            if (lecturers != null)
+            if (lecturers == null)
             {
                 _ = _application.SaveLogAsync();
 
