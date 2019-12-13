@@ -341,7 +341,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            Java.Lang.ICharSequence versionNotes = (latest.VersionNotes != null)
+            Java.Lang.ICharSequence dialogMessage = (latest.VersionNotes != null)
                 ? latest.VersionNotes.Replace("\n", "<br>").ParseHtml()
                 : GetTextFormatted(Resource.String.applicationUpdateAvailableMessage);
 
@@ -354,7 +354,7 @@ namespace SmtuSchedule.Android.Views
             {
                 new CustomAlertDialog(this)
                     .SetTitle(dialogTitleId)
-                    .SetMessage(versionNotes)
+                    .SetMessage(dialogMessage)
                     .SetPositiveButton(
                         Resource.String.openUpdateDownloadPageActionTitle,
                         () =>
@@ -391,7 +391,7 @@ namespace SmtuSchedule.Android.Views
             {
                 new CustomAlertDialog(this)
                     .SetTitle(dialogTitleId)
-                    .SetMessage(versionNotes)
+                    .SetMessage(dialogMessage)
                     .SetPositiveButton(
                         Resource.String.openPlayMarketActionTitle,
                         () => OpenInPlayMarket()
