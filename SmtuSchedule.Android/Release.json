@@ -1,7 +1,7 @@
 {
     "IsCriticalUpdate": true,
-    "VersionCode": 19,
-    "VersionName": "1.0.4",
-    "VersionNotes": "Добавлено объяснение что делать при возникновении ошибки о невозможности загрузить список преподавателей.",
+    "VersionCode": 20,
+    "VersionName": "1.0.5",
+    "VersionNotes": "Уменьшена вероятность возникновения ошибки при загрузке списка преподавателей через мобильный интернет.",
     "GooglePlayStorePackageId": "shults.smtuschedule"
 }
