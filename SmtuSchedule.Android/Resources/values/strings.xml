@@ -60,6 +60,7 @@
     <string name="downloadActionTitle">Загрузить</string>
     <string name="configureActionTitle">Настроить</string>
     <string name="grantAccessActionTitle">Разрешить</string>
+    <string name="tryAgainActionTitle">Повторить попытку</string>
     <string name="openPlayMarketActionTitle">Открыть Play Маркет</string>
     <string name="openUpdateDownloadPageActionTitle">Страница загрузки</string>
 
@@ -70,12 +71,12 @@
     <string name="scheduleDownloadErrorMessage">Ошибка при загрузке расписания.</string>
     <string name="schedulesDownloadErrorMessage">Не все расписания удалось загрузить.</string>
     <string name="lecturersDownloadErrorMessage">
-        Ошибка при получении списка с именами преподавателей.
-        \n\nЕсли используется мобильный интернет, подключитесь через Wi-Fi, закройте это окно и откройте его снова.
-        \n\nПроблема замечена при использовании VPN, proxy-серверов и ряда операторов мобильной связи.
+        Ошибка при получении списка с именами преподавателей. Загрузка расписаний невозможна.
+        \n\nЕсли используется мобильный интернет, переподключитесь через Wi-Fi и повторите попытку.
+        \n\nПроблема замечена при использовании VPN, proxy-серверов и у ряда операторов мобильной связи.
     </string>
     <string name="applicationInitializationErrorMessage">Ошибка при инициализации приложения.</string>
-    <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с сайтом университета.</string>
+    <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с интернетом или с сайтом университета.</string>
     <string name="externalStoragePermissionsDeclinedErrorMessage">
         Приложение не может загружать и открывать расписания без разрешения на доступ к файлам.
         \n\nПерезапустите приложение для повторного запроса разрешений.

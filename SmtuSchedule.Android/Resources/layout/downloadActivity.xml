@@ -31,6 +31,7 @@
             android:id="@+id/downloadMultiAutoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:maxLines="5"
             android:scrollbars="none"
             android:scrollHorizontally="false"
@@ -47,11 +48,24 @@
             android:textColor="?attr/textColorError"
             android:textSize="@dimen/normalTextSize"
             android:text="@string/lecturersDownloadErrorMessage" />
+        <Button
+            android:id="@+id/downloadLecturersErrorRetryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/normalPadding"
+            android:visibility="gone"
+            android:text="@string/tryAgainActionTitle"
+            android:drawablePadding="@dimen/smallPadding"
+            android:drawableLeft="@drawable/refresh"
+            android:paddingRight="@dimen/normalPadding"
+            style="?android:attr/borderlessButtonStyle" />
         <CheckBox
             android:id="@+id/downloadRelatedSchedulesCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/smallPadding"
+            android:visibility="gone"
             android:paddingLeft="@dimen/smallPadding"
             android:checked="false"
             android:textColor="?attr/textColorPrimary"

@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Android.OS;
 using Android.App;
-using Android.Views;
 using Android.Widget;
 using Android.Content;
 using Android.Content.PM;
 using Android.Support.V7.App;
+using Android.Views;
+using Android.Views.InputMethods;
 
 using Toolbar = Android.Support.V7.Widget.Toolbar;
 
@@ -23,7 +24,7 @@ namespace SmtuSchedule.Android.Views
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            String[] SplitSearchRequest(String request)
+            static String[] SplitSearchRequest(String request)
             {
                 request = Regex.Replace(request, @"\t|\r|\n", String.Empty);
                 return request.Split(',').Select(r => r.Trim()).Where(r => r != String.Empty).ToArray();
@@ -41,6 +42,12 @@ namespace SmtuSchedule.Android.Views
             _downloadRelatedSchedulesCheckBox = FindViewById<CheckBox>(
                 Resource.Id.downloadRelatedSchedulesCheckBox
             );
+
+            _downloadLecturersErrorRetryButton = FindViewById<Button>(
+                Resource.Id.downloadLecturersErrorRetryButton
+            );
+
+            _downloadLecturersErrorRetryButton.Click += (s, e) => DownloadLecturersNamesAsync();
 
             Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.downloadActivityToolbar);
             toolbar.NavigationClick += (s, e) => OnBackPressed();
@@ -65,19 +72,13 @@ namespace SmtuSchedule.Android.Views
                 Resource.Id.downloadMultiAutoCompleteTextView
             );
 
-            if (_searchRequestTextView.RequestFocus())
-            {
-                Window.SetSoftInputMode(SoftInput.StateAlwaysVisible);
-            }
-
-            _downloadMenuItem = toolbar.Menu.GetItem(0);
-            _downloadMenuItem.SetEnabled(false);
-
             _searchRequestTextView.SetTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+
+            IMenuItem downloadMenuItem = toolbar.Menu.GetItem(0);
             _searchRequestTextView.TextChanged += (s, e) =>
             {
                 Boolean isUserInputValid = !String.IsNullOrWhiteSpace(_searchRequestTextView.Text);
-                _downloadMenuItem.SetEnabled(isUserInputValid);
+                downloadMenuItem.SetEnabled(isUserInputValid);
             };
 
             DownloadLecturersNamesAsync();
@@ -85,30 +86,42 @@ namespace SmtuSchedule.Android.Views
 
         private async void DownloadLecturersNamesAsync()
         {
+            TextView errorTextView = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
+
             IEnumerable<String> lecturers = await _application.Manager.DownloadLecturersNamesAsync();
             if (lecturers == null)
             {
                 _ = _application.SaveLogAsync();
 
-                _downloadRelatedSchedulesCheckBox.Visibility = ViewStates.Gone;
                 _downloadRelatedSchedulesCheckBox.Checked = false;
 
-                _downloadMenuItem.SetEnabled(false);
-                _searchRequestTextView.Enabled = false;
-
-                TextView error = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
-                error.Visibility = ViewStates.Visible;
+                errorTextView.Visibility = ViewStates.Visible;
+                _downloadLecturersErrorRetryButton.Visibility = ViewStates.Visible;
 
                 return ;
             }
 
+            errorTextView.Visibility = ViewStates.Gone;
+            _downloadLecturersErrorRetryButton.Visibility = ViewStates.Gone;
+
+            _searchRequestTextView.Enabled = true;
+            _downloadRelatedSchedulesCheckBox.Visibility = ViewStates.Visible;
+
             Int32 layoutId = Resource.Layout.support_simple_spinner_dropdown_item;
             _searchRequestTextView.Adapter = new ArrayAdapter<String>(this, layoutId, lecturers.ToArray());
+
+            if (_searchRequestTextView.RequestFocus())
+            {
+                Window.SetSoftInputMode(SoftInput.StateAlwaysVisible);
+
+                InputMethodManager manager = (InputMethodManager)GetSystemService(InputMethodService);
+                manager.ShowSoftInput(_searchRequestTextView, ShowFlags.Implicit);
+            }
         }
 
         private ScheduleApplication _application;
 
-        private IMenuItem _downloadMenuItem;
+        private Button _downloadLecturersErrorRetryButton;
         private CheckBox _downloadRelatedSchedulesCheckBox;
         private MultiAutoCompleteTextView _searchRequestTextView;
     }
