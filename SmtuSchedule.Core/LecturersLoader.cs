@@ -43,7 +43,17 @@ namespace SmtuSchedule.Core
                     ["search_key"] = searchKeyField.Attributes["value"].Value
                 };
 
-                html = await HttpHelper.PostAsync(SearchScheduleUrl, parameters).ConfigureAwait(false);
+                try
+                {
+                    html = await HttpHelper.PostAsync(SearchScheduleUrl, parameters).ConfigureAwait(false);
+                }
+                catch
+                {
+                    // Bugfix: "unexpected end of stream" или "\\n not found: size=1 content=0d..."
+                    System.Threading.Thread.Sleep(1000);
+                    html = await HttpHelper.PostAsync(SearchScheduleUrl, parameters).ConfigureAwait(false);
+                }
+
                 document.LoadHtml(html);
 
                 IEnumerable<HtmlNode> links = document.DocumentNode.Descendants("article")
@@ -66,7 +76,7 @@ namespace SmtuSchedule.Core
             catch (Exception exception)
             {
                 logger.Log(
-                    new LecturersLoaderException("Error of downloading list of lecturers.", exception));
+                    new LecturersLoaderException("Error of downloading list of the lecturers.", exception));
 
                 return null;
             }
