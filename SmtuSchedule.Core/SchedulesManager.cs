@@ -50,6 +50,26 @@ namespace SmtuSchedule.Core
             });
         }
 
+        public Int32 GetScheduleIdBySearchRequest(String searchRequest)
+        {
+            //if (_lecturers == null)
+            //{
+            //    throw new InvalidOperationException("Lecturers list is null.");
+            //}
+
+            if (Int32.TryParse(searchRequest, out Int32 number))
+            {
+                return number;
+            }
+
+            if (_lecturers.ContainsKey(searchRequest))
+            {
+                return _lecturers[searchRequest];
+            }
+
+            return 0;
+        }
+
         public Task<Boolean> DownloadSchedulesAsync(IEnumerable<String> searchRequests,
             Boolean shouldDownloadRelatedSchedules)
         {

@@ -411,7 +411,7 @@ namespace SmtuSchedule.Android.Views
                 .Show();
         }
 
-        private void RestartSchedulesRenderingSubsystem()
+        private void RestartSchedulesRenderingSubsystem(Int32 preferredScheduleId = 0)
         {
             if (_activityState == MainActivityState.NotInitialized)
             {
@@ -493,6 +493,11 @@ namespace SmtuSchedule.Android.Views
 
             Int32 SelectScheduleToDisplay()
             {
+                if (preferredScheduleId != 0 && schedules.ContainsKey(preferredScheduleId))
+                {
+                    return preferredScheduleId;
+                }
+
                 Int32 currentId = _application.Preferences.CurrentScheduleId;
                 if (currentId == 0)
                 {
@@ -765,7 +770,13 @@ namespace SmtuSchedule.Android.Views
                 shouldDownloadRelatedSchedules
             );
 
-            RestartSchedulesRenderingSubsystem();
+            Int32 preferredScheduleId = 0;
+            if (requests.Length == 1)
+            {
+                preferredScheduleId = _application.Manager.GetScheduleIdBySearchRequest(requests[0]);
+            }
+
+            RestartSchedulesRenderingSubsystem(preferredScheduleId);
 
             Int32 messageId;
             if (haveDownloadingErrors)
