@@ -1,9 +1,9 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using SmtuSchedule.Core.Models;
-using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 
 namespace SmtuSchedule.Core
@@ -87,9 +87,26 @@ namespace SmtuSchedule.Core
             {
                 IsDownloadingInProgress = true;
 
+                //if (searchRequests == null)
+                //{
+                //    throw new ArgumentNullException("Provided search requests collection is null.");
+                //}
+
                 if (_lecturers == null)
                 {
-                    _lecturers = await LecturersLoader.DownloadAsync(Logger).ConfigureAwait(false);
+                    if (await GetLecturersAsync().ConfigureAwait(false) == null)
+                    {
+                        return true;
+                    }
+                }
+
+                Int32[] schedulesIds = searchRequests.Select(r => GetScheduleIdBySearchRequest(r))
+                    .Where(id => id != 0)
+                    .ToArray();
+
+                if (schedulesIds.Length == 0)
+                {
+                    return true;
                 }
 
                 ServerSchedulesLoader schedulesLoader = new ServerSchedulesLoader(_lecturers)
@@ -98,7 +115,7 @@ namespace SmtuSchedule.Core
                 };
 
                 Dictionary<Int32, Schedule> schedules = await schedulesLoader.DownloadAsync(
-                    searchRequests,
+                    schedulesIds,
                     shouldDownloadRelatedSchedules
                 ).ConfigureAwait(false);
 
@@ -122,6 +139,7 @@ namespace SmtuSchedule.Core
                 }
 
                 IsDownloadingInProgress = false;
+
                 return schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
             });
         }
@@ -160,6 +178,7 @@ namespace SmtuSchedule.Core
         }
 
         private readonly String _storagePath;
+
         private Dictionary<String, Int32> _lecturers;
         private ConcurrentDictionary<Int32, Schedule> _schedules;
     }

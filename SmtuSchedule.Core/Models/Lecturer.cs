@@ -19,12 +19,8 @@ namespace SmtuSchedule.Core.Models
 
         public static String GetShortName(String name)
         {
-            if (String.IsNullOrEmpty(name))
-            {
-                return null;
-            }
-
             String[] parts = name.Split();
+
             if (parts.Length == 2)
             {
                 return $"{parts[0]} {parts[1][0]}.";

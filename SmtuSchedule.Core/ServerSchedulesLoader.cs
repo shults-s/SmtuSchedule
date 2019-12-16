@@ -53,9 +53,9 @@ namespace SmtuSchedule.Core
 
         public ILogger Logger { get; set; }
 
-        public ServerSchedulesLoader(Dictionary<String, Int32> lecturers) => _lecturers = lecturers;
+        public ServerSchedulesLoader(IReadOnlyDictionary<String, Int32> lecturers) => _lecturers = lecturers;
 
-        public async Task<Dictionary<Int32, Schedule>> DownloadAsync(IEnumerable<String> requests,
+        public async Task<Dictionary<Int32, Schedule>> DownloadAsync(IEnumerable<Int32> schedulesIds,
             Boolean shouldDownloadRelatedLecturersSchedules)
         {
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
@@ -74,24 +74,24 @@ namespace SmtuSchedule.Core
                 return schedules;
             }
 
-            IEnumerable<Int32> ConvertRequestsToIds(IEnumerable<String> searchRequests)
-            {
-                foreach (String request in searchRequests)
-                {
-                    if (Int32.TryParse(request, out Int32 number))
-                    {
-                        yield return number;
-                    }
-                    else if (_lecturers != null && _lecturers.ContainsKey(request))
-                    {
-                        yield return _lecturers[request];
-                    }
-                }
-            }
+            //IEnumerable<Int32> ConvertSearchRequestsToSchedulesIds(IEnumerable<String> requests)
+            //{
+            //    foreach (String request in requests)
+            //    {
+            //        if (Int32.TryParse(request, out Int32 number))
+            //        {
+            //            yield return number;
+            //        }
+            //        else if (_lecturers.ContainsKey(request))
+            //        {
+            //            yield return _lecturers[request];
+            //        }
+            //    }
+            //}
 
-            async Task<Boolean> DownloadAsync(IEnumerable<Int32> schedulesIds)
+            async Task<Boolean> DownloadAsync(IEnumerable<Int32> schedulesIdsLocal)
             {
-                foreach (Int32 scheduleId in schedulesIds)
+                foreach (Int32 scheduleId in schedulesIdsLocal)
                 {
                     try
                     {
@@ -123,7 +123,7 @@ namespace SmtuSchedule.Core
 
             IEnumerable<Int32> GetRelatedLecturersSchedulesIds(IEnumerable<Schedule> downloadedSchedules)
             {
-                List<Int32> schedulesIds = new List<Int32>();
+                List<Int32> schedulesIdsLocal = new List<Int32>();
 
                 foreach (Schedule schedule in downloadedSchedules)
                 {
@@ -132,15 +132,15 @@ namespace SmtuSchedule.Core
                         continue;
                     }
 
-                    schedulesIds.AddRange(
+                    schedulesIdsLocal.AddRange(
                         schedule.Timetable.GetLecturers().Select(l => l.ScheduleId).Where(l => l != 0));
                 }
 
-                return schedulesIds;
+                return schedulesIdsLocal;
             }
 
-            IEnumerable<Int32> requestedSchedulesIds = ConvertRequestsToIds(requests);
-            Boolean hasNetworkError = await DownloadAsync(requestedSchedulesIds).ConfigureAwait(false);
+            //IEnumerable<Int32> requestedSchedulesIds = ConvertSearchRequestsToSchedulesIds(searchRequests);
+            Boolean hasNetworkError = await DownloadAsync(schedulesIds).ConfigureAwait(false);
 
             if (!hasNetworkError && shouldDownloadRelatedLecturersSchedules)
             {
@@ -319,6 +319,6 @@ namespace SmtuSchedule.Core
             return schedule;
         }
 
-        private readonly Dictionary<String, Int32> _lecturers;
+        private readonly IReadOnlyDictionary<String, Int32> _lecturers;
     }
 }
