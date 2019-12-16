@@ -11,22 +11,30 @@ namespace SmtuSchedule.Core
 {
     internal static class LecturersLoader
     {
-        public static async Task<Dictionary<String, Int32>> DownloadAsync(ILogger logger)
-        {
-            Dictionary<String, Int32> lecturers = null;
+        private const Int32 IntervalBetweenRequestsInMilliseconds = 300;
 
+        private const Int32 MaxAttemptsNumber = 5;
+
+        public static Task<Dictionary<String, Int32>> DownloadAsync(ILogger logger)
+        {
+            return TryDownloadAsync(logger, 1);
+        }
+
+        private static async Task<Dictionary<String, Int32>> TryDownloadAsync(ILogger logger, Int32 attempt)
+        {
             const String SearchScheduleUrl = "https://www.smtu.ru/ru/searchschedule/";
 
             // На входе: Фамилия Имя Отчество (Должность в университете)
-            String GetPureLecturerName(String name) => name.Substring(0, name.IndexOf('(') - 1);
+            static String GetPureLecturerName(String name) => name.Substring(0, name.IndexOf('(') - 1);
 
             // На входе: /ru/viewschedule/teacher/Идентификатор/
-            Int32 GetScheduleIdFromUrl(String url)
+            static Int32 GetScheduleIdFromUrl(String url)
             {
                 url = url.TrimEnd('/');
                 return Int32.Parse(url.Substring(url.LastIndexOf('/') + 1));
             }
 
+            Dictionary<String, Int32> lecturers = null;
             try
             {
                 String html = await HttpHelper.GetAsync(SearchScheduleUrl).ConfigureAwait(false);
@@ -43,15 +51,21 @@ namespace SmtuSchedule.Core
                     ["search_key"] = searchKeyField.Attributes["value"].Value
                 };
 
+                // Первая попытка без задержки.
+                if (attempt > 1)
+                {
+                    // Bugfix: "unexpected end of stream" или "\\n not found: size=1 content=0d..."
+                    System.Threading.Thread.Sleep(IntervalBetweenRequestsInMilliseconds);
+                }
+
                 try
                 {
                     html = await HttpHelper.PostAsync(SearchScheduleUrl, parameters).ConfigureAwait(false);
                 }
-                catch
+                // Предотвращаем бесконечную рекурсию в случае, если ошибка произошла в каждой из попыток.
+                catch when (attempt <= MaxAttemptsNumber)
                 {
-                    // Bugfix: "unexpected end of stream" или "\\n not found: size=1 content=0d..."
-                    System.Threading.Thread.Sleep(1000);
-                    html = await HttpHelper.PostAsync(SearchScheduleUrl, parameters).ConfigureAwait(false);
+                    return await TryDownloadAsync(logger, attempt + 1).ConfigureAwait(false);
                 }
 
                 document.LoadHtml(html);
@@ -71,11 +85,17 @@ namespace SmtuSchedule.Core
                     lecturers[name] = scheduleId;
                 }
 
+                if (lecturers.Count == 0)
+                {
+                    throw new Exception(
+                        $"The list of lecturers at the end of download is empty in {attempt} attempts.");
+                }
+
                 return lecturers;
             }
             catch (Exception exception)
             {
-                logger.Log(
+                logger?.Log(
                     new LecturersLoaderException("Error of downloading list of the lecturers.", exception));
 
                 return null;

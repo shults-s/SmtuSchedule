@@ -18,6 +18,16 @@ namespace SmtuSchedule.Core
 
         public SchedulesManager(String storagePath) => _storagePath = storagePath;
 
+        public async Task<IReadOnlyDictionary<String, Int32>> GetLecturersAsync()
+        {
+            if (_lecturers != null)
+            {
+                return _lecturers;
+            }
+
+            return (_lecturers = await LecturersLoader.DownloadAsync(Logger).ConfigureAwait(false));
+        }
+
         public Task<Boolean> MigrateSchedulesAsync()
         {
             return Task.Run(async () =>
@@ -114,17 +124,6 @@ namespace SmtuSchedule.Core
                 IsDownloadingInProgress = false;
                 return schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
             });
-        }
-
-        public async Task<IEnumerable<String>> DownloadLecturersNamesAsync()
-        {
-            if (_lecturers != null)
-            {
-                return _lecturers.Keys;
-            }
-
-            _lecturers = await LecturersLoader.DownloadAsync(Logger).ConfigureAwait(false);
-            return _lecturers?.Keys;
         }
 
         public Task<Boolean> RemoveScheduleAsync(Int32 scheduleId)
