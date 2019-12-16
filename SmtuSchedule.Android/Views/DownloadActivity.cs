@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Android.OS;
@@ -43,11 +44,19 @@ namespace SmtuSchedule.Android.Views
                 Resource.Id.downloadRelatedSchedulesCheckBox
             );
 
+            _progressBarRelativeLayout = FindViewById<RelativeLayout>(
+                Resource.Id.downloadProgressBarRelativeLayout
+            );
+
             _downloadLecturersErrorRetryButton = FindViewById<Button>(
                 Resource.Id.downloadLecturersErrorRetryButton
             );
 
-            _downloadLecturersErrorRetryButton.Click += (s, e) => DownloadLecturersNamesAsync();
+            _downloadLecturersErrorRetryButton.Click += (s, e) =>
+            {
+                DownloadLecturersNamesAsync();
+                _progressBarRelativeLayout.Visibility = ViewStates.Visible;
+            };
 
             Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.downloadActivityToolbar);
             toolbar.NavigationClick += (s, e) => OnBackPressed();
@@ -55,6 +64,11 @@ namespace SmtuSchedule.Android.Views
             toolbar.InflateMenu(Resource.Menu.downloadMenu);
             toolbar.MenuItemClick += (s, e) =>
             {
+                if (!_searchRequestTextView.Enabled)
+                {
+                    return ;
+                }
+
                 Intent intent = new Intent();
 
                 intent.PutExtra(
@@ -84,16 +98,39 @@ namespace SmtuSchedule.Android.Views
             DownloadLecturersNamesAsync();
         }
 
-        private async void DownloadLecturersNamesAsync()
+        private void ShowKeyboardForSearchRequestTextView()
+        {
+            if (_searchRequestTextView.RequestFocus())
+            {
+                Window.SetSoftInputMode(SoftInput.StateAlwaysVisible);
+
+                InputMethodManager manager = (InputMethodManager)GetSystemService(InputMethodService);
+                manager.ShowSoftInput(_searchRequestTextView, ShowFlags.Implicit);
+            }
+        }
+
+        private Task DownloadLecturersNamesAsync()
+        {
+            return Task.Run(async () =>
+            {
+                IEnumerable<String> lecturers = (await _application.Manager.GetLecturersAsync())?.Keys;
+                RunOnUiThread(() => ApplyLecturersNames(lecturers));
+            });
+        }
+
+        private void ApplyLecturersNames(IEnumerable<String> lecturers)
         {
             TextView errorTextView = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
 
-            IEnumerable<String> lecturers = await _application.Manager.DownloadLecturersNamesAsync();
+            _progressBarRelativeLayout.Visibility = ViewStates.Gone;
+
             if (lecturers == null)
             {
                 _ = _application.SaveLogAsync();
 
-                _downloadRelatedSchedulesCheckBox.Checked = false;
+                _searchRequestTextView.Enabled = false;
+                //_downloadRelatedSchedulesCheckBox.Checked = false;
+                _downloadRelatedSchedulesCheckBox.Visibility = ViewStates.Gone;
 
                 errorTextView.Visibility = ViewStates.Visible;
                 _downloadLecturersErrorRetryButton.Visibility = ViewStates.Visible;
@@ -110,18 +147,13 @@ namespace SmtuSchedule.Android.Views
             Int32 layoutId = Resource.Layout.support_simple_spinner_dropdown_item;
             _searchRequestTextView.Adapter = new ArrayAdapter<String>(this, layoutId, lecturers.ToArray());
 
-            if (_searchRequestTextView.RequestFocus())
-            {
-                Window.SetSoftInputMode(SoftInput.StateAlwaysVisible);
-
-                InputMethodManager manager = (InputMethodManager)GetSystemService(InputMethodService);
-                manager.ShowSoftInput(_searchRequestTextView, ShowFlags.Implicit);
-            }
+            ShowKeyboardForSearchRequestTextView();
         }
 
         private ScheduleApplication _application;
 
         private Button _downloadLecturersErrorRetryButton;
+        private RelativeLayout _progressBarRelativeLayout;
         private CheckBox _downloadRelatedSchedulesCheckBox;
         private MultiAutoCompleteTextView _searchRequestTextView;
     }

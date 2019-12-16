@@ -800,7 +800,7 @@ namespace SmtuSchedule.Android.Views
         private void ShowProgressBar()
         {
             _contentLayout.RemoveAllViews();
-            View.Inflate(this, Resource.Layout.progress, _contentLayout);
+            View.Inflate(this, Resource.Layout.progressBar, _contentLayout);
         }
 
         private void ShowViewPager()

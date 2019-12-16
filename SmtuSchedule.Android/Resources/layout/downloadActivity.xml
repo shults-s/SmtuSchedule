@@ -39,6 +39,13 @@
             android:textColor="?attr/textColorPrimary"
             android:textSize="@dimen/normalTextSize"
             android:inputType="textMultiLine|textCapWords" />
+        <RelativeLayout
+            android:id="@+id/downloadProgressBarRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <include
+                layout="@layout/progressBar" />
+        </RelativeLayout>
         <TextView
             android:id="@+id/downloadLecturersErrorTextView"
             android:layout_width="wrap_content"
