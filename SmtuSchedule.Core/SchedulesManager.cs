@@ -20,9 +20,16 @@ namespace SmtuSchedule.Core
 
         public Task<Boolean> MigrateSchedulesAsync()
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
-                IEnumerable<Schedule> affectedSchedules = SchedulesMigrator.Migrate(_schedules.Values);
+                SchedulesMigrator schedulesMigrator = new SchedulesMigrator(GetLecturersAsync)
+                {
+                    Logger = Logger
+                };
+
+                IEnumerable<Schedule> affectedSchedules = await schedulesMigrator.MigrateAsync(
+                    _schedules.Values
+                );
 
                 LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
                 {
@@ -39,7 +46,7 @@ namespace SmtuSchedule.Core
                     }
                 }
 
-                return haveSavingErrors;
+                return haveSavingErrors || schedulesMigrator.HaveMigrationErrors;
             });
         }
 

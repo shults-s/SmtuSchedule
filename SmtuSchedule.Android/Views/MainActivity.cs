@@ -237,8 +237,6 @@ namespace SmtuSchedule.Android.Views
                 _application.Preferences.SetLastSeenUpdateVersion(currentVersion);
             }
 
-            MigrateSchedulesAsync(currentVersion);
-
             _toolbarTitle = FindViewById<TextView>(Resource.Id.mainToolbarTitleTextView);
             _schedulesMenu = new PopupMenu(this, _toolbarTitle);
             _schedulesMenu.MenuItemClick += (s, e) => ShowSchedule(e.Item.ItemId);
@@ -275,6 +273,7 @@ namespace SmtuSchedule.Android.Views
             RestartSchedulesRenderingSubsystem();
 
             CheckForUpdatesAsync(currentVersion);
+            MigrateSchedulesAsync(currentVersion);
 
             _ = _application.ClearLogsAsync();
 
