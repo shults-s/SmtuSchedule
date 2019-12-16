@@ -61,6 +61,11 @@ namespace SmtuSchedule.Core
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
             HaveDownloadingErrors = false;
 
+            //if (schedulesIds == null)
+            //{
+            //    throw new ArgumentNullException("Provided schedules id's collection is null.");
+            //}
+
             if (_lecturers == null)
             {
                 Logger?.Log(

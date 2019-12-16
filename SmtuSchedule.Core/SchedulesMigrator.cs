@@ -16,11 +16,21 @@ namespace SmtuSchedule.Core
 
         public SchedulesMigrator(Func<Task<IReadOnlyDictionary<String, Int32>>> lecturersDownloaderCallback)
         {
+            //if (lecturersLoaderCallback == null)
+            //{
+            //    throw new ArgumentNullException("Provided lecturers downloader callback is null.");
+            //}
+
             _lecturersDownloaderCallback = lecturersDownloaderCallback;
         }
 
         public async Task<IEnumerable<Schedule>> MigrateAsync(IEnumerable<Schedule> schedules)
         {
+            //if (schedules == null)
+            //{
+            //    throw new ArgumentNullException("Provided schedules collection is null.");
+            //}
+
             HaveMigrationErrors = false;
 
             static Boolean RecoverMissedScheduleType(Schedule schedule)
