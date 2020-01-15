@@ -124,10 +124,6 @@ namespace SmtuSchedule.Android.Views
             {
                 switch (e.Item.ItemId)
                 {
-                    //case Resource.Id.removeCurrentScheduleMenuItem:
-                    //    ShowCurrentScheduleRemovingDialog();
-                    //    break;
-
                     case Resource.Id.selectScheduleDateMenuItem:
                         ShowCustomDatePickerDialog();
                         break;
@@ -276,19 +272,6 @@ namespace SmtuSchedule.Android.Views
             MigrateSchedulesAsync(currentVersion);
 
             _ = _application.ClearLogsAsync();
-
-            //if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
-            //{
-            //    new CustomAlertDialog(this)
-            //        .SetTitle(Resource.String.introductionDialogTitle)
-            //        .SetMessage(Resource.String.introductionMessage)
-            //        .SetPositiveButton(
-            //            Resource.String.gotItActionTitle,
-            //            () => _application.Preferences.SetLastSeenWelcomeVersion(currentVersion)
-            //        )
-            //        .SetPositiveButtonEnabledOnlyWhenMessageScrolledToBottom()
-            //        .Show();
-            //}
         }
 
         private Boolean IsPreferencesValid()
@@ -609,9 +592,6 @@ namespace SmtuSchedule.Android.Views
             downloadScheduleMenuItem.SetVisible(true);
             downloadScheduleMenuItem.SetShowAsAction(isToolbarDateSelectorVisible ? ShowAsAction.Never
                 : ShowAsAction.Always);
-
-            //IMenuItem removeScheduleMenuItem = menu.FindItem(Resource.Id.removeCurrentScheduleMenuItem);
-            //removeScheduleMenuItem.SetVisible(_application.Manager.Schedules.Count != 0);
         }
 
         private void RequestPermissions(Int32 requestCode, params String[] permissions)
@@ -640,8 +620,6 @@ namespace SmtuSchedule.Android.Views
             if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
-                //_application.Logger.Log(failReason);
-                //_ = _application.SaveLogAsync();
                 return ;
             }
 
@@ -758,8 +736,6 @@ namespace SmtuSchedule.Android.Views
             if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
-                //_application.Logger.Log(failReason);
-                //_ = _application.SaveLogAsync();
                 return ;
             }
 

@@ -29,10 +29,4 @@
         android:summary="@string/preferenceCheckUpdatesOnStartSummary"
         android:defaultValue="true"
         android:layout="@layout/customPreference" />
-    <!--<SwitchPreferenceCompat
-        android:key="AllowSendingCrashReports"
-        android:title="@string/preferenceAllowSendingCrashReportsTitle"
-        android:summary="@string/preferenceAllowSendingCrashReportsSummary"
-        android:defaultValue="true"
-        android:layout="@layout/customPreference" />-->
 </android.support.v7.preference.PreferenceScreen>

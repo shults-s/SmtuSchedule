@@ -17,7 +17,6 @@
         <item name="textColorSubjectTertiary">@color/subjectTertiaryTextDay</item>
         <item name="textColorSubjectSecondary">@color/subjectSecondaryTextDay</item>
 
-        <!--<item name="android:itemBackground">@color/windowBackgroundDay</item>-->
         <item name="android:windowBackground">@color/windowBackgroundDay</item>
 
         <item name="toolbarStyle">@style/Widget.SmtuSchedule.Light.Toolbar</item>
@@ -40,18 +39,14 @@
         <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
 
-    <style name="Widget.SmtuSchedule.Light.Snackbar" parent="Widget.MaterialComponents.Snackbar">
-        <!--<item name="android:background">@color/snackbarBackgroundDay</item>-->
-    </style>
+    <style name="Widget.SmtuSchedule.Light.Snackbar" parent="Widget.MaterialComponents.Snackbar" />
 
     <style name="Widget.SmtuSchedule.Light.PopupMenu" parent="Widget.AppCompat.Light.PopupMenu">
         <item name="overlapAnchor">true</item>
-        <!--<item name="android:popupBackground">@color/windowBackgroundDay</item>-->
     </style>
 
     <style name="Theme.SmtuSchedule.Light.Dialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/primaryDay</item>
-        <!--<item name="android:windowBackground">@color/windowBackgroundDay</item>-->
     </style>
 
     <style name="ThemeOverlay.SmtuSchedule.Light.Popup" parent="ThemeOverlay.AppCompat.Light" />

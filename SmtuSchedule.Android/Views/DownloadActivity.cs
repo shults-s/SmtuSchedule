@@ -129,7 +129,6 @@ namespace SmtuSchedule.Android.Views
                 _ = _application.SaveLogAsync();
 
                 _searchRequestTextView.Enabled = false;
-                //_downloadRelatedSchedulesCheckBox.Checked = false;
                 _downloadRelatedSchedulesCheckBox.Visibility = ViewStates.Gone;
 
                 errorTextView.Visibility = ViewStates.Visible;

@@ -62,11 +62,6 @@ namespace SmtuSchedule.Core
 
         public Int32 GetScheduleIdBySearchRequest(String searchRequest)
         {
-            //if (_lecturers == null)
-            //{
-            //    throw new InvalidOperationException("Lecturers list is null.");
-            //}
-
             if (Int32.TryParse(searchRequest, out Int32 number))
             {
                 return number;
@@ -86,11 +81,6 @@ namespace SmtuSchedule.Core
             return Task.Run(async () =>
             {
                 IsDownloadingInProgress = true;
-
-                //if (searchRequests == null)
-                //{
-                //    throw new ArgumentNullException("Provided search requests collection is null.");
-                //}
 
                 if (_lecturers == null)
                 {

@@ -15,11 +15,6 @@ namespace SmtuSchedule.Core
 
         public Dictionary<Int32, Schedule> Read(String storagePath)
         {
-            //if (storagePath == null)
-            //{
-            //    throw new ArgumentNullException("Provided storage path is null.");
-            //}
-
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
 
             HaveReadingErrors = false;

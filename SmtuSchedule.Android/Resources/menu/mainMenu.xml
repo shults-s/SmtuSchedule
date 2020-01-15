@@ -2,12 +2,6 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <!--<item
-        android:id="@+id/removeCurrentScheduleMenuItem"
-        android:visible="false"
-        android:icon="@drawable/delete"
-        android:title="@string/removeCurrentScheduleMenuItem"
-        app:showAsAction="always" />-->
     <item
         android:id="@+id/selectScheduleDateMenuItem"
         android:visible="false"

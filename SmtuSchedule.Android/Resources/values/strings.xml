@@ -100,10 +100,6 @@
     <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string>
     <string name="preferenceUpperWeekDateTitle">Любой день семестра по числителю</string>
     <string name="preferenceUpperWeekDateSummary">Не задан</string>
-    <!--<string name="preferenceAllowSendingCrashReportsTitle">Отправлять сообщения о падениях</string>
-    <string name="preferenceAllowSendingCrashReportsSummary">
-        Разрешить приложению отправлять разработчику анонимные сообщения о падениях приложения и их предтечах
-    </string>-->
     <string name="preferenceUseFabDateSelectorTitle">Плавающая кнопка</string>
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
     <string name="preferenceDisplaySubjectEndTimeTitle">Время окончания занятий</string>

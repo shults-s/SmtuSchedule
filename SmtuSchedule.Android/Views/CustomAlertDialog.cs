@@ -1,6 +1,5 @@
 using System;
 using Android.OS;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
@@ -12,16 +11,6 @@ namespace SmtuSchedule.Android.Views
 {
     internal class CustomAlertDialog : AlertDialog
     {
-        //private class ScrollChangeListener : Java.Lang.Object, View.IOnScrollChangeListener
-        //{
-        //    public event Action<Int32> ScrollChanged;
-        //
-        //    public void OnScrollChange(View view, Int32 scrollX, Int32 scrollY, Int32 oldScrollX, Int32 oldScrollY)
-        //    {
-        //        ScrollChanged?.Invoke(scrollY);
-        //    }
-        //}
-
         public CustomAlertDialog(Context context) : base(context)
         {
             // Вместо "?android:attr/dialogPreferredPadding" в customDialogLayout.axml для уровней API ниже 22.
@@ -36,12 +25,6 @@ namespace SmtuSchedule.Android.Views
 
                 IWindowManager windowManager = (context as AppCompatActivity).WindowManager;
                 (Int32 width, Int32 height) = UiUtilities.GetScreenPixelSize(windowManager);
-
-                //Int32 maxDialogWidth = (Int32)(width * 0.9);
-                //if (Window.DecorView.Width > maxDialogWidth)
-                //{
-                //    layoutParameters.Width = maxDialogWidth;
-                //}
 
                 Int32 maxDialogHeight = (Int32)(height * 0.9);
                 if (Window.DecorView.Height > maxDialogHeight)
@@ -175,17 +158,6 @@ namespace SmtuSchedule.Android.Views
                 Double scrollingSpace = view.GetChildAt(0).Height - view.Height;
                 GetButton((Int32)DialogButtonType.Positive).Enabled = (scrollingSpace <= scrollY);
             }
-
-            //if (Build.VERSION.SdkInt < BuildVersionCodes.LollipopMr1)
-            //{
-            //    ScrollChangeListener listener = new ScrollChangeListener();
-            //    listener.ScrollChanged += OnScrollChanged;
-            //    view.SetOnScrollChangeListener(listener);
-            //}
-            //else
-            //{
-            //    view.ScrollChange += (s, e) => OnScrollChanged(e.ScrollY);
-            //}
 
             view.ScrollChange += (s, e) => OnScrollChanged(e.ScrollY);
             ShowEvent += (s, e) => base.GetButton((Int32)DialogButtonType.Positive).Enabled = false;

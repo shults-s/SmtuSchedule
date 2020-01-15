@@ -61,11 +61,6 @@ namespace SmtuSchedule.Core
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
             HaveDownloadingErrors = false;
 
-            //if (schedulesIds == null)
-            //{
-            //    throw new ArgumentNullException("Provided schedules id's collection is null.");
-            //}
-
             if (_lecturers == null)
             {
                 Logger?.Log(
@@ -78,21 +73,6 @@ namespace SmtuSchedule.Core
                 HaveDownloadingErrors = true;
                 return schedules;
             }
-
-            //IEnumerable<Int32> ConvertSearchRequestsToSchedulesIds(IEnumerable<String> requests)
-            //{
-            //    foreach (String request in requests)
-            //    {
-            //        if (Int32.TryParse(request, out Int32 number))
-            //        {
-            //            yield return number;
-            //        }
-            //        else if (_lecturers.ContainsKey(request))
-            //        {
-            //            yield return _lecturers[request];
-            //        }
-            //    }
-            //}
 
             async Task<Boolean> DownloadAsync(IEnumerable<Int32> schedulesIdsLocal)
             {
@@ -144,7 +124,6 @@ namespace SmtuSchedule.Core
                 return schedulesIdsLocal;
             }
 
-            //IEnumerable<Int32> requestedSchedulesIds = ConvertSearchRequestsToSchedulesIds(searchRequests);
             Boolean hasNetworkError = await DownloadAsync(schedulesIds).ConfigureAwait(false);
 
             if (!hasNetworkError && shouldDownloadRelatedLecturersSchedules)

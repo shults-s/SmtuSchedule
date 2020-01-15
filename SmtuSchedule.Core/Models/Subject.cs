@@ -1,8 +1,6 @@
 using System;
 using System.Diagnostics;
 using Newtonsoft.Json;
-//using Newtonsoft.Json.Converters;
-//using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core.Models
@@ -13,18 +11,15 @@ namespace SmtuSchedule.Core.Models
         [JsonProperty(Required = Required.DisallowNull)]
         public Boolean IsDisplayed { get; set; }
 
-        //[JsonConverter(typeof(DateTimeConverter), "HH:mm")]
         [JsonProperty(Required = Required.Always)]
         public DateTime From { get; set; }
 
-        //[JsonConverter(typeof(DateTimeConverter), "HH:mm")]
         [JsonProperty(Required = Required.Always)]
         public DateTime To { get; set; }
 
         [JsonProperty(Required = Required.Always)]
         public String Audience { get; set; }
 
-        //[JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty(Required = Required.Always)]
         public WeekType Week { get; set; }
 

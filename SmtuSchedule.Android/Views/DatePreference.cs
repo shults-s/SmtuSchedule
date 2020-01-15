@@ -76,13 +76,5 @@ namespace SmtuSchedule.Android.Views
             Int64 ticks = (defaultValue == null) ? GetPersistedLong(Date.Ticks) : (Int64)defaultValue;
             SetDate(new DateTime(ticks));
         }
-
-        // AndroidX: onSetInitialValue(boolean, Object) --> onSetInitialValue(Object).
-        //protected override void OnSetInitialValue(Boolean restorePersistedValue,
-        //    Java.Lang.Object defaultValue)
-        //{
-        //    Int64 ticks = restorePersistedValue ? GetPersistedLong(Date.Ticks) : (Int64)defaultValue;
-        //    SetDate(new DateTime(ticks));
-        //}
     }
 }

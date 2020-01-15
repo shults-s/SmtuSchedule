@@ -66,11 +66,6 @@ namespace SmtuSchedule.Android
             base.OnCreate();
 
 #if !DEBUG
-            //if (!Preferences.AllowSendingCrashReports)
-            //{
-            //    return ;
-            //}
-
             AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
 
             Logger.ExceptionLogged += (e) =>
