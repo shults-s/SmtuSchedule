@@ -34,10 +34,10 @@ namespace SmtuSchedule.Android
             _preferences = PreferenceManager.GetDefaultSharedPreferences(context);
             _preferences.RegisterOnSharedPreferenceChangeListener(this);
 
-            FeatureDiscoveryState = (FeatureDiscoveryState)_preferences.GetInt("FeatureDiscoveryState", 0);
+            Int32 state = _preferences.GetInt("FeatureDiscoveryState", 0);
+            FeatureDiscoveryState = (FeatureDiscoveryState)state;
 
-            // Обработка конфигурации предыдущих релизов, где версия представляла из себя строку.
-
+            // Обработка конфигурации предыдущих релизов, где версия представляла собой строку.
             try
             {
                 LastSeenUpdateVersion = _preferences.GetInt("LastSeenUpdateVersion", 0);
@@ -107,6 +107,16 @@ namespace SmtuSchedule.Android
         {
             switch (key)
             {
+                case "FeatureDiscoveryState":
+                case "CurrentScheduleId":
+                case "LastMigrationVersion":
+                case "LastSeenUpdateVersion":
+                    break;
+
+                case "UpperWeekDate":
+                    UpperWeekDate = new DateTime(preferences.GetLong("UpperWeekDate", 0));
+                    break;
+
                 case "CheckUpdatesOnStart":
                     CheckUpdatesOnStart = preferences.GetBoolean("CheckUpdatesOnStart", true);
                     break;
@@ -122,17 +132,6 @@ namespace SmtuSchedule.Android
 
                 case "DisplaySubjectEndTime":
                     DisplaySubjectEndTime = preferences.GetBoolean("DisplaySubjectEndTime", false);
-                    break;
-
-                case "UpperWeekDate":
-                    UpperWeekDate = new DateTime(preferences.GetLong("UpperWeekDate", 0));
-                    break;
-
-                case "CurrentScheduleId":
-                case "FeatureDiscoveryState":
-                case "LastMigrationVersion":
-                case "LastSeenUpdateVersion":
-                case "StoreReleaseNoticeViewed":
                     break;
             }
         }

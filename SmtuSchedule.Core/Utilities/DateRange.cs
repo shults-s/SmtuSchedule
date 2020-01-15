@@ -8,15 +8,15 @@ namespace SmtuSchedule.Core.Utilities
 
         public Int32 TotalDaysNumber => (Int32)(_maximumDate - _minimumDate).TotalDays + 1;
 
-        public DateRange(DateTime date, Int32 halfRangeInDays = DefaultHalfRangeInDays)
+        public DateRange(DateTime medianDate, Int32 halfRangeInDays = DefaultHalfRangeInDays)
         {
-            Recompute(date, halfRangeInDays);
+            Recompute(medianDate, halfRangeInDays);
         }
 
-        public void Recompute(DateTime date, Int32 halfRangeInDays = DefaultHalfRangeInDays)
+        public void Recompute(DateTime medianDate, Int32 halfRangeInDays = DefaultHalfRangeInDays)
         {
-            _minimumDate = date.AddDays(-halfRangeInDays);
-            _maximumDate = date.AddDays(halfRangeInDays);
+            _minimumDate = medianDate.AddDays(-halfRangeInDays);
+            _maximumDate = medianDate.AddDays(halfRangeInDays);
         }
 
         public DateTime GetDateByIndex(Int32 index) => _minimumDate.AddDays(index);

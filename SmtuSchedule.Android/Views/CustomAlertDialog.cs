@@ -41,7 +41,10 @@ namespace SmtuSchedule.Android.Views
             SetView(_layout);
         }
 
-        public Button GetButton(DialogButtonType type) => GetButton((Int32)type);
+        public Button GetButton(DialogButtonType type)
+        {
+            return base.GetButton((Int32)type);
+        }
 
         public new CustomAlertDialog SetTitle(String title)
         {
@@ -153,14 +156,13 @@ namespace SmtuSchedule.Android.Views
                 throw new InvalidOperationException("To use this method, you must set a message.");
             }
 
-            void OnScrollChanged(Int32 scrollY)
-            {
-                Double scrollingSpace = view.GetChildAt(0).Height - view.Height;
-                GetButton((Int32)DialogButtonType.Positive).Enabled = (scrollingSpace <= scrollY);
-            }
+            ShowEvent += (s, e) => GetButton(DialogButtonType.Positive).Enabled = false;
 
-            view.ScrollChange += (s, e) => OnScrollChanged(e.ScrollY);
-            ShowEvent += (s, e) => base.GetButton((Int32)DialogButtonType.Positive).Enabled = false;
+            view.ScrollChange += (s, e) =>
+            {
+                Double scrollingSpaceHeight = view.GetChildAt(0).Height - view.Height;
+                GetButton(DialogButtonType.Positive).Enabled = (scrollingSpaceHeight <= e.ScrollY);
+            };
 
             return this;
         }

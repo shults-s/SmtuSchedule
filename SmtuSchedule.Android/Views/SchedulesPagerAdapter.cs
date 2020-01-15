@@ -11,9 +11,9 @@ namespace SmtuSchedule.Android.Views
 
         public DateRange RenderingDateRange { get; private set; }
 
-        public SchedulesPagerAdapter(FragmentManager manager, DateTime initialDate) : base(manager)
+        public SchedulesPagerAdapter(FragmentManager manager, DateTime medianDate) : base(manager)
         {
-            RenderingDateRange = new DateRange(initialDate);
+            RenderingDateRange = new DateRange(medianDate);
         }
 
         public override Java.Lang.ICharSequence GetPageTitleFormatted(Int32 position)
@@ -24,10 +24,7 @@ namespace SmtuSchedule.Android.Views
 
         public override Fragment GetItem(Int32 position)
         {
-            DateTime date = RenderingDateRange.GetDateByIndex(position);
-
-            ScheduleFragment fragment = new ScheduleFragment() { Date = date };
-            return fragment;
+            return new ScheduleFragment() { Date = RenderingDateRange.GetDateByIndex(position) };
         }
 
         private static readonly CultureInfo _culture = new CultureInfo("ru-RU");

@@ -26,7 +26,8 @@ namespace SmtuSchedule.Core.Utilities
 
         public static Boolean IsUniversitySiteConnectionAvailable(out String failReason)
         {
-            // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping в нем не работает.
+            // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping в нем не работает,
+            // что делает невозможным тестирование некоторых возможностей приложения в режиме отладки.
 #if DEBUG
             failReason = null;
             return true;

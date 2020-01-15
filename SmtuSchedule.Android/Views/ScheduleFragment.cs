@@ -184,12 +184,12 @@ namespace SmtuSchedule.Android.Views
             // щелкнули. Проблема решается присвоением каждому экземпляру поля уникального идентификатора.
             lecturer.Id = View.GenerateViewId();
 
-            TextView audienceView = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
-            audienceView.Text = subject.Audience;
+            TextView audience = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
+            audience.Text = subject.Audience;
 
             if (_application.Preferences.DisplaySubjectEndTime)
             {
-                // Эта реализация, в отличие от предыдущей, не вызывает лагов при перелистывании.
+                // Поле lecturer выравнивается на одном уровне с audience при однострочном значении title.
                 title.SetMinLines(2);
 
                 times.Append("\n");
