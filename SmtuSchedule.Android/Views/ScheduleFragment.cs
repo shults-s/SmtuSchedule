@@ -89,7 +89,7 @@ namespace SmtuSchedule.Android.Views
                 IEnumerable<Subject> relatedSubjects = null;
                 Int32 numberOfRelatedSubjects = 0;
 
-                if (schedule.Type == ScheduleType.Lecturer || schedule.Type == ScheduleType.Audience)
+                if (schedule.Type == ScheduleType.Lecturer || schedule.Type == ScheduleType.Auditorium)
                 {
                     relatedSubjects = subjects.Skip(i + 1).Where(
                         s => s.From == subject.From
