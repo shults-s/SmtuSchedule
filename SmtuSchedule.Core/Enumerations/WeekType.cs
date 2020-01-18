@@ -4,6 +4,6 @@ namespace SmtuSchedule.Core.Enumerations
     public enum WeekType
     {
         Upper = 1,
-        Lower = 2,
+        Lower = 2
     }
 }

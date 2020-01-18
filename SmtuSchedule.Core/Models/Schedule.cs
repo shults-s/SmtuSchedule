@@ -21,7 +21,7 @@ namespace SmtuSchedule.Core.Models
             {
                 new DateTimeConverter("HH:mm"),
                 new StringEnumConverter()
-            },
+            }
         };
 
         [JsonProperty(Required = Required.Always)]
