@@ -873,7 +873,7 @@ namespace SmtuSchedule.Android.Views
         {
             DateTime viewingDate = _application.Preferences.CurrentScheduleDate;
 
-            Int32 type = (Int32)Schedule.GetWeekType(_application.Preferences.UpperWeekDate, viewingDate);
+            Int32 type = (Int32)viewingDate.GetWeekType(_application.Preferences.UpperWeekDate);
             String[] weeksNames = Resources.GetStringArray(Resource.Array.weeksTypesInNominativeCase);
 
             ShowSnackbar(String.Format("{0}: {1}.", viewingDate.ToString("d MMMM"), weeksNames[type - 1]));
