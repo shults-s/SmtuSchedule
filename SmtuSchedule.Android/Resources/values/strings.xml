@@ -42,10 +42,10 @@
     <string name="applicationCriticalUpdateAvailableDialogTitle">Критическое обновление</string>
 
     <!-- Названия пунктов меню в панелях инстументов -->
-    <string name="selectScheduleDateMenuItem">Выбрать дату</string>
+    <string name="selectViewingDateMenuItem">Выбрать дату</string>
     <string name="downloadSchedulesMenuItem">Загрузить расписания</string>
     <string name="removeCurrentScheduleMenuItem">Удалить расписание</string>
-    <string name="openPreferencesMenuItem">@string/preferencesToolbarTitle</string>
+    <string name="startPreferencesMenuItem">@string/preferencesToolbarTitle</string>
     <string name="aboutApplicationMenuItem">@string/aboutApplicationDialogTitle</string>
 
     <!-- Названия действий Snackbar'ов, кнопок и диалогов -->

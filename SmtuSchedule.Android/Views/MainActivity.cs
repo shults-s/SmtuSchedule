@@ -124,7 +124,7 @@ namespace SmtuSchedule.Android.Views
             {
                 switch (e.Item.ItemId)
                 {
-                    case Resource.Id.selectScheduleDateMenuItem:
+                    case Resource.Id.selectViewingDateMenuItem:
                         ShowCustomDatePickerDialog();
                         break;
 
@@ -132,7 +132,7 @@ namespace SmtuSchedule.Android.Views
                         StartDownloadActivity();
                         break;
 
-                    case Resource.Id.openPreferencesMenuItem:
+                    case Resource.Id.startPreferencesMenuItem:
                         StartPreferencesActivity();
                         break;
 
@@ -547,7 +547,7 @@ namespace SmtuSchedule.Android.Views
                     {
                         dateTarget = TapTarget.ForToolbarMenuItem(
                             _toolbar,
-                            Resource.Id.selectScheduleDateMenuItem,
+                            Resource.Id.selectViewingDateMenuItem,
                             GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
                             GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
                         );
@@ -581,7 +581,7 @@ namespace SmtuSchedule.Android.Views
             }
 
             IMenu menu = _toolbar.Menu;
-            IMenuItem selectScheduleDateMenuItem = menu.FindItem(Resource.Id.selectScheduleDateMenuItem);
+            IMenuItem selectScheduleDateMenuItem = menu.FindItem(Resource.Id.selectViewingDateMenuItem);
             IMenuItem downloadScheduleMenuItem = menu.FindItem(Resource.Id.downloadSchedulesMenuItem);
 
             Boolean isToolbarDateSelectorVisible = !_application.Preferences.UseFabDateSelector
