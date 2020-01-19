@@ -27,10 +27,10 @@ namespace SmtuSchedule.Core.Models
         public String Title { get; set; }
 
         [JsonProperty(Required = Required.DisallowNull)]
-        public Lecturer Lecturer { get; set; }
+        public Group Group { get; set; }
 
         [JsonProperty(Required = Required.DisallowNull)]
-        public Lecturer Group { get; set; }
+        public Lecturer Lecturer { get; set; }
 
         // Проверяет, принадлежит ли данный момент времени занятию.
         public Boolean IsTimeInside(DateTime time)

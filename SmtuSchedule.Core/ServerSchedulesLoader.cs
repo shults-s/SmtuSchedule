@@ -12,6 +12,8 @@ using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Core.Enumerations;
 
+using Group = SmtuSchedule.Core.Models.Group;
+
 namespace SmtuSchedule.Core
 {
     internal class ServerSchedulesLoader
@@ -283,7 +285,7 @@ namespace SmtuSchedule.Core
 
                     if (scheduleType == ScheduleType.Lecturer)
                     {
-                        subject.Group = new Lecturer(lecturerOrGroupName, lecturerOrGroupScheduleId);
+                        subject.Group = new Group(lecturerOrGroupName, lecturerOrGroupScheduleId);
                     }
                     else
                     {

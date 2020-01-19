@@ -1,9 +1,10 @@
 using System;
 using Newtonsoft.Json;
+using SmtuSchedule.Core.Interfaces;
 
 namespace SmtuSchedule.Core.Models
 {
-    public class Lecturer
+    public class Lecturer : IScheduleReference
     {
         [JsonProperty(Required = Required.Always)]
         public Int32 ScheduleId { get; set; }

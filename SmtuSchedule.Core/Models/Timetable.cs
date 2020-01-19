@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using SmtuSchedule.Core.Interfaces;
 
 namespace SmtuSchedule.Core.Models
 {
@@ -85,7 +86,7 @@ namespace SmtuSchedule.Core.Models
             }
         }
 
-        public IEnumerable<Lecturer> GetLecturers()
+        public IEnumerable<IScheduleReference> GetLecturers()
         {
             List<Subject> subjects = new List<Subject>();
 

@@ -11,6 +11,7 @@ using Android.Graphics;
 using Android.Text.Method;
 using Android.Support.V4.App;
 using SmtuSchedule.Core.Models;
+using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Enumerations;
 using SmtuSchedule.Android.Utilities;
 using SmtuSchedule.Android.Interfaces;
@@ -198,7 +199,9 @@ namespace SmtuSchedule.Android.Views
 
             if (relatedSubjects == null)
             {
-                Lecturer lecturerOrGroup = subject.Lecturer ?? subject.Group;
+                IScheduleReference lecturerOrGroup = subject.Lecturer as IScheduleReference
+                    ?? subject.Group as IScheduleReference;
+
                 if (lecturerOrGroup != null)
                 {
                     lecturer.Text = lecturerOrGroup.Name;

@@ -46,7 +46,7 @@ namespace SmtuSchedule.Core
 
                 Boolean isScheduleAffected = false;
 
-                Lecturer[] nonScheduledLecturers = schedule.Timetable.GetLecturers()
+                IScheduleReference[] nonScheduledLecturers = schedule.Timetable.GetLecturers()
                     .Where(l => l.ScheduleId == 0)
                     .ToArray();
 
