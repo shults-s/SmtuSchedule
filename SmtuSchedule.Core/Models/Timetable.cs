@@ -26,36 +26,21 @@ namespace SmtuSchedule.Core.Models
         [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Saturday { get; set; }
 
-        public Subject[] GetSubjects(DayOfWeek day)
-        {
-            switch (day)
+        public Subject[] GetSubjects(DayOfWeek dayOfWeek) =>
+            dayOfWeek switch
             {
-                case DayOfWeek.Monday:
-                    return Monday;
+                DayOfWeek.Monday    => Monday,
+                DayOfWeek.Tuesday   => Tuesday,
+                DayOfWeek.Wednesday => Wednesday,
+                DayOfWeek.Thursday  => Thursday,
+                DayOfWeek.Friday    => Friday,
+                DayOfWeek.Saturday  => Saturday,
+                _ => null
+            };
 
-                case DayOfWeek.Tuesday:
-                    return Tuesday;
-
-                case DayOfWeek.Wednesday:
-                    return Wednesday;
-
-                case DayOfWeek.Thursday:
-                    return Thursday;
-
-                case DayOfWeek.Friday:
-                    return Friday;
-
-                case DayOfWeek.Saturday:
-                    return Saturday;
-
-                default:
-                    return null;
-            }
-        }
-
-        public void SetSubjects(DayOfWeek day, Subject[] subjects)
+        public void SetSubjects(DayOfWeek dayOfWeek, Subject[] subjects)
         {
-            switch (day)
+            switch (dayOfWeek)
             {
                 case DayOfWeek.Monday:
                     Monday = subjects;
