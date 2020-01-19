@@ -82,12 +82,10 @@ namespace SmtuSchedule.Core
             {
                 IsDownloadingInProgress = true;
 
+                _lecturers ??= await GetLecturersAsync().ConfigureAwait(false);
                 if (_lecturers == null)
                 {
-                    if (await GetLecturersAsync().ConfigureAwait(false) == null)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 Int32[] schedulesIds = searchRequests.Select(r => GetScheduleIdBySearchRequest(r))
@@ -169,7 +167,7 @@ namespace SmtuSchedule.Core
 
         private readonly String _storagePath;
 
-        private Dictionary<String, Int32> _lecturers;
+        private IReadOnlyDictionary<String, Int32> _lecturers;
         private ConcurrentDictionary<Int32, Schedule> _schedules;
     }
 }

@@ -55,11 +55,7 @@ namespace SmtuSchedule.Core
                     return false;
                 }
 
-                if (lecturers == null)
-                {
-                    lecturers = await _lecturersDownloaderCallback().ConfigureAwait(false);
-                }
-
+                lecturers ??= await _lecturersDownloaderCallback().ConfigureAwait(false);
                 if (lecturers == null)
                 {
                     failedToLoadLecturers = true;
