@@ -7,8 +7,6 @@ namespace SmtuSchedule.Android
 {
     internal class Preferences : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
     {
-        public event Action ThemeChanged;
-
         public FeatureDiscoveryState FeatureDiscoveryState { get; private set; }
 
         public Boolean CheckUpdatesOnStart { get; private set; }
@@ -28,6 +26,8 @@ namespace SmtuSchedule.Android
         public Int32 LastMigrationVersion { get; private set; }
 
         public Int32 LastSeenUpdateVersion { get; private set; }
+
+        public event Action ThemeChanged;
 
         public Preferences(Context context)
         {
