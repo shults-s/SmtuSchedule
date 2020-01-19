@@ -218,25 +218,24 @@ namespace SmtuSchedule.Android.Views
                 return span;
             }
 
-            using (SpannableStringBuilder builder = new SpannableStringBuilder(_multiGroupsPrefix + " "))
+            using SpannableStringBuilder builder = new SpannableStringBuilder(_multiGroupsPrefix + " ");
+
+            Int32 scheduleId = subject.Group.ScheduleId;
+
+            CustomClickableSpan schedulesSwitcherSpan = CreateSwitchSchedulesClickableSpan(scheduleId);
+            builder.Append(scheduleId.ToString(), schedulesSwitcherSpan, SpanTypes.ExclusiveExclusive);
+
+            foreach (Subject relatedSubject in relatedSubjects)
             {
-                Int32 scheduleId = subject.Group.ScheduleId;
+                scheduleId = relatedSubject.Group.ScheduleId;
 
-                CustomClickableSpan schedulesSwitcher = CreateSwitchSchedulesClickableSpan(scheduleId);
-                builder.Append(scheduleId.ToString(), schedulesSwitcher, SpanTypes.ExclusiveExclusive);
+                builder.Append(", ");
 
-                foreach (Subject relatedSubject in relatedSubjects)
-                {
-                    scheduleId = relatedSubject.Group.ScheduleId;
-
-                    builder.Append(", ");
-
-                    schedulesSwitcher = CreateSwitchSchedulesClickableSpan(scheduleId);
-                    builder.Append(scheduleId.ToString(), schedulesSwitcher, SpanTypes.ExclusiveExclusive);
-                }
-
-                lecturer.SetText(builder, TextView.BufferType.Spannable);
+                schedulesSwitcherSpan = CreateSwitchSchedulesClickableSpan(scheduleId);
+                builder.Append(scheduleId.ToString(), schedulesSwitcherSpan, SpanTypes.ExclusiveExclusive);
             }
+
+            lecturer.SetText(builder, TextView.BufferType.Spannable);
 
             return layout;
         }
