@@ -190,7 +190,7 @@ namespace SmtuSchedule.Android.Views
 
             if (_application.Preferences.DisplaySubjectEndTime)
             {
-                // Поле lecturer выравнивается на одном уровне с audience при однострочном значении title.
+                // Поле lecturer выравнивается на одной высоте с audience при однострочном значении title.
                 title.SetMinLines(2);
 
                 times.Append("\n");
