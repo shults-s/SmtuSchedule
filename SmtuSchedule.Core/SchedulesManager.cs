@@ -30,16 +30,16 @@ namespace SmtuSchedule.Core
 
         public Task<Boolean> MigrateSchedulesAsync()
         {
-            return Task.Run(async () =>
+            return Task.Run(() =>
             {
                 SchedulesMigrator schedulesMigrator = new SchedulesMigrator(GetLecturersAsync)
                 {
                     Logger = Logger
                 };
 
-                IEnumerable<Schedule> affectedSchedules = await schedulesMigrator.MigrateAsync(
+                IEnumerable<Schedule> affectedSchedules = schedulesMigrator.MigrateAsync(
                     _schedules.Values
-                );
+                ).ToEnumerable();
 
                 LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
                 {

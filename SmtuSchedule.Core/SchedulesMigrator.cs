@@ -19,7 +19,7 @@ namespace SmtuSchedule.Core
             _lecturersDownloaderCallback = lecturersDownloaderCallback;
         }
 
-        public async Task<IEnumerable<Schedule>> MigrateAsync(IEnumerable<Schedule> schedules)
+        public async IAsyncEnumerable<Schedule> MigrateAsync(IEnumerable<Schedule> schedules)
         {
             HaveMigrationErrors = false;
 
@@ -80,17 +80,13 @@ namespace SmtuSchedule.Core
                 return isScheduleAffected;
             }
 
-            List<Schedule> affectedSchedules = new List<Schedule>();
-
             foreach (Schedule schedule in schedules)
             {
                 if (RecoverMissedScheduleType(schedule) || await RecoverNonScheduledLecturersAsync(schedule))
                 {
-                    affectedSchedules.Add(schedule);
+                    yield return schedule;
                 }
             }
-
-            return affectedSchedules;
         }
 
         private readonly Func<Task<IReadOnlyDictionary<String, Int32>>> _lecturersDownloaderCallback;
