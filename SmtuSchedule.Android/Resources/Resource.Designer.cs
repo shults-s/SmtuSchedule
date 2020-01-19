@@ -3973,7 +3973,7 @@ namespace SmtuSchedule.Android
 			public const int stretch = 2131296441;
 			
 			// aapt resource value: 0x7F0900BA
-			public const int subjectAudienceTextView = 2131296442;
+			public const int subjectAuditoriumTextView = 2131296442;
 			
 			// aapt resource value: 0x7F0900BB
 			public const int subjectLecturerTextView = 2131296443;

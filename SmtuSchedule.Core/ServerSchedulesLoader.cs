@@ -274,7 +274,7 @@ namespace SmtuSchedule.Core
                         To = to,
                         Week = week,
                         Title = title,
-                        Audience = audience
+                        Auditorium = audience
                     };
 
                     ParseLecturerOrGroup(
