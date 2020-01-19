@@ -108,11 +108,11 @@ namespace SmtuSchedule.Core
                 return false;
             }
 
-            IEnumerable<Int32> GetRelatedLecturersSchedulesIds(IEnumerable<Schedule> downloadedSchedules)
+            static IEnumerable<Int32> GetRelatedLecturersSchedulesIds(IEnumerable<Schedule> schedulesLocal)
             {
                 List<Int32> schedulesIdsLocal = new List<Int32>();
 
-                foreach (Schedule schedule in downloadedSchedules)
+                foreach (Schedule schedule in schedulesLocal)
                 {
                     if (schedule.Type != ScheduleType.Group)
                     {
@@ -143,7 +143,7 @@ namespace SmtuSchedule.Core
             const String GroupScheduleBaseUrl = "https://www.smtu.ru/ru/viewschedule/";
 
             // На входе: ЧЧ:ММ-ЧЧ:ММ[<br><span class="s_small">Вид недели</span>]
-            void ParseTime(HtmlNode td, out DateTime from, out DateTime to, out WeekType type)
+            static void ParseTime(HtmlNode td, out DateTime from, out DateTime to, out WeekType type)
             {
                 String weekType = td.Element("span")?.InnerText.Trim();
                 String timeRange = td.InnerHtml.Trim();
@@ -164,7 +164,7 @@ namespace SmtuSchedule.Core
             }
 
             // На входе: Корпус Аудитория[Литера]|Корпус каф.[ФВ|ВК|...]|Корпус Лаборатория
-            String ParseAudience(HtmlNode td)
+            static String ParseAudience(HtmlNode td)
             {
                 String audience = td.InnerText.Trim().Replace(' ', '-').ToUpper(Culture);
 
@@ -177,7 +177,7 @@ namespace SmtuSchedule.Core
             }
 
             // На входе: Название предмета<br><span class="s_small">Вид занятия</span>
-            String ParseTitle(HtmlNode td)
+            static String ParseTitle(HtmlNode td)
             {
                 String subject = td.InnerHtml.Substring(0, td.InnerHtml.IndexOf('<'));
                 String studyType = Studies[td.Element("span").InnerText.Trim()];
