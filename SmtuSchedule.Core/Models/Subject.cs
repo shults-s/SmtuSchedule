@@ -3,11 +3,12 @@ using System.Diagnostics;
 using System.Text.Json.Serialization;
 // using Newtonsoft.Json;
 using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core.Models
 {
-    [DebuggerDisplay("{From.ToShortTimeString()}, {Week}: {Title}")]
+    [DebuggerDisplay("{From.ToShortTimeString()}, {Week}: {Title} @ {Group?.Name ?? Lecturer?.Name}")]
     public class Subject
     {
         // [JsonProperty(Required = Required.DisallowNull)]
@@ -50,6 +51,32 @@ namespace SmtuSchedule.Core.Models
             }
 
             return true;
+        }
+
+        public void Validate()
+        {
+            if (From == default(DateTime) || To == default(DateTime))
+            {
+                throw new ValidationException("Both properties From and To must be set.");
+            }
+
+            if (String.IsNullOrEmpty(Auditorium))
+            {
+                throw new ValidationException("Property Auditorium must be set.");
+            }
+
+            if (String.IsNullOrEmpty(Title))
+            {
+                throw new ValidationException("Property Title must be set.");
+            }
+
+            if (Group != null && Lecturer != null)
+            {
+                throw new ValidationException("Only one of properties Lecturer or Group must be set.");
+            }
+
+            (Group as IScheduleReference)?.Validate();
+            (Lecturer as IScheduleReference)?.Validate();
         }
     }
 }

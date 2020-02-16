@@ -16,7 +16,7 @@ namespace SmtuSchedule.Core.Utilities
             try
             {
                 String json = await HttpHelper.GetAsync(url).ConfigureAwait(false);
-                return ReleaseDescription.FromJson(json);
+                return ReleaseDescription.FromJson(json).Validate();
             }
             catch
             {

@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 // using Newtonsoft.Json;
+using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core.Models
 {
@@ -24,6 +25,21 @@ namespace SmtuSchedule.Core.Models
         public static ReleaseDescription FromJson(String json)
         {
             return JsonSerializer.Deserialize<ReleaseDescription>(json);
+        }
+
+        public ReleaseDescription Validate()
+        {
+            if (VersionCode == default(Int32))
+            {
+                throw new ValidationException("Property VersionCode must be set");
+            }
+
+            if (String.IsNullOrEmpty(VersionName))
+            {
+                throw new ValidationException("Property VersionName must be set");
+            }
+
+            return this;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 // using Newtonsoft.Json;
 // using Newtonsoft.Json.Converters;
 using SmtuSchedule.Core.Utilities;
+using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core.Models
@@ -48,6 +49,21 @@ namespace SmtuSchedule.Core.Models
         {
             Options.Converters.Add(new DateTimeConverter("HH:mm"));
             Options.Converters.Add(new JsonStringEnumConverter());
+        }
+
+        public void Validate()
+        {
+            if (String.IsNullOrEmpty(DisplayedName))
+            {
+                throw new ValidationException("Property DisplayedName must be set.");
+            }
+
+            if (ScheduleId == default(Int32))
+            {
+                throw new ValidationException("Property ScheduleId must be set.");
+            }
+
+            Timetable.Validate();
         }
 
         // public String ToJson() => JsonConvert.SerializeObject(this, Settings);

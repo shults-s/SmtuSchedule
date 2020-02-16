@@ -83,6 +83,8 @@ namespace SmtuSchedule.Core
                     try
                     {
                         Schedule schedule = await DownloadScheduleAsync(scheduleId).ConfigureAwait(false);
+                        schedule.Validate();
+
                         schedules[scheduleId] = schedule;
                     }
                     catch(HttpRequestException exception)

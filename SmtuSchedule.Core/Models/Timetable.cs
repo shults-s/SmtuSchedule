@@ -4,6 +4,7 @@ using System.Collections.Generic;
 // using Newtonsoft.Json;
 using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core.Models
 {
@@ -26,6 +27,28 @@ namespace SmtuSchedule.Core.Models
 
         // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Saturday { get; set; }
+
+        public void Validate()
+        {
+            static Boolean IsEmpty(Subject[] subjects)
+            {
+                return subjects == null || subjects.Length == 0;
+            }
+
+            if (IsEmpty(Monday) && IsEmpty(Tuesday) && IsEmpty(Wednesday)
+                && IsEmpty(Thursday) && IsEmpty(Friday)
+                && IsEmpty(Saturday))
+            {
+                throw new ValidationException("Timetable is empty.");
+            }
+
+            Monday?.ForEach(s => s.Validate());
+            Tuesday?.ForEach(s => s.Validate());
+            Wednesday?.ForEach(s => s.Validate());
+            Thursday?.ForEach(s => s.Validate());
+            Friday?.ForEach(s => s.Validate());
+            Saturday?.ForEach(s => s.Validate());
+        }
 
         public Subject[] GetSubjects(DayOfWeek dayOfWeek) =>
             dayOfWeek switch

@@ -39,6 +39,7 @@ namespace SmtuSchedule.Core
                 try
                 {
                     Schedule schedule = Schedule.FromJson(File.ReadAllText(filePath));
+                    schedule.Validate();
 
                     if (schedules.ContainsKey(schedule.ScheduleId))
                     {
