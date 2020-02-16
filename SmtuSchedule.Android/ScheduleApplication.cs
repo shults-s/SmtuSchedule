@@ -65,9 +65,8 @@ namespace SmtuSchedule.Android
         {
             base.OnCreate();
 
-#if !DEBUG
-            AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
 
+#if !DEBUG
             Logger.ExceptionLogged += (e) =>
             {
                 if (e is LecturersLoaderException || e is SchedulesLoaderException
@@ -82,7 +81,7 @@ namespace SmtuSchedule.Android
                 FileInfo[] files = null;
                 try
                 {
-                    files = new DirectoryInfo(_logsDirectoryPath).GetFiles();
+                    files = new DirectoryInfo(_logsDirectoryPath).GetFiles("*.log");
                 }
                 catch
                 {
@@ -115,6 +114,8 @@ namespace SmtuSchedule.Android
                     ErrorAttachmentLog.AttachmentWithText(lastCrashLogText, file.Name)
                 };
             };
+
+            AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
 
             ProcessLifecycleListener listener = new ProcessLifecycleListener();
             listener.Started += () => Analytics.TrackEvent("The application is started");
