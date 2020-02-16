@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+// using Newtonsoft.Json;
+using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core.Models
@@ -8,28 +10,29 @@ namespace SmtuSchedule.Core.Models
     [DebuggerDisplay("{From.ToShortTimeString()}, {Week}: {Title}")]
     public class Subject
     {
-        [JsonProperty(Required = Required.DisallowNull)]
+        // [JsonProperty(Required = Required.DisallowNull)]
         public Boolean IsDisplayed { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        // [JsonProperty(Required = Required.Always)]
         public DateTime From { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        // [JsonProperty(Required = Required.Always)]
         public DateTime To { get; set; }
 
-        [JsonProperty("Audience", Required = Required.Always)]
+        // [JsonProperty("Audience", Required = Required.Always)]
+        [JsonPropertyName("Audience")]
         public String Auditorium { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        // [JsonProperty(Required = Required.Always)]
         public WeekType Week { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        // [JsonProperty(Required = Required.Always)]
         public String Title { get; set; }
 
-        [JsonProperty(Required = Required.DisallowNull)]
+        // [JsonProperty(Required = Required.DisallowNull)]
         public Group Group { get; set; }
 
-        [JsonProperty(Required = Required.DisallowNull)]
+        // [JsonProperty(Required = Required.DisallowNull)]
         public Lecturer Lecturer { get; set; }
 
         // Проверяет, принадлежит ли данный момент времени занятию.

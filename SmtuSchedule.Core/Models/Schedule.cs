@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+// using Newtonsoft.Json;
+// using Newtonsoft.Json.Converters;
 using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Enumerations;
 
@@ -9,38 +11,57 @@ namespace SmtuSchedule.Core.Models
 {
     public class Schedule
     {
-        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings()
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            Formatting = Formatting.Indented,
+        // private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings()
+        // {
+        //     NullValueHandling = NullValueHandling.Ignore,
+        //     Formatting = Formatting.Indented,
+        //
+        //     // При сборке в релиз с параметром Связывание = Сборки пакета SDK и пользователя,
+        //     // конвертеры, указанные в аттрибутах, пададают при попытке создания объекта.
+        //     // Вероятно, компилятор удаляет эти классы, считая, что они не используются.
+        //     Converters = new JsonConverter[]
+        //     {
+        //          new DateTimeConverter("HH:mm"),
+        //          new StringEnumConverter()
+        //     }
+        // };
 
-            // При сборке в релиз с параметром Связывание = Сборки пакета SDK и пользователя,
-            // конвертеры, указанные в аттрибутах, пададают при попытке создания объекта.
-            // Вероятно, компилятор удаляет эти классы, считая, что они не используются.
-            Converters = new JsonConverter[]
-            {
-                new DateTimeConverter("HH:mm"),
-                new StringEnumConverter()
-            }
+        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            ReadCommentHandling = JsonCommentHandling.Disallow
         };
 
-        [JsonProperty(Required = Required.Always)]
+        // [JsonProperty(Required = Required.Always)]
         public String DisplayedName { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        // [JsonProperty(Required = Required.Always)]
         public Int32 ScheduleId { get; set; }
 
-        [JsonProperty(Required = Required.Default)]
+        // [JsonProperty(Required = Required.Default)]
         public ScheduleType Type { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        // [JsonProperty(Required = Required.Always)]
         public Timetable Timetable { get; set; }
 
-        public String ToJson() => JsonConvert.SerializeObject(this, Settings);
+        static Schedule()
+        {
+            Options.Converters.Add(new DateTimeConverter("HH:mm"));
+            Options.Converters.Add(new JsonStringEnumConverter());
+        }
+
+        // public String ToJson() => JsonConvert.SerializeObject(this, Settings);
+
+        // public static Schedule FromJson(String json)
+        // {
+        //     return JsonConvert.DeserializeObject<Schedule>(json, Settings);
+        // }
+
+        public String ToJson() => JsonSerializer.Serialize<Schedule>(this, Options);
 
         public static Schedule FromJson(String json)
         {
-            return JsonConvert.DeserializeObject<Schedule>(json, Settings);
+            return JsonSerializer.Deserialize<Schedule>(json, Options);
         }
 
         public Subject[] GetSubjects(DateTime upperWeekDate, DateTime date)
