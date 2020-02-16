@@ -24,7 +24,7 @@ namespace SmtuSchedule.Core
             {
                 filePaths = Directory.GetFiles(storagePath, "*.json");
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 HaveReadingErrors = true;
 
@@ -47,7 +47,7 @@ namespace SmtuSchedule.Core
 
                     schedules[schedule.ScheduleId] = schedule;
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
                     HaveReadingErrors = true;
 
