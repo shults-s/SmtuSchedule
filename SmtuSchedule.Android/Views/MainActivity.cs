@@ -337,7 +337,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            if (!latest.IsCriticalUpdate && !_application.Preferences.CheckUpdatesOnStart)
+            if (!latest.IsCriticalUpdate) // && !_application.Preferences.CheckUpdatesOnStart
             {
                 return ;
             }

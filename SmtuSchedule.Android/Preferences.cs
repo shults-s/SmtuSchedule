@@ -9,7 +9,7 @@ namespace SmtuSchedule.Android
     {
         public FeatureDiscoveryState FeatureDiscoveryState { get; private set; }
 
-        public Boolean CheckUpdatesOnStart { get; private set; }
+        // public Boolean CheckUpdatesOnStart { get; private set; }
 
         public Boolean UseFabDateSelector { get; private set; }
 
@@ -63,7 +63,7 @@ namespace SmtuSchedule.Android
 
             UseDarkTheme = _preferences.GetBoolean("UseDarkTheme", false);
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", true);
-            CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
+            // CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
             DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
         }
 
@@ -117,9 +117,9 @@ namespace SmtuSchedule.Android
                     UpperWeekDate = new DateTime(preferences.GetLong("UpperWeekDate", 0));
                     break;
 
-                case "CheckUpdatesOnStart":
-                    CheckUpdatesOnStart = preferences.GetBoolean("CheckUpdatesOnStart", true);
-                    break;
+                // case "CheckUpdatesOnStart":
+                //     CheckUpdatesOnStart = preferences.GetBoolean("CheckUpdatesOnStart", true);
+                //     break;
 
                 case "UseFabDateSelector":
                     UseFabDateSelector = preferences.GetBoolean("UseFabDateSelector", true);
