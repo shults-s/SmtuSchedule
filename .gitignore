@@ -8,3 +8,4 @@ Development
 *.csproj.user
 
 PrivateKeys.cs
+GoogleServices.json

@@ -98,6 +98,26 @@ namespace SmtuSchedule.Android.Views
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            // Если пользователь нажал на уведомление, содержащее полезную нагрузку и пришедшее, когда
+            // приложение не было запущено, либо находилось в фоновом режиме.
+            if (Intent.Extras != null
+                && NotificationsHelper.IsKeysCollectionValidToCreateIntent(Intent.Extras.KeySet()))
+            {
+                Dictionary<String, String> data = new Dictionary<String, String>();
+                foreach (String key in Intent.Extras.KeySet())
+                {
+                    data[key] = Intent.Extras.GetString(key);
+                }
+
+                Intent intent = NotificationsHelper.CreateIntentFromNotificationData(data);
+                if (intent != null)
+                {
+                    StartActivity(intent);
+                }
+
+                Finish();
+            }
+
             _application = ApplicationContext as ScheduleApplication;
 
             _currentlyUsedDarkTheme = _application.Preferences.UseDarkTheme;
@@ -273,6 +293,10 @@ namespace SmtuSchedule.Android.Views
             MigrateSchedulesAsync(currentVersion);
 
             _ = _application.ClearLogsAsync();
+
+#if DEBUG
+            Log.Debug("Shults.SmtuSchedule.MessagingService", MessagingService.GetToken(this) ?? ":(");
+#endif
         }
 
         private Boolean IsPreferencesValid()

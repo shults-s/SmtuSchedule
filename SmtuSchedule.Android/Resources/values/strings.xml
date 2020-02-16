@@ -82,6 +82,14 @@
         \n\nПерезапустите приложение для повторного запроса разрешений.
     </string>
 
+    <!-- Заголовки и описания каналов уведомлений -->
+    <string name="updatesNotificationChannelName">Обновления приложения</string>
+    <string name="updatesNotificationChannelDescription">Сообщения о выходе новых версий приложения</string>
+    <string name="generalNotificationChannelName">Важные сообщения</string>
+    <string name="generalNotificationChannelDescription">Важные сообщения от разработчика (не спам)</string>
+    <string name="universityNotificationChannelName">Университет</string>
+    <string name="universityNotificationChannelDescription">Сообщения от администрации университета</string>
+
     <!-- Обоснования для запросов разрешений -->
     <string name="internetPermissionRationaleMessage">
         Доступ к интернету необходим для загрузки расписаний и проверки обновлений.
