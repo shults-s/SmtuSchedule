@@ -534,16 +534,30 @@ namespace SmtuSchedule.Android.Views
 
             if (!state.HasFlag(FeatureDiscoveryState.SchedulesDownload))
             {
-                targets.Add(
-                    TapTarget.ForToolbarMenuItem(
+                TapTarget downloadTarget;
+
+                // Если пользователь выбрал для переключения даты в расписании плавающую кнопку, то элемент
+                // меню для загрузки расписаний находится на тулбаре, а иначе – скрыт в выпадающем меню.
+                if (_application.Preferences.UseFabDateSelector)
+                {
+                    downloadTarget = TapTarget.ForToolbarMenuItem(
                         _toolbar,
                         Resource.Id.downloadSchedulesMenuItem,
-                        GetString(Resource.String.schedulesDownloadFeatureDiscoveryTitle),
-                        GetString(Resource.String.schedulesDownloadFeatureDiscoveryMessage)
-                    )
-                    .Stylize()
-                    .Id((Int32)FeatureDiscoveryState.SchedulesDownload)
-                );
+                        Resources.GetString(Resource.String.schedulesDownloadFeatureDiscoveryTitle),
+                        Resources.GetString(Resource.String.schedulesDownloadFeatureDiscoveryMessage)
+                    );
+                }
+                else
+                {
+                    downloadTarget = TapTarget.ForToolbarOverflow(
+                        _toolbar,
+                        Resources.GetString(Resource.String.schedulesDownloadFeatureDiscoveryTitle),
+                        Resources.GetString(Resource.String.schedulesDownloadFeatureDiscoveryMessage)
+                    );
+                }
+
+                downloadTarget.Stylize().Id((Int32)FeatureDiscoveryState.SchedulesDownload);
+                targets.Add(downloadTarget);
             }
 
             if (numberOfSchedules != 0)
