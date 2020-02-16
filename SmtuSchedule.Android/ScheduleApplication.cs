@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Android.OS;
 using Android.App;
 using Android.Runtime;
+using Android.Content.PM;
+using Android.Gms.Common;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Analytics;
@@ -255,6 +257,19 @@ namespace SmtuSchedule.Android
                 DateTime storingTime = DateTime.Today.AddDays(-7);
                 files.Where(f => f.LastWriteTime < storingTime).ForEach(f => f.Delete());
             });
+        }
+
+        public Boolean IsPlayStoreInstalled()
+        {
+            try
+            {
+                PackageManager.GetPackageInfo(GooglePlayServicesUtil.GooglePlayStorePackage, 0);
+                return true;
+            }
+            catch (PackageManager.NameNotFoundException)
+            {
+                return false;
+            }
         }
 
         private readonly String _logsDirectoryPath;

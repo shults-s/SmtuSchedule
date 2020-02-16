@@ -390,19 +390,13 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            void OpenInPlayMarket()
+            void OpenWithPlayStore()
             {
-                try
-                {
-                    String url = "market://details?id=" + packageId;
-                    StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
-                }
-                // Google Play Маркет не установлен.
-                catch (ActivityNotFoundException)
-                {
-                    String url = "https://play.google.com/store/apps/details?id=" + packageId;
-                    StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
-                }
+                String playStoreUrl = _application.IsPlayStoreInstalled()
+                    ? "market://details?id=" + packageId
+                    : "https://play.google.com/store/apps/details?id=" + packageId;
+
+                StartActivity(new Intent(Intent.ActionView, Uri.Parse(playStoreUrl)));
             }
 
             if (packageId == PackageName)
@@ -412,7 +406,7 @@ namespace SmtuSchedule.Android.Views
                     .SetMessage(dialogMessage)
                     .SetPositiveButton(
                         Resource.String.openPlayMarketActionTitle,
-                        () => OpenInPlayMarket()
+                        () => OpenWithPlayStore()
                     )
                     .SetNegativeButton(
                         Resource.String.gotItActionTitle,
@@ -426,7 +420,7 @@ namespace SmtuSchedule.Android.Views
             new CustomAlertDialog(this)
                 .SetTitle(Resource.String.googlePlayStoreReleaseAvailableDialogTitle)
                 .SetMessage(Resource.String.googlePlayStoreReleaseRelocatedMessage)
-                .SetPositiveButton(Resource.String.openPlayMarketActionTitle, () => OpenInPlayMarket())
+                .SetPositiveButton(Resource.String.openPlayMarketActionTitle, () => OpenWithPlayStore())
                 .Show();
         }
 
