@@ -14,7 +14,7 @@
 - При необходимости можно самостоятельно редактировать расписания и распространять их измененные версии.
 
 ## Скриншоты
-![Скриншоты](https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/Screenshots/0.9.png)
+![Скриншоты](https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/Screenshots/1.0.0.png)
 
 ## Установка и настройка
 Ниже приведена инструкция по установке приложения на смартфоны, на которых по каким-либо причинам недоступен Google Play Маркет.
