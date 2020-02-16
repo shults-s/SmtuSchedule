@@ -1,7 +1,7 @@
 {
     "IsCriticalUpdate": false,
-    "VersionCode": 23,
-    "VersionName": "1.1.1",
+    "VersionCode": 24,
+    "VersionName": "1.1.2",
     "VersionNotes": "Время запуска уменьшено в 1.5 раза;<br><br>Добавлены настраиваемые push-уведомления;<br><br>Добавлена возможность повторить обучение использованию приложения.",
     "GooglePlayStorePackageId": "shults.smtuschedule"
 }
