@@ -87,7 +87,7 @@ namespace SmtuSchedule.Core
 
                         schedules[scheduleId] = schedule;
                     }
-                    catch(HttpRequestException exception)
+                    catch (HttpRequestException exception)
                     {
                         HaveDownloadingErrors = true;
                         Logger?.Log(
