@@ -34,6 +34,13 @@ namespace SmtuSchedule.Android.Utilities
         public override void OnMessageReceived(RemoteMessage message)
         {
             RemoteMessage.Notification notification = message.GetNotification();
+
+            // На случай, если сообщение содержит только данные (data message).
+            if (notification == null)
+            {
+                return ;
+            }
+
             String title = notification.Title;
             String text = notification.Body;
             String channelId = notification.ChannelId;
