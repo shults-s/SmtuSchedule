@@ -7,6 +7,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/splashImage" />
+            android:src="@mipmap/launchLogo" />
     </item>
 </layer-list>

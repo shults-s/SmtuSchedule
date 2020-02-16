@@ -276,22 +276,22 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values\splashTheme.xml">
+    <AndroidResource Include="Resources\values\launchTheme.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\splashScreen.xml">
+    <AndroidResource Include="Resources\drawable\launchScreen.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable-v23\splashScreen.xml">
+    <AndroidResource Include="Resources\drawable-v23\launchScreen.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\mipmap\splashImage.png" />
+    <AndroidResource Include="Resources\mipmap\launchLogo.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\refresh.xml" />
