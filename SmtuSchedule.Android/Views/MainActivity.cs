@@ -233,10 +233,20 @@ namespace SmtuSchedule.Android.Views
         {
             if (!_application.IsInitialized)
             {
-                if (!_application.Initialize())
+                if (!_application.Initialize(out InitializationStatus status))
                 {
-                    ShowSnackbar(Resource.String.applicationInitializationErrorMessage);
+                    String message = String.Format(
+                        Resources.GetString(Resource.String.applicationInitializationErrorMessage),
+                        status.ToString()
+                    );
+
+                    ShowLayoutMessage(message.FromMarkdown());
                     return ;
+                }
+
+                if (status == InitializationStatus.FailedToRemoveDirectory)
+                {
+                    ShowSnackbar(Resource.String.failedToRemoveDirectoryErrorMessage);
                 }
 
                 ShowProgressBar();

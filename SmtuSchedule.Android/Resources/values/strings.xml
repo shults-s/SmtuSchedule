@@ -68,14 +68,23 @@
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
     <string name="schedulesReadingErrorMessage">Не все расписания удалось открыть.</string>
     <string name="schedulesMigrationErrorMessage">Не все расписания удалось преобразовать к актуальному формату.</string>
-    <string name="scheduleDownloadErrorMessage">Ошибка при загрузке расписания.</string>
+    <string name="scheduleDownloadErrorMessage">
+        Ошибка при загрузке расписания.
+        \nВероятнее всего, его нет на сайте.
+    </string>
     <string name="schedulesDownloadErrorMessage">Не все расписания удалось загрузить.</string>
     <string name="lecturersDownloadErrorMessage">
         Внутренняя сетевая ошибка. Повторите попытку.
         \n\nЕсли используется мобильный интернет, подключитесь через Wi-Fi.
         \n\nПроблема замечена при использовании VPN, proxy-серверов и ряда операторов мобильной связи.
     </string>
-    <string name="applicationInitializationErrorMessage">Ошибка при инициализации приложения.</string>
+    <string name="applicationInitializationErrorMessage">
+        Ошибка при инициализации приложения: {0}.
+        \n\nПожалуйста, [сообщите мне](https://vk.com/write62700344) об этом.
+    </string>
+    <string name="failedToRemoveDirectoryErrorMessage">
+        В старой директории приложения остались файлы, созданные Вами вручную. Посмотрите, возможно их стоит удалить.
+    </string>
     <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с интернетом или с сайтом университета.</string>
     <string name="externalStoragePermissionsDeclinedErrorMessage">
         Приложение не может загружать и открывать расписания без разрешения на доступ к файлам.

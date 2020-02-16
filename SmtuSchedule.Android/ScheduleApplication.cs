@@ -13,6 +13,7 @@ using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Android.Utilities;
+using SmtuSchedule.Android.Enumerations;
 
 using Environment = Android.OS.Environment;
 
@@ -156,10 +157,12 @@ namespace SmtuSchedule.Android
 
         public String GetInternalStoragePath() => FilesDir.AbsolutePath + "/";
 
-        public Boolean Initialize()
+        public Boolean Initialize(out InitializationStatus status)
         {
             String modernSchedulesPath = GetModernExternalStoragePath() + "/Schedules/";
             String legacySchedulesPath = GetLegacyExternalStoragePath();
+
+            status = InitializationStatus.Success;
 
             if (!Directory.Exists(modernSchedulesPath))
             {
@@ -169,6 +172,7 @@ namespace SmtuSchedule.Android
                 }
                 catch(Exception exception)
                 {
+                    status = InitializationStatus.FailedToCreateDirectory;
 #if !DEBUG
                     Crashes.TrackError(exception);
 #endif
@@ -190,6 +194,7 @@ namespace SmtuSchedule.Android
                 }
                 catch(Exception exception)
                 {
+                    status = InitializationStatus.FailedToMoveSchedules;
 #if !DEBUG
                     Crashes.TrackError(exception);
 #endif
@@ -208,6 +213,7 @@ namespace SmtuSchedule.Android
                 }
                 catch (Exception exception)
                 {
+                    status = InitializationStatus.FailedToRemoveDirectory;
 #if !DEBUG
                     Crashes.TrackError(exception);
 #endif
