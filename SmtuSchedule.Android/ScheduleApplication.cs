@@ -58,7 +58,7 @@ namespace SmtuSchedule.Android
 
             IsInitialized = false;
 
-            _logsDirectoryPath = GetExternalStoragePath() + "/Logs/";
+            _logsDirectoryPath = GetModernExternalStoragePath() + "/Logs/";
         }
 
         public override void OnCreate()
@@ -70,7 +70,8 @@ namespace SmtuSchedule.Android
 
             Logger.ExceptionLogged += (e) =>
             {
-                if (e is LecturersLoaderException || e is SchedulesLoaderException)
+                if (e is LecturersLoaderException || e is SchedulesLoaderException
+                    || e is SchedulesReaderException)
                 {
                     Crashes.TrackError(e);
                 }
@@ -132,35 +133,85 @@ namespace SmtuSchedule.Android
             return PackageManager.GetPackageInfo(PackageName, 0).VersionName;
         }
 
-        public String GetExternalStoragePath()
+        public String GetLegacyExternalStoragePath()
         {
+#pragma warning disable CS0618
             return String.Format(
                 "{0}/{1}/",
                 Environment.ExternalStorageDirectory.AbsolutePath,
                 Resources.GetString(Resource.String.applicationCompleteName)
             );
+#pragma warning restore CS0618
+        }
+
+        public String GetModernExternalStoragePath()
+        {
+            return Context.GetExternalFilesDir(null).AbsolutePath;
         }
 
         public String GetInternalStoragePath() => FilesDir.AbsolutePath + "/";
 
         public Boolean Initialize()
         {
-            String externalStoragePath = GetExternalStoragePath();
-            if (!Directory.Exists(externalStoragePath))
+            String modernSchedulesPath = GetModernExternalStoragePath() + "/Schedules/";
+            String legacySchedulesPath = GetLegacyExternalStoragePath();
+
+            if (!Directory.Exists(modernSchedulesPath))
             {
                 try
                 {
-                    Directory.CreateDirectory(externalStoragePath);
+                    Directory.CreateDirectory(modernSchedulesPath);
                 }
-                catch
+                catch(Exception exception)
                 {
+#if !DEBUG
+                    Crashes.TrackError(exception);
+#endif
                     return false;
                 }
             }
 
-            Manager = new SchedulesManager(externalStoragePath) { Logger = Logger };
+            if (Directory.Exists(legacySchedulesPath))
+            {
+                try
+                {
+                    FileInfo[] files = new DirectoryInfo(legacySchedulesPath)
+                        .GetFiles("*.json");
 
-            return IsInitialized = true;
+                    foreach (FileInfo file in files)
+                    {
+                        file.MoveTo(modernSchedulesPath + file.Name);
+                    }
+                }
+                catch(Exception exception)
+                {
+#if !DEBUG
+                    Crashes.TrackError(exception);
+#endif
+                    return false;
+                }
+
+                try
+                {
+                    String legacyLogsPath = legacySchedulesPath + "/Logs/";
+                    if (Directory.Exists(legacyLogsPath))
+                    {
+                        Directory.Delete(legacyLogsPath, true);
+                    }
+
+                    Directory.Delete(legacySchedulesPath);
+                }
+                catch (Exception exception)
+                {
+#if !DEBUG
+                    Crashes.TrackError(exception);
+#endif
+                }
+            }
+
+            Manager = new SchedulesManager(modernSchedulesPath) { Logger = Logger };
+
+            return (IsInitialized = true);
         }
 
         public Task SaveLogAsync(Boolean isCrashLog = false)
