@@ -11,6 +11,8 @@ namespace SmtuSchedule.Android
 
         // public Boolean CheckUpdatesOnStart { get; private set; }
 
+        public Boolean ReplayFeatureDiscovery { get; private set; }
+
         public Boolean UseFabDateSelector { get; private set; }
 
         public Boolean UseDarkTheme { get; private set; }
@@ -34,8 +36,17 @@ namespace SmtuSchedule.Android
             _preferences = PreferenceManager.GetDefaultSharedPreferences(context);
             _preferences.RegisterOnSharedPreferenceChangeListener(this);
 
-            Int32 state = _preferences.GetInt("FeatureDiscoveryState", 0);
-            FeatureDiscoveryState = (FeatureDiscoveryState)state;
+            ReplayFeatureDiscovery = _preferences.GetBoolean("ReplayFeatureDiscovery", false);
+            if (ReplayFeatureDiscovery)
+            {
+                SetFeatureDiscoveryState(FeatureDiscoveryState.NothingDiscovered);
+                SetReplayFeatureDiscovery(false);
+            }
+            else
+            {
+                Int32 state = _preferences.GetInt("FeatureDiscoveryState", 0);
+                FeatureDiscoveryState = (FeatureDiscoveryState)state;
+            }
 
             // Обработка конфигурации предыдущих релизов, где версия представляла собой строку.
             try
@@ -74,6 +85,15 @@ namespace SmtuSchedule.Android
             editor.Apply();
 
             FeatureDiscoveryState = featureDiscoveryState;
+        }
+
+        public void SetReplayFeatureDiscovery(Boolean replayFeatureDiscovery)
+        {
+            ISharedPreferencesEditor editor = _preferences.Edit();
+            editor.PutBoolean("ReplayFeatureDiscovery", replayFeatureDiscovery);
+            editor.Apply();
+
+            ReplayFeatureDiscovery = replayFeatureDiscovery;
         }
 
         public void SetLastMigrationVersion(Int32 lastMigrationVersion)
@@ -132,6 +152,10 @@ namespace SmtuSchedule.Android
 
                 case "DisplaySubjectEndTime":
                     DisplaySubjectEndTime = preferences.GetBoolean("DisplaySubjectEndTime", false);
+                    break;
+
+                case "ReplayFeatureDiscovery":
+                    ReplayFeatureDiscovery = preferences.GetBoolean("ReplayFeatureDiscovery", false);
                     break;
             }
         }

@@ -29,4 +29,9 @@
         android:summary="@string/preferenceCheckUpdatesOnStartSummary"
         android:defaultValue="true"
         android:layout="@layout/customPreference" /> -->
+    <CheckBoxPreference
+        android:key="ReplayFeatureDiscovery"
+        android:title="@string/preferenceReplayFeatureDiscoveryTitle"
+        android:summaryOn="@string/preferenceReplayFeatureDiscoverySummaryOn"
+        android:layout="@layout/customPreference" />
 </android.support.v7.preference.PreferenceScreen>
