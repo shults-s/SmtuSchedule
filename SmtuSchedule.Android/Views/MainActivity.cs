@@ -10,6 +10,7 @@ using Android.Views;
 using Android.Widget;
 using Android.Content;
 using Android.Content.PM;
+using Android.Text.Method;
 using Android.Support.V4.App;
 using Android.Support.V7.App;
 using Android.Support.V4.View;
@@ -349,8 +350,8 @@ namespace SmtuSchedule.Android.Views
             }
 
             Java.Lang.ICharSequence dialogMessage = (latest.VersionNotes != null)
-                ? latest.VersionNotes.Replace("\n", "<br>").ParseHtml()
-                : GetTextFormatted(Resource.String.applicationUpdateAvailableMessage);
+                ? latest.VersionNotes.FromHtml()
+                : Resources.GetString(Resource.String.applicationUpdateAvailableMessage).FromMarkdown();
 
             Int32 dialogTitleId = latest.IsCriticalUpdate
                 ? Resource.String.applicationCriticalUpdateAvailableDialogTitle
@@ -810,16 +811,37 @@ namespace SmtuSchedule.Android.Views
             View.Inflate(this, Resource.Layout.pager, _contentLayout);
         }
 
-        private void ShowLayoutMessage(Int32 messageId, GravityFlags gravity = GravityFlags.Center)
+        private void ShowLayoutMessage(Int32 messageId, Boolean useMarkdownFormatting = true)
+        {
+            if (useMarkdownFormatting)
+            {
+                ShowLayoutMessage(Resources.GetString(messageId).FromMarkdown(), true);
+                return ;
+            }
+
+            ShowLayoutMessage(new Java.Lang.String(Resources.GetString(messageId)), false);
+        }
+
+        private void ShowLayoutMessage(Java.Lang.ICharSequence message, Boolean enableLinks = true)
         {
             _contentLayout.RemoveAllViews();
 
             View layout = View.Inflate(this, Resource.Layout.message, _contentLayout);
 
-            TextView message = layout.FindViewById<TextView>(Resource.Id.messageTextView);
-            message.SetText(messageId);
-            message.Gravity = gravity;
-            message.SetMaxWidth((Int32)(UiUtilities.GetScreenPixelSize(WindowManager).width * 0.9));
+            TextView textView = layout.FindViewById<TextView>(Resource.Id.messageTextView);
+
+            if (enableLinks)
+            {
+                textView.MovementMethod = LinkMovementMethod.Instance;
+                textView.TextFormatted = message.StripUrlUnderlines();
+            }
+            else
+            {
+                textView.TextFormatted = message;
+            }
+
+            textView.TextFormatted = textView.TextFormatted.Trim();
+            textView.SetMaxWidth((Int32)(UiUtilities.GetScreenPixelSize(WindowManager).width * 0.9));
         }
 
         private void ShowCurrentScheduleActionsDialog()
@@ -853,13 +875,11 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            String message = Resources.GetString(
-                Resource.String.removeCurrentScheduleMessage,
-                schedule.DisplayedName
-            );
+            String message = Resources.GetString(Resource.String.removeCurrentScheduleMessage);
+            message = String.Format(message, schedule.DisplayedName);
 
             new CustomAlertDialog(this)
-                .SetMessage(message)
+                .SetMessage(message, false)
                 .SetPositiveButton(Resource.String.removeActionTitle, RemoveCurrentScheduleAsync)
                 .SetNegativeButton(Resource.String.cancelActionTitle)
                 .Show();
@@ -869,7 +889,7 @@ namespace SmtuSchedule.Android.Views
         {
             CustomAlertDialog dialog = new CustomAlertDialog(this)
                 .SetPositiveButton(Resource.String.configureActionTitle, StartPreferencesActivity)
-                .SetMessage(Resource.String.configureApplicationMessage)
+                .SetMessage(Resource.String.configureApplicationMessage, false)
                 .SetCancelable(false);
 
             dialog.Show();

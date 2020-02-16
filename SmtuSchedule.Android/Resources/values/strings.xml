@@ -123,9 +123,15 @@
     <string name="multiGroupSubjectPrefix">Группы</string>
 
     <!-- Сообщения уведомительного характера -->
+    <string name="aboutApplicationMessage">
+        Версия 1.1.0 от 14 февраля 2020.
+        \n\nРазработчик: [@shults_s](https://vk.com/shults_s).
+        \n\n[Политика конфиденциальности](https://github.com/shults-s/SmtuSchedule/wiki/Privacy-policy).
+        \n\nИсходный код и информация о проекте размещены на [GitHub](https://github.com/shults-s/SmtuSchedule).
+    </string>
     <string name="weekendMessage">Выходной день :)</string>
     <string name="welcomeMessage">Ни одно расписание занятий еще не загружено.</string>
-    <string name="removeCurrentScheduleMessage">Удалить расписание «%s»?</string>
+    <string name="removeCurrentScheduleMessage">Удалить расписание «{0}»?</string>
     <string name="schedulesDownloadingStarted">Загрузка началась...</string>
     <string name="scheduleRemovedSuccessfullyMessage">Расписание удалено.</string>
     <string name="scheduleNotAvailableMessage">Это расписание недоступно.</string>
@@ -134,19 +140,11 @@
     <string name="scheduleNotYetDownloadedMessage">Это расписание еще не загружено.</string>
     <string name="waitUntilSchedulesFinishDownloading">Дождитесь окончания загрузки расписаний.</string>
     <string name="configureApplicationMessage">Настройте приложение для корректного отображения занятий.</string>
-    <string name="googlePlayStoreReleaseRelocatedMessage">
-        Приложение было <b>перевыпущено</b> в Google Play Маркет.
-        \nНастоятельно рекомендуется переустановить его вручную, предварительно удалив данную версию, чтобы в дальнейшем
-        получать обновления автоматически.
-        \nЗагруженные расписания затронуты не будут.
-    </string>
-    <string name="aboutApplicationMessage">
-        Версия 1.0.6 от 16 декабря 2019.
-        \n\nРазработчик: <a href="https://vk.com/shults_s">@shults_s</a>.
-        \n\n<a href="https://github.com/shults-s/SmtuSchedule/wiki/Privacy-policy">Политика конфиденциальности</a>.
-        \n\nИсходный код и информация о проекте размещены на <a href="https://github.com/shults-s/SmtuSchedule">GitHub</a>.
-    </string>
     <string name="applicationUpdateAvailableMessage">
-        Доступна <a href="https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md"><b>новая версия</b></a> приложения.
+        Доступна [**новая версия**](https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md) приложения.
+    </string>
+    <string name="googlePlayStoreReleaseRelocatedMessage">
+        Приложение было **перевыпущено** в Google Play Маркет.
+        \nПереустановите его вручную, предварительно удалив данную версию, чтобы в дальнейшем получать обновления автоматически.
     </string>
 </resources>

@@ -70,23 +70,38 @@ namespace SmtuSchedule.Android.Views
             return this;
         }
 
-        public new CustomAlertDialog SetMessage(String message)
+        public CustomAlertDialog SetMessage(Int32 messageId, Boolean useMarkdownFormatting = true)
         {
-            return SetMessage(new Java.Lang.String(message));
+            return SetMessage(Context.Resources.GetString(messageId), useMarkdownFormatting);
         }
 
-        public CustomAlertDialog SetMessage(Int32 messageId)
+        public CustomAlertDialog SetMessage(String message, Boolean useMarkdownFormatting = true)
         {
-            return SetMessage(Context.GetTextFormatted(messageId));
+            if (useMarkdownFormatting)
+            {
+                return SetMessage(message.FromMarkdown(), true);
+            }
+
+            return SetMessage(new Java.Lang.String(message), false);
         }
 
-        public new CustomAlertDialog SetMessage(Java.Lang.ICharSequence message)
+        public CustomAlertDialog SetMessage(Java.Lang.ICharSequence message, Boolean enableLinks = true)
         {
             View.Inflate(Context, Resource.Layout.dialogMessage, _layout);
 
             TextView textView = _layout.FindViewById<TextView>(Resource.Id.dialogMessageTextView);
-            textView.MovementMethod = LinkMovementMethod.Instance;
-            textView.TextFormatted = message.Trim().StripUrlUnderlines();
+
+            if (enableLinks)
+            {
+                textView.MovementMethod = LinkMovementMethod.Instance;
+                textView.TextFormatted = message.StripUrlUnderlines();
+            }
+            else
+            {
+                textView.TextFormatted = message;
+            }
+
+            textView.TextFormatted = textView.TextFormatted.Trim();
 
             return this;
         }
