@@ -95,7 +95,7 @@ namespace SmtuSchedule.Android.Views
                     relatedSubjects = subjects.Skip(i + 1).Where(
                         s => s.From == subject.From
                         && s.To == subject.To
-                        && s.Audience == subject.Audience
+                        && s.Auditorium == subject.Auditorium
                     );
 
                     numberOfRelatedSubjects = relatedSubjects.Count();
@@ -185,8 +185,8 @@ namespace SmtuSchedule.Android.Views
             // щелкнули. Проблема решается присвоением каждому экземпляру поля уникального идентификатора.
             lecturer.Id = View.GenerateViewId();
 
-            TextView audience = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
-            audience.Text = subject.Audience;
+            TextView auditorium = layout.FindViewById<TextView>(Resource.Id.subjectAuditoriumTextView);
+            auditorium.Text = subject.Auditorium;
 
             if (_application.Preferences.DisplaySubjectEndTime)
             {

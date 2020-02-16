@@ -17,8 +17,8 @@ namespace SmtuSchedule.Core.Models
         [JsonProperty(Required = Required.Always)]
         public DateTime To { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
-        public String Audience { get; set; }
+        [JsonProperty("Audience", Required = Required.Always)]
+        public String Auditorium { get; set; }
 
         [JsonProperty(Required = Required.Always)]
         public WeekType Week { get; set; }

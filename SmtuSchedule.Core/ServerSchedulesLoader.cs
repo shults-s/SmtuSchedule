@@ -164,16 +164,16 @@ namespace SmtuSchedule.Core
             }
 
             // На входе: Корпус Аудитория[Литера]|Корпус каф.[ФВ|ВК|...]|Корпус Лаборатория
-            static String ParseAudience(HtmlNode td)
+            static String ParseAuditorium(HtmlNode td)
             {
-                String audience = td.InnerText.Trim().Replace(' ', '-').ToUpper(Culture);
+                String auditorium = td.InnerText.Trim().Replace(' ', '-').ToUpper(Culture);
 
-                if (!audience.Contains('.'))
+                if (!auditorium.Contains('.'))
                 {
-                    return audience;
+                    return auditorium;
                 }
 
-                return audience.Substring(0, audience.IndexOf('.'));
+                return auditorium.Substring(0, auditorium.IndexOf('.'));
             }
 
             // На входе: Название предмета<br><span class="s_small">Вид занятия</span>
@@ -264,7 +264,7 @@ namespace SmtuSchedule.Core
                     HtmlNode[] cells = row.Elements("td").ToArray();
 
                     ParseTime(cells[0], out DateTime from, out DateTime to, out WeekType week);
-                    String audience = ParseAudience(cells[1]);
+                    String auditorium = ParseAuditorium(cells[1]);
                     String title = ParseTitle(cells[2]);
 
                     Subject subject = new Subject()
@@ -274,7 +274,7 @@ namespace SmtuSchedule.Core
                         To = to,
                         Week = week,
                         Title = title,
-                        Audience = audience
+                        Auditorium = auditorium
                     };
 
                     ParseLecturerOrGroup(
