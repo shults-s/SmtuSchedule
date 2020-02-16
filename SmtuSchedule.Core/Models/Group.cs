@@ -12,6 +12,7 @@ namespace SmtuSchedule.Core.Models
         // [JsonProperty(Required = Required.Always)]
         public String Name { get; set; }
 
+        [Android.Runtime.Preserve]
         public Group()
         {
         }
