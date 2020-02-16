@@ -44,7 +44,7 @@ namespace SmtuSchedule.Android.Views
                 Resource.Id.downloadRelatedSchedulesCheckBox
             );
 
-            _progressBarRelativeLayout = FindViewById<RelativeLayout>(
+            _progressBarLayout = FindViewById<RelativeLayout>(
                 Resource.Id.downloadProgressBarRelativeLayout
             );
 
@@ -55,12 +55,11 @@ namespace SmtuSchedule.Android.Views
             _downloadLecturersErrorRetryButton.Click += (s, e) =>
             {
                 DownloadLecturersNamesAsync();
-                _progressBarRelativeLayout.Visibility = ViewStates.Visible;
+                _progressBarLayout.Visibility = ViewStates.Visible;
             };
 
             Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.downloadActivityToolbar);
             toolbar.NavigationClick += (s, e) => OnBackPressed();
-
             toolbar.InflateMenu(Resource.Menu.downloadMenu);
             toolbar.MenuItemClick += (s, e) =>
             {
@@ -122,14 +121,13 @@ namespace SmtuSchedule.Android.Views
         {
             TextView errorTextView = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
 
-            _progressBarRelativeLayout.Visibility = ViewStates.Gone;
+            _progressBarLayout.Visibility = ViewStates.Gone;
 
             if (lecturers == null)
             {
                 _ = _application.SaveLogAsync();
 
                 _searchRequestTextView.Enabled = false;
-                //_downloadRelatedSchedulesCheckBox.Checked = false;
                 _downloadRelatedSchedulesCheckBox.Visibility = ViewStates.Gone;
 
                 errorTextView.Visibility = ViewStates.Visible;
@@ -152,8 +150,8 @@ namespace SmtuSchedule.Android.Views
 
         private ScheduleApplication _application;
 
+        private RelativeLayout _progressBarLayout;
         private Button _downloadLecturersErrorRetryButton;
-        private RelativeLayout _progressBarRelativeLayout;
         private CheckBox _downloadRelatedSchedulesCheckBox;
         private MultiAutoCompleteTextView _searchRequestTextView;
     }

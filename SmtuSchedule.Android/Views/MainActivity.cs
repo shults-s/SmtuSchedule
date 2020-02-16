@@ -10,6 +10,7 @@ using Android.Views;
 using Android.Widget;
 using Android.Content;
 using Android.Content.PM;
+using Android.Text.Method;
 using Android.Support.V4.App;
 using Android.Support.V7.App;
 using Android.Support.V4.View;
@@ -27,7 +28,8 @@ using Uri = Android.Net.Uri;
 
 namespace SmtuSchedule.Android.Views
 {
-    [Activity(MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait,
+        Label = "@string/applicationLabel")]
     internal class MainActivity : AppCompatActivity, ISchedulesViewer
     {
         private enum MainActivityState { NotInitialized, Initialized, DisplaysMessage, DisplaysSchedule }
@@ -97,6 +99,26 @@ namespace SmtuSchedule.Android.Views
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            // Если пользователь нажал на уведомление, содержащее полезную нагрузку и пришедшее, когда
+            // приложение не было запущено, либо находилось в фоновом режиме.
+            if (Intent.Extras != null
+                && NotificationsHelper.IsKeysCollectionValidToCreateIntent(Intent.Extras.KeySet()))
+            {
+                Dictionary<String, String> data = new Dictionary<String, String>();
+                foreach (String key in Intent.Extras.KeySet())
+                {
+                    data[key] = Intent.Extras.GetString(key);
+                }
+
+                Intent intent = NotificationsHelper.CreateIntentFromNotificationData(data);
+                if (intent != null)
+                {
+                    StartActivity(intent);
+                }
+
+                Finish();
+            }
+
             _application = ApplicationContext as ScheduleApplication;
 
             _currentlyUsedDarkTheme = _application.Preferences.UseDarkTheme;
@@ -124,11 +146,7 @@ namespace SmtuSchedule.Android.Views
             {
                 switch (e.Item.ItemId)
                 {
-                    //case Resource.Id.removeCurrentScheduleMenuItem:
-                    //    ShowCurrentScheduleRemovingDialog();
-                    //    break;
-
-                    case Resource.Id.selectScheduleDateMenuItem:
+                    case Resource.Id.selectViewingDateMenuItem:
                         ShowCustomDatePickerDialog();
                         break;
 
@@ -136,7 +154,7 @@ namespace SmtuSchedule.Android.Views
                         StartDownloadActivity();
                         break;
 
-                    case Resource.Id.openPreferencesMenuItem:
+                    case Resource.Id.startPreferencesMenuItem:
                         StartPreferencesActivity();
                         break;
 
@@ -215,10 +233,20 @@ namespace SmtuSchedule.Android.Views
         {
             if (!_application.IsInitialized)
             {
-                if (!_application.Initialize())
+                if (!_application.Initialize(out InitializationStatus status))
                 {
-                    ShowSnackbar(Resource.String.applicationInitializationErrorMessage);
+                    String message = String.Format(
+                        Resources.GetString(Resource.String.applicationInitializationErrorMessage),
+                        status.ToString()
+                    );
+
+                    ShowLayoutMessage(message.FromMarkdown());
                     return ;
+                }
+
+                if (status == InitializationStatus.FailedToRemoveDirectory)
+                {
+                    ShowSnackbar(Resource.String.failedToRemoveDirectoryErrorMessage);
                 }
 
                 ShowProgressBar();
@@ -277,18 +305,9 @@ namespace SmtuSchedule.Android.Views
 
             _ = _application.ClearLogsAsync();
 
-            //if (_application.Preferences.LastSeenWelcomeVersion != currentVersion)
-            //{
-            //    new CustomAlertDialog(this)
-            //        .SetTitle(Resource.String.introductionDialogTitle)
-            //        .SetMessage(Resource.String.introductionMessage)
-            //        .SetPositiveButton(
-            //            Resource.String.gotItActionTitle,
-            //            () => _application.Preferences.SetLastSeenWelcomeVersion(currentVersion)
-            //        )
-            //        .SetPositiveButtonEnabledOnlyWhenMessageScrolledToBottom()
-            //        .Show();
-            //}
+#if DEBUG
+            Log.Debug("Shults.SmtuSchedule.MessagingService", MessagingService.GetToken(this) ?? ":(");
+#endif
         }
 
         private Boolean IsPreferencesValid()
@@ -329,7 +348,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            if (!latest.IsCriticalUpdate && !_application.Preferences.CheckUpdatesOnStart)
+            if (!latest.IsCriticalUpdate) // && !_application.Preferences.CheckUpdatesOnStart
             {
                 return ;
             }
@@ -341,8 +360,8 @@ namespace SmtuSchedule.Android.Views
             }
 
             Java.Lang.ICharSequence dialogMessage = (latest.VersionNotes != null)
-                ? latest.VersionNotes.Replace("\n", "<br>").ParseHtml()
-                : GetTextFormatted(Resource.String.applicationUpdateAvailableMessage);
+                ? latest.VersionNotes.FromHtml()
+                : Resources.GetString(Resource.String.applicationUpdateAvailableMessage).FromMarkdown();
 
             Int32 dialogTitleId = latest.IsCriticalUpdate
                 ? Resource.String.applicationCriticalUpdateAvailableDialogTitle
@@ -371,19 +390,13 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            void OpenInPlayMarket()
+            void OpenWithPlayStore()
             {
-                try
-                {
-                    String url = "market://details?id=" + packageId;
-                    StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
-                }
-                // Google Play Маркет не установлен.
-                catch (ActivityNotFoundException)
-                {
-                    String url = "https://play.google.com/store/apps/details?id=" + packageId;
-                    StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
-                }
+                String playStoreUrl = _application.IsPlayStoreInstalled()
+                    ? "market://details?id=" + packageId
+                    : "https://play.google.com/store/apps/details?id=" + packageId;
+
+                StartActivity(new Intent(Intent.ActionView, Uri.Parse(playStoreUrl)));
             }
 
             if (packageId == PackageName)
@@ -393,7 +406,7 @@ namespace SmtuSchedule.Android.Views
                     .SetMessage(dialogMessage)
                     .SetPositiveButton(
                         Resource.String.openPlayMarketActionTitle,
-                        () => OpenInPlayMarket()
+                        () => OpenWithPlayStore()
                     )
                     .SetNegativeButton(
                         Resource.String.gotItActionTitle,
@@ -407,7 +420,7 @@ namespace SmtuSchedule.Android.Views
             new CustomAlertDialog(this)
                 .SetTitle(Resource.String.googlePlayStoreReleaseAvailableDialogTitle)
                 .SetMessage(Resource.String.googlePlayStoreReleaseRelocatedMessage)
-                .SetPositiveButton(Resource.String.openPlayMarketActionTitle, () => OpenInPlayMarket())
+                .SetPositiveButton(Resource.String.openPlayMarketActionTitle, () => OpenWithPlayStore())
                 .Show();
         }
 
@@ -521,16 +534,30 @@ namespace SmtuSchedule.Android.Views
 
             if (!state.HasFlag(FeatureDiscoveryState.SchedulesDownload))
             {
-                targets.Add(
-                    TapTarget.ForToolbarMenuItem(
+                TapTarget downloadTarget;
+
+                // Если пользователь выбрал для переключения даты в расписании плавающую кнопку, то элемент
+                // меню для загрузки расписаний находится на тулбаре, а иначе – скрыт в выпадающем меню.
+                if (_application.Preferences.UseFabDateSelector)
+                {
+                    downloadTarget = TapTarget.ForToolbarMenuItem(
                         _toolbar,
                         Resource.Id.downloadSchedulesMenuItem,
-                        GetString(Resource.String.schedulesDownloadFeatureDiscoveryTitle),
-                        GetString(Resource.String.schedulesDownloadFeatureDiscoveryMessage)
-                    )
-                    .Stylize()
-                    .Id((Int32)FeatureDiscoveryState.SchedulesDownload)
-                );
+                        Resources.GetString(Resource.String.schedulesDownloadFeatureDiscoveryTitle),
+                        Resources.GetString(Resource.String.schedulesDownloadFeatureDiscoveryMessage)
+                    );
+                }
+                else
+                {
+                    downloadTarget = TapTarget.ForToolbarOverflow(
+                        _toolbar,
+                        Resources.GetString(Resource.String.schedulesDownloadFeatureDiscoveryTitle),
+                        Resources.GetString(Resource.String.schedulesDownloadFeatureDiscoveryMessage)
+                    );
+                }
+
+                downloadTarget.Stylize().Id((Int32)FeatureDiscoveryState.SchedulesDownload);
+                targets.Add(downloadTarget);
             }
 
             if (numberOfSchedules != 0)
@@ -540,8 +567,8 @@ namespace SmtuSchedule.Android.Views
                     targets.Add(
                         TapTarget.ForView(
                             _toolbarTitle,
-                            GetString(Resource.String.schedulesManagementFeatureDiscoveryTitle),
-                            GetString(Resource.String.schedulesManagementFeatureDiscoveryMessage)
+                            Resources.GetString(Resource.String.schedulesManagementFeatureDiscoveryTitle),
+                            Resources.GetString(Resource.String.schedulesManagementFeatureDiscoveryMessage)
                         )
                         .Stylize()
                         .Id((Int32)FeatureDiscoveryState.SchedulesManagement)
@@ -555,8 +582,8 @@ namespace SmtuSchedule.Android.Views
                     {
                         dateTarget = TapTarget.ForView(
                             _fab,
-                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
-                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
+                            Resources.GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
+                            Resources.GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
                         )
                         .TintTarget(false);
                     }
@@ -564,9 +591,9 @@ namespace SmtuSchedule.Android.Views
                     {
                         dateTarget = TapTarget.ForToolbarMenuItem(
                             _toolbar,
-                            Resource.Id.selectScheduleDateMenuItem,
-                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
-                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
+                            Resource.Id.selectViewingDateMenuItem,
+                            Resources.GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
+                            Resources.GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
                         );
                     }
 
@@ -585,8 +612,7 @@ namespace SmtuSchedule.Android.Views
                 state |= (FeatureDiscoveryState)id
             );
 
-            new TapTargetSequence(this).Targets(targets).Listener(listener).ContinueOnCancel(true)
-                .Start();
+            new TapTargetSequence(this).Targets(targets).Listener(listener).ContinueOnCancel(true).Start();
         }
 
         private void UpdateToolbarMenu()
@@ -598,7 +624,7 @@ namespace SmtuSchedule.Android.Views
             }
 
             IMenu menu = _toolbar.Menu;
-            IMenuItem selectScheduleDateMenuItem = menu.FindItem(Resource.Id.selectScheduleDateMenuItem);
+            IMenuItem selectScheduleDateMenuItem = menu.FindItem(Resource.Id.selectViewingDateMenuItem);
             IMenuItem downloadScheduleMenuItem = menu.FindItem(Resource.Id.downloadSchedulesMenuItem);
 
             Boolean isToolbarDateSelectorVisible = !_application.Preferences.UseFabDateSelector
@@ -609,9 +635,6 @@ namespace SmtuSchedule.Android.Views
             downloadScheduleMenuItem.SetVisible(true);
             downloadScheduleMenuItem.SetShowAsAction(isToolbarDateSelectorVisible ? ShowAsAction.Never
                 : ShowAsAction.Always);
-
-            //IMenuItem removeScheduleMenuItem = menu.FindItem(Resource.Id.removeCurrentScheduleMenuItem);
-            //removeScheduleMenuItem.SetVisible(_application.Manager.Schedules.Count != 0);
         }
 
         private void RequestPermissions(Int32 requestCode, params String[] permissions)
@@ -640,8 +663,6 @@ namespace SmtuSchedule.Android.Views
             if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
-                //_application.Logger.Log(failReason);
-                //_ = _application.SaveLogAsync();
                 return ;
             }
 
@@ -758,8 +779,6 @@ namespace SmtuSchedule.Android.Views
             if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
-                //_application.Logger.Log(failReason);
-                //_ = _application.SaveLogAsync();
                 return ;
             }
 
@@ -809,16 +828,37 @@ namespace SmtuSchedule.Android.Views
             View.Inflate(this, Resource.Layout.pager, _contentLayout);
         }
 
-        private void ShowLayoutMessage(Int32 messageId, GravityFlags gravity = GravityFlags.Center)
+        private void ShowLayoutMessage(Int32 messageId, Boolean useMarkdownFormatting = true)
+        {
+            if (useMarkdownFormatting)
+            {
+                ShowLayoutMessage(Resources.GetString(messageId).FromMarkdown(), true);
+                return ;
+            }
+
+            ShowLayoutMessage(new Java.Lang.String(Resources.GetString(messageId)), false);
+        }
+
+        private void ShowLayoutMessage(Java.Lang.ICharSequence message, Boolean enableLinks = true)
         {
             _contentLayout.RemoveAllViews();
 
             View layout = View.Inflate(this, Resource.Layout.message, _contentLayout);
 
-            TextView message = layout.FindViewById<TextView>(Resource.Id.messageTextView);
-            message.SetText(messageId);
-            message.Gravity = gravity;
-            message.SetMaxWidth((Int32)(UiUtilities.GetScreenPixelSize(WindowManager).width * 0.9));
+            TextView textView = layout.FindViewById<TextView>(Resource.Id.messageTextView);
+
+            if (enableLinks)
+            {
+                textView.MovementMethod = LinkMovementMethod.Instance;
+                textView.TextFormatted = message.StripUrlUnderlines();
+            }
+            else
+            {
+                textView.TextFormatted = message;
+            }
+
+            textView.TextFormatted = textView.TextFormatted.Trim();
+            textView.SetMaxWidth((Int32)(UiUtilities.GetScreenPixelSize(WindowManager).width * 0.9));
         }
 
         private void ShowCurrentScheduleActionsDialog()
@@ -852,13 +892,11 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            String message = Resources.GetString(
-                Resource.String.removeCurrentScheduleMessage,
-                schedule.DisplayedName
-            );
+            String message = Resources.GetString(Resource.String.removeCurrentScheduleMessage);
+            message = String.Format(message, schedule.DisplayedName);
 
             new CustomAlertDialog(this)
-                .SetMessage(message)
+                .SetMessage(message, false)
                 .SetPositiveButton(Resource.String.removeActionTitle, RemoveCurrentScheduleAsync)
                 .SetNegativeButton(Resource.String.cancelActionTitle)
                 .Show();
@@ -868,7 +906,7 @@ namespace SmtuSchedule.Android.Views
         {
             CustomAlertDialog dialog = new CustomAlertDialog(this)
                 .SetPositiveButton(Resource.String.configureActionTitle, StartPreferencesActivity)
-                .SetMessage(Resource.String.configureApplicationMessage)
+                .SetMessage(Resource.String.configureApplicationMessage, false)
                 .SetCancelable(false);
 
             dialog.Show();
@@ -876,18 +914,18 @@ namespace SmtuSchedule.Android.Views
             FeatureDiscoveryState state = _application.Preferences.FeatureDiscoveryState;
             if (!state.HasFlag(FeatureDiscoveryState.ApplicationSettings))
             {
-                Button positiveButton = dialog.GetButton(DialogButtonType.Positive);
-                TapTarget settingsTarget = TapTarget.ForView(
-                    positiveButton,
-                    GetString(Resource.String.applicationSettingsFeatureDiscoveryTitle),
-                    GetString(Resource.String.applicationSettingsFeatureDiscoveryMessage)
-                )
-                .Stylize();
-
                 TapTargetViewListener listener = new TapTargetViewListener();
                 listener.Clicked += () => _application.Preferences.SetFeatureDiscoveryState(
                     state | FeatureDiscoveryState.ApplicationSettings
                 );
+
+                Button positiveButton = dialog.GetButton(DialogButtonType.Positive);
+                TapTarget settingsTarget = TapTarget.ForView(
+                    positiveButton,
+                    Resources.GetString(Resource.String.applicationSettingsFeatureDiscoveryTitle),
+                    Resources.GetString(Resource.String.applicationSettingsFeatureDiscoveryMessage)
+                )
+                .Stylize();
 
                 TapTargetView.ShowFor(dialog, settingsTarget, listener);
             }
@@ -897,7 +935,7 @@ namespace SmtuSchedule.Android.Views
         {
             DateTime viewingDate = _application.Preferences.CurrentScheduleDate;
 
-            Int32 type = (Int32)Schedule.GetWeekType(_application.Preferences.UpperWeekDate, viewingDate);
+            Int32 type = (Int32)viewingDate.GetWeekType(_application.Preferences.UpperWeekDate);
             String[] weeksNames = Resources.GetStringArray(Resource.Array.weeksTypesInNominativeCase);
 
             ShowSnackbar(String.Format("{0}: {1}.", viewingDate.ToString("d MMMM"), weeksNames[type - 1]));

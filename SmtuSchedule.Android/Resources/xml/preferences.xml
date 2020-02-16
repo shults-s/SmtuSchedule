@@ -23,16 +23,15 @@
         android:summary="@string/preferenceDisplaySubjectEndTimeSummary"
         android:defaultValue="false"
         android:layout="@layout/customPreference" />
-    <SwitchPreferenceCompat
+    <!-- <SwitchPreferenceCompat
         android:key="CheckUpdatesOnStart"
         android:title="@string/preferenceCheckUpdatesOnStartTitle"
         android:summary="@string/preferenceCheckUpdatesOnStartSummary"
         android:defaultValue="true"
+        android:layout="@layout/customPreference" /> -->
+    <CheckBoxPreference
+        android:key="ReplayFeatureDiscovery"
+        android:title="@string/preferenceReplayFeatureDiscoveryTitle"
+        android:summaryOn="@string/preferenceReplayFeatureDiscoverySummaryOn"
         android:layout="@layout/customPreference" />
-    <!--<SwitchPreferenceCompat
-        android:key="AllowSendingCrashReports"
-        android:title="@string/preferenceAllowSendingCrashReportsTitle"
-        android:summary="@string/preferenceAllowSendingCrashReportsSummary"
-        android:defaultValue="true"
-        android:layout="@layout/customPreference" />-->
 </android.support.v7.preference.PreferenceScreen>

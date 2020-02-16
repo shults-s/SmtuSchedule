@@ -30,16 +30,16 @@ namespace SmtuSchedule.Core
 
         public Task<Boolean> MigrateSchedulesAsync()
         {
-            return Task.Run(async () =>
+            return Task.Run(() =>
             {
                 SchedulesMigrator schedulesMigrator = new SchedulesMigrator(GetLecturersAsync)
                 {
                     Logger = Logger
                 };
 
-                IEnumerable<Schedule> affectedSchedules = await schedulesMigrator.MigrateAsync(
+                IEnumerable<Schedule> affectedSchedules = schedulesMigrator.MigrateAsync(
                     _schedules.Values
-                );
+                ).ToEnumerable();
 
                 LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
                 {
@@ -62,11 +62,6 @@ namespace SmtuSchedule.Core
 
         public Int32 GetScheduleIdBySearchRequest(String searchRequest)
         {
-            //if (_lecturers == null)
-            //{
-            //    throw new InvalidOperationException("Lecturers list is null.");
-            //}
-
             if (Int32.TryParse(searchRequest, out Int32 number))
             {
                 return number;
@@ -87,17 +82,10 @@ namespace SmtuSchedule.Core
             {
                 IsDownloadingInProgress = true;
 
-                //if (searchRequests == null)
-                //{
-                //    throw new ArgumentNullException("Provided search requests collection is null.");
-                //}
-
+                _lecturers ??= await GetLecturersAsync().ConfigureAwait(false);
                 if (_lecturers == null)
                 {
-                    if (await GetLecturersAsync().ConfigureAwait(false) == null)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 Int32[] schedulesIds = searchRequests.Select(r => GetScheduleIdBySearchRequest(r))
@@ -179,7 +167,7 @@ namespace SmtuSchedule.Core
 
         private readonly String _storagePath;
 
-        private Dictionary<String, Int32> _lecturers;
+        private IReadOnlyDictionary<String, Int32> _lecturers;
         private ConcurrentDictionary<Int32, Schedule> _schedules;
     }
 }

@@ -1,60 +1,70 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+// using Newtonsoft.Json;
+using SmtuSchedule.Core.Utilities;
+using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core.Models
 {
     public class Timetable
     {
-        [JsonProperty(Required = Required.DisallowNull)]
+        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Monday { get; set; }
 
-        [JsonProperty(Required = Required.DisallowNull)]
+        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Tuesday { get; set; }
 
-        [JsonProperty(Required = Required.DisallowNull)]
+        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Wednesday { get; set; }
 
-        [JsonProperty(Required = Required.DisallowNull)]
+        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Thursday { get; set; }
 
-        [JsonProperty(Required = Required.DisallowNull)]
+        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Friday { get; set; }
 
-        [JsonProperty(Required = Required.DisallowNull)]
+        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Saturday { get; set; }
 
-        public Subject[] GetSubjects(DayOfWeek day)
+        public void Validate()
         {
-            switch (day)
+            static Boolean IsEmpty(Subject[] subjects)
             {
-                case DayOfWeek.Monday:
-                    return Monday;
-
-                case DayOfWeek.Tuesday:
-                    return Tuesday;
-
-                case DayOfWeek.Wednesday:
-                    return Wednesday;
-
-                case DayOfWeek.Thursday:
-                    return Thursday;
-
-                case DayOfWeek.Friday:
-                    return Friday;
-
-                case DayOfWeek.Saturday:
-                    return Saturday;
-
-                default:
-                    return null;
+                return subjects == null || subjects.Length == 0;
             }
+
+            if (IsEmpty(Monday) && IsEmpty(Tuesday) && IsEmpty(Wednesday)
+                && IsEmpty(Thursday) && IsEmpty(Friday)
+                && IsEmpty(Saturday))
+            {
+                throw new ValidationException("Timetable is empty.");
+            }
+
+            Monday?.ForEach(s => s.Validate());
+            Tuesday?.ForEach(s => s.Validate());
+            Wednesday?.ForEach(s => s.Validate());
+            Thursday?.ForEach(s => s.Validate());
+            Friday?.ForEach(s => s.Validate());
+            Saturday?.ForEach(s => s.Validate());
         }
 
-        public void SetSubjects(DayOfWeek day, Subject[] subjects)
+        public Subject[] GetSubjects(DayOfWeek dayOfWeek) =>
+            dayOfWeek switch
+            {
+                DayOfWeek.Monday    => Monday,
+                DayOfWeek.Tuesday   => Tuesday,
+                DayOfWeek.Wednesday => Wednesday,
+                DayOfWeek.Thursday  => Thursday,
+                DayOfWeek.Friday    => Friday,
+                DayOfWeek.Saturday  => Saturday,
+                _ => null
+            };
+
+        public void SetSubjects(DayOfWeek dayOfWeek, Subject[] subjects)
         {
-            switch (day)
+            switch (dayOfWeek)
             {
                 case DayOfWeek.Monday:
                     Monday = subjects;
@@ -85,9 +95,16 @@ namespace SmtuSchedule.Core.Models
             }
         }
 
-        public IEnumerable<Lecturer> GetLecturers()
+        public IEnumerable<IScheduleReference> GetLecturers()
         {
-            List<Subject> subjects = new List<Subject>();
+            Int32 numberOfSubjects = Monday?.Length ?? 0
+                + Tuesday?.Length ?? 0
+                + Wednesday?.Length ?? 0
+                + Thursday?.Length ?? 0
+                + Friday?.Length ?? 0
+                + Saturday?.Length ?? 0;
+
+            List<Subject> subjects = new List<Subject>(numberOfSubjects);
 
             if (Monday != null)
             {

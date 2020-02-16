@@ -5,6 +5,6 @@ namespace SmtuSchedule.Core.Enumerations
         NotSet, // Тип расписания не задан (для миграции с версий ниже 0.9).
         Group,
         Lecturer,
-        Audience
+        Auditorium
     }
 }

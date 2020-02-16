@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net.NetworkInformation;
-//using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using SmtuSchedule.Core.Models;
 
 namespace SmtuSchedule.Core.Utilities
@@ -18,7 +18,7 @@ namespace SmtuSchedule.Core.Utilities
             try
             {
                 String json = await HttpHelper.GetAsync(url).ConfigureAwait(false);
-                return ReleaseDescription.FromJson(json);
+                return ReleaseDescription.FromJson(json).Validate();
             }
             catch
             {
@@ -26,28 +26,28 @@ namespace SmtuSchedule.Core.Utilities
             }
         }
 
-        //public static async Task<String> GetLatestVersionAsync()
-        //{
-        //    const String Url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/CHANGELOG.md";
+        public static async Task<String> GetLatestVersionAsync()
+        {
+            const String Url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/CHANGELOG.md";
 
-        //    try
-        //    {
-        //        String changeLog = await HttpHelper.GetAsync(Url).ConfigureAwait(false);
+            try
+            {
+                String changeLog = await HttpHelper.GetAsync(Url).ConfigureAwait(false);
 
-        //        // ## [Версия X.X.X]
-        //        Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");
-        //        if (!match.Success)
-        //        {
-        //            return null;
-        //        }
+                // ## [Версия X.X.X]
+                Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");
+                if (!match.Success)
+                {
+                    return null;
+                }
 
-        //        return match.Groups["version"].Value;
-        //    }
-        //    catch
-        //    {
-        //        return null;
-        //    }
-        //}
+                return match.Groups["version"].Value;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         // Если v1 > v2, вернется 1; если v1 = v2, вернется 0; если v1 < v2, вернется -1.
         public static Int32 CompareVersions(String version1, String version2)
@@ -70,7 +70,8 @@ namespace SmtuSchedule.Core.Utilities
 
         public static Boolean IsUniversitySiteConnectionAvailable(out String failReason)
         {
-            // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping в нем не работает.
+            // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping в нем не работает,
+            // что делает невозможным тестирование некоторых возможностей приложения в режиме отладки.
 #if DEBUG
             failReason = null;
             return true;

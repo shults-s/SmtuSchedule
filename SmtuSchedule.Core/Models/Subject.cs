@@ -1,41 +1,40 @@
 using System;
 using System.Diagnostics;
-using Newtonsoft.Json;
-//using Newtonsoft.Json.Converters;
-//using SmtuSchedule.Core.Utilities;
+using System.Text.Json.Serialization;
+// using Newtonsoft.Json;
+using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core.Models
 {
-    [DebuggerDisplay("{From.ToShortTimeString()}, {Week}: {Title}")]
+    [DebuggerDisplay("{From.ToShortTimeString()}, {Week}: {Title} @ {Group?.Name ?? Lecturer?.Name}")]
     public class Subject
     {
-        [JsonProperty(Required = Required.DisallowNull)]
+        // [JsonProperty(Required = Required.DisallowNull)]
         public Boolean IsDisplayed { get; set; }
 
-        //[JsonConverter(typeof(DateTimeConverter), "HH:mm")]
-        [JsonProperty(Required = Required.Always)]
+        // [JsonProperty(Required = Required.Always)]
         public DateTime From { get; set; }
 
-        //[JsonConverter(typeof(DateTimeConverter), "HH:mm")]
-        [JsonProperty(Required = Required.Always)]
+        // [JsonProperty(Required = Required.Always)]
         public DateTime To { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
-        public String Audience { get; set; }
+        // [JsonProperty("Audience", Required = Required.Always)]
+        [JsonPropertyName("Audience")]
+        public String Auditorium { get; set; }
 
-        //[JsonConverter(typeof(StringEnumConverter))]
-        [JsonProperty(Required = Required.Always)]
+        // [JsonProperty(Required = Required.Always)]
         public WeekType Week { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        // [JsonProperty(Required = Required.Always)]
         public String Title { get; set; }
 
-        [JsonProperty(Required = Required.DisallowNull)]
-        public Lecturer Lecturer { get; set; }
+        // [JsonProperty(Required = Required.DisallowNull)]
+        public Group Group { get; set; }
 
-        [JsonProperty(Required = Required.DisallowNull)]
-        public Lecturer Group { get; set; }
+        // [JsonProperty(Required = Required.DisallowNull)]
+        public Lecturer Lecturer { get; set; }
 
         // Проверяет, принадлежит ли данный момент времени занятию.
         public Boolean IsTimeInside(DateTime time)
@@ -52,6 +51,32 @@ namespace SmtuSchedule.Core.Models
             }
 
             return true;
+        }
+
+        public void Validate()
+        {
+            if (From == default(DateTime) || To == default(DateTime))
+            {
+                throw new ValidationException("Both properties From and To must be set.");
+            }
+
+            if (String.IsNullOrEmpty(Auditorium))
+            {
+                throw new ValidationException("Property Auditorium must be set.");
+            }
+
+            if (String.IsNullOrEmpty(Title))
+            {
+                throw new ValidationException("Property Title must be set.");
+            }
+
+            if (Group != null && Lecturer != null)
+            {
+                throw new ValidationException("Only one of properties Lecturer or Group must be set.");
+            }
+
+            (Group as IScheduleReference)?.Validate();
+            (Lecturer as IScheduleReference)?.Validate();
         }
     }
 }

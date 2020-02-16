@@ -16,21 +16,11 @@ namespace SmtuSchedule.Core
 
         public SchedulesMigrator(Func<Task<IReadOnlyDictionary<String, Int32>>> lecturersDownloaderCallback)
         {
-            //if (lecturersLoaderCallback == null)
-            //{
-            //    throw new ArgumentNullException("Provided lecturers downloader callback is null.");
-            //}
-
             _lecturersDownloaderCallback = lecturersDownloaderCallback;
         }
 
-        public async Task<IEnumerable<Schedule>> MigrateAsync(IEnumerable<Schedule> schedules)
+        public async IAsyncEnumerable<Schedule> MigrateAsync(IEnumerable<Schedule> schedules)
         {
-            //if (schedules == null)
-            //{
-            //    throw new ArgumentNullException("Provided schedules collection is null.");
-            //}
-
             HaveMigrationErrors = false;
 
             static Boolean RecoverMissedScheduleType(Schedule schedule)
@@ -56,7 +46,7 @@ namespace SmtuSchedule.Core
 
                 Boolean isScheduleAffected = false;
 
-                Lecturer[] nonScheduledLecturers = schedule.Timetable.GetLecturers()
+                IScheduleReference[] nonScheduledLecturers = schedule.Timetable.GetLecturers()
                     .Where(l => l.ScheduleId == 0)
                     .ToArray();
 
@@ -65,11 +55,7 @@ namespace SmtuSchedule.Core
                     return false;
                 }
 
-                if (lecturers == null)
-                {
-                    lecturers = await _lecturersDownloaderCallback().ConfigureAwait(false);
-                }
-
+                lecturers ??= await _lecturersDownloaderCallback().ConfigureAwait(false);
                 if (lecturers == null)
                 {
                     failedToLoadLecturers = true;
@@ -90,17 +76,13 @@ namespace SmtuSchedule.Core
                 return isScheduleAffected;
             }
 
-            List<Schedule> affectedSchedules = new List<Schedule>();
-
             foreach (Schedule schedule in schedules)
             {
                 if (RecoverMissedScheduleType(schedule) || await RecoverNonScheduledLecturersAsync(schedule))
                 {
-                    affectedSchedules.Add(schedule);
+                    yield return schedule;
                 }
             }
-
-            return affectedSchedules;
         }
 
         private readonly Func<Task<IReadOnlyDictionary<String, Int32>>> _lecturersDownloaderCallback;

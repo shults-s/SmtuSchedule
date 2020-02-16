@@ -1,6 +1,5 @@
 using System;
 using Android.OS;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Android.Content;
@@ -12,16 +11,6 @@ namespace SmtuSchedule.Android.Views
 {
     internal class CustomAlertDialog : AlertDialog
     {
-        //private class ScrollChangeListener : Java.Lang.Object, View.IOnScrollChangeListener
-        //{
-        //    public event Action<Int32> ScrollChanged;
-        //
-        //    public void OnScrollChange(View view, Int32 scrollX, Int32 scrollY, Int32 oldScrollX, Int32 oldScrollY)
-        //    {
-        //        ScrollChanged?.Invoke(scrollY);
-        //    }
-        //}
-
         public CustomAlertDialog(Context context) : base(context)
         {
             // Вместо "?android:attr/dialogPreferredPadding" в customDialogLayout.axml для уровней API ниже 22.
@@ -36,12 +25,6 @@ namespace SmtuSchedule.Android.Views
 
                 IWindowManager windowManager = (context as AppCompatActivity).WindowManager;
                 (Int32 width, Int32 height) = UiUtilities.GetScreenPixelSize(windowManager);
-
-                //Int32 maxDialogWidth = (Int32)(width * 0.9);
-                //if (Window.DecorView.Width > maxDialogWidth)
-                //{
-                //    layoutParameters.Width = maxDialogWidth;
-                //}
 
                 Int32 maxDialogHeight = (Int32)(height * 0.9);
                 if (Window.DecorView.Height > maxDialogHeight)
@@ -58,7 +41,10 @@ namespace SmtuSchedule.Android.Views
             SetView(_layout);
         }
 
-        public Button GetButton(DialogButtonType type) => GetButton((Int32)type);
+        public Button GetButton(DialogButtonType type)
+        {
+            return base.GetButton((Int32)type);
+        }
 
         public new CustomAlertDialog SetTitle(String title)
         {
@@ -84,23 +70,38 @@ namespace SmtuSchedule.Android.Views
             return this;
         }
 
-        public new CustomAlertDialog SetMessage(String message)
+        public CustomAlertDialog SetMessage(Int32 messageId, Boolean useMarkdownFormatting = true)
         {
-            return SetMessage(new Java.Lang.String(message));
+            return SetMessage(Context.Resources.GetString(messageId), useMarkdownFormatting);
         }
 
-        public CustomAlertDialog SetMessage(Int32 messageId)
+        public CustomAlertDialog SetMessage(String message, Boolean useMarkdownFormatting = true)
         {
-            return SetMessage(Context.GetTextFormatted(messageId));
+            if (useMarkdownFormatting)
+            {
+                return SetMessage(message.FromMarkdown(), true);
+            }
+
+            return SetMessage(new Java.Lang.String(message), false);
         }
 
-        public new CustomAlertDialog SetMessage(Java.Lang.ICharSequence message)
+        public CustomAlertDialog SetMessage(Java.Lang.ICharSequence message, Boolean enableLinks = true)
         {
             View.Inflate(Context, Resource.Layout.dialogMessage, _layout);
 
             TextView textView = _layout.FindViewById<TextView>(Resource.Id.dialogMessageTextView);
-            textView.MovementMethod = LinkMovementMethod.Instance;
-            textView.TextFormatted = message.Trim().StripUrlUnderlines();
+
+            if (enableLinks)
+            {
+                textView.MovementMethod = LinkMovementMethod.Instance;
+                textView.TextFormatted = message.StripUrlUnderlines();
+            }
+            else
+            {
+                textView.TextFormatted = message;
+            }
+
+            textView.TextFormatted = textView.TextFormatted.Trim();
 
             return this;
         }
@@ -130,7 +131,7 @@ namespace SmtuSchedule.Android.Views
 
         public CustomAlertDialog SetPositiveButton(Int32 textId, Action callback = null)
         {
-            SetButton(DialogButtonType.Positive, Context.GetString(textId), callback);
+            SetButton(DialogButtonType.Positive, Context.Resources.GetString(textId), callback);
             return this;
         }
 
@@ -142,7 +143,7 @@ namespace SmtuSchedule.Android.Views
 
         public CustomAlertDialog SetNegativeButton(Int32 textId, Action callback = null)
         {
-            SetButton(DialogButtonType.Negative, Context.GetString(textId), callback);
+            SetButton(DialogButtonType.Negative, Context.Resources.GetString(textId), callback);
             return this;
         }
 
@@ -170,25 +171,13 @@ namespace SmtuSchedule.Android.Views
                 throw new InvalidOperationException("To use this method, you must set a message.");
             }
 
-            void OnScrollChanged(Int32 scrollY)
+            ShowEvent += (s, e) => GetButton(DialogButtonType.Positive).Enabled = false;
+
+            view.ScrollChange += (s, e) =>
             {
-                Double scrollingSpace = view.GetChildAt(0).Height - view.Height;
-                GetButton((Int32)DialogButtonType.Positive).Enabled = (scrollingSpace <= scrollY);
-            }
-
-            //if (Build.VERSION.SdkInt < BuildVersionCodes.LollipopMr1)
-            //{
-            //    ScrollChangeListener listener = new ScrollChangeListener();
-            //    listener.ScrollChanged += OnScrollChanged;
-            //    view.SetOnScrollChangeListener(listener);
-            //}
-            //else
-            //{
-            //    view.ScrollChange += (s, e) => OnScrollChanged(e.ScrollY);
-            //}
-
-            view.ScrollChange += (s, e) => OnScrollChanged(e.ScrollY);
-            ShowEvent += (s, e) => base.GetButton((Int32)DialogButtonType.Positive).Enabled = false;
+                Double scrollingSpaceHeight = view.GetChildAt(0).Height - view.Height;
+                GetButton(DialogButtonType.Positive).Enabled = (scrollingSpaceHeight <= e.ScrollY);
+            };
 
             return this;
         }

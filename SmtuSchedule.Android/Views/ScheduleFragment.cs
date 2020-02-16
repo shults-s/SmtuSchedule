@@ -11,6 +11,7 @@ using Android.Graphics;
 using Android.Text.Method;
 using Android.Support.V4.App;
 using SmtuSchedule.Core.Models;
+using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Enumerations;
 using SmtuSchedule.Android.Utilities;
 using SmtuSchedule.Android.Interfaces;
@@ -89,12 +90,12 @@ namespace SmtuSchedule.Android.Views
                 IEnumerable<Subject> relatedSubjects = null;
                 Int32 numberOfRelatedSubjects = 0;
 
-                if (schedule.Type == ScheduleType.Lecturer || schedule.Type == ScheduleType.Audience)
+                if (schedule.Type == ScheduleType.Lecturer || schedule.Type == ScheduleType.Auditorium)
                 {
                     relatedSubjects = subjects.Skip(i + 1).Where(
                         s => s.From == subject.From
                         && s.To == subject.To
-                        && s.Audience == subject.Audience
+                        && s.Auditorium == subject.Auditorium
                     );
 
                     numberOfRelatedSubjects = relatedSubjects.Count();
@@ -184,30 +185,12 @@ namespace SmtuSchedule.Android.Views
             // щелкнули. Проблема решается присвоением каждому экземпляру поля уникального идентификатора.
             lecturer.Id = View.GenerateViewId();
 
-            TextView audienceView = layout.FindViewById<TextView>(Resource.Id.subjectAudienceTextView);
-            audienceView.Text = subject.Audience;
+            TextView auditorium = layout.FindViewById<TextView>(Resource.Id.subjectAuditoriumTextView);
+            auditorium.Text = subject.Auditorium;
 
             if (_application.Preferences.DisplaySubjectEndTime)
             {
-                // Высота левой ячейки (match_parent) определяется высотой правой ячейки (wrap_content),
-                // с целью выровнять их по высоте для корректного позиционирования номера аудитории.
-                // Если фактическая высота левой ячейки меньше, чем требуется ее содержимому,
-                // то оно будет перекрываться. На этапе рендеринга, когда уже известно сколько места
-                // при данном тексте и ширине экрана займет название предмета, высота его контейнера
-                // задается так, чтобы высота правой ячейки превосходила высоту содержимого левой.
-                // Эта ситуация возникает только если включено отображаение времени окончания занятий
-                // и при этом название предмета умещается в одну строку.
-                //title.ViewTreeObserver.PreDraw += (s, e) =>
-                //{
-                //    if (title.LineCount < 2)
-                //    {
-                //        title.SetLines(2);
-                //    }
-
-                //    e.Handled = true;
-                //};
-
-                // Эта реализация, в отличие от предыдущей, не вызывает лагов при перелистывании.
+                // Поле lecturer выравнивается на одной высоте с audience при однострочном значении title.
                 title.SetMinLines(2);
 
                 times.Append("\n");
@@ -216,7 +199,9 @@ namespace SmtuSchedule.Android.Views
 
             if (relatedSubjects == null)
             {
-                Lecturer lecturerOrGroup = subject.Lecturer ?? subject.Group;
+                IScheduleReference lecturerOrGroup = subject.Lecturer as IScheduleReference
+                    ?? subject.Group as IScheduleReference;
+
                 if (lecturerOrGroup != null)
                 {
                     lecturer.Text = lecturerOrGroup.Name;
@@ -233,25 +218,24 @@ namespace SmtuSchedule.Android.Views
                 return span;
             }
 
-            using (SpannableStringBuilder builder = new SpannableStringBuilder(_multiGroupsPrefix + " "))
+            using SpannableStringBuilder builder = new SpannableStringBuilder(_multiGroupsPrefix + " ");
+
+            Int32 scheduleId = subject.Group.ScheduleId;
+
+            CustomClickableSpan schedulesSwitcherSpan = CreateSwitchSchedulesClickableSpan(scheduleId);
+            builder.Append(scheduleId.ToString(), schedulesSwitcherSpan, SpanTypes.ExclusiveExclusive);
+
+            foreach (Subject relatedSubject in relatedSubjects)
             {
-                Int32 scheduleId = subject.Group.ScheduleId;
+                scheduleId = relatedSubject.Group.ScheduleId;
 
-                CustomClickableSpan schedulesSwitcher = CreateSwitchSchedulesClickableSpan(scheduleId);
-                builder.Append(scheduleId.ToString(), schedulesSwitcher, SpanTypes.ExclusiveExclusive);
+                builder.Append(", ");
 
-                foreach (Subject relatedSubject in relatedSubjects)
-                {
-                    scheduleId = relatedSubject.Group.ScheduleId;
-
-                    builder.Append(", ");
-
-                    schedulesSwitcher = CreateSwitchSchedulesClickableSpan(scheduleId);
-                    builder.Append(scheduleId.ToString(), schedulesSwitcher, SpanTypes.ExclusiveExclusive);
-                }
-
-                lecturer.SetText(builder, TextView.BufferType.Spannable);
+                schedulesSwitcherSpan = CreateSwitchSchedulesClickableSpan(scheduleId);
+                builder.Append(scheduleId.ToString(), schedulesSwitcherSpan, SpanTypes.ExclusiveExclusive);
             }
+
+            lecturer.SetText(builder, TextView.BufferType.Spannable);
 
             return layout;
         }

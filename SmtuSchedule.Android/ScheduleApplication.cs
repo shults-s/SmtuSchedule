@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Android.OS;
 using Android.App;
 using Android.Runtime;
+using Android.Content.PM;
+using Android.Gms.Common;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Analytics;
@@ -13,6 +15,7 @@ using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Android.Utilities;
+using SmtuSchedule.Android.Enumerations;
 
 using Environment = Android.OS.Environment;
 
@@ -58,24 +61,20 @@ namespace SmtuSchedule.Android
 
             IsInitialized = false;
 
-            _logsDirectoryPath = GetExternalStoragePath() + "/Logs/";
+            _logsDirectoryPath = GetModernExternalStoragePath() + "/Logs/";
         }
 
         public override void OnCreate()
         {
             base.OnCreate();
 
+            NotificationsHelper.CreateNotificationsChannels(this);
+
 #if !DEBUG
-            //if (!Preferences.AllowSendingCrashReports)
-            //{
-            //    return ;
-            //}
-
-            AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
-
             Logger.ExceptionLogged += (e) =>
             {
-                if (e is LecturersLoaderException || e is SchedulesLoaderException)
+                if (e is LecturersLoaderException || e is SchedulesLoaderException
+                    || e is SchedulesReaderException)
                 {
                     Crashes.TrackError(e);
                 }
@@ -86,7 +85,7 @@ namespace SmtuSchedule.Android
                 FileInfo[] files = null;
                 try
                 {
-                    files = new DirectoryInfo(_logsDirectoryPath).GetFiles();
+                    files = new DirectoryInfo(_logsDirectoryPath).GetFiles("*.log");
                 }
                 catch
                 {
@@ -120,6 +119,8 @@ namespace SmtuSchedule.Android
                 };
             };
 
+            AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
+
             ProcessLifecycleListener listener = new ProcessLifecycleListener();
             listener.Started += () => Analytics.TrackEvent("The application is started");
             listener.Stopped += () => Analytics.TrackEvent("The application is stopped");
@@ -137,35 +138,90 @@ namespace SmtuSchedule.Android
             return PackageManager.GetPackageInfo(PackageName, 0).VersionName;
         }
 
-        public String GetExternalStoragePath()
+        public String GetLegacyExternalStoragePath()
         {
+#pragma warning disable CS0618
             return String.Format(
                 "{0}/{1}/",
                 Environment.ExternalStorageDirectory.AbsolutePath,
                 Resources.GetString(Resource.String.applicationCompleteName)
             );
+#pragma warning restore CS0618
+        }
+
+        public String GetModernExternalStoragePath()
+        {
+            return Context.GetExternalFilesDir(null).AbsolutePath;
         }
 
         public String GetInternalStoragePath() => FilesDir.AbsolutePath + "/";
 
-        public Boolean Initialize()
+        public Boolean Initialize(out InitializationStatus status)
         {
-            String externalStoragePath = GetExternalStoragePath();
-            if (!Directory.Exists(externalStoragePath))
+            String modernSchedulesPath = GetModernExternalStoragePath() + "/Schedules/";
+            String legacySchedulesPath = GetLegacyExternalStoragePath();
+
+            status = InitializationStatus.Success;
+
+            if (!Directory.Exists(modernSchedulesPath))
             {
                 try
                 {
-                    Directory.CreateDirectory(externalStoragePath);
+                    Directory.CreateDirectory(modernSchedulesPath);
                 }
-                catch
+                catch(Exception exception)
                 {
+                    status = InitializationStatus.FailedToCreateDirectory;
+#if !DEBUG
+                    Crashes.TrackError(exception);
+#endif
                     return false;
                 }
             }
 
-            Manager = new SchedulesManager(externalStoragePath) { Logger = Logger };
+            if (Directory.Exists(legacySchedulesPath))
+            {
+                try
+                {
+                    FileInfo[] files = new DirectoryInfo(legacySchedulesPath)
+                        .GetFiles("*.json");
 
-            return IsInitialized = true;
+                    foreach (FileInfo file in files)
+                    {
+                        file.MoveTo(modernSchedulesPath + file.Name);
+                    }
+                }
+                catch(Exception exception)
+                {
+                    status = InitializationStatus.FailedToMoveSchedules;
+#if !DEBUG
+                    Crashes.TrackError(exception);
+#endif
+                    return false;
+                }
+
+                try
+                {
+                    String legacyLogsPath = legacySchedulesPath + "/Logs/";
+                    if (Directory.Exists(legacyLogsPath))
+                    {
+                        Directory.Delete(legacyLogsPath, true);
+                    }
+
+                    Directory.Delete(legacySchedulesPath);
+                }
+                catch (Exception exception)
+                {
+                    status = InitializationStatus.FailedToRemoveDirectory;
+#if !DEBUG
+                    Crashes.TrackError(exception);
+#endif
+                }
+            }
+
+            Manager = new SchedulesManager(modernSchedulesPath) { Logger = Logger };
+
+            return (IsInitialized = true);
         }
 
         public Task SaveLogAsync(Boolean isCrashLog = false)
@@ -198,6 +254,19 @@ namespace SmtuSchedule.Android
                 DateTime storingTime = DateTime.Today.AddDays(-7);
                 files.Where(f => f.LastWriteTime < storingTime).ForEach(f => f.Delete());
             });
+        }
+
+        public Boolean IsPlayStoreInstalled()
+        {
+            try
+            {
+                PackageManager.GetPackageInfo(GooglePlayServicesUtil.GooglePlayStorePackage, 0);
+                return true;
+            }
+            catch (PackageManager.NameNotFoundException)
+            {
+                return false;
+            }
         }
 
         private readonly String _logsDirectoryPath;

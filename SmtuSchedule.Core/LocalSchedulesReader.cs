@@ -15,11 +15,6 @@ namespace SmtuSchedule.Core
 
         public Dictionary<Int32, Schedule> Read(String storagePath)
         {
-            //if (storagePath == null)
-            //{
-            //    throw new ArgumentNullException("Provided storage path is null.");
-            //}
-
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
 
             HaveReadingErrors = false;
@@ -29,7 +24,7 @@ namespace SmtuSchedule.Core
             {
                 filePaths = Directory.GetFiles(storagePath, "*.json");
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 HaveReadingErrors = true;
 
@@ -44,6 +39,7 @@ namespace SmtuSchedule.Core
                 try
                 {
                     Schedule schedule = Schedule.FromJson(File.ReadAllText(filePath));
+                    schedule.Validate();
 
                     if (schedules.ContainsKey(schedule.ScheduleId))
                     {
@@ -52,7 +48,7 @@ namespace SmtuSchedule.Core
 
                     schedules[schedule.ScheduleId] = schedule;
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
                     HaveReadingErrors = true;
 

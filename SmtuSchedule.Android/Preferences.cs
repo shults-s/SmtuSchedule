@@ -7,13 +7,11 @@ namespace SmtuSchedule.Android
 {
     internal class Preferences : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
     {
-        public event Action ThemeChanged;
-
         public FeatureDiscoveryState FeatureDiscoveryState { get; private set; }
 
-        //public Boolean AllowSendingCrashReports { get; private set; }
+        // public Boolean CheckUpdatesOnStart { get; private set; }
 
-        public Boolean CheckUpdatesOnStart { get; private set; }
+        public Boolean ReplayFeatureDiscovery { get; private set; }
 
         public Boolean UseFabDateSelector { get; private set; }
 
@@ -31,27 +29,26 @@ namespace SmtuSchedule.Android
 
         public Int32 LastSeenUpdateVersion { get; private set; }
 
-        //public Int32 LastSeenWelcomeVersion { get; private set; }
-
-        public Boolean StoreReleaseNoticeViewed { get; private set; }
+        public event Action ThemeChanged;
 
         public Preferences(Context context)
         {
             _preferences = PreferenceManager.GetDefaultSharedPreferences(context);
             _preferences.RegisterOnSharedPreferenceChangeListener(this);
 
-            FeatureDiscoveryState = (FeatureDiscoveryState)_preferences.GetInt("FeatureDiscoveryState", 0);
+            ReplayFeatureDiscovery = _preferences.GetBoolean("ReplayFeatureDiscovery", false);
+            if (ReplayFeatureDiscovery)
+            {
+                SetFeatureDiscoveryState(FeatureDiscoveryState.NothingDiscovered);
+                SetReplayFeatureDiscovery(false);
+            }
+            else
+            {
+                Int32 state = _preferences.GetInt("FeatureDiscoveryState", 0);
+                FeatureDiscoveryState = (FeatureDiscoveryState)state;
+            }
 
-            // Обработка конфигурации предыдущих релизов, где версия представляла из себя строку.
-            //try
-            //{
-            //    LastSeenWelcomeVersion = _preferences.GetInt("LastSeenWelcomeVersion", 0);
-            //}
-            //catch (Java.Lang.ClassCastException)
-            //{
-            //    SetLastSeenWelcomeVersion(0);
-            //}
-
+            // Обработка конфигурации предыдущих релизов, где версия представляла собой строку.
             try
             {
                 LastSeenUpdateVersion = _preferences.GetInt("LastSeenUpdateVersion", 0);
@@ -77,10 +74,8 @@ namespace SmtuSchedule.Android
 
             UseDarkTheme = _preferences.GetBoolean("UseDarkTheme", false);
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", true);
-            CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
+            // CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
             DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
-            //AllowSendingCrashReports = _preferences.GetBoolean("AllowSendingCrashReports", true);
-            StoreReleaseNoticeViewed = _preferences.GetBoolean("StoreReleaseNoticeViewed", false);
         }
 
         public void SetFeatureDiscoveryState(FeatureDiscoveryState featureDiscoveryState)
@@ -92,23 +87,14 @@ namespace SmtuSchedule.Android
             FeatureDiscoveryState = featureDiscoveryState;
         }
 
-        public void SetStoreReleaseNoticeViewed(Boolean storeReleaseNoticeViewed)
+        public void SetReplayFeatureDiscovery(Boolean replayFeatureDiscovery)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutBoolean("StoreReleaseNoticeViewed", storeReleaseNoticeViewed);
+            editor.PutBoolean("ReplayFeatureDiscovery", replayFeatureDiscovery);
             editor.Apply();
 
-            StoreReleaseNoticeViewed = storeReleaseNoticeViewed;
+            ReplayFeatureDiscovery = replayFeatureDiscovery;
         }
-
-        //public void SetLastSeenWelcomeVersion(Int32 lastSeenWelcomeVersion)
-        //{
-        //    ISharedPreferencesEditor editor = _preferences.Edit();
-        //    editor.PutInt("LastSeenWelcomeVersion", lastSeenWelcomeVersion);
-        //    editor.Apply();
-
-        //    LastSeenWelcomeVersion = lastSeenWelcomeVersion;
-        //}
 
         public void SetLastMigrationVersion(Int32 lastMigrationVersion)
         {
@@ -141,9 +127,19 @@ namespace SmtuSchedule.Android
         {
             switch (key)
             {
-                case "CheckUpdatesOnStart":
-                    CheckUpdatesOnStart = preferences.GetBoolean("CheckUpdatesOnStart", true);
+                case "FeatureDiscoveryState":
+                case "CurrentScheduleId":
+                case "LastMigrationVersion":
+                case "LastSeenUpdateVersion":
                     break;
+
+                case "UpperWeekDate":
+                    UpperWeekDate = new DateTime(preferences.GetLong("UpperWeekDate", 0));
+                    break;
+
+                // case "CheckUpdatesOnStart":
+                //     CheckUpdatesOnStart = preferences.GetBoolean("CheckUpdatesOnStart", true);
+                //     break;
 
                 case "UseFabDateSelector":
                     UseFabDateSelector = preferences.GetBoolean("UseFabDateSelector", true);
@@ -158,25 +154,9 @@ namespace SmtuSchedule.Android
                     DisplaySubjectEndTime = preferences.GetBoolean("DisplaySubjectEndTime", false);
                     break;
 
-                case "UpperWeekDate":
-                    UpperWeekDate = new DateTime(preferences.GetLong("UpperWeekDate", 0));
+                case "ReplayFeatureDiscovery":
+                    ReplayFeatureDiscovery = preferences.GetBoolean("ReplayFeatureDiscovery", false);
                     break;
-
-                //case "AllowSendingCrashReports":
-                //    AllowSendingCrashReports = preferences.GetBoolean("AllowSendingCrashReports", true);
-                //    break;
-
-                case "CurrentScheduleId":
-                case "FeatureDiscoveryState":
-                case "LastMigrationVersion":
-                case "LastSeenUpdateVersion":
-                //case "LastSeenWelcomeVersion":
-                case "StoreReleaseNoticeViewed":
-                    break;
-
-                //default:
-                //    throw new NotSupportedException(
-                //        $"Changing parameter \"{key}\" via preferences screen is not supported for now.");
             }
         }
 

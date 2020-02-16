@@ -12,6 +12,8 @@ using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Core.Enumerations;
 
+using Group = SmtuSchedule.Core.Models.Group;
+
 namespace SmtuSchedule.Core
 {
     internal class ServerSchedulesLoader
@@ -61,11 +63,6 @@ namespace SmtuSchedule.Core
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
             HaveDownloadingErrors = false;
 
-            //if (schedulesIds == null)
-            //{
-            //    throw new ArgumentNullException("Provided schedules id's collection is null.");
-            //}
-
             if (_lecturers == null)
             {
                 Logger?.Log(
@@ -79,21 +76,6 @@ namespace SmtuSchedule.Core
                 return schedules;
             }
 
-            //IEnumerable<Int32> ConvertSearchRequestsToSchedulesIds(IEnumerable<String> requests)
-            //{
-            //    foreach (String request in requests)
-            //    {
-            //        if (Int32.TryParse(request, out Int32 number))
-            //        {
-            //            yield return number;
-            //        }
-            //        else if (_lecturers.ContainsKey(request))
-            //        {
-            //            yield return _lecturers[request];
-            //        }
-            //    }
-            //}
-
             async Task<Boolean> DownloadAsync(IEnumerable<Int32> schedulesIdsLocal)
             {
                 foreach (Int32 scheduleId in schedulesIdsLocal)
@@ -101,9 +83,11 @@ namespace SmtuSchedule.Core
                     try
                     {
                         Schedule schedule = await DownloadScheduleAsync(scheduleId).ConfigureAwait(false);
+                        schedule.Validate();
+
                         schedules[scheduleId] = schedule;
                     }
-                    catch(HttpRequestException exception)
+                    catch (HttpRequestException exception)
                     {
                         HaveDownloadingErrors = true;
                         Logger?.Log(
@@ -126,11 +110,11 @@ namespace SmtuSchedule.Core
                 return false;
             }
 
-            IEnumerable<Int32> GetRelatedLecturersSchedulesIds(IEnumerable<Schedule> downloadedSchedules)
+            static IEnumerable<Int32> GetRelatedLecturersSchedulesIds(IEnumerable<Schedule> schedulesLocal)
             {
                 List<Int32> schedulesIdsLocal = new List<Int32>();
 
-                foreach (Schedule schedule in downloadedSchedules)
+                foreach (Schedule schedule in schedulesLocal)
                 {
                     if (schedule.Type != ScheduleType.Group)
                     {
@@ -144,7 +128,6 @@ namespace SmtuSchedule.Core
                 return schedulesIdsLocal;
             }
 
-            //IEnumerable<Int32> requestedSchedulesIds = ConvertSearchRequestsToSchedulesIds(searchRequests);
             Boolean hasNetworkError = await DownloadAsync(schedulesIds).ConfigureAwait(false);
 
             if (!hasNetworkError && shouldDownloadRelatedLecturersSchedules)
@@ -162,7 +145,7 @@ namespace SmtuSchedule.Core
             const String GroupScheduleBaseUrl = "https://www.smtu.ru/ru/viewschedule/";
 
             // На входе: ЧЧ:ММ-ЧЧ:ММ[<br><span class="s_small">Вид недели</span>]
-            void ParseTime(HtmlNode td, out DateTime from, out DateTime to, out WeekType type)
+            static void ParseTime(HtmlNode td, out DateTime from, out DateTime to, out WeekType type)
             {
                 String weekType = td.Element("span")?.InnerText.Trim();
                 String timeRange = td.InnerHtml.Trim();
@@ -183,20 +166,20 @@ namespace SmtuSchedule.Core
             }
 
             // На входе: Корпус Аудитория[Литера]|Корпус каф.[ФВ|ВК|...]|Корпус Лаборатория
-            String ParseAudience(HtmlNode td)
+            static String ParseAuditorium(HtmlNode td)
             {
-                String audience = td.InnerText.Trim().Replace(' ', '-').ToUpper(Culture);
+                String auditorium = td.InnerText.Trim().Replace(' ', '-').ToUpper(Culture);
 
-                if (!audience.Contains('.'))
+                if (!auditorium.Contains('.'))
                 {
-                    return audience;
+                    return auditorium;
                 }
 
-                return audience.Substring(0, audience.IndexOf('.'));
+                return auditorium.Substring(0, auditorium.IndexOf('.'));
             }
 
             // На входе: Название предмета<br><span class="s_small">Вид занятия</span>
-            String ParseTitle(HtmlNode td)
+            static String ParseTitle(HtmlNode td)
             {
                 String subject = td.InnerHtml.Substring(0, td.InnerHtml.IndexOf('<'));
                 String studyType = Studies[td.Element("span").InnerText.Trim()];
@@ -283,7 +266,7 @@ namespace SmtuSchedule.Core
                     HtmlNode[] cells = row.Elements("td").ToArray();
 
                     ParseTime(cells[0], out DateTime from, out DateTime to, out WeekType week);
-                    String audience = ParseAudience(cells[1]);
+                    String auditorium = ParseAuditorium(cells[1]);
                     String title = ParseTitle(cells[2]);
 
                     Subject subject = new Subject()
@@ -293,7 +276,7 @@ namespace SmtuSchedule.Core
                         To = to,
                         Week = week,
                         Title = title,
-                        Audience = audience
+                        Auditorium = auditorium
                     };
 
                     ParseLecturerOrGroup(
@@ -304,7 +287,7 @@ namespace SmtuSchedule.Core
 
                     if (scheduleType == ScheduleType.Lecturer)
                     {
-                        subject.Group = new Lecturer(lecturerOrGroupName, lecturerOrGroupScheduleId);
+                        subject.Group = new Group(lecturerOrGroupName, lecturerOrGroupScheduleId);
                     }
                     else
                     {

@@ -13,6 +13,11 @@ namespace SmtuSchedule.Android.Views
     {
         private class PreferencesFragment : PreferenceFragmentCompat
         {
+            public override void OnCreatePreferences(Bundle savedInstanceState, String rootKey)
+            {
+                AddPreferencesFromResource(Resource.Xml.preferences);
+            }
+
             public override void OnDisplayPreferenceDialog(Preference preference)
             {
                 PreferenceDialogFragmentCompat fragment = null;
@@ -30,11 +35,6 @@ namespace SmtuSchedule.Android.Views
 
                 fragment.SetTargetFragment(this, 0);
                 fragment.Show(FragmentManager, "Shults.SmtuSchedule.PreferenceDialogFragment");
-            }
-
-            public override void OnCreatePreferences(Bundle savedInstanceState, String rootKey)
-            {
-                AddPreferencesFromResource(Resource.Xml.preferences);
             }
         }
 

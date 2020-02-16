@@ -2,17 +2,11 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <!--<item
-        android:id="@+id/removeCurrentScheduleMenuItem"
-        android:visible="false"
-        android:icon="@drawable/delete"
-        android:title="@string/removeCurrentScheduleMenuItem"
-        app:showAsAction="always" />-->
     <item
-        android:id="@+id/selectScheduleDateMenuItem"
+        android:id="@+id/selectViewingDateMenuItem"
         android:visible="false"
         android:icon="@drawable/calendar"
-        android:title="@string/selectScheduleDateMenuItem"
+        android:title="@string/selectViewingDateMenuItem"
         app:showAsAction="always" />
     <item
         android:id="@+id/downloadSchedulesMenuItem"
@@ -21,8 +15,8 @@
         android:title="@string/downloadSchedulesMenuItem"
         app:showAsAction="never" />
     <item
-        android:id="@+id/openPreferencesMenuItem"
-        android:title="@string/openPreferencesMenuItem"
+        android:id="@+id/startPreferencesMenuItem"
+        android:title="@string/startPreferencesMenuItem"
         app:showAsAction="never" />
     <item
         android:id="@+id/aboutApplicationMenuItem"
