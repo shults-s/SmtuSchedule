@@ -97,7 +97,14 @@ namespace SmtuSchedule.Core.Models
 
         public IEnumerable<IScheduleReference> GetLecturers()
         {
-            List<Subject> subjects = new List<Subject>();
+            Int32 numberOfSubjects = Monday?.Length ?? 0
+                + Tuesday?.Length ?? 0
+                + Wednesday?.Length ?? 0
+                + Thursday?.Length ?? 0
+                + Friday?.Length ?? 0
+                + Saturday?.Length ?? 0;
+
+            List<Subject> subjects = new List<Subject>(numberOfSubjects);
 
             if (Monday != null)
             {
