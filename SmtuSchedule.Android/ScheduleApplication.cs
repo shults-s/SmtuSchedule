@@ -68,10 +68,7 @@ namespace SmtuSchedule.Android
         {
             base.OnCreate();
 
-            if (Preferences.LastSeenUpdateVersion == 0)
-            {
-                NotificationsHelper.CreateNotificationsChannels(this);
-            }
+            NotificationsHelper.CreateNotificationsChannels(this);
 
 #if !DEBUG
             Logger.ExceptionLogged += (e) =>
