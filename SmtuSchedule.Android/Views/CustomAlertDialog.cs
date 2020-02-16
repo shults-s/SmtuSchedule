@@ -131,7 +131,7 @@ namespace SmtuSchedule.Android.Views
 
         public CustomAlertDialog SetPositiveButton(Int32 textId, Action callback = null)
         {
-            SetButton(DialogButtonType.Positive, Context.GetString(textId), callback);
+            SetButton(DialogButtonType.Positive, Context.Resources.GetString(textId), callback);
             return this;
         }
 
@@ -143,7 +143,7 @@ namespace SmtuSchedule.Android.Views
 
         public CustomAlertDialog SetNegativeButton(Int32 textId, Action callback = null)
         {
-            SetButton(DialogButtonType.Negative, Context.GetString(textId), callback);
+            SetButton(DialogButtonType.Negative, Context.Resources.GetString(textId), callback);
             return this;
         }
 

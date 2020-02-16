@@ -567,8 +567,8 @@ namespace SmtuSchedule.Android.Views
                     targets.Add(
                         TapTarget.ForView(
                             _toolbarTitle,
-                            GetString(Resource.String.schedulesManagementFeatureDiscoveryTitle),
-                            GetString(Resource.String.schedulesManagementFeatureDiscoveryMessage)
+                            Resources.GetString(Resource.String.schedulesManagementFeatureDiscoveryTitle),
+                            Resources.GetString(Resource.String.schedulesManagementFeatureDiscoveryMessage)
                         )
                         .Stylize()
                         .Id((Int32)FeatureDiscoveryState.SchedulesManagement)
@@ -582,8 +582,8 @@ namespace SmtuSchedule.Android.Views
                     {
                         dateTarget = TapTarget.ForView(
                             _fab,
-                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
-                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
+                            Resources.GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
+                            Resources.GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
                         )
                         .TintTarget(false);
                     }
@@ -592,8 +592,8 @@ namespace SmtuSchedule.Android.Views
                         dateTarget = TapTarget.ForToolbarMenuItem(
                             _toolbar,
                             Resource.Id.selectViewingDateMenuItem,
-                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
-                            GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
+                            Resources.GetString(Resource.String.scheduleChangeDateFeatureDiscoveryTitle),
+                            Resources.GetString(Resource.String.scheduleChangeDateFeatureDiscoveryMessage)
                         );
                     }
 
@@ -612,8 +612,7 @@ namespace SmtuSchedule.Android.Views
                 state |= (FeatureDiscoveryState)id
             );
 
-            new TapTargetSequence(this).Targets(targets).Listener(listener).ContinueOnCancel(true)
-                .Start();
+            new TapTargetSequence(this).Targets(targets).Listener(listener).ContinueOnCancel(true).Start();
         }
 
         private void UpdateToolbarMenu()
@@ -915,18 +914,18 @@ namespace SmtuSchedule.Android.Views
             FeatureDiscoveryState state = _application.Preferences.FeatureDiscoveryState;
             if (!state.HasFlag(FeatureDiscoveryState.ApplicationSettings))
             {
-                Button positiveButton = dialog.GetButton(DialogButtonType.Positive);
-                TapTarget settingsTarget = TapTarget.ForView(
-                    positiveButton,
-                    GetString(Resource.String.applicationSettingsFeatureDiscoveryTitle),
-                    GetString(Resource.String.applicationSettingsFeatureDiscoveryMessage)
-                )
-                .Stylize();
-
                 TapTargetViewListener listener = new TapTargetViewListener();
                 listener.Clicked += () => _application.Preferences.SetFeatureDiscoveryState(
                     state | FeatureDiscoveryState.ApplicationSettings
                 );
+
+                Button positiveButton = dialog.GetButton(DialogButtonType.Positive);
+                TapTarget settingsTarget = TapTarget.ForView(
+                    positiveButton,
+                    Resources.GetString(Resource.String.applicationSettingsFeatureDiscoveryTitle),
+                    Resources.GetString(Resource.String.applicationSettingsFeatureDiscoveryMessage)
+                )
+                .Stylize();
 
                 TapTargetView.ShowFor(dialog, settingsTarget, listener);
             }
