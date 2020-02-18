@@ -18,14 +18,17 @@ namespace SmtuSchedule.Core
 
         public SchedulesManager(String storagePath) => _storagePath = storagePath;
 
-        public async Task<IReadOnlyDictionary<String, Int32>> GetLecturersAsync()
+        public Task<IReadOnlyDictionary<String, Int32>> GetLecturersAsync()
         {
-            if (_lecturers != null)
+            return Task.Run(async () =>
             {
-                return _lecturers;
-            }
+                if (_lecturers != null)
+                {
+                    return _lecturers;
+                }
 
-            return (_lecturers = await LecturersLoader.DownloadAsync(Logger).ConfigureAwait(false));
+                return (_lecturers = await LecturersLoader.DownloadAsync(Logger).ConfigureAwait(false));
+            });
         }
 
         public Task<Boolean> MigrateSchedulesAsync()

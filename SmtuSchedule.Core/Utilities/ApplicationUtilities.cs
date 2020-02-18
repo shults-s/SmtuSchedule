@@ -42,43 +42,48 @@ namespace SmtuSchedule.Core.Utilities
             }
         }
 
-        public static async Task<ReleaseDescription> GetLatestReleaseDescription()
+        public static Task<ReleaseDescription> GetLatestReleaseDescription()
         {
-            const String Url = RepositoryRawUrl + "SmtuSchedule.Android/Release.json";
-
-            try
+            return Task.Run(async () =>
             {
-                String json = await HttpUtilities.GetAsync(Url).ConfigureAwait(false);
-                return ReleaseDescription.FromJson(json).Validate();
-            }
-            catch
-            {
-                return null;
-            }
-        }
+                const String Url = RepositoryRawUrl + "SmtuSchedule.Android/Release.json";
 
-        public static async Task<String> ParseLatestReleaseVersionFromRepositoryChangeLogAsync()
-        {
-            const String Url = RepositoryRawUrl + "CHANGELOG.md";
-
-            try
-            {
-                String changeLog = await HttpUtilities.GetAsync(Url).ConfigureAwait(false);
-
-                // ## [Версия X.X.X]
-                Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");
-
-                if (!match.Success)
+                try
+                {
+                    String json = await HttpUtilities.GetAsync(Url).ConfigureAwait(false);
+                    return ReleaseDescription.FromJson(json).Validate();
+                }
+                catch
                 {
                     return null;
                 }
+            });
+        }
 
-                return match.Groups["version"].Value;
-            }
-            catch
+        public static Task<String> ParseLatestReleaseVersionFromRepositoryChangeLogAsync()
+        {
+            return Task.Run(async () =>
             {
-                return null;
-            }
+                const String Url = RepositoryRawUrl + "CHANGELOG.md";
+
+                try
+                {
+                    String changeLog = await HttpUtilities.GetAsync(Url).ConfigureAwait(false);
+
+                    // ## [Версия X.X.X]
+                    Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");
+                    if (!match.Success)
+                    {
+                        return null;
+                    }
+
+                    return match.Groups["version"].Value;
+                }
+                catch
+                {
+                    return null;
+                }
+            });
         }
 
         // Если v1 > v2, вернется 1; если v1 = v2, вернется 0; если v1 < v2, вернется -1.

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Timers;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Android;
 using Android.OS;
@@ -179,7 +180,7 @@ namespace SmtuSchedule.Android.Views
                         break;
 
                     case Resource.Id.downloadSchedulesMenuItem:
-                        StartDownloadActivity();
+                        StartDownloadActivityAsync();
                         break;
 
                     case Resource.Id.startPreferencesMenuItem:
@@ -683,7 +684,7 @@ namespace SmtuSchedule.Android.Views
             StartActivityForResult(typeof(PreferencesActivity), StartPreferencesActivityRequestCode);
         }
 
-        private void StartDownloadActivity()
+        private async void StartDownloadActivityAsync()
         {
             if (IsPermissionDenied(Manifest.Permission.Internet))
             {
@@ -698,7 +699,10 @@ namespace SmtuSchedule.Android.Views
 
             _stateManager.SetState(MainActivityState.DownloadingScreenStarted);
 
-            if (!ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _))
+            Boolean isConnected = await Task.Run(
+                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
+
+            if (!isConnected)
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
                 return ;
@@ -814,7 +818,10 @@ namespace SmtuSchedule.Android.Views
 
         private async void DownloadSchedulesAsync(String[] requests, Boolean shouldDownloadRelatedSchedules)
         {
-            if (!ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _))
+            Boolean isConnected = await Task.Run(
+                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
+
+            if (!isConnected)
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
                 return ;

@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Android.OS;
@@ -108,18 +107,11 @@ namespace SmtuSchedule.Android.Views
             }
         }
 
-        private Task DownloadLecturersNamesAsync()
-        {
-            return Task.Run(async () =>
-            {
-                IEnumerable<String> lecturers = (await _application.Manager.GetLecturersAsync())?.Keys;
-                RunOnUiThread(() => ApplyLecturersNames(lecturers));
-            });
-        }
-
-        private void ApplyLecturersNames(IEnumerable<String> lecturers)
+        private async void DownloadLecturersNamesAsync()
         {
             TextView errorTextView = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
+
+            IEnumerable<String> lecturers = (await _application.Manager.GetLecturersAsync())?.Keys;
 
             _progressBarLayout.Visibility = ViewStates.Gone;
 
