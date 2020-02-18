@@ -344,7 +344,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            ReleaseDescription latest = await ApplicationHelper.GetLatestReleaseDescription();
+            ReleaseDescription latest = await ApplicationUtilities.GetLatestReleaseDescription();
             if (latest == null)
             {
                 return ;
@@ -379,7 +379,7 @@ namespace SmtuSchedule.Android.Views
                         Resource.String.openUpdateDownloadPageActionTitle,
                         () =>
                         {
-                            String url = ApplicationHelper.LatestReleaseDownloadPageUrl;
+                            String url = ApplicationUtilities.LatestReleaseDownloadPageUrl;
                             StartActivity(IntentUtilities.CreateViewIntentFromUrl(url));
                         }
                     )
@@ -659,7 +659,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
+            if (!ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
                 return ;
@@ -775,7 +775,7 @@ namespace SmtuSchedule.Android.Views
 
         private async void DownloadSchedulesAsync(String[] requests, Boolean shouldDownloadRelatedSchedules)
         {
-            if (!ApplicationHelper.IsUniversitySiteConnectionAvailable(out String failReason))
+            if (!ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _))
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
                 return ;

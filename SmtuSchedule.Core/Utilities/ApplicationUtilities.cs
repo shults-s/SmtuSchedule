@@ -7,7 +7,7 @@ using SmtuSchedule.Core.Models;
 
 namespace SmtuSchedule.Core.Utilities
 {
-    public static class ApplicationHelper
+    public static class ApplicationUtilities
     {
         public const String LatestReleaseDownloadPageUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest/";
 
