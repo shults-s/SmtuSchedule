@@ -82,7 +82,8 @@
     <Compile Include="Interfaces\ISchedulesViewer.cs" />
     <Compile Include="PrivateKeys.cs" />
     <Compile Include="Preferences.cs" />
-    <Compile Include="Utilities\NotificationsHelper.cs" />
+    <Compile Include="Utilities\IntentUtilities.cs" />
+    <Compile Include="Utilities\NotificationUtilities.cs" />
     <Compile Include="Utilities\MessagingService.cs" />
     <Compile Include="Utilities\TapTargetExtensions.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
