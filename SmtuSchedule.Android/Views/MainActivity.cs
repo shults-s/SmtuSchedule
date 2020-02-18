@@ -28,12 +28,10 @@ using Uri = Android.Net.Uri;
 
 namespace SmtuSchedule.Android.Views
 {
-    [Activity(MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait,
-        Label = "@string/applicationLabel")]
+    [Activity(MainLauncher = true, Label = "@string/applicationLabel", LaunchMode = LaunchMode.SingleTop,
+        ScreenOrientation = ScreenOrientation.Portrait)]
     internal class MainActivity : AppCompatActivity, ISchedulesViewer
     {
-        private enum MainActivityState { NotInitialized, Initialized, DisplaysMessage, DisplaysSchedule }
-
         private const Int32 ExternalStoragePermissionsRequestCode = 30;
         private const Int32 InternetPermissionRequestCode = 31;
 
@@ -45,6 +43,30 @@ namespace SmtuSchedule.Android.Views
             Manifest.Permission.ReadExternalStorage,
             Manifest.Permission.WriteExternalStorage
         };
+
+        private class MainActivityStateManager
+        {
+            public State CurrentState { get; private set; }
+
+            public enum State
+            {
+                NotInitialized,
+                Initialized,
+                WelcomeMessageDisplayed,
+                ScheduleDisplayed,
+                DownloadingScreenStarted
+            }
+
+            public void SetState(State state)
+            {
+                _lastState = CurrentState;
+                CurrentState = state;
+            }
+
+            public void RestoreLastState() => CurrentState = _lastState;
+
+            private State _lastState;
+        }
 
         public override void OnRequestPermissionsResult(Int32 requestCode, String[] permissions,
             Permission[] grantResults)
@@ -133,7 +155,8 @@ namespace SmtuSchedule.Android.Views
 
             base.OnCreate(savedInstanceState);
 
-            _activityState = MainActivityState.NotInitialized;
+            _stateManager = new MainActivityStateManager();
+            _stateManager.SetState(MainActivityStateManager.State.NotInitialized);
 
             SetContentView(Resource.Layout.mainActivity);
 
@@ -182,7 +205,7 @@ namespace SmtuSchedule.Android.Views
         {
             base.OnResume();
 
-            if (_activityState == MainActivityState.DisplaysSchedule)
+            if (_stateManager.CurrentState == MainActivityStateManager.State.ScheduleDisplayed)
             {
                 _currentSubjectHighlightTimer?.Start();
             }
@@ -192,7 +215,7 @@ namespace SmtuSchedule.Android.Views
         {
             base.OnPause();
 
-            if (_activityState == MainActivityState.DisplaysSchedule)
+            if (_stateManager.CurrentState == MainActivityStateManager.State.ScheduleDisplayed)
             {
                 _currentSubjectHighlightTimer?.Stop();
             }
@@ -216,8 +239,12 @@ namespace SmtuSchedule.Android.Views
                     ShowDialogWithSuggestionToConfigureApplication();
                 }
             }
-            else if (requestCode == StartDownloadActivityRequestCode && resultCode == Result.Ok)
+            else if (requestCode == StartDownloadActivityRequestCode)
             {
+                if (resultCode != Result.Ok)
+                {
+                    _stateManager.RestoreLastState();
+                    return ;
                 }
 
                 Boolean shouldDownloadRelatedSchedules = data.GetBooleanExtra(
@@ -292,7 +319,7 @@ namespace SmtuSchedule.Android.Views
             _fab.Click += (s, e) => ShowCustomDatePickerDialog();
             _fab.LongClick += (s, e) => ShowViewingWeekTypeSnackbar();
 
-            _activityState = MainActivityState.Initialized;
+            _stateManager.SetState(MainActivityStateManager.State.Initialized);
 
             if (!IsPreferencesValid())
             {
@@ -425,7 +452,7 @@ namespace SmtuSchedule.Android.Views
 
         private void RestartSchedulesRenderingSubsystem(Int32 preferredScheduleId = 0)
         {
-            if (_activityState == MainActivityState.NotInitialized)
+            if (_stateManager.CurrentState == MainActivityStateManager.State.NotInitialized)
             {
                 return ;
             }
@@ -449,7 +476,7 @@ namespace SmtuSchedule.Android.Views
                 _currentSubjectHighlightTimer.Stop();
 
                 ShowLayoutMessage(Resource.String.welcomeMessage);
-                _activityState = MainActivityState.DisplaysMessage;
+                _stateManager.SetState(MainActivityStateManager.State.WelcomeMessageDisplayed);
 
                 return ;
             }
@@ -617,7 +644,7 @@ namespace SmtuSchedule.Android.Views
         private void UpdateToolbarMenu()
         {
             // Если этот метод вызван до инициализации приложения или до окончания считывания расписаний.
-            if (_activityState == MainActivityState.NotInitialized)
+            if (_stateManager.CurrentState == MainActivityStateManager.State.NotInitialized)
             {
                 return ;
             }
@@ -658,6 +685,13 @@ namespace SmtuSchedule.Android.Views
                 RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
                 return ;
             }
+
+            if (_stateManager.CurrentState == MainActivityStateManager.State.DownloadingScreenStarted)
+            {
+                return ;
+            }
+
+            _stateManager.SetState(MainActivityStateManager.State.DownloadingScreenStarted);
 
             if (!ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _))
             {
@@ -700,7 +734,7 @@ namespace SmtuSchedule.Android.Views
             _application.Preferences.SetCurrentScheduleId(scheduleId);
             ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate);
 
-            _activityState = MainActivityState.DisplaysSchedule;
+            _stateManager.SetState(MainActivityStateManager.State.ScheduleDisplayed);
         }
 
         private void ViewPagerMoveToDate(DateTime date, Boolean adapterResetRequired = true,
@@ -796,19 +830,18 @@ namespace SmtuSchedule.Android.Views
 
             RestartSchedulesRenderingSubsystem(preferredScheduleId);
 
+            Boolean isSingularSchedule = (requests.Length == 1 && !shouldDownloadRelatedSchedules);
             Int32 messageId;
             if (haveDownloadingErrors)
             {
-                messageId = (requests.Length == 1 && !shouldDownloadRelatedSchedules)
-                    ? Resource.String.scheduleDownloadErrorMessage
+                messageId = isSingularSchedule ? Resource.String.scheduleDownloadErrorMessage
                     : Resource.String.schedulesDownloadErrorMessage;
 
                 _ = _application.SaveLogAsync();
             }
             else
             {
-                messageId = (requests.Length == 1 && !shouldDownloadRelatedSchedules)
-                    ? Resource.String.scheduleDownloadedSuccessfullyMessage
+                messageId = isSingularSchedule ? Resource.String.scheduleDownloadedSuccessfullyMessage
                     : Resource.String.schedulesDownloadedSuccessfullyMessage;
             }
 
@@ -974,10 +1007,6 @@ namespace SmtuSchedule.Android.Views
 
         private ScheduleApplication _application;
 
-        private Boolean _isThemeChanged;
-        private Boolean _currentlyUsedDarkTheme;
-        private MainActivityState _activityState;
-
         private Timer _currentSubjectHighlightTimer;
 
         private Toolbar _toolbar;
@@ -988,5 +1017,9 @@ namespace SmtuSchedule.Android.Views
         private FloatingActionButton _fab;
         private RelativeLayout _contentLayout;
         private SchedulesPagerAdapter _pagerAdapter;
+
+        private Boolean _isThemeChanged;
+        private Boolean _currentlyUsedDarkTheme;
+        private MainActivityStateManager _stateManager;
     }
 }
