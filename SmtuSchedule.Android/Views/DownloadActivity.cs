@@ -28,7 +28,7 @@ namespace SmtuSchedule.Android.Views
             static String[] SplitSearchRequest(String request)
             {
                 request = Regex.Replace(request, @"\t|\r|\n", String.Empty);
-                return request.Split(',').Select(r => r.Trim()).Where(r => r != String.Empty).ToArray();
+                return request.Split(',').Select(r => r.Trim()).Where(r => r.Length != 0).ToArray();
             }
 
             _application = ApplicationContext as ScheduleApplication;
