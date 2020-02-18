@@ -9,15 +9,46 @@ namespace SmtuSchedule.Core.Utilities
 {
     public static class ApplicationHelper
     {
-        public const String LatestReleaseDownloadPageUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest";
+        public const String LatestReleaseDownloadPageUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest/";
+
+        private const String RepositoryRawUrl = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/";
+
+        public static Boolean IsUniversitySiteConnectionAvailable(out String failReason)
+        {
+            // Эмулятор Android, созданный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping в нем не работает,
+            // что делает невозможным тестирование некоторых возможностей приложения в режиме отладки.
+#if DEBUG
+            failReason = null;
+            return true;
+#endif
+
+            const String UniversitySiteHostName = "www.smtu.ru";
+
+            PingReply reply = null;
+            try
+            {
+                reply = new Ping().Send(UniversitySiteHostName);
+
+                failReason = (reply.Status != IPStatus.Success)
+                    ? $"Ping failed with the status {reply.Status} without throwing an exception."
+                    : null;
+
+                return (reply.Status == IPStatus.Success);
+            }
+            catch (Exception exception)
+            {
+                failReason = $"Ping failed with the {reply.Status} status and threw an exception: {exception.Format()}";
+                return false;
+            }
+        }
 
         public static async Task<ReleaseDescription> GetLatestReleaseDescription()
         {
-            String url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/SmtuSchedule.Android/Release.json";
+            const String Url = RepositoryRawUrl + "SmtuSchedule.Android/Release.json";
 
             try
             {
-                String json = await HttpHelper.GetAsync(url).ConfigureAwait(false);
+                String json = await HttpHelper.GetAsync(Url).ConfigureAwait(false);
                 return ReleaseDescription.FromJson(json).Validate();
             }
             catch
@@ -26,9 +57,9 @@ namespace SmtuSchedule.Core.Utilities
             }
         }
 
-        public static async Task<String> GetLatestVersionAsync()
+        public static async Task<String> ParseLatestReleaseVersionFromRepositoryChangeLogAsync()
         {
-            const String Url = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/CHANGELOG.md";
+            const String Url = RepositoryRawUrl + "CHANGELOG.md";
 
             try
             {
@@ -36,6 +67,7 @@ namespace SmtuSchedule.Core.Utilities
 
                 // ## [Версия X.X.X]
                 Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");
+
                 if (!match.Success)
                 {
                     return null;
@@ -66,34 +98,6 @@ namespace SmtuSchedule.Core.Utilities
                 : (v1.Length == v2.Length ? 0 : v1.Length > v2.Length ? 1 : -1);
 
             return (majorComparsion == 0) ? (minorComparsion == 0 ? patchComparsion : minorComparsion) : majorComparsion;
-        }
-
-        public static Boolean IsUniversitySiteConnectionAvailable(out String failReason)
-        {
-            // Эмулятор Android, построенный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping в нем не работает,
-            // что делает невозможным тестирование некоторых возможностей приложения в режиме отладки.
-#if DEBUG
-            failReason = null;
-            return true;
-#endif
-
-            IPStatus status = IPStatus.Success;
-
-            try
-            {
-                status = new Ping().Send("www.smtu.ru").Status;
-
-                failReason = (status != IPStatus.Success)
-                    ? "Ping failed with status " + Enum.GetName(typeof(IPStatus), status) + " without throwing an exception."
-                    : null;
-
-                return status == IPStatus.Success;
-            }
-            catch (Exception exception)
-            {
-                failReason = "Ping failed with status " + Enum.GetName(typeof(IPStatus), status) + ": " + exception.Format();
-                return false;
-            }
         }
     }
 }
