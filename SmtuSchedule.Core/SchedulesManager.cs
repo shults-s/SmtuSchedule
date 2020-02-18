@@ -42,7 +42,8 @@ namespace SmtuSchedule.Core
 
                 IEnumerable<Schedule> affectedSchedules = schedulesMigrator.MigrateAsync(
                     _schedules.Values
-                ).ToEnumerable();
+                )
+                .ToEnumerable();
 
                 LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
                 {
@@ -108,7 +109,8 @@ namespace SmtuSchedule.Core
                 Dictionary<Int32, Schedule> schedules = await schedulesLoader.DownloadAsync(
                     schedulesIds,
                     shouldDownloadRelatedSchedules
-                ).ConfigureAwait(false);
+                )
+                .ConfigureAwait(false);
 
                 LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
                 {
