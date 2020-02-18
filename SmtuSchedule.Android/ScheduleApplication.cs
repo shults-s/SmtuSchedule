@@ -68,7 +68,7 @@ namespace SmtuSchedule.Android
         {
             base.OnCreate();
 
-            NotificationsHelper.CreateNotificationsChannels(this);
+            NotificationUtilities.CreateNotificationChannels(this);
 
 #if !DEBUG
             Logger.ExceptionLogged += (e) =>

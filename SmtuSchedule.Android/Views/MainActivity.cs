@@ -102,7 +102,7 @@ namespace SmtuSchedule.Android.Views
             // Если пользователь нажал на уведомление, содержащее полезную нагрузку и пришедшее, когда
             // приложение не было запущено, либо находилось в фоновом режиме.
             if (Intent.Extras != null
-                && NotificationsHelper.IsKeysCollectionValidToCreateIntent(Intent.Extras.KeySet()))
+                && IntentUtilities.IsDataKeysCollectionValidToCreateViewIntent(Intent.Extras.KeySet()))
             {
                 Dictionary<String, String> data = new Dictionary<String, String>();
                 foreach (String key in Intent.Extras.KeySet())
@@ -110,7 +110,7 @@ namespace SmtuSchedule.Android.Views
                     data[key] = Intent.Extras.GetString(key);
                 }
 
-                Intent intent = NotificationsHelper.CreateIntentFromNotificationData(data);
+                Intent intent = IntentUtilities.CreateViewIntentFromData(this, data);
                 if (intent != null)
                 {
                     StartActivity(intent);
@@ -218,6 +218,8 @@ namespace SmtuSchedule.Android.Views
             }
             else if (requestCode == StartDownloadActivityRequestCode && resultCode == Result.Ok)
             {
+                }
+
                 Boolean shouldDownloadRelatedSchedules = data.GetBooleanExtra(
                     DownloadActivity.IntentShouldDownloadRelatedSchedulesKey,
                     false
@@ -378,7 +380,7 @@ namespace SmtuSchedule.Android.Views
                         () =>
                         {
                             String url = ApplicationHelper.LatestReleaseDownloadPageUrl;
-                            StartActivity(new Intent(Intent.ActionView, Uri.Parse(url)));
+                            StartActivity(IntentUtilities.CreateViewIntentFromUrl(url));
                         }
                     )
                     .SetNegativeButton(
@@ -392,11 +394,8 @@ namespace SmtuSchedule.Android.Views
 
             void OpenWithPlayStore()
             {
-                String playStoreUrl = _application.IsPlayStoreInstalled()
-                    ? "market://details?id=" + packageId
-                    : "https://play.google.com/store/apps/details?id=" + packageId;
-
-                StartActivity(new Intent(Intent.ActionView, Uri.Parse(playStoreUrl)));
+                Intent intent = IntentUtilities.CreateGooglePlayStoreViewIntent(this, packageId);
+                StartActivity(intent);
             }
 
             if (packageId == PackageName)
