@@ -25,7 +25,6 @@ using SmtuSchedule.Android.Enumerations;
 
 using PopupMenu = Android.Support.V7.Widget.PopupMenu;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
-using Uri = Android.Net.Uri;
 
 namespace SmtuSchedule.Android.Views
 {
@@ -335,10 +334,10 @@ namespace SmtuSchedule.Android.Views
 
             RestartSchedulesRenderingSubsystem();
 
-            CheckForUpdatesAsync(currentVersion);
-            MigrateSchedulesAsync(currentVersion);
-
             _ = _application.ClearLogsAsync();
+
+            MigrateSchedulesAsync(currentVersion);
+            CheckForCriticalUpdatesAsync(currentVersion);
 
 #if DEBUG
             Log.Debug("Shults.SmtuSchedule.MessagingService", MessagingService.GetToken(this) ?? ":(");
@@ -369,7 +368,7 @@ namespace SmtuSchedule.Android.Views
             }
         }
 
-        private async void CheckForUpdatesAsync(Int32 currentVersion)
+        private async void CheckForCriticalUpdatesAsync(Int32 currentVersion)
         {
             if (IsPermissionDenied(Manifest.Permission.Internet))
             {
@@ -1017,9 +1016,8 @@ namespace SmtuSchedule.Android.Views
             snackbar.Show();
         }
 
-        private ScheduleApplication _application;
-
-        private Timer _currentSubjectHighlightTimer;
+        private Boolean _isThemeChanged;
+        private Boolean _currentlyUsedDarkTheme;
 
         private Toolbar _toolbar;
         private ViewPager _viewPager;
@@ -1030,8 +1028,8 @@ namespace SmtuSchedule.Android.Views
         private RelativeLayout _contentLayout;
         private SchedulesPagerAdapter _pagerAdapter;
 
-        private Boolean _isThemeChanged;
-        private Boolean _currentlyUsedDarkTheme;
+        private ScheduleApplication _application;
+        private Timer _currentSubjectHighlightTimer;
         private MainActivityStateManager _stateManager;
     }
 }
