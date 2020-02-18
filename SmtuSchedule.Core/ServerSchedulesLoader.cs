@@ -226,7 +226,7 @@ namespace SmtuSchedule.Core
             String baseUrl = (scheduleType == ScheduleType.Group) ? GroupScheduleBaseUrl
                 : LecturerScheduleBaseUrl;
 
-            String html = await HttpHelper.GetAsync(baseUrl + scheduleId + "/").ConfigureAwait(false);
+            String html = await HttpUtilities.GetAsync(baseUrl + scheduleId + "/").ConfigureAwait(false);
 
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);

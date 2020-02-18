@@ -48,7 +48,7 @@ namespace SmtuSchedule.Core.Utilities
 
             try
             {
-                String json = await HttpHelper.GetAsync(Url).ConfigureAwait(false);
+                String json = await HttpUtilities.GetAsync(Url).ConfigureAwait(false);
                 return ReleaseDescription.FromJson(json).Validate();
             }
             catch
@@ -63,7 +63,7 @@ namespace SmtuSchedule.Core.Utilities
 
             try
             {
-                String changeLog = await HttpHelper.GetAsync(Url).ConfigureAwait(false);
+                String changeLog = await HttpUtilities.GetAsync(Url).ConfigureAwait(false);
 
                 // ## [Версия X.X.X]
                 Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");
