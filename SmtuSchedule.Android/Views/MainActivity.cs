@@ -44,20 +44,26 @@ namespace SmtuSchedule.Android.Views
             Manifest.Permission.WriteExternalStorage
         };
 
+        private enum MainActivityState
+        {
+            NotInitialized,
+            Initialized,
+            WelcomeMessageDisplayed,
+            ScheduleDisplayed,
+            DownloadingScreenStarted
+        }
+
         private class MainActivityStateManager
         {
-            public State CurrentState { get; private set; }
+            public MainActivityState CurrentState { get; private set; }
 
-            public enum State
+            public MainActivityStateManager(MainActivityState state)
             {
-                NotInitialized,
-                Initialized,
-                WelcomeMessageDisplayed,
-                ScheduleDisplayed,
-                DownloadingScreenStarted
+                CurrentState = state;
+                _lastState = state;
             }
 
-            public void SetState(State state)
+            public void SetState(MainActivityState state)
             {
                 _lastState = CurrentState;
                 CurrentState = state;
@@ -65,7 +71,7 @@ namespace SmtuSchedule.Android.Views
 
             public void RestoreLastState() => CurrentState = _lastState;
 
-            private State _lastState;
+            private MainActivityState _lastState;
         }
 
         public override void OnRequestPermissionsResult(Int32 requestCode, String[] permissions,
@@ -155,8 +161,7 @@ namespace SmtuSchedule.Android.Views
 
             base.OnCreate(savedInstanceState);
 
-            _stateManager = new MainActivityStateManager();
-            _stateManager.SetState(MainActivityStateManager.State.NotInitialized);
+            _stateManager = new MainActivityStateManager(MainActivityState.NotInitialized);
 
             SetContentView(Resource.Layout.mainActivity);
 
@@ -205,7 +210,7 @@ namespace SmtuSchedule.Android.Views
         {
             base.OnResume();
 
-            if (_stateManager.CurrentState == MainActivityStateManager.State.ScheduleDisplayed)
+            if (_stateManager.CurrentState == MainActivityState.ScheduleDisplayed)
             {
                 _currentSubjectHighlightTimer?.Start();
             }
@@ -215,7 +220,7 @@ namespace SmtuSchedule.Android.Views
         {
             base.OnPause();
 
-            if (_stateManager.CurrentState == MainActivityStateManager.State.ScheduleDisplayed)
+            if (_stateManager.CurrentState == MainActivityState.ScheduleDisplayed)
             {
                 _currentSubjectHighlightTimer?.Stop();
             }
@@ -319,7 +324,7 @@ namespace SmtuSchedule.Android.Views
             _fab.Click += (s, e) => ShowCustomDatePickerDialog();
             _fab.LongClick += (s, e) => ShowViewingWeekTypeSnackbar();
 
-            _stateManager.SetState(MainActivityStateManager.State.Initialized);
+            _stateManager.SetState(MainActivityState.Initialized);
 
             if (!IsPreferencesValid())
             {
@@ -452,7 +457,7 @@ namespace SmtuSchedule.Android.Views
 
         private void RestartSchedulesRenderingSubsystem(Int32 preferredScheduleId = 0)
         {
-            if (_stateManager.CurrentState == MainActivityStateManager.State.NotInitialized)
+            if (_stateManager.CurrentState == MainActivityState.NotInitialized)
             {
                 return ;
             }
@@ -476,7 +481,7 @@ namespace SmtuSchedule.Android.Views
                 _currentSubjectHighlightTimer.Stop();
 
                 ShowLayoutMessage(Resource.String.welcomeMessage);
-                _stateManager.SetState(MainActivityStateManager.State.WelcomeMessageDisplayed);
+                _stateManager.SetState(MainActivityState.WelcomeMessageDisplayed);
 
                 return ;
             }
@@ -644,7 +649,7 @@ namespace SmtuSchedule.Android.Views
         private void UpdateToolbarMenu()
         {
             // Если этот метод вызван до инициализации приложения или до окончания считывания расписаний.
-            if (_stateManager.CurrentState == MainActivityStateManager.State.NotInitialized)
+            if (_stateManager.CurrentState == MainActivityState.NotInitialized)
             {
                 return ;
             }
@@ -686,12 +691,12 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            if (_stateManager.CurrentState == MainActivityStateManager.State.DownloadingScreenStarted)
+            if (_stateManager.CurrentState == MainActivityState.DownloadingScreenStarted)
             {
                 return ;
             }
 
-            _stateManager.SetState(MainActivityStateManager.State.DownloadingScreenStarted);
+            _stateManager.SetState(MainActivityState.DownloadingScreenStarted);
 
             if (!ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _))
             {
@@ -734,7 +739,7 @@ namespace SmtuSchedule.Android.Views
             _application.Preferences.SetCurrentScheduleId(scheduleId);
             ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate);
 
-            _stateManager.SetState(MainActivityStateManager.State.ScheduleDisplayed);
+            _stateManager.SetState(MainActivityState.ScheduleDisplayed);
         }
 
         private void ViewPagerMoveToDate(DateTime date, Boolean adapterResetRequired = true,
