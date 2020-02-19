@@ -20,6 +20,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="4dp"
                 android:layout_gravity="left"
+                android:maxLines="1"
                 android:ellipsize="end"
                 android:text="@string/welcomeToolbarTitle"
                 android:textAppearance="?attr/titleTextAppearance" />
