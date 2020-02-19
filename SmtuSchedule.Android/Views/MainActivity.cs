@@ -246,9 +246,10 @@ namespace SmtuSchedule.Android.Views
             }
             else if (requestCode == StartDownloadActivityRequestCode)
             {
+                _stateManager.RestoreLastState();
+
                 if (resultCode != Result.Ok)
                 {
-                    _stateManager.RestoreLastState();
                     return ;
                 }
 
@@ -691,13 +692,6 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            if (_stateManager.CurrentState == MainActivityState.DownloadingScreenStarted)
-            {
-                return ;
-            }
-
-            _stateManager.SetState(MainActivityState.DownloadingScreenStarted);
-
             Boolean isConnected = await Task.Run(
                 () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
 
@@ -712,6 +706,13 @@ namespace SmtuSchedule.Android.Views
                 ShowSnackbar(Resource.String.waitUntilSchedulesFinishDownloading);
                 return ;
             }
+
+            if (_stateManager.CurrentState == MainActivityState.DownloadingScreenStarted)
+            {
+                return;
+            }
+
+            _stateManager.SetState(MainActivityState.DownloadingScreenStarted);
 
             StartActivityForResult(typeof(DownloadActivity), StartDownloadActivityRequestCode);
         }
