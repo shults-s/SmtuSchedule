@@ -67,7 +67,7 @@ namespace SmtuSchedule.Android.Views
                 return layout;
             }
 
-            layout = inflater.Inflate(Resource.Layout.schedule, container, false);
+            layout = inflater.Inflate(Resource.Layout.schedulePage, container, false);
 
             Int32 currentSubjectIndex = (Date != DateTime.Today)
                 ? -1

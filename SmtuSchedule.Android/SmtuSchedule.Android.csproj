@@ -90,6 +90,7 @@
     <Compile Include="Utilities\ProcessLifecycleListener.cs" />
     <Compile Include="Utilities\TapTargetSequenceListener.cs" />
     <Compile Include="Utilities\TapTargetViewListener.cs" />
+    <Compile Include="Views\CustomSwipeRefreshLayout.cs" />
     <Compile Include="Views\CustomArrayAdapter.cs" />
     <Compile Include="Views\CustomClickableSpan.cs" />
     <Compile Include="Utilities\ICharSequenceExtensions.cs" />
@@ -175,7 +176,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\schedule.xml">
+    <AndroidResource Include="Resources\layout\schedulePage.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>
@@ -214,7 +215,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\pager.xml">
+    <AndroidResource Include="Resources\layout\scheduleViewPager.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>

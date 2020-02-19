@@ -13,8 +13,9 @@ using Android.Content;
 using Android.Content.PM;
 using Android.Text.Method;
 using Android.Support.V4.App;
-using Android.Support.V7.App;
 using Android.Support.V4.View;
+using Android.Support.V4.Widget;
+using Android.Support.V7.App;
 using Android.Support.Design.Widget;
 using Com.Getkeepsafe.Taptargetview;
 using SmtuSchedule.Core.Models;
@@ -260,7 +261,7 @@ namespace SmtuSchedule.Android.Views
 
                 String[] requests = data.GetStringArrayExtra(DownloadActivity.IntentSearchRequestsKey);
 
-                DownloadSchedulesAsync(requests, shouldDownloadRelatedSchedules);
+                _ = DownloadSchedulesAsync(requests, shouldDownloadRelatedSchedules);
             }
         }
 
@@ -505,6 +506,18 @@ namespace SmtuSchedule.Android.Views
             SetSchedulesMenu(sortedSchedules);
 
             ShowViewPager();
+
+            CustomSwipeRefreshLayout scheduleRefreshLayout = FindViewById<CustomSwipeRefreshLayout>(
+                Resource.Id.scheduleSwipeRefreshLayout);
+
+            scheduleRefreshLayout.SetColorSchemeResources(Resource.Color.primaryDay);
+
+            scheduleRefreshLayout.Refresh += async (s, e) =>
+            {
+                await DownloadScheduleWithCheckPermissionAsync(_application.Preferences.CurrentScheduleId);
+                scheduleRefreshLayout.Refreshing = false;
+            };
+
             _viewPager = FindViewById<ViewPager>(Resource.Id.scheduleViewPager);
 
             // Bug: если после запуска приложения перелистнуть страницу расписания влево или вправо, то
@@ -747,7 +760,7 @@ namespace SmtuSchedule.Android.Views
                 ShowSnackbar(
                     Resource.String.scheduleNotYetDownloadedMessage,
                     Resource.String.downloadActionTitle,
-                    () => DownloadScheduleWithCheckPermission(scheduleId)
+                    () => _ = DownloadScheduleWithCheckPermissionAsync(scheduleId)
                 );
 
                 return ;
@@ -820,7 +833,7 @@ namespace SmtuSchedule.Android.Views
             RestartSchedulesRenderingSubsystem();
         }
 
-        private void DownloadScheduleWithCheckPermission(Int32 scheduleId)
+        private async Task DownloadScheduleWithCheckPermissionAsync(Int32 scheduleId)
         {
             if (IsPermissionDenied(Manifest.Permission.Internet))
             {
@@ -828,10 +841,10 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            DownloadSchedulesAsync(new String[] { scheduleId.ToString() }, false);
+            await DownloadSchedulesAsync(new String[] { scheduleId.ToString() }, false);
         }
 
-        private async void DownloadSchedulesAsync(String[] requests, Boolean shouldDownloadRelatedSchedules)
+        private async Task DownloadSchedulesAsync(String[] requests, Boolean shouldDownloadRelatedSchedules)
         {
             Boolean isConnected = await Task.Run(
                 () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
@@ -884,7 +897,7 @@ namespace SmtuSchedule.Android.Views
         private void ShowViewPager()
         {
             _contentLayout.RemoveAllViews();
-            View.Inflate(this, Resource.Layout.pager, _contentLayout);
+            View.Inflate(this, Resource.Layout.scheduleViewPager, _contentLayout);
         }
 
         private void ShowLayoutMessage(Int32 messageId, Boolean useMarkdownFormatting = true)
@@ -936,7 +949,7 @@ namespace SmtuSchedule.Android.Views
                                 break;
 
                             case 1:
-                                DownloadScheduleWithCheckPermission(scheduleId);
+                                _ = DownloadScheduleWithCheckPermissionAsync(scheduleId);
                                 break;
                         }
                     }
