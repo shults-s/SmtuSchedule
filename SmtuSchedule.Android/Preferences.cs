@@ -75,7 +75,7 @@ namespace SmtuSchedule.Android
             UseDarkTheme = _preferences.GetBoolean("UseDarkTheme", false);
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", true);
             // CheckUpdatesOnStart = _preferences.GetBoolean("CheckUpdatesOnStart", true);
-            DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", false);
+            DisplaySubjectEndTime = _preferences.GetBoolean("DisplaySubjectEndTime", true);
         }
 
         public void SetFeatureDiscoveryState(FeatureDiscoveryState featureDiscoveryState)
@@ -151,7 +151,7 @@ namespace SmtuSchedule.Android
                     break;
 
                 case "DisplaySubjectEndTime":
-                    DisplaySubjectEndTime = preferences.GetBoolean("DisplaySubjectEndTime", false);
+                    DisplaySubjectEndTime = preferences.GetBoolean("DisplaySubjectEndTime", true);
                     break;
 
                 case "ReplayFeatureDiscovery":
