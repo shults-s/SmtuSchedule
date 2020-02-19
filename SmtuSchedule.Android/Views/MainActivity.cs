@@ -303,8 +303,23 @@ namespace SmtuSchedule.Android.Views
             _toolbarTitle = FindViewById<TextView>(Resource.Id.mainToolbarTitleTextView);
             _schedulesMenu = new PopupMenu(this, _toolbarTitle);
             _schedulesMenu.MenuItemClick += (s, e) => ShowSchedule(e.Item.ItemId);
-            _toolbarTitle.Click += (s, e) => _schedulesMenu.Show();
-            _toolbarTitle.LongClick += (s, e) => ShowCurrentScheduleActionsDialog();
+
+            _toolbarTitle.Click += (s, e) =>
+            {
+                if (_stateManager.CurrentState == MainActivityState.ScheduleDisplayed
+                    && _application.Manager.Schedules.Count != 0)
+                {
+                    _schedulesMenu.Show();
+                }
+            };
+
+            _toolbarTitle.LongClick += (s, e) =>
+            {
+                if (_stateManager.CurrentState == MainActivityState.ScheduleDisplayed)
+                {
+                    ShowCurrentScheduleActionsDialog();
+                }
+            };
 
             _tabLayout = FindViewById<TabLayout>(Resource.Id.mainTabLayout);
 
