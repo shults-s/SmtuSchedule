@@ -21,15 +21,15 @@ namespace SmtuSchedule.Android.Views
             switch (@event.Action)
             {
                 case MotionEventActions.Down:
-                    _isCurrentMotionRejected = false;
+                    _isCurrentMotionDeclined = false;
                     _previousX = @event.GetX();
                     break;
 
                 case MotionEventActions.Move:
                     Single difference = Math.Abs(_previousX - @event.GetX());
-                    if (_isCurrentMotionRejected || difference > _touchSlop)
+                    if (_isCurrentMotionDeclined || difference > _touchSlop)
                     {
-                        _isCurrentMotionRejected = true;
+                        _isCurrentMotionDeclined = true;
 
                         // Если горизонтальное смещение при касании больше, чем то, которое
                         // интерпретируется как прокрутка (в данном случае горизонтальная),
@@ -46,6 +46,6 @@ namespace SmtuSchedule.Android.Views
         private readonly Int32 _touchSlop;
 
         private Single _previousX;
-        private Boolean _isCurrentMotionRejected;
+        private Boolean _isCurrentMotionDeclined;
     }
 }
