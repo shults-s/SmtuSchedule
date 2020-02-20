@@ -14,7 +14,6 @@ using Android.Content.PM;
 using Android.Text.Method;
 using Android.Support.V4.App;
 using Android.Support.V4.View;
-using Android.Support.V4.Widget;
 using Android.Support.V7.App;
 using Android.Support.Design.Widget;
 using Com.Getkeepsafe.Taptargetview;
