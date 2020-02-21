@@ -51,7 +51,7 @@
     <!-- Названия действий Snackbar'ов, кнопок и диалогов -->
     <string-array name="currentScheduleActionsTitles">
         <item>Удалить расписание</item>
-        <item>Перезагрузить расписание</item>
+        <item>Обновить расписание</item>
     </string-array>
     <string name="gotItActionTitle">Понял</string>
     <string name="cancelActionTitle">Отмена</string>
