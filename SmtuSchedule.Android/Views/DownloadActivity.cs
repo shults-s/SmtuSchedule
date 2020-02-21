@@ -111,7 +111,7 @@ namespace SmtuSchedule.Android.Views
         {
             TextView errorTextView = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
 
-            IEnumerable<String> lecturers = (await _application.Manager.GetLecturersAsync())?.Keys;
+            IEnumerable<String> lecturers = (await _application.Manager.DownloadLecturersMapAsync())?.Keys;
 
             _progressBarLayout.Visibility = ViewStates.Gone;
 

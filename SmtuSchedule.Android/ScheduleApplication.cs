@@ -73,8 +73,8 @@ namespace SmtuSchedule.Android
 #if !DEBUG
             Logger.ExceptionLogged += (e) =>
             {
-                if (e is LecturersLoaderException || e is SchedulesLoaderException
-                    || e is SchedulesReaderException)
+                if (e is LecturersDownloaderException || e is SchedulesDownloaderException
+                    || e is SchedulesRepositoryException)
                 {
                     Crashes.TrackError(e);
                 }
@@ -223,6 +223,10 @@ namespace SmtuSchedule.Android
                 }
             }
 
+            Manager = new SchedulesManager(modernStoragePath, SchedulesDirectoryName)
+            {
+                Logger = Logger
+            };
 
             return (IsInitialized = true);
         }
