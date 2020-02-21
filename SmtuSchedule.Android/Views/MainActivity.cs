@@ -292,6 +292,11 @@ namespace SmtuSchedule.Android.Views
                     ShowSnackbar(Resource.String.schedulesReadingErrorMessage);
                     _ = _application.SaveLogAsync();
                 }
+
+                if (_application.Preferences.UpdateSchedulesOnStart)
+                {
+                    await UpdateSchedulesWithCheckPermissionAsync();
+                }
             }
 
             Int32 currentVersion = _application.GetVersionCode();
@@ -814,6 +819,31 @@ namespace SmtuSchedule.Android.Views
             }
 
             _toolbarTitle.SetCompoundDrawablesWithIntrinsicBounds(0, 0, Resource.Drawable.arrowDown, 0);
+        }
+
+        private async Task UpdateSchedulesWithCheckPermissionAsync()
+        {
+            if (IsPermissionDenied(Manifest.Permission.Internet))
+            {
+                RequestPermissions(InternetPermissionRequestCode, Manifest.Permission.Internet);
+                return ;
+            }
+
+            Boolean isConnected = await Task.Run(
+                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
+
+            if (!isConnected)
+            {
+                ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
+                return;
+            }
+
+            Boolean haveUpdatingErrors = await _application.Manager.UpdateSchedulesAsync();
+            if (haveUpdatingErrors)
+            {
+                ShowSnackbar(Resource.String.schedulesUpdatingErrorMessage);
+                _ = _application.SaveLogAsync();
+            }
         }
 
         private async void RemoveCurrentScheduleAsync()

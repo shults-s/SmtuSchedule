@@ -67,6 +67,7 @@
     <!-- Сообщения об ошибках -->
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
     <string name="schedulesReadingErrorMessage">Не все расписания удалось открыть.</string>
+    <string name="schedulesUpdatingErrorMessage">Не все расписания удалось обновить.</string>
     <string name="schedulesMigrationErrorMessage">Не все расписания удалось преобразовать к актуальному формату.</string>
     <string name="scheduleDownloadErrorMessage">
         Ошибка при загрузке расписания.
@@ -119,6 +120,10 @@
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
     <string name="preferenceReplayFeatureDiscoveryTitle">Повторить обучение использованию</string>
     <string name="preferenceReplayFeatureDiscoverySummaryOn">Перезапуcтите приложение, чтобы начать</string>
+    <string name="preferenceUpdateSchedulesOnStartTitle">Обновление расписаний</string>
+    <string name="preferenceUpdateSchedulesOnStartSummary">
+        Автоматически обновлять расписания при запуске (актуально в начале семестра)
+    </string>
     <string name="preferenceUseFabDateSelectorTitle">Плавающая кнопка</string>
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
     <!-- <string name="preferenceCheckUpdatesOnStartTitle">Проверять обновления</string> -->

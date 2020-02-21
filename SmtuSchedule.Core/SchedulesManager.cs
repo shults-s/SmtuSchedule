@@ -67,6 +67,63 @@ namespace SmtuSchedule.Core
             return 0;
         }
 
+        public Task<Boolean> UpdateSchedulesAsync()
+        {
+            return Task.Run(async () =>
+            {
+                if (_schedules.Count == 0)
+                {
+                    return false;
+                }
+
+                if (_lecturersMap == null)
+                {
+                    LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
+                    {
+                        Logger = Logger
+                    };
+
+                    _lecturersMap = lecturersRepository.Read();
+                }
+
+                if (_lecturersMap == null && await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
+                {
+                    return true;
+                }
+
+                IsDownloadingInProgress = true;
+
+                ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(_lecturersMap)
+                {
+                    Logger = Logger
+                };
+
+                Dictionary<Int32, Schedule> schedules = await schedulesLoader.DownloadAsync(
+                    _schedules.Keys,
+                    false
+                )
+                .ConfigureAwait(false);
+
+                Boolean haveSavingErrors = false;
+
+                foreach ((Int32 scheduleId, Schedule schedule) in schedules)
+                {
+                    if (!_schedulesRepository.Save(schedule))
+                    {
+                        haveSavingErrors = true;
+                    }
+                    else
+                    {
+                        _schedules[scheduleId] = schedule;
+                    }
+                }
+
+                IsDownloadingInProgress = false;
+
+                return schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
+            });
+        }
+
         public Task<Boolean> DownloadSchedulesAsync(IEnumerable<String> searchRequests,
             Boolean shouldDownloadRelatedSchedules)
         {
