@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 // using Newtonsoft.Json;
@@ -29,8 +30,9 @@ namespace SmtuSchedule.Core.Models
 
         private static readonly JsonSerializerOptions Options = new JsonSerializerOptions()
         {
-            WriteIndented = true,
-            ReadCommentHandling = JsonCommentHandling.Disallow
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            IgnoreNullValues = true,
+            WriteIndented = true
         };
 
         // [JsonProperty(Required = Required.Always)]
