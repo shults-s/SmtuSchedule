@@ -37,7 +37,7 @@ namespace SmtuSchedule.Android
         {
             Logger = new InMemoryLogger();
             Logger.Log(
-                "SmtuSchedule version {0}, running on {1} {2} (Android {4} – API {3}).",
+                "Shults.SmtuSchedule version {0}, running on {1} {2} (Android {4} – API {3}).",
                 GetVersionName(),
                 Build.Manufacturer,
                 Build.Model,
