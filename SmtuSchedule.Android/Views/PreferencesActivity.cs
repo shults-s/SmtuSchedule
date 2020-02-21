@@ -48,7 +48,7 @@ namespace SmtuSchedule.Android.Views
         {
             base.OnCreate(savedInstanceState);
 
-            ScheduleApplication application = ApplicationContext as ScheduleApplication;
+            SmtuScheduleApplication application = ApplicationContext as SmtuScheduleApplication;
             application.Preferences.ThemeChanged += Recreate;
 
             SetTheme(application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark

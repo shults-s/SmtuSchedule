@@ -30,7 +30,7 @@ namespace SmtuSchedule.Android.Views
                 return request.Split(',').Select(r => r.Trim()).Where(r => r.Length != 0).ToArray();
             }
 
-            _application = ApplicationContext as ScheduleApplication;
+            _application = ApplicationContext as SmtuScheduleApplication;
 
             SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark
                 : Resource.Style.Theme_SmtuSchedule_Light);
@@ -140,7 +140,7 @@ namespace SmtuSchedule.Android.Views
             ShowKeyboardForSearchRequestTextView();
         }
 
-        private ScheduleApplication _application;
+        private SmtuScheduleApplication _application;
 
         private RelativeLayout _progressBarLayout;
         private Button _downloadLecturersErrorRetryButton;

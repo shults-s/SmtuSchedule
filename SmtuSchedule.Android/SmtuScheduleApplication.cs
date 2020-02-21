@@ -22,7 +22,7 @@ using Environment = Android.OS.Environment;
 namespace SmtuSchedule.Android
 {
     [Application]
-    internal class ScheduleApplication : Application
+    internal class SmtuScheduleApplication : Application
     {
         public SchedulesManager Manager { get; private set; }
 
@@ -32,7 +32,7 @@ namespace SmtuSchedule.Android
 
         public Boolean IsInitialized { get; private set; }
 
-        public ScheduleApplication(IntPtr javaReference, JniHandleOwnership transfer)
+        public SmtuScheduleApplication(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
         {
             Logger = new InMemoryLogger();

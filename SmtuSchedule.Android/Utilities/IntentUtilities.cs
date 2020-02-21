@@ -56,7 +56,7 @@ namespace SmtuSchedule.Android.Utilities
 
         public static Intent CreateGooglePlayStoreViewIntent(Context context, String packageId)
         {
-            ScheduleApplication application = context.ApplicationContext as ScheduleApplication;
+            SmtuScheduleApplication application = context.ApplicationContext as SmtuScheduleApplication;
             if (application.IsPlayStoreInstalled())
             {
                 return CreateViewIntentFromUrl("market://details?id=" + packageId);

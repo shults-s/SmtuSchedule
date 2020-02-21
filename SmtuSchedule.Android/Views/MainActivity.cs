@@ -147,7 +147,7 @@ namespace SmtuSchedule.Android.Views
                 Finish();
             }
 
-            _application = ApplicationContext as ScheduleApplication;
+            _application = ApplicationContext as SmtuScheduleApplication;
 
             _currentlyUsedDarkTheme = _application.Preferences.UseDarkTheme;
             _isThemeChanged = false;
@@ -1086,7 +1086,7 @@ namespace SmtuSchedule.Android.Views
         private RelativeLayout _contentLayout;
         private SchedulesPagerAdapter _pagerAdapter;
 
-        private ScheduleApplication _application;
+        private SmtuScheduleApplication _application;
         private Timer _currentSubjectHighlightTimer;
         private MainActivityStateManager _stateManager;
     }

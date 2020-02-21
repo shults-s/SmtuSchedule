@@ -99,7 +99,7 @@
     <Compile Include="Views\DownloadActivity.cs" />
     <Compile Include="Views\PreferencesActivity.cs" />
     <Compile Include="Views\CustomDatePickerDialog.cs" />
-    <Compile Include="ScheduleApplication.cs" />
+    <Compile Include="SmtuScheduleApplication.cs" />
     <Compile Include="Views\MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
