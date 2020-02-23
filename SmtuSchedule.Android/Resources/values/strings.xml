@@ -30,6 +30,12 @@
         \n\nМежду смежными датами проще переключаться с помощью вкладок, либо перелистывая страницы расписания влево-вправо.
         \n\nВернуться к текущей дате можно нажав кнопку «Назад».
     </string>
+    <string name="updateSchedulesOnStartFeatureDiscoveryTitle">Автоматическое обновление расписаний</string>
+    <string name="updateSchedulesOnStartFeatureDiscoveryMessage">
+        Приложение теперь умеет автоматически обновлять расписания при запуске.
+        \n\nЭто актуально в начале семестра, когда происходит наибольшее количество изменений.
+        \n\nСмахиванием вниз расписание можно обновить вручную.
+    </string>
 
     <!-- Заголовки диалогов и панелей инструментов -->
     <string name="preferencesToolbarTitle">Настройки</string>
@@ -51,7 +57,7 @@
     <!-- Названия действий Snackbar'ов, кнопок и диалогов -->
     <string-array name="currentScheduleActionsTitles">
         <item>Удалить расписание</item>
-        <item>Перезагрузить расписание</item>
+        <item>Обновить расписание</item>
     </string-array>
     <string name="gotItActionTitle">Понял</string>
     <string name="cancelActionTitle">Отмена</string>
@@ -67,6 +73,7 @@
     <!-- Сообщения об ошибках -->
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
     <string name="schedulesReadingErrorMessage">Не все расписания удалось открыть.</string>
+    <string name="schedulesUpdatingErrorMessage">Не все расписания удалось обновить.</string>
     <string name="schedulesMigrationErrorMessage">Не все расписания удалось преобразовать к актуальному формату.</string>
     <string name="scheduleDownloadErrorMessage">
         Ошибка при загрузке расписания.
@@ -119,6 +126,10 @@
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
     <string name="preferenceReplayFeatureDiscoveryTitle">Повторить обучение использованию</string>
     <string name="preferenceReplayFeatureDiscoverySummaryOn">Перезапуcтите приложение, чтобы начать</string>
+    <string name="preferenceUpdateSchedulesOnStartTitle">Обновлять расписания</string>
+    <string name="preferenceUpdateSchedulesOnStartSummary">
+        Автоматически обновлять расписания при запуске приложения
+    </string>
     <string name="preferenceUseFabDateSelectorTitle">Плавающая кнопка</string>
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
     <!-- <string name="preferenceCheckUpdatesOnStartTitle">Проверять обновления</string> -->
@@ -133,7 +144,7 @@
 
     <!-- Сообщения уведомительного характера -->
     <string name="aboutApplicationMessage">
-        Версия 1.1.2 от 16 февраля 2020.
+        Версия 1.2.0 от 23 февраля 2020.
         \n\nРазработчик: [@shults_s](https://vk.com/shults_s).
         \n\n[Политика конфиденциальности](https://github.com/shults-s/SmtuSchedule/wiki/Privacy-policy).
         \n\nИсходный код и информация о проекте размещены на [GitHub](https://github.com/shults-s/SmtuSchedule).

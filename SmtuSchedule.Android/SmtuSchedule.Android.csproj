@@ -82,13 +82,15 @@
     <Compile Include="Interfaces\ISchedulesViewer.cs" />
     <Compile Include="PrivateKeys.cs" />
     <Compile Include="Preferences.cs" />
-    <Compile Include="Utilities\NotificationsHelper.cs" />
+    <Compile Include="Utilities\IntentUtilities.cs" />
+    <Compile Include="Utilities\NotificationUtilities.cs" />
     <Compile Include="Utilities\MessagingService.cs" />
     <Compile Include="Utilities\TapTargetExtensions.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\ProcessLifecycleListener.cs" />
     <Compile Include="Utilities\TapTargetSequenceListener.cs" />
     <Compile Include="Utilities\TapTargetViewListener.cs" />
+    <Compile Include="Views\CustomSwipeRefreshLayout.cs" />
     <Compile Include="Views\CustomArrayAdapter.cs" />
     <Compile Include="Views\CustomClickableSpan.cs" />
     <Compile Include="Utilities\ICharSequenceExtensions.cs" />
@@ -97,7 +99,7 @@
     <Compile Include="Views\DownloadActivity.cs" />
     <Compile Include="Views\PreferencesActivity.cs" />
     <Compile Include="Views\CustomDatePickerDialog.cs" />
-    <Compile Include="ScheduleApplication.cs" />
+    <Compile Include="SmtuScheduleApplication.cs" />
     <Compile Include="Views\MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -174,7 +176,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\schedule.xml">
+    <AndroidResource Include="Resources\layout\schedulePage.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>
@@ -213,7 +215,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\pager.xml">
+    <AndroidResource Include="Resources\layout\scheduleViewPager.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>

@@ -16,41 +16,33 @@ namespace SmtuSchedule.Core
 
         public ILogger Logger { get; set; }
 
-        public SchedulesManager(String storagePath) => _storagePath = storagePath;
-
-        public async Task<IReadOnlyDictionary<String, Int32>> GetLecturersAsync()
+        public SchedulesManager(String storagePath, String schedulesDirectoryName)
         {
-            if (_lecturers != null)
+            _schedulesRepository = new LocalSchedulesRepository($"{storagePath}/{schedulesDirectoryName}/")
             {
-                return _lecturers;
-            }
+                Logger = Logger
+            };
 
-            return (_lecturers = await LecturersLoader.DownloadAsync(Logger).ConfigureAwait(false));
+            _storagePath = storagePath;
         }
 
         public Task<Boolean> MigrateSchedulesAsync()
         {
             return Task.Run(() =>
             {
-                SchedulesMigrator schedulesMigrator = new SchedulesMigrator(GetLecturersAsync)
+                SchedulesMigrator schedulesMigrator = new SchedulesMigrator(DownloadLecturersMapAsync)
                 {
                     Logger = Logger
                 };
 
-                IEnumerable<Schedule> affectedSchedules = schedulesMigrator.MigrateAsync(
-                    _schedules.Values
-                ).ToEnumerable();
-
-                LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
-                {
-                    Logger = Logger
-                };
+                IEnumerable<Schedule> affectedSchedules = schedulesMigrator.MigrateAsync(_schedules.Values)
+                    .ToEnumerable();
 
                 Boolean haveSavingErrors = false;
 
                 foreach (Schedule schedule in affectedSchedules)
                 {
-                    if (!schedulesWriter.Save(schedule))
+                    if (!_schedulesRepository.Save(schedule))
                     {
                         haveSavingErrors = true;
                     }
@@ -67,12 +59,100 @@ namespace SmtuSchedule.Core
                 return number;
             }
 
-            if (_lecturers.ContainsKey(searchRequest))
+            if (_lecturersMap.ContainsKey(searchRequest))
             {
-                return _lecturers[searchRequest];
+                return _lecturersMap[searchRequest];
             }
 
             return 0;
+        }
+
+        public Task<Boolean> UpdateSchedulesAsync()
+        {
+            return Task.Run(async () =>
+            {
+                if (_schedules.Count == 0)
+                {
+                    return false;
+                }
+
+                LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
+                {
+                    Logger = Logger
+                };
+
+                Dictionary<String, Int32> cachedLecturersMap = lecturersRepository.Read();
+
+                if (cachedLecturersMap == null)
+                {
+                    if (await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
+                    {
+                        return true;
+                    }
+
+                    cachedLecturersMap = _lecturersMap;
+                }
+
+                IsDownloadingInProgress = true;
+
+                ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(cachedLecturersMap)
+                {
+                    Logger = Logger
+                };
+
+                Dictionary<Int32, Schedule> updatedSchedules = await schedulesLoader.DownloadAsync(
+                    _schedules.Keys,
+                    false
+                )
+                .ConfigureAwait(false);
+
+                Boolean haveSavingErrors = false;
+
+                foreach ((Int32 scheduleId, Schedule schedule) in updatedSchedules)
+                {
+                    if (!_schedulesRepository.Save(schedule))
+                    {
+                        haveSavingErrors = true;
+                    }
+                    else
+                    {
+                        _schedules[scheduleId] = schedule;
+                    }
+                }
+
+                // Boolean haveRemovingErrors = false;
+
+                // foreach ((Int32 scheduleId, Schedule schedule) in _schedules)
+                // {
+                //     if (updatedSchedules.ContainsKey(scheduleId))
+                //     {
+                //         continue;
+                //     }
+
+                //     if (!_schedulesRepository.Remove(schedule))
+                //     {
+                //         haveRemovingErrors = true;
+                //     }
+                //     else
+                //     {
+                //         haveRemovingErrors |= !_schedules.TryRemove(scheduleId, out Schedule _);
+                //     }
+                // }
+
+                foreach ((Int32 scheduleId, Schedule schedule) in _schedules)
+                {
+                    if (updatedSchedules.ContainsKey(scheduleId))
+                    {
+                        continue;
+                    }
+
+                    schedule.IsNotUpdated = true;
+                }
+
+                IsDownloadingInProgress = false;
+
+                return schedulesLoader.HaveDownloadingErrors || haveSavingErrors; // || haveRemovingErrors;
+            });
         }
 
         public Task<Boolean> DownloadSchedulesAsync(IEnumerable<String> searchRequests,
@@ -82,8 +162,7 @@ namespace SmtuSchedule.Core
             {
                 IsDownloadingInProgress = true;
 
-                _lecturers ??= await GetLecturersAsync().ConfigureAwait(false);
-                if (_lecturers == null)
+                if (_lecturersMap == null && await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
                 {
                     return true;
                 }
@@ -97,7 +176,7 @@ namespace SmtuSchedule.Core
                     return true;
                 }
 
-                ServerSchedulesLoader schedulesLoader = new ServerSchedulesLoader(_lecturers)
+                ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(_lecturersMap)
                 {
                     Logger = Logger
                 };
@@ -105,18 +184,14 @@ namespace SmtuSchedule.Core
                 Dictionary<Int32, Schedule> schedules = await schedulesLoader.DownloadAsync(
                     schedulesIds,
                     shouldDownloadRelatedSchedules
-                ).ConfigureAwait(false);
-
-                LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
-                {
-                    Logger = Logger
-                };
+                )
+                .ConfigureAwait(false);
 
                 Boolean haveSavingErrors = false;
 
                 foreach ((Int32 scheduleId, Schedule schedule) in schedules)
                 {
-                    if (!schedulesWriter.Save(schedule))
+                    if (!_schedulesRepository.Save(schedule))
                     {
                         haveSavingErrors = true;
                     }
@@ -136,18 +211,33 @@ namespace SmtuSchedule.Core
         {
             return Task.Run(() =>
             {
-                LocalSchedulesWriter schedulesWriter = new LocalSchedulesWriter(_storagePath)
-                {
-                    Logger = Logger
-                };
-
-                if (!schedulesWriter.Remove(_schedules[scheduleId]))
+                if (!_schedulesRepository.Remove(_schedules[scheduleId]))
                 {
                     return true;
                 }
 
-                _schedules.TryRemove(scheduleId, out Schedule schedule);
-                return false;
+                return !_schedules.TryRemove(scheduleId, out Schedule _);
+            });
+        }
+
+        public Task<IReadOnlyDictionary<String, Int32>> DownloadLecturersMapAsync()
+        {
+            return Task.Run(async () =>
+            {
+                if (_lecturersMap != null)
+                {
+                    return _lecturersMap as IReadOnlyDictionary<String, Int32>;
+                }
+
+                LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
+                {
+                    Logger = Logger
+                };
+
+                _lecturersMap = await ServerLecturersDownloader.DownloadAsync(Logger).ConfigureAwait(false);
+                lecturersRepository.Save(_lecturersMap);
+
+                return _lecturersMap as IReadOnlyDictionary<String, Int32>;
             });
         }
 
@@ -155,19 +245,16 @@ namespace SmtuSchedule.Core
         {
             return Task.Run(() =>
             {
-                LocalSchedulesReader schedulesReader = new LocalSchedulesReader()
-                {
-                    Logger = Logger
-                };
-
-                _schedules = new ConcurrentDictionary<Int32, Schedule>(schedulesReader.Read(_storagePath));
-                return schedulesReader.HaveReadingErrors;
+                Dictionary<Int32, Schedule> schedules = _schedulesRepository.Read(out Boolean haveReadingErrors);
+                _schedules = new ConcurrentDictionary<Int32, Schedule>(schedules);
+                return haveReadingErrors;
             });
         }
 
-        private readonly String _storagePath;
-
-        private IReadOnlyDictionary<String, Int32> _lecturers;
+        private Dictionary<String, Int32> _lecturersMap;
         private ConcurrentDictionary<Int32, Schedule> _schedules;
+
+        private readonly String _storagePath;
+        private readonly LocalSchedulesRepository _schedulesRepository;
     }
 }

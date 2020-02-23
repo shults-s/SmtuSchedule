@@ -5,19 +5,10 @@ using Android.App;
 using Android.Content;
 using Android.Support.V4.App;
 
-using Uri = Android.Net.Uri;
-
 namespace SmtuSchedule.Android.Utilities
 {
-    internal static class NotificationsHelper
+    internal static class NotificationUtilities
     {
-        // Ключ в словаре данных, наличие которого означает, что необходимо открыть страницу указанного
-        // приложения в Google Play Store.
-        private const String DataGooglePlayStoreKey = "GooglePlayStore";
-
-        // Ключ в словаре данных, наличие которого означает, что необходимо открыть указанный URL.
-        private const String DataUrlKey = "Url";
-
         public const String UniversityChannelId = "University";
 
         public const String GeneralChannelId = "General";
@@ -45,7 +36,7 @@ namespace SmtuSchedule.Android.Utilities
 
             if (data != null)
             {
-                Intent intent = CreateIntentFromNotificationData(data);
+                Intent intent = IntentUtilities.CreateViewIntentFromData(context, data);
                 if (intent == null)
                 {
                     return -1;
@@ -59,10 +50,8 @@ namespace SmtuSchedule.Android.Utilities
                 ));
             }
 
-            if (title != null)
-            {
-                builder.SetContentTitle(title);
-            }
+            builder.SetContentTitle(
+                title ?? context.Resources.GetString(Resource.String.applicationCompleteName));
 
             builder.SetStyle(new NotificationCompat.BigTextStyle().BigText(text)).SetAutoCancel(true)
                 .SetSmallIcon(Resource.Mipmap.launcherIcon);
@@ -71,46 +60,7 @@ namespace SmtuSchedule.Android.Utilities
             return notificationId;
         }
 
-        public static Boolean IsKeysCollectionValidToCreateIntent(ICollection<String> collection)
-        {
-            return collection.Contains(DataUrlKey) || collection.Contains(DataGooglePlayStoreKey);
-        }
-
-        public static Intent CreateIntentFromNotificationData(IDictionary<String, String> data)
-        {
-            static Intent CreateIntentFromUrl(String url)
-            {
-                Uri uri;
-                try
-                {
-                    uri = Uri.Parse(url);
-                }
-                catch
-                {
-                    return null;
-                }
-
-                return new Intent(Intent.ActionView, uri);
-            }
-
-            if (data == null)
-            {
-                return null;
-            }
-
-            if (data.ContainsKey(DataUrlKey))
-            {
-                return CreateIntentFromUrl(data[DataUrlKey]);
-            }
-            else if (data.ContainsKey(DataGooglePlayStoreKey))
-            {
-                return CreateIntentFromUrl("market://details?id=" + data[DataGooglePlayStoreKey]);
-            }
-
-            return null;
-        }
-
-        public static void CreateNotificationsChannels(Context context)
+        public static void CreateNotificationChannels(Context context)
         {
             if (Build.VERSION.SdkInt < BuildVersionCodes.O)
             {

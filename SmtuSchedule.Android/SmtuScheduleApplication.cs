@@ -22,7 +22,7 @@ using Environment = Android.OS.Environment;
 namespace SmtuSchedule.Android
 {
     [Application]
-    internal class ScheduleApplication : Application
+    internal class SmtuScheduleApplication : Application
     {
         public SchedulesManager Manager { get; private set; }
 
@@ -32,12 +32,12 @@ namespace SmtuSchedule.Android
 
         public Boolean IsInitialized { get; private set; }
 
-        public ScheduleApplication(IntPtr javaReference, JniHandleOwnership transfer)
+        public SmtuScheduleApplication(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
         {
             Logger = new InMemoryLogger();
             Logger.Log(
-                "SmtuSchedule version {0}, running on {1} {2} (Android {4} – API {3}).",
+                "Shults.SmtuSchedule version {0}, running on {1} {2} (Android {4} – API {3}).",
                 GetVersionName(),
                 Build.Manufacturer,
                 Build.Model,
@@ -68,13 +68,13 @@ namespace SmtuSchedule.Android
         {
             base.OnCreate();
 
-            NotificationsHelper.CreateNotificationsChannels(this);
+            NotificationUtilities.CreateNotificationChannels(this);
 
 #if !DEBUG
             Logger.ExceptionLogged += (e) =>
             {
-                if (e is LecturersLoaderException || e is SchedulesLoaderException
-                    || e is SchedulesReaderException)
+                if (e is LecturersDownloaderException || e is SchedulesDownloaderException
+                    || e is SchedulesRepositoryException)
                 {
                     Crashes.TrackError(e);
                 }
@@ -151,14 +151,18 @@ namespace SmtuSchedule.Android
 
         public String GetModernExternalStoragePath()
         {
-            return Context.GetExternalFilesDir(null).AbsolutePath;
+            return Context.GetExternalFilesDir(null).AbsolutePath + "/";
         }
 
         public String GetInternalStoragePath() => FilesDir.AbsolutePath + "/";
 
         public Boolean Initialize(out InitializationStatus status)
         {
-            String modernSchedulesPath = GetModernExternalStoragePath() + "/Schedules/";
+            const String SchedulesDirectoryName = "Schedules";
+
+            String modernStoragePath = GetModernExternalStoragePath();
+            String modernSchedulesPath = modernStoragePath + SchedulesDirectoryName;
+
             String legacySchedulesPath = GetLegacyExternalStoragePath();
 
             status = InitializationStatus.Success;
@@ -219,7 +223,10 @@ namespace SmtuSchedule.Android
                 }
             }
 
-            Manager = new SchedulesManager(modernSchedulesPath) { Logger = Logger };
+            Manager = new SchedulesManager(modernStoragePath, SchedulesDirectoryName)
+            {
+                Logger = Logger
+            };
 
             return (IsInitialized = true);
         }

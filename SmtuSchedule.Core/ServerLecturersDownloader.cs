@@ -9,11 +9,11 @@ using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core
 {
-    internal static class LecturersLoader
+    internal static class ServerLecturersDownloader
     {
         private const Int32 IntervalBetweenRequestsInMilliseconds = 300;
 
-        private const Int32 MaxAttemptsNumber = 5;
+        private const Int32 MaximumAttemptsNumber = 5;
 
         public static Task<Dictionary<String, Int32>> DownloadAsync(ILogger logger)
         {
@@ -22,7 +22,7 @@ namespace SmtuSchedule.Core
 
         private static async Task<Dictionary<String, Int32>> TryDownloadAsync(ILogger logger, Int32 attempt)
         {
-            const String SearchScheduleUrl = "https://www.smtu.ru/ru/searchschedule/";
+            const String SearchPageUrl = "https://www.smtu.ru/ru/searchschedule/";
 
             // На входе: Фамилия Имя Отчество (Должность в университете)
             static String GetPureLecturerName(String name) => name.Substring(0, name.IndexOf('(') - 1);
@@ -37,7 +37,7 @@ namespace SmtuSchedule.Core
             Dictionary<String, Int32> lecturers = null;
             try
             {
-                String html = await HttpHelper.GetAsync(SearchScheduleUrl).ConfigureAwait(false);
+                String html = await HttpUtilities.GetAsync(SearchPageUrl).ConfigureAwait(false);
                 HtmlDocument document = new HtmlDocument();
                 document.LoadHtml(html);
 
@@ -60,10 +60,10 @@ namespace SmtuSchedule.Core
 
                 try
                 {
-                    html = await HttpHelper.PostAsync(SearchScheduleUrl, parameters).ConfigureAwait(false);
+                    html = await HttpUtilities.PostAsync(SearchPageUrl, parameters).ConfigureAwait(false);
                 }
                 // Предотвращаем бесконечную рекурсию в случае, если ошибка произошла в каждой из попыток.
-                catch when (attempt <= MaxAttemptsNumber)
+                catch when (attempt <= MaximumAttemptsNumber)
                 {
                     return await TryDownloadAsync(logger, attempt + 1).ConfigureAwait(false);
                 }
@@ -96,7 +96,7 @@ namespace SmtuSchedule.Core
             catch (Exception exception)
             {
                 logger?.Log(
-                    new LecturersLoaderException("Error of downloading list of the lecturers.", exception));
+                    new LecturersDownloaderException("Error of downloading list of the lecturers.", exception));
 
                 return null;
             }

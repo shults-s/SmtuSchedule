@@ -1,6 +1,24 @@
--keep class android.support.v7.widget.** { *; }
--keep class android.support.v4.widget.Space { *; }
--keep class android.support.design.widget.** { *; }
+# Screens
+# -keep class android.support.v4.widget.Space
+-keep class android.support.v4.view.ViewPager
+-keep class android.support.v4.widget.SwipeRefreshLayout
+-keep class android.support.v7.widget.Toolbar
+-keep class android.support.v7.widget.PopupMenu
+-keep class android.support.v7.widget.FitWindowsFrameLayout
+-keep class android.support.v7.widget.FitWindowsLinearLayout
+-keep class android.support.design.widget.TabLayout
+-keep class android.support.design.widget.AppBarLayout
+-keep class android.support.design.widget.CoordinatorLayout
+-keep class android.support.design.widget.FloatingActionButton
+-keep class android.support.design.widget.Snackbar
+-keep class android.support.design.widget.Snackbar$SnackbarLayout
+
+# Dialogs
+-keep class android.support.v7.widget.DialogTitle
+-keep class android.support.v7.widget.ButtonBarLayout
+-keep class android.support.v7.widget.AlertDialogLayout
+
+# Firebase Cloud Messaging
 -keep class com.google.firebase.provider.FirebaseInitProvider
 -keep class com.google.firebase.iid.FirebaseInstanceIdService
 -keep class com.google.firebase.iid.FirebaseInstanceIdReceiver

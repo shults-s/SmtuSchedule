@@ -7,6 +7,7 @@ namespace SmtuSchedule.Android.Enumerations
         ApplicationSettings = 1,
         SchedulesDownload = 2,
         SchedulesManagement = 4,
-        ScheduleChangeDate = 8
+        ScheduleChangeDate = 8,
+        UpdateSchedulesOnStart = 16
     }
 }

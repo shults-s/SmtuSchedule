@@ -16,7 +16,7 @@ using Group = SmtuSchedule.Core.Models.Group;
 
 namespace SmtuSchedule.Core
 {
-    internal class ServerSchedulesLoader
+    internal class ServerSchedulesDownloader
     {
         private static readonly (String, String)[] ContentTitleReplacementPatterns = new (String, String)[]
         {
@@ -55,7 +55,7 @@ namespace SmtuSchedule.Core
 
         public ILogger Logger { get; set; }
 
-        public ServerSchedulesLoader(IReadOnlyDictionary<String, Int32> lecturers) => _lecturers = lecturers;
+        public ServerSchedulesDownloader(IReadOnlyDictionary<String, Int32> lecturers) => _lecturers = lecturers;
 
         public async Task<Dictionary<Int32, Schedule>> DownloadAsync(IEnumerable<Int32> schedulesIds,
             Boolean shouldDownloadRelatedLecturersSchedules)
@@ -66,7 +66,7 @@ namespace SmtuSchedule.Core
             if (_lecturers == null)
             {
                 Logger?.Log(
-                    new SchedulesLoaderException(
+                    new SchedulesDownloaderException(
                         "Provided lecturers list is null, therefore, in any loaded schedule, the "
                         + "lecturers id's will be zero. So, switching between schedules will be impossible."
                     )
@@ -91,7 +91,7 @@ namespace SmtuSchedule.Core
                     {
                         HaveDownloadingErrors = true;
                         Logger?.Log(
-                            new SchedulesLoaderException(
+                            new SchedulesDownloaderException(
                                 $"Error of downloading schedules: network error.", exception)
                         );
 
@@ -101,7 +101,7 @@ namespace SmtuSchedule.Core
                     {
                         HaveDownloadingErrors = true;
                         Logger?.Log(
-                            new SchedulesLoaderException(
+                            new SchedulesDownloaderException(
                                 $"Error of downloading schedule with id {scheduleId}.", exception)
                         );
                     }
@@ -226,7 +226,7 @@ namespace SmtuSchedule.Core
             String baseUrl = (scheduleType == ScheduleType.Group) ? GroupScheduleBaseUrl
                 : LecturerScheduleBaseUrl;
 
-            String html = await HttpHelper.GetAsync(baseUrl + scheduleId + "/").ConfigureAwait(false);
+            String html = await HttpUtilities.GetAsync(baseUrl + scheduleId + "/").ConfigureAwait(false);
 
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);

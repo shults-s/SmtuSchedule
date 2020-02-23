@@ -45,7 +45,7 @@ namespace SmtuSchedule.Android.Utilities
             String text = notification.Body;
             String channelId = notification.ChannelId;
 
-            NotificationsHelper.DisplayNotification(this, channelId, 0, title, text, message.Data);
+            NotificationUtilities.DisplayNotification(this, channelId, 0, title, text, message.Data);
         }
     }
 }

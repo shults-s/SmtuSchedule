@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace SmtuSchedule.Core.Utilities
 {
-    internal static class HttpHelper
+    internal static class HttpUtilities
     {
         // HttpClient использует cookies по-умолчанию, создавать объект HttpClientHandler нет необходимости.
-        static HttpHelper() => _client = new HttpClient();
+        static HttpUtilities() => _client = new HttpClient();
 
         public static async Task<String> GetAsync(String url, Dictionary<String, String> parameters = null)
         {

@@ -67,7 +67,7 @@ namespace SmtuSchedule.Android.Views
                 return layout;
             }
 
-            layout = inflater.Inflate(Resource.Layout.schedule, container, false);
+            layout = inflater.Inflate(Resource.Layout.schedulePage, container, false);
 
             Int32 currentSubjectIndex = (Date != DateTime.Today)
                 ? -1
@@ -125,7 +125,7 @@ namespace SmtuSchedule.Android.Views
         {
             base.OnAttach(context);
 
-            _application = Context.ApplicationContext as ScheduleApplication;
+            _application = Context.ApplicationContext as SmtuScheduleApplication;
 
             if (Activity is ISchedulesViewer viewer)
             {
@@ -246,7 +246,7 @@ namespace SmtuSchedule.Android.Views
         private Color _tertiaryTextColor;
         private Color _secondaryTextColor;
 
-        private ScheduleApplication _application;
+        private SmtuScheduleApplication _application;
         private Action<Int32> _schedulesSwitcherCallback;
     }
 }

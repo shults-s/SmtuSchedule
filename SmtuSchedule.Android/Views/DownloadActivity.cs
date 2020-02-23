@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Android.OS;
@@ -28,10 +27,10 @@ namespace SmtuSchedule.Android.Views
             static String[] SplitSearchRequest(String request)
             {
                 request = Regex.Replace(request, @"\t|\r|\n", String.Empty);
-                return request.Split(',').Select(r => r.Trim()).Where(r => r != String.Empty).ToArray();
+                return request.Split(',').Select(r => r.Trim()).Where(r => r.Length != 0).ToArray();
             }
 
-            _application = ApplicationContext as ScheduleApplication;
+            _application = ApplicationContext as SmtuScheduleApplication;
 
             SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark
                 : Resource.Style.Theme_SmtuSchedule_Light);
@@ -108,18 +107,11 @@ namespace SmtuSchedule.Android.Views
             }
         }
 
-        private Task DownloadLecturersNamesAsync()
-        {
-            return Task.Run(async () =>
-            {
-                IEnumerable<String> lecturers = (await _application.Manager.GetLecturersAsync())?.Keys;
-                RunOnUiThread(() => ApplyLecturersNames(lecturers));
-            });
-        }
-
-        private void ApplyLecturersNames(IEnumerable<String> lecturers)
+        private async void DownloadLecturersNamesAsync()
         {
             TextView errorTextView = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
+
+            IEnumerable<String> lecturers = (await _application.Manager.DownloadLecturersMapAsync())?.Keys;
 
             _progressBarLayout.Visibility = ViewStates.Gone;
 
@@ -148,7 +140,7 @@ namespace SmtuSchedule.Android.Views
             ShowKeyboardForSearchRequestTextView();
         }
 
-        private ScheduleApplication _application;
+        private SmtuScheduleApplication _application;
 
         private RelativeLayout _progressBarLayout;
         private Button _downloadLecturersErrorRetryButton;

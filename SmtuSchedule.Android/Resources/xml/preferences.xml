@@ -7,6 +7,12 @@
         android:summary="@string/preferenceUpperWeekDateSummary"
         android:layout="@layout/customPreference" />
     <SwitchPreferenceCompat
+        android:key="UpdateSchedulesOnStart"
+        android:title="@string/preferenceUpdateSchedulesOnStartTitle"
+        android:summary="@string/preferenceUpdateSchedulesOnStartSummary"
+        android:defaultValue="true"
+        android:layout="@layout/customPreference" />
+    <SwitchPreferenceCompat
         android:key="UseDarkTheme"
         android:title="@string/preferenceUseDarkThemeTitle"
         android:defaultValue="false"
@@ -21,7 +27,7 @@
         android:key="DisplaySubjectEndTime"
         android:title="@string/preferenceDisplaySubjectEndTimeTitle"
         android:summary="@string/preferenceDisplaySubjectEndTimeSummary"
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:layout="@layout/customPreference" />
     <!-- <SwitchPreferenceCompat
         android:key="CheckUpdatesOnStart"
