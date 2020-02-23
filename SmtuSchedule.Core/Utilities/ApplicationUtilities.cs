@@ -30,14 +30,14 @@ namespace SmtuSchedule.Core.Utilities
                 reply = new Ping().Send(UniversitySiteHostName);
 
                 failReason = (reply.Status != IPStatus.Success)
-                    ? $"Ping failed with the status {reply.Status} without throwing an exception."
+                    ? $"Ping failed with the status {reply?.Status} without throwing an exception."
                     : null;
 
                 return (reply.Status == IPStatus.Success);
             }
             catch (Exception exception)
             {
-                failReason = $"Ping failed with the {reply.Status} status and threw an exception: {exception.Format()}";
+                failReason = $"Ping failed with the {reply?.Status} status and threw an exception: {exception.Format()}";
                 return false;
             }
         }
