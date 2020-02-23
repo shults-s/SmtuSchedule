@@ -76,29 +76,31 @@ namespace SmtuSchedule.Core
                     return false;
                 }
 
-                if (_lecturersMap == null)
-                {
-                    LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
-                    {
-                        Logger = Logger
-                    };
-
-                    _lecturersMap = lecturersRepository.Read();
-                }
-
-                if (_lecturersMap == null && await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
-                {
-                    return true;
-                }
-
-                IsDownloadingInProgress = true;
-
-                ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(_lecturersMap)
+                LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
                 {
                     Logger = Logger
                 };
 
-                Dictionary<Int32, Schedule> schedules = await schedulesLoader.DownloadAsync(
+                Dictionary<String, Int32> cachedLecturersMap = lecturersRepository.Read();
+
+                if (cachedLecturersMap == null)
+                {
+                    if (await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
+                    {
+                        return true;
+                    }
+
+                    cachedLecturersMap = _lecturersMap;
+                }
+
+                IsDownloadingInProgress = true;
+
+                ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(cachedLecturersMap)
+                {
+                    Logger = Logger
+                };
+
+                Dictionary<Int32, Schedule> updatedSchedules = await schedulesLoader.DownloadAsync(
                     _schedules.Keys,
                     false
                 )
@@ -106,7 +108,7 @@ namespace SmtuSchedule.Core
 
                 Boolean haveSavingErrors = false;
 
-                foreach ((Int32 scheduleId, Schedule schedule) in schedules)
+                foreach ((Int32 scheduleId, Schedule schedule) in updatedSchedules)
                 {
                     if (!_schedulesRepository.Save(schedule))
                     {
@@ -118,9 +120,38 @@ namespace SmtuSchedule.Core
                     }
                 }
 
+                // Boolean haveRemovingErrors = false;
+
+                // foreach ((Int32 scheduleId, Schedule schedule) in _schedules)
+                // {
+                //     if (updatedSchedules.ContainsKey(scheduleId))
+                //     {
+                //         continue;
+                //     }
+
+                //     if (!_schedulesRepository.Remove(schedule))
+                //     {
+                //         haveRemovingErrors = true;
+                //     }
+                //     else
+                //     {
+                //         haveRemovingErrors |= !_schedules.TryRemove(scheduleId, out Schedule _);
+                //     }
+                // }
+
+                foreach ((Int32 scheduleId, Schedule schedule) in _schedules)
+                {
+                    if (updatedSchedules.ContainsKey(scheduleId))
+                    {
+                        continue;
+                    }
+
+                    schedule.IsNotUpdated = true;
+                }
+
                 IsDownloadingInProgress = false;
 
-                return schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
+                return schedulesLoader.HaveDownloadingErrors || haveSavingErrors; // || haveRemovingErrors;
             });
         }
 
@@ -185,8 +216,7 @@ namespace SmtuSchedule.Core
                     return true;
                 }
 
-                _schedules.TryRemove(scheduleId, out Schedule schedule);
-                return false;
+                return !_schedules.TryRemove(scheduleId, out Schedule _);
             });
         }
 

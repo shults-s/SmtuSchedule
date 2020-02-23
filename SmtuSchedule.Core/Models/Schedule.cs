@@ -47,6 +47,9 @@ namespace SmtuSchedule.Core.Models
         // [JsonProperty(Required = Required.Always)]
         public Timetable Timetable { get; set; }
 
+        [JsonIgnore]
+        public Boolean IsNotUpdated { get; set; }
+
         static Schedule()
         {
             Options.Converters.Add(new DateTimeConverter("HH:mm"));

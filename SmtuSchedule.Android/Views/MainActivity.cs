@@ -770,7 +770,8 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            _toolbarTitle.Text = schedules[scheduleId].DisplayedName;
+            String title = schedules[scheduleId].DisplayedName;
+            _toolbarTitle.Text = schedules[scheduleId].IsNotUpdated ? title + " (!)" : title;
 
             _application.Preferences.SetCurrentScheduleId(scheduleId);
             ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate);
@@ -800,9 +801,13 @@ namespace SmtuSchedule.Android.Views
 
         private void SetSchedulesMenu(IReadOnlyList<Schedule> schedules)
         {
-            static IEnumerable<(Int32 scheduleId, String displayedName)> Fetch(IEnumerable<Schedule> values)
+            static IEnumerable<(Int32, String, Boolean)> Fetch(IEnumerable<Schedule> values)
             {
-                return values.Select<Schedule, (Int32, String)>(s => (s.ScheduleId, s.DisplayedName));
+                return values.Select<Schedule, (Int32, String, Boolean)>(s => (
+                    s.ScheduleId,
+                    s.DisplayedName,
+                    s.IsNotUpdated
+                ));
             }
 
             _schedulesMenu.Menu.Clear();
@@ -813,9 +818,10 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            foreach ((Int32 scheduleId, String displayedName) in Fetch(schedules))
+            foreach ((Int32 scheduleId, String displayedName, Boolean isNotUpdated) in Fetch(schedules))
             {
-                _schedulesMenu.Menu.Add(Menu.None, scheduleId, Menu.None, displayedName);
+                String scheduleTitle = isNotUpdated ? displayedName + " (!)" : displayedName;
+                _schedulesMenu.Menu.Add(Menu.None, scheduleId, Menu.None, scheduleTitle);
             }
 
             _toolbarTitle.SetCompoundDrawablesWithIntrinsicBounds(0, 0, Resource.Drawable.arrowDown, 0);
