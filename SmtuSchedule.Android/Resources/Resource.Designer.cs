@@ -5137,28 +5137,34 @@ namespace SmtuSchedule.Android
 			public const int universityNotificationChannelName = 2131689628;
 			
 			// aapt resource value: 0x7F0F009D
-			public const int updatesNotificationChannelDescription = 2131689629;
+			public const int updateSchedulesOnStartFeatureDiscoveryMessage = 2131689629;
 			
 			// aapt resource value: 0x7F0F009E
-			public const int updatesNotificationChannelName = 2131689630;
+			public const int updateSchedulesOnStartFeatureDiscoveryTitle = 2131689630;
 			
 			// aapt resource value: 0x7F0F009F
-			public const int v7_preference_off = 2131689631;
+			public const int updatesNotificationChannelDescription = 2131689631;
 			
 			// aapt resource value: 0x7F0F00A0
-			public const int v7_preference_on = 2131689632;
+			public const int updatesNotificationChannelName = 2131689632;
 			
 			// aapt resource value: 0x7F0F00A1
-			public const int waitUntilSchedulesFinishDownloading = 2131689633;
+			public const int v7_preference_off = 2131689633;
 			
 			// aapt resource value: 0x7F0F00A2
-			public const int weekendMessage = 2131689634;
+			public const int v7_preference_on = 2131689634;
 			
 			// aapt resource value: 0x7F0F00A3
-			public const int welcomeMessage = 2131689635;
+			public const int waitUntilSchedulesFinishDownloading = 2131689635;
 			
 			// aapt resource value: 0x7F0F00A4
-			public const int welcomeToolbarTitle = 2131689636;
+			public const int weekendMessage = 2131689636;
+			
+			// aapt resource value: 0x7F0F00A5
+			public const int welcomeMessage = 2131689637;
+			
+			// aapt resource value: 0x7F0F00A6
+			public const int welcomeToolbarTitle = 2131689638;
 			
 			static String()
 			{
