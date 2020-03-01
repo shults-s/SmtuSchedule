@@ -777,7 +777,7 @@ namespace SmtuSchedule.Android.Views
 
             if (_stateManager.CurrentState == MainActivityState.DownloadingScreenStarted)
             {
-                return;
+                return ;
             }
 
             _stateManager.SetState(MainActivityState.DownloadingScreenStarted);
@@ -877,7 +877,7 @@ namespace SmtuSchedule.Android.Views
             if (!isConnected)
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
-                return;
+                return ;
             }
 
             Boolean haveUpdatingErrors = await _application.Manager.UpdateSchedulesAsync();
