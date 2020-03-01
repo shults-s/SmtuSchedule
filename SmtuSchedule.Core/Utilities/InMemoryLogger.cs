@@ -25,7 +25,7 @@ namespace SmtuSchedule.Core.Utilities
 
         public void Log(String format, params Object[] parameters)
         {
-            Write(format, parameters);
+            Write(String.Format(format, parameters));
         }
 
         public override String ToString()
@@ -33,10 +33,10 @@ namespace SmtuSchedule.Core.Utilities
             return String.Join(Environment.NewLine, _entries);
         }
 
-        private void Write(String format, params Object[] parameters)
+        private void Write(String message)
         {
             String label = DateTime.Now.ToString("[dd.MM.yyyy HH:mm:ss.fff] ");
-            _entries.Add(String.Format(label + format, parameters));
+            _entries.Add(label + message);
         }
 
         private readonly BlockingCollection<String> _entries;
