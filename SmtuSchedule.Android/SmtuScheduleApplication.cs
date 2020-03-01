@@ -161,7 +161,7 @@ namespace SmtuSchedule.Android
             const String SchedulesDirectoryName = "Schedules";
 
             String modernStoragePath = GetModernExternalStoragePath();
-            String modernSchedulesPath = modernStoragePath + SchedulesDirectoryName;
+            String modernSchedulesPath = $"{modernStoragePath}/{SchedulesDirectoryName}/";
 
             String legacySchedulesPath = GetLegacyExternalStoragePath();
 
