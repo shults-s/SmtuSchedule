@@ -96,11 +96,12 @@
     <string name="failedToRemoveDirectoryErrorMessage">
         В старой директории приложения остались файлы, созданные Вами вручную. Посмотрите, возможно их стоит удалить.
     </string>
-    <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с интернетом или с сайтом университета.</string>
     <string name="externalStoragePermissionsDeclinedErrorMessage">
         Приложение не может загружать и открывать расписания без разрешения на доступ к файлам.
         \n\nПерезапустите приложение для повторного запроса разрешений.
     </string>
+    <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с интернетом или с сайтом университета.</string>
+    <string name="universitySiteConnectionLostErrorMessage">Потеряно соединение с интернетом или с сайтом университета.</string>
 
     <!-- Заголовки и описания каналов уведомлений -->
     <string name="updatesNotificationChannelName">Обновления приложения</string>

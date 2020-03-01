@@ -753,6 +753,12 @@ namespace SmtuSchedule.Android.Views
             StartActivityForResult(typeof(PreferencesActivity), StartPreferencesActivityRequestCode);
         }
 
+        private Task<Boolean> IsUniversitySiteConnectionAvailableAsync()
+        {
+            return Task.Run(
+                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
+        }
+
         private async void StartDownloadActivityAsync()
         {
             if (IsPermissionDenied(Manifest.Permission.Internet))
@@ -761,9 +767,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            Boolean isConnected = await Task.Run(
-                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
-
+            Boolean isConnected = await IsUniversitySiteConnectionAvailableAsync();
             if (!isConnected)
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
@@ -872,9 +876,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            Boolean isConnected = await Task.Run(
-                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
-
+            Boolean isConnected = await IsUniversitySiteConnectionAvailableAsync();
             if (!isConnected)
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
@@ -918,9 +920,7 @@ namespace SmtuSchedule.Android.Views
 
         private async Task DownloadSchedulesAsync(String[] requests, Boolean shouldDownloadRelatedSchedules)
         {
-            Boolean isConnected = await Task.Run(
-                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
-
+            Boolean isConnected = await IsUniversitySiteConnectionAvailableAsync();
             if (!isConnected)
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
@@ -947,6 +947,16 @@ namespace SmtuSchedule.Android.Views
             }
 
             RestartSchedulesRenderingSubsystem(preferredScheduleId);
+
+            if (result == DownloadingResult.WithErrors)
+            {
+                isConnected = await IsUniversitySiteConnectionAvailableAsync();
+                if (!isConnected)
+                {
+                    ShowSnackbar(Resource.String.universitySiteConnectionLostErrorMessage);
+                    return ;
+                }
+            }
 
             Boolean isSingularSchedule = (requests.Length == 1 && !shouldDownloadRelatedSchedules);
             Int32 messageId;
