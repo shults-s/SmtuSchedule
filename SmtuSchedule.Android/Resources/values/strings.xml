@@ -126,12 +126,10 @@
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
     <string name="preferenceReplayFeatureDiscoveryTitle">Повторить обучение использованию</string>
     <string name="preferenceReplayFeatureDiscoverySummaryOn">Перезапуcтите приложение, чтобы начать</string>
-    <string name="preferenceUpdateSchedulesOnStartTitle">Обновлять расписания</string>
-    <string name="preferenceUpdateSchedulesOnStartSummary">
-        Автоматически обновлять расписания при запуске приложения
-    </string>
     <string name="preferenceUseFabDateSelectorTitle">Плавающая кнопка</string>
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
+    <string name="preferenceUpdateSchedulesOnStartTitle">Обновлять расписания</string>
+    <string name="preferenceUpdateSchedulesOnStartSummary">Автоматически обновлять расписания при запуске приложения</string>
     <!-- <string name="preferenceCheckUpdatesOnStartTitle">Проверять обновления</string> -->
     <!-- <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string> -->
 
