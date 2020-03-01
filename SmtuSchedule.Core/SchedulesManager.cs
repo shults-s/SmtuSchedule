@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core
 {
@@ -131,7 +132,7 @@ namespace SmtuSchedule.Core
             });
         }
 
-        public Task<Boolean> DownloadSchedulesAsync(IEnumerable<String> searchRequests,
+        public Task<DownloadingResult> DownloadSchedulesAsync(IEnumerable<String> searchRequests,
             Boolean shouldDownloadRelatedSchedules)
         {
             return Task.Run(async () =>
@@ -140,7 +141,7 @@ namespace SmtuSchedule.Core
 
                 if (_lecturersMap == null && await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
                 {
-                    return true;
+                    return DownloadingResult.LecturersMapError;
                 }
 
                 Int32[] schedulesIds = searchRequests.Select(r => GetScheduleIdBySearchRequest(r))
@@ -149,7 +150,7 @@ namespace SmtuSchedule.Core
 
                 if (schedulesIds.Length == 0)
                 {
-                    return true;
+                    return DownloadingResult.WithErrors;
                 }
 
                 ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(_lecturersMap)
@@ -179,7 +180,8 @@ namespace SmtuSchedule.Core
 
                 IsDownloadingInProgress = false;
 
-                return schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
+                Boolean haveDownloadingErrors = schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
+                return haveDownloadingErrors ? DownloadingResult.WithErrors : DownloadingResult.Success;
             });
         }
 
@@ -245,6 +247,7 @@ namespace SmtuSchedule.Core
             {
                 Dictionary<Int32, Schedule> schedules = _schedulesRepository.Read(out Boolean haveReadingErrors);
                 _schedules = new ConcurrentDictionary<Int32, Schedule>(schedules);
+
                 return haveReadingErrors;
             });
         }

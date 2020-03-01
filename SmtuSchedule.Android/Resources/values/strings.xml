@@ -80,6 +80,10 @@
         \nВероятнее всего, его нет на сайте.
     </string>
     <string name="schedulesDownloadErrorMessage">Не все расписания удалось загрузить.</string>
+    <string name="lecturersMapDownloadErrorShortMessage">
+        Внутренняя сетевая ошибка.
+        \nВоспользуйтесь меню загрузки расписаний.
+    </string>
     <string name="lecturersMapDownloadErrorLongMessage">
         Внутренняя сетевая ошибка. Повторите попытку.
         \n\nЕсли используется мобильный интернет, подключитесь через Wi-Fi.

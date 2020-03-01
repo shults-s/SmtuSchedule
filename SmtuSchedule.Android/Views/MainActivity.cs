@@ -19,6 +19,7 @@ using Android.Support.Design.Widget;
 using Com.Getkeepsafe.Taptargetview;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Utilities;
+using SmtuSchedule.Core.Enumerations;
 using SmtuSchedule.Android.Utilities;
 using SmtuSchedule.Android.Interfaces;
 using SmtuSchedule.Android.Enumerations;
@@ -928,10 +929,16 @@ namespace SmtuSchedule.Android.Views
 
             ShowSnackbar(Resource.String.schedulesDownloadingStarted);
 
-            Boolean haveDownloadingErrors = await _application.Manager.DownloadSchedulesAsync(
+            DownloadingResult result = await _application.Manager.DownloadSchedulesAsync(
                 requests,
                 shouldDownloadRelatedSchedules
             );
+
+            if (result == DownloadingResult.LecturersMapError)
+            {
+                ShowSnackbar(Resource.String.lecturersMapDownloadErrorShortMessage);
+                return ;
+            }
 
             Int32 preferredScheduleId = 0;
             if (requests.Length == 1)
@@ -943,7 +950,7 @@ namespace SmtuSchedule.Android.Views
 
             Boolean isSingularSchedule = (requests.Length == 1 && !shouldDownloadRelatedSchedules);
             Int32 messageId;
-            if (haveDownloadingErrors)
+            if (result == DownloadingResult.WithErrors)
             {
                 messageId = isSingularSchedule ? Resource.String.scheduleDownloadErrorMessage
                     : Resource.String.schedulesDownloadErrorMessage;
