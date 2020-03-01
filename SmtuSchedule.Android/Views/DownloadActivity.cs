@@ -57,8 +57,8 @@ namespace SmtuSchedule.Android.Views
 
             _downloadLecturersErrorRetryButton.Click += (s, e) =>
             {
-                DownloadLecturersNamesAsync();
                 _progressBarLayout.Visibility = ViewStates.Visible;
+                DownloadLecturersNamesAsync();
             };
 
             Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.downloadActivityToolbar);
