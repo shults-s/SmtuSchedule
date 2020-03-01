@@ -279,10 +279,10 @@ namespace SmtuSchedule.Android.Views
                     return ;
                 }
 
-                if (status == InitializationStatus.FailedToRemoveDirectory)
-                {
-                    ShowSnackbar(Resource.String.failedToRemoveDirectoryErrorMessage);
-                }
+                // if (status == InitializationStatus.FailedToRemoveDirectory)
+                // {
+                //     ShowSnackbar(Resource.String.failedToRemoveDirectoryErrorMessage);
+                // }
 
                 ShowProgressBar();
 
