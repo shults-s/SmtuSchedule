@@ -76,21 +76,21 @@ namespace SmtuSchedule.Core
                     Logger = Logger
                 };
 
-                Dictionary<String, Int32> cachedLecturersMap = lecturersRepository.Read();
+                Dictionary<String, Int32> localLecturersMap = lecturersRepository.Read();
 
-                if (cachedLecturersMap == null)
+                if (localLecturersMap == null)
                 {
                     if (await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
                     {
                         return true;
                     }
 
-                    cachedLecturersMap = _lecturersMap;
+                    localLecturersMap = _lecturersMap;
                 }
 
                 IsDownloadingInProgress = true;
 
-                ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(cachedLecturersMap)
+                ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(localLecturersMap)
                 {
                     Logger = Logger
                 };
