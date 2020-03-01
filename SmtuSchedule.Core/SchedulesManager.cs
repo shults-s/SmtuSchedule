@@ -59,7 +59,7 @@ namespace SmtuSchedule.Core
                 return number;
             }
 
-            if (_lecturersMap.ContainsKey(searchRequest))
+            if (_lecturersMap?.ContainsKey(searchRequest) ?? false)
             {
                 return _lecturersMap[searchRequest];
             }
