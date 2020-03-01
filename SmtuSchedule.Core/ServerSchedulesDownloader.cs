@@ -55,7 +55,10 @@ namespace SmtuSchedule.Core
 
         public ILogger Logger { get; set; }
 
-        public ServerSchedulesDownloader(IReadOnlyDictionary<String, Int32> lecturers) => _lecturers = lecturers;
+        public ServerSchedulesDownloader(IReadOnlyDictionary<String, Int32> lecturersMap)
+        {
+            _lecturersMap = lecturersMap;
+        }
 
         public async Task<Dictionary<Int32, Schedule>> DownloadAsync(IEnumerable<Int32> schedulesIds,
             Boolean shouldDownloadRelatedLecturersSchedules)
@@ -63,11 +66,11 @@ namespace SmtuSchedule.Core
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
             HaveDownloadingErrors = false;
 
-            if (_lecturers == null)
+            if (_lecturersMap == null)
             {
                 Logger?.Log(
                     new SchedulesDownloaderException(
-                        "Provided lecturers list is null, therefore, in any loaded schedule, the "
+                        "Provided lecturers map is null, therefore, in any loaded schedule, the "
                         + "lecturers id's will be zero. So, switching between schedules will be impossible."
                     )
                 );
@@ -206,10 +209,10 @@ namespace SmtuSchedule.Core
                     }
 
                     Boolean isLecturerScheduleExists = name != null
-                        && _lecturers != null
-                        && _lecturers.ContainsKey(name);
+                        && _lecturersMap != null
+                        && _lecturersMap.ContainsKey(name);
 
-                    id = isLecturerScheduleExists ? _lecturers[name] : 0;
+                    id = isLecturerScheduleExists ? _lecturersMap[name] : 0;
                 }
             }
 
@@ -307,6 +310,6 @@ namespace SmtuSchedule.Core
             return schedule;
         }
 
-        private readonly IReadOnlyDictionary<String, Int32> _lecturers;
+        private readonly IReadOnlyDictionary<String, Int32> _lecturersMap;
     }
 }
