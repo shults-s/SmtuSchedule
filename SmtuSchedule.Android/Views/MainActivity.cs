@@ -19,6 +19,7 @@ using Android.Support.Design.Widget;
 using Com.Getkeepsafe.Taptargetview;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Utilities;
+using SmtuSchedule.Core.Enumerations;
 using SmtuSchedule.Android.Utilities;
 using SmtuSchedule.Android.Interfaces;
 using SmtuSchedule.Android.Enumerations;
@@ -279,10 +280,10 @@ namespace SmtuSchedule.Android.Views
                     return ;
                 }
 
-                if (status == InitializationStatus.FailedToRemoveDirectory)
-                {
-                    ShowSnackbar(Resource.String.failedToRemoveDirectoryErrorMessage);
-                }
+                // if (status == InitializationStatus.FailedToRemoveDirectory)
+                // {
+                //     ShowSnackbar(Resource.String.failedToRemoveDirectoryErrorMessage);
+                // }
 
                 ShowProgressBar();
 
@@ -293,7 +294,8 @@ namespace SmtuSchedule.Android.Views
                     _ = _application.SaveLogAsync();
                 }
 
-                if (_application.Preferences.UpdateSchedulesOnStart)
+                Int32 schedulesNumber = _application.Manager.Schedules.Count;
+                if (_application.Preferences.UpdateSchedulesOnStart && schedulesNumber != 0)
                 {
                     await UpdateSchedulesWithCheckPermissionAsync();
                 }
@@ -447,8 +449,31 @@ namespace SmtuSchedule.Android.Views
 
             void OpenWithPlayStore()
             {
-                Intent intent = IntentUtilities.CreateGooglePlayStoreViewIntent(this, packageId);
-                StartActivity(intent);
+                try
+                {
+                    Intent intent = IntentUtilities.CreateGooglePlayStoreViewIntent(
+                        this,
+                        packageId
+                    );
+
+                    if (intent != null)
+                    {
+                        StartActivity(intent);
+                    }
+                }
+                catch (ActivityNotFoundException)
+                {
+                    Intent intent = IntentUtilities.CreateGooglePlayStoreViewIntent(
+                        this,
+                        packageId,
+                        true
+                    );
+
+                    if (intent != null)
+                    {
+                        StartActivity(intent);
+                    }
+                }
             }
 
             if (packageId == PackageName)
@@ -728,6 +753,12 @@ namespace SmtuSchedule.Android.Views
             StartActivityForResult(typeof(PreferencesActivity), StartPreferencesActivityRequestCode);
         }
 
+        private Task<Boolean> IsUniversitySiteConnectionAvailableAsync()
+        {
+            return Task.Run(
+                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
+        }
+
         private async void StartDownloadActivityAsync()
         {
             if (IsPermissionDenied(Manifest.Permission.Internet))
@@ -736,9 +767,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            Boolean isConnected = await Task.Run(
-                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
-
+            Boolean isConnected = await IsUniversitySiteConnectionAvailableAsync();
             if (!isConnected)
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
@@ -753,7 +782,7 @@ namespace SmtuSchedule.Android.Views
 
             if (_stateManager.CurrentState == MainActivityState.DownloadingScreenStarted)
             {
-                return;
+                return ;
             }
 
             _stateManager.SetState(MainActivityState.DownloadingScreenStarted);
@@ -794,7 +823,7 @@ namespace SmtuSchedule.Android.Views
         private void ViewPagerMoveToDate(DateTime date, Boolean adapterResetRequired = true,
             Boolean forceRecomputeDateRange = false)
         {
-            // Предотвращает ситуацию, когда диапазон отображаемых дат перерассчитывается каждый раз
+            // Предотвращаем ситуацию, когда диапазон отображаемых дат перерассчитывается каждый раз
             // при переходе между расписаниями, если перед этим перелистнуть страницу.
             if (!_pagerAdapter.RenderingDateRange.IsDateInside(date) || forceRecomputeDateRange)
             {
@@ -847,13 +876,11 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            Boolean isConnected = await Task.Run(
-                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
-
+            Boolean isConnected = await IsUniversitySiteConnectionAvailableAsync();
             if (!isConnected)
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
-                return;
+                return ;
             }
 
             Boolean haveUpdatingErrors = await _application.Manager.UpdateSchedulesAsync();
@@ -893,9 +920,7 @@ namespace SmtuSchedule.Android.Views
 
         private async Task DownloadSchedulesAsync(String[] requests, Boolean shouldDownloadRelatedSchedules)
         {
-            Boolean isConnected = await Task.Run(
-                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
-
+            Boolean isConnected = await IsUniversitySiteConnectionAvailableAsync();
             if (!isConnected)
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
@@ -904,10 +929,16 @@ namespace SmtuSchedule.Android.Views
 
             ShowSnackbar(Resource.String.schedulesDownloadingStarted);
 
-            Boolean haveDownloadingErrors = await _application.Manager.DownloadSchedulesAsync(
+            DownloadingResult result = await _application.Manager.DownloadSchedulesAsync(
                 requests,
                 shouldDownloadRelatedSchedules
             );
+
+            if (result == DownloadingResult.LecturersMapError)
+            {
+                ShowSnackbar(Resource.String.lecturersMapDownloadErrorShortMessage);
+                return ;
+            }
 
             Int32 preferredScheduleId = 0;
             if (requests.Length == 1)
@@ -917,9 +948,19 @@ namespace SmtuSchedule.Android.Views
 
             RestartSchedulesRenderingSubsystem(preferredScheduleId);
 
+            if (result == DownloadingResult.WithErrors)
+            {
+                isConnected = await IsUniversitySiteConnectionAvailableAsync();
+                if (!isConnected)
+                {
+                    ShowSnackbar(Resource.String.universitySiteConnectionLostErrorMessage);
+                    return ;
+                }
+            }
+
             Boolean isSingularSchedule = (requests.Length == 1 && !shouldDownloadRelatedSchedules);
             Int32 messageId;
-            if (haveDownloadingErrors)
+            if (result == DownloadingResult.WithErrors)
             {
                 messageId = isSingularSchedule ? Resource.String.scheduleDownloadErrorMessage
                     : Resource.String.schedulesDownloadErrorMessage;
