@@ -71,11 +71,6 @@ namespace SmtuSchedule.Core
         {
             return Task.Run(async () =>
             {
-                if (_schedules.Count == 0)
-                {
-                    return false;
-                }
-
                 LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
                 {
                     Logger = Logger

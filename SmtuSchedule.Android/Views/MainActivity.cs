@@ -293,7 +293,8 @@ namespace SmtuSchedule.Android.Views
                     _ = _application.SaveLogAsync();
                 }
 
-                if (_application.Preferences.UpdateSchedulesOnStart)
+                Int32 schedulesNumber = _application.Manager.Schedules.Count;
+                if (_application.Preferences.UpdateSchedulesOnStart && schedulesNumber != 0)
                 {
                     await UpdateSchedulesWithCheckPermissionAsync();
                 }
