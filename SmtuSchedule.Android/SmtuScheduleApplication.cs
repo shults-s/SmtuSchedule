@@ -263,6 +263,10 @@ namespace SmtuSchedule.Android
             });
         }
 
+        // Этот метод ненадежен, поскольку в случае с эмулятором Android на котором установлены
+        // Google APIs, но не установлен Google Play Store метод вернет true, но при попытке
+        // открыть URL вида market:// будет выброшено исключение ActivityNotFoundException.
+        // В данный момент целесообразно использовать StartActivity(...) в блоке try-catch.
         public Boolean IsPlayStoreInstalled()
         {
             try

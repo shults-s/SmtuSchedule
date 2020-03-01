@@ -447,8 +447,31 @@ namespace SmtuSchedule.Android.Views
 
             void OpenWithPlayStore()
             {
-                Intent intent = IntentUtilities.CreateGooglePlayStoreViewIntent(this, packageId);
-                StartActivity(intent);
+                try
+                {
+                    Intent intent = IntentUtilities.CreateGooglePlayStoreViewIntent(
+                        this,
+                        packageId
+                    );
+
+                    if (intent != null)
+                    {
+                        StartActivity(intent);
+                    }
+                }
+                catch (ActivityNotFoundException)
+                {
+                    Intent intent = IntentUtilities.CreateGooglePlayStoreViewIntent(
+                        this,
+                        packageId,
+                        true
+                    );
+
+                    if (intent != null)
+                    {
+                        StartActivity(intent);
+                    }
+                }
             }
 
             if (packageId == PackageName)
