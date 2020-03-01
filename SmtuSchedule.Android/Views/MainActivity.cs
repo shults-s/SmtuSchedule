@@ -818,7 +818,7 @@ namespace SmtuSchedule.Android.Views
         private void ViewPagerMoveToDate(DateTime date, Boolean adapterResetRequired = true,
             Boolean forceRecomputeDateRange = false)
         {
-            // Предотвращает ситуацию, когда диапазон отображаемых дат перерассчитывается каждый раз
+            // Предотвращаем ситуацию, когда диапазон отображаемых дат перерассчитывается каждый раз
             // при переходе между расписаниями, если перед этим перелистнуть страницу.
             if (!_pagerAdapter.RenderingDateRange.IsDateInside(date) || forceRecomputeDateRange)
             {
