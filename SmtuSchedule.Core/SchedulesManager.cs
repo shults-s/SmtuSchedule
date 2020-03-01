@@ -115,25 +115,6 @@ namespace SmtuSchedule.Core
                     }
                 }
 
-                // Boolean haveRemovingErrors = false;
-
-                // foreach ((Int32 scheduleId, Schedule schedule) in _schedules)
-                // {
-                //     if (updatedSchedules.ContainsKey(scheduleId))
-                //     {
-                //         continue;
-                //     }
-
-                //     if (!_schedulesRepository.Remove(schedule))
-                //     {
-                //         haveRemovingErrors = true;
-                //     }
-                //     else
-                //     {
-                //         haveRemovingErrors |= !_schedules.TryRemove(scheduleId, out Schedule _);
-                //     }
-                // }
-
                 foreach ((Int32 scheduleId, Schedule schedule) in _schedules)
                 {
                     if (updatedSchedules.ContainsKey(scheduleId))
@@ -146,7 +127,7 @@ namespace SmtuSchedule.Core
 
                 IsDownloadingInProgress = false;
 
-                return schedulesLoader.HaveDownloadingErrors || haveSavingErrors; // || haveRemovingErrors;
+                return schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
             });
         }
 
