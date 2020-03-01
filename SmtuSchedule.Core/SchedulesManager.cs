@@ -141,6 +141,7 @@ namespace SmtuSchedule.Core
 
                 if (_lecturersMap == null && await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
                 {
+                    IsDownloadingInProgress = false;
                     return DownloadingResult.LecturersMapError;
                 }
 
@@ -150,6 +151,7 @@ namespace SmtuSchedule.Core
 
                 if (schedulesIds.Length == 0)
                 {
+                    IsDownloadingInProgress = false;
                     return DownloadingResult.WithErrors;
                 }
 
