@@ -22,6 +22,8 @@ namespace SmtuSchedule.Android.Views
 
         public const String IntentSearchRequestsKey = "requests";
 
+        private const Int32 MaximumAttemptsNumber = 3;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             static String[] SplitSearchRequest(String request)
@@ -31,6 +33,8 @@ namespace SmtuSchedule.Android.Views
             }
 
             _application = ApplicationContext as SmtuScheduleApplication;
+
+            _lecturersDownloadingAttempt = 0;
 
             SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark
                 : Resource.Style.Theme_SmtuSchedule_Light);
@@ -113,6 +117,13 @@ namespace SmtuSchedule.Android.Views
 
             IEnumerable<String> lecturers = (await _application.Manager.DownloadLecturersMapAsync())?.Keys;
 
+            Boolean isUsedCachedLecturersMap = false;
+            if (_lecturersDownloadingAttempt++ >= MaximumAttemptsNumber && lecturers == null)
+            {
+                lecturers = (await _application.Manager.ReadCachedLecturersMapAsync())?.Keys;
+                isUsedCachedLecturersMap = true;
+            }
+
             _progressBarLayout.Visibility = ViewStates.Gone;
 
             if (lecturers == null)
@@ -122,13 +133,20 @@ namespace SmtuSchedule.Android.Views
                 _searchRequestTextView.Enabled = false;
                 _downloadRelatedSchedulesCheckBox.Visibility = ViewStates.Gone;
 
+                _downloadLecturersErrorRetryButton.Text = String.Format(
+                    Resources.GetString(Resource.String.tryAgainActionTitle),
+                    MaximumAttemptsNumber - _lecturersDownloadingAttempt + 1
+                );
+
                 errorTextView.Visibility = ViewStates.Visible;
                 _downloadLecturersErrorRetryButton.Visibility = ViewStates.Visible;
 
                 return ;
             }
 
-            errorTextView.Visibility = ViewStates.Gone;
+            errorTextView.SetText(Resource.String.lecturersMapReadedFromCacheMessage);
+            errorTextView.Visibility = isUsedCachedLecturersMap ? ViewStates.Visible : ViewStates.Gone;
+
             _downloadLecturersErrorRetryButton.Visibility = ViewStates.Gone;
 
             _searchRequestTextView.Enabled = true;
@@ -139,6 +157,8 @@ namespace SmtuSchedule.Android.Views
 
             ShowKeyboardForSearchRequestTextView();
         }
+
+        private Int32 _lecturersDownloadingAttempt;
 
         private SmtuScheduleApplication _application;
 

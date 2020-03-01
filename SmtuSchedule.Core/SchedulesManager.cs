@@ -196,11 +196,28 @@ namespace SmtuSchedule.Core
             });
         }
 
+        public Task<IReadOnlyDictionary<String, Int32>> ReadCachedLecturersMapAsync()
+        {
+            return Task.Run(() =>
+            {
+                LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
+                {
+                    Logger = Logger
+                };
+
+                _isLecturersMapReadedFromCache = true;
+
+                return (_lecturersMap = lecturersRepository.Read()) as IReadOnlyDictionary<String, Int32>;
+            });
+        }
+
         public Task<IReadOnlyDictionary<String, Int32>> DownloadLecturersMapAsync()
         {
             return Task.Run(async () =>
             {
-                if (_lecturersMap != null)
+                // Если в этой сессии карта преподавателей уже загружалась с сайта, то нет необходимости
+                // делать это вновь. За одно использование приложения она не успеет устареть.
+                if (_lecturersMap != null && !_isLecturersMapReadedFromCache)
                 {
                     return _lecturersMap as IReadOnlyDictionary<String, Int32>;
                 }
@@ -210,8 +227,13 @@ namespace SmtuSchedule.Core
                     Logger = Logger
                 };
 
+                _isLecturersMapReadedFromCache = false;
+
                 _lecturersMap = await ServerLecturersDownloader.DownloadAsync(Logger).ConfigureAwait(false);
-                lecturersRepository.Save(_lecturersMap);
+                if (_lecturersMap != null)
+                {
+                    lecturersRepository.Save(_lecturersMap);
+                }
 
                 return _lecturersMap as IReadOnlyDictionary<String, Int32>;
             });
@@ -226,6 +248,8 @@ namespace SmtuSchedule.Core
                 return haveReadingErrors;
             });
         }
+
+        private Boolean _isLecturersMapReadedFromCache;
 
         private Dictionary<String, Int32> _lecturersMap;
         private ConcurrentDictionary<Int32, Schedule> _schedules;

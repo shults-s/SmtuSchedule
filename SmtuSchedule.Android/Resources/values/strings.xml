@@ -66,7 +66,7 @@
     <string name="downloadActionTitle">Загрузить</string>
     <string name="configureActionTitle">Настроить</string>
     <string name="grantAccessActionTitle">Разрешить</string>
-    <string name="tryAgainActionTitle">Повторить попытку</string>
+    <string name="tryAgainActionTitle">Повторить попытку ({0})</string>
     <string name="openPlayMarketActionTitle">Открыть Play Маркет</string>
     <string name="openUpdateDownloadPageActionTitle">Страница загрузки</string>
 
@@ -80,7 +80,7 @@
         \nВероятнее всего, его нет на сайте.
     </string>
     <string name="schedulesDownloadErrorMessage">Не все расписания удалось загрузить.</string>
-    <string name="lecturersDownloadErrorMessage">
+    <string name="lecturersMapDownloadErrorLongMessage">
         Внутренняя сетевая ошибка. Повторите попытку.
         \n\nЕсли используется мобильный интернет, подключитесь через Wi-Fi.
         \n\nПроблема замечена при использовании VPN, proxy-серверов и ряда операторов мобильной связи.
@@ -114,7 +114,7 @@
 
     <!-- Подсказки ввода -->
     <string name="downloadRequestHintMessage">Введите номера групп и/или ФИО преподавателей через запятую:</string>
-    <string name="downloadRelatedSchedulesMessage">
+    <string name="shouldDownloadRelatedSchedulesMessage">
         Загрузить расписания преподавателей, присутствующих в перечисленных расписаниях групп
     </string>
 
@@ -160,6 +160,9 @@
     <string name="scheduleNotYetDownloadedMessage">Это расписание еще не загружено.</string>
     <string name="waitUntilSchedulesFinishDownloading">Дождитесь окончания загрузки расписаний.</string>
     <string name="configureApplicationMessage">Настройте приложение для корректного отображения занятий.</string>
+    <string name="lecturersMapReadedFromCacheMessage">
+        Применено обходное решение проблемы. Не все расписания могут быть доступны вплоть до перезапуска приложения.
+    </string>
     <string name="applicationUpdateAvailableMessage">
         Доступна [**новая версия**](https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md) приложения.
     </string>

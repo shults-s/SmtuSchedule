@@ -51,16 +51,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/smallPadding"
+            android:layout_marginBottom="@dimen/smallPadding"
             android:visibility="gone"
             android:textColor="?attr/textColorError"
             android:textSize="@dimen/normalTextSize"
-            android:text="@string/lecturersDownloadErrorMessage" />
+            android:text="@string/lecturersMapDownloadErrorLongMessage" />
         <Button
             android:id="@+id/downloadLecturersErrorRetryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/normalPadding"
+            android:layout_marginTop="@dimen/smallPadding"
             android:visibility="gone"
             android:text="@string/tryAgainActionTitle"
             android:drawablePadding="@dimen/smallPadding"
@@ -77,6 +78,6 @@
             android:checked="false"
             android:textColor="?attr/textColorPrimary"
             android:textSize="@dimen/normalTextSize"
-            android:text="@string/downloadRelatedSchedulesMessage" />
+            android:text="@string/shouldDownloadRelatedSchedulesMessage" />
     </LinearLayout>
 </LinearLayout>
