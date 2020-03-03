@@ -234,6 +234,7 @@ namespace SmtuSchedule.Android.Views
                 if (_isThemeChanged)
                 {
                     Recreate();
+                    return ;
                 }
 
                 if (IsPreferencesValid())
