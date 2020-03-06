@@ -33,6 +33,11 @@ namespace SmtuSchedule.Android.Views
             }
 
             _application = ApplicationContext as SmtuScheduleApplication;
+            if (!_application.IsInitialized)
+            {
+                StartActivity(typeof(MainActivity));
+                Finish();
+            }
 
             _lecturersDownloadingAttempt = 0;
 
