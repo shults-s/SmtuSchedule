@@ -13,7 +13,7 @@ namespace SmtuSchedule.Android.Views
 {
     // Объявление компонента DatePreference в XML не должно содержать атрибут android:defaultValue, иначе
     // выбрасывается исключение Unable to activate instance of type ... from native handle ...
-    [Register("shults.smtuschedule.SmtuSchedule.Android.Views.DatePreference")]
+    [Register("shults.smtuschedule.android.views.DatePreference")]
     internal class DatePreference : DialogPreference
     {
         internal class DatePreferenceDialogFragment : PreferenceDialogFragmentCompat

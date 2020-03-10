@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <android.support.v7.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <shults.smtuschedule.SmtuSchedule.Android.Views.DatePreference
+    <shults.smtuschedule.android.views.DatePreference
         android:key="UpperWeekDate"
         android:title="@string/preferenceUpperWeekDateTitle"
         android:summary="@string/preferenceUpperWeekDateSummary"
