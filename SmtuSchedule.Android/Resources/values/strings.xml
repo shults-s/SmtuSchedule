@@ -55,10 +55,6 @@
     <string name="aboutApplicationMenuItem">@string/aboutApplicationDialogTitle</string>
 
     <!-- Названия действий Snackbar'ов, кнопок и диалогов -->
-    <string-array name="currentScheduleActionsTitles">
-        <item>Удалить расписание</item>
-        <item>Обновить расписание</item>
-    </string-array>
     <string name="gotItActionTitle">Понял</string>
     <string name="cancelActionTitle">Отмена</string>
     <string name="removeActionTitle">Удалить</string>
@@ -139,10 +135,6 @@
     <!-- <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string> -->
 
     <!-- Фрагменты текстов сообщений и элементов интерфейса -->
-    <string-array name="weeksTypesInNominativeCase">
-        <item>верхняя неделя</item>
-        <item>нижняя неделя</item>
-    </string-array>
     <string name="multiGroupSubjectPrefix">Группы</string>
 
     <!-- Сообщения уведомительного характера -->
