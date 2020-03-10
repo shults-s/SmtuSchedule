@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using Android.Content;
 using Android.Support.V7.Preferences;
 using SmtuSchedule.Android.Enumerations;
@@ -8,6 +10,8 @@ namespace SmtuSchedule.Android
     internal class Preferences : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
     {
         public FeatureDiscoveryState FeatureDiscoveryState { get; private set; }
+
+        public LessonRemindTime LessonRemindTimes { get; private set; }
 
         public Boolean UpdateSchedulesOnStart { get; private set; }
 
@@ -32,6 +36,8 @@ namespace SmtuSchedule.Android
         public Int32 LastSeenUpdateVersion { get; private set; }
 
         public event Action ThemeChanged;
+
+        public event Action LessonRemindTimesChanged;
 
         public Preferences(Context context)
         {
@@ -73,6 +79,8 @@ namespace SmtuSchedule.Android
             CurrentScheduleId = _preferences.GetInt("CurrentScheduleId", 0);
 
             UpperWeekDate = new DateTime(_preferences.GetLong("UpperWeekDate", 0));
+
+            LessonRemindTimes = ParseLessonRemindTimes(_preferences);
 
             UseDarkTheme = _preferences.GetBoolean("UseDarkTheme", false);
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", true);
@@ -126,6 +134,17 @@ namespace SmtuSchedule.Android
             CurrentScheduleId = currentScheduleId;
         }
 
+        private static LessonRemindTime ParseLessonRemindTimes(ISharedPreferences preferences)
+        {
+            IEnumerable<String> values = preferences.GetStringSet("LessonRemindTimes", null);
+            if (values == null)
+            {
+                return LessonRemindTime.Never;
+            }
+
+            return (LessonRemindTime)(values.Select(v => Int32.Parse(v)).Sum());
+        }
+
         public void OnSharedPreferenceChanged(ISharedPreferences preferences, String key)
         {
             switch (key)
@@ -151,6 +170,11 @@ namespace SmtuSchedule.Android
                 case "UseDarkTheme":
                     UseDarkTheme = preferences.GetBoolean("UseDarkTheme", false);
                     ThemeChanged?.Invoke();
+                    break;
+
+                case "LessonRemindTimes":
+                    LessonRemindTimes = ParseLessonRemindTimes(preferences);
+                    LessonRemindTimesChanged?.Invoke();
                     break;
 
                 case "DisplaySubjectEndTime":

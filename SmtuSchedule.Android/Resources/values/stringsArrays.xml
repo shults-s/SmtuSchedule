@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
+    <string-array name="lessonRemindTimesDefaultValues">
+        <item>16</item>
+        <item>512</item>
+    </string-array>
+    <string-array name="lessonRemindTimesEntriesValues">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+        <item>8</item>
+        <item>16</item>
+        <!-- <item>32</item> -->
+        <item>64</item>
+        <item>128</item>
+        <item>256</item>
+        <item>512</item>
+    </string-array>
+    <string-array name="lessonRemindTimesEntries">
+        <item>За 5 минут</item>
+        <item>За 10 минут</item>
+        <item>За 30 минут</item>
+        <item>За 1 час</item>
+        <item>За 1.5 часа</item>
+        <!-- <item>За 2 часа</item> -->
+        <item>За 3 часа</item>
+        <item>В полночь</item>
+        <item>Накануне в 9 вечера</item>
+        <item>Накануне в 11 вечера</item>
+    </string-array>
+    <string-array name="lessonRemindTimesPlaceholders">
+        <item>через 5 минут</item>
+        <item>через 10 минут</item>
+        <item>через 30 минут</item>
+        <item>через 1 час</item>
+        <item>через 1.5 часа</item>
+        <!-- <item>через 2 часа</item> -->
+        <item>через 3 часа</item>
+        <item>сегодня в {0}</item>
+        <item>завтра в {0}</item>
+        <item>завтра в {0}</item>
+    </string-array>
+
     <string-array name="weeksTypesInNominativeCase">
         <item>верхняя неделя</item>
         <item>нижняя неделя</item>
