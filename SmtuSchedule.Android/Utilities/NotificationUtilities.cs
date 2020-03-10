@@ -34,9 +34,9 @@ namespace SmtuSchedule.Android.Utilities
 
             notificationId = (notificationId != 0) ? notificationId : UniqueIdGenerator.GenerateId();
 
-            if (data != null)
+            if (data != null && IntentUtilities.IsDataKeysCollectionValidToCreateIntent(data.Keys))
             {
-                Intent intent = IntentUtilities.CreateViewIntentFromData(context, data);
+                Intent intent = IntentUtilities.CreateIntentFromData(context, data);
                 if (intent == null)
                 {
                     return -1;

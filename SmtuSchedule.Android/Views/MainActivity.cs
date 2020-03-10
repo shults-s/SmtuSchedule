@@ -3,6 +3,7 @@ using System.Linq;
 using System.Timers;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using AndroidX.Work;
 using Android;
 using Android.OS;
 using Android.App;
@@ -33,6 +34,8 @@ namespace SmtuSchedule.Android.Views
         ScreenOrientation = ScreenOrientation.Portrait)]
     internal class MainActivity : AppCompatActivity, ISchedulesViewer
     {
+        private const String UpcomingLessonRemindWorkerTag = "Shults.SmtuSchedule.LessonsReminderWork";
+
         private const Int32 ExternalStoragePermissionsRequestCode = 30;
         private const Int32 InternetPermissionRequestCode = 31;
 
@@ -130,22 +133,39 @@ namespace SmtuSchedule.Android.Views
         {
             // Если пользователь нажал на уведомление, содержащее полезную нагрузку и пришедшее, когда
             // приложение не было запущено, либо находилось в фоновом режиме.
-            if (Intent.Extras != null
-                && IntentUtilities.IsDataKeysCollectionValidToCreateViewIntent(Intent.Extras.KeySet()))
+            if (Intent.Extras != null)
             {
-                Dictionary<String, String> data = new Dictionary<String, String>();
-                foreach (String key in Intent.Extras.KeySet())
+                ICollection<String> keys = Intent.Extras.KeySet();
+                if (IntentUtilities.IsDataKeysCollectionValidToCreateViewIntent(keys))
                 {
-                    data[key] = Intent.Extras.GetString(key);
-                }
+                    Dictionary<String, String> data = new Dictionary<String, String>();
+                    foreach (String key in keys)
+                    {
+                        data[key] = Intent.Extras.GetString(key);
+                    }
 
-                Intent intent = IntentUtilities.CreateViewIntentFromData(this, data);
-                if (intent != null)
+                    Intent intent = IntentUtilities.CreateIntentFromData(this, data);
+                    if (intent != null)
+                    {
+                        StartActivity(intent);
+                    }
+
+                    Finish();
+                }
+                else if (IntentUtilities.IsDataKeysCollectionValidToCreateUpcomingLessonIntent(keys))
                 {
-                    StartActivity(intent);
-                }
+                    const String dateKey = IntentUtilities.DataUpcomingLessonDateKey;
+                    if (Int64.TryParse(Intent.Extras.GetString(dateKey), out Int64 ticks))
+                    {
+                        _application.Preferences.CurrentScheduleDate = new DateTime(ticks);
+                    }
 
-                Finish();
+                    const String scheduleIdKey = IntentUtilities.DataUpcomingLessonScheduleIdKey;
+                    if (Int32.TryParse(Intent.Extras.GetString(scheduleIdKey), out Int32 scheduleId))
+                    {
+                        _application.Preferences.SetCurrentScheduleId(scheduleId);
+                    }
+                }
             }
 
             _application = ApplicationContext as SmtuScheduleApplication;
@@ -155,6 +175,27 @@ namespace SmtuSchedule.Android.Views
             _application.Preferences.ThemeChanged += () =>
             {
                 _isThemeChanged = (_currentlyUsedDarkTheme != _application.Preferences.UseDarkTheme);
+            };
+
+            _application.Preferences.LessonRemindTimesChanged += () =>
+            {
+                if (_application.Preferences.LessonRemindTimes != LessonRemindTime.Never)
+                {
+                    PeriodicWorkRequest work = PeriodicWorkRequest.Builder.From<LessonsRemindWorker>(
+                        TimeSpan.FromDays(1)
+                    )
+                    .Build();
+
+                    WorkManager.Instance.EnqueueUniquePeriodicWork(
+                        UpcomingLessonRemindWorkerTag,
+                        ExistingPeriodicWorkPolicy.Replace,
+                        work
+                    );
+                }
+                else
+                {
+                    WorkManager.Instance.CancelUniqueWork(UpcomingLessonRemindWorkerTag);
+                }
             };
 
             SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark

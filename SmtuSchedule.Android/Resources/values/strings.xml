@@ -37,12 +37,13 @@
         \n\nСмахиванием вниз расписание можно обновить вручную.
     </string>
 
-    <!-- Заголовки диалогов и панелей инструментов -->
+    <!-- Заголовки диалогов, уведомлений и панелей инструментов -->
     <string name="preferencesToolbarTitle">Настройки</string>
     <string name="downloadToolbarTitle">Загрузка расписаний</string>
     <string name="welcomeToolbarTitle">@string/applicationCompleteName</string>
     <string name="aboutApplicationDialogTitle">О приложении</string>
     <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
+    <string name="upcomingLessonRemindNotificationTitle">Напоминание о занятии</string>
     <string name="googlePlayStoreReleaseAvailableDialogTitle">Релиз в Google Play</string>
     <string name="applicationUpdateAvailableDialogTitle">Вышло обновление</string>
     <string name="applicationCriticalUpdateAvailableDialogTitle">Критическое обновление</string>
@@ -160,6 +161,7 @@
     <string name="lecturersMapReadedFromCacheMessage">
         Применено обходное решение проблемы. Не все расписания могут быть доступны вплоть до перезапуска приложения.
     </string>
+    <string name="upcomingLessonRemindNotificationMessage">{0}: {1} в {2} «{3}».</string>
     <string name="applicationUpdateAvailableMessage">
         Доступна [**новая версия**](https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md) приложения.
     </string>
