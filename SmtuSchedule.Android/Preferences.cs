@@ -56,6 +56,14 @@ namespace SmtuSchedule.Android
                 FeatureDiscoveryState = (FeatureDiscoveryState)state;
             }
 
+            // Сброс флага UpdateSchedulesOnStart, который более не используется по назначению
+            // и в дальнейшем может быть переиспользован для другого обучающего экрана.
+            if (FeatureDiscoveryState.HasFlag(FeatureDiscoveryState.UpdateSchedulesOnStart))
+            {
+                FeatureDiscoveryState &= ~FeatureDiscoveryState.UpdateSchedulesOnStart;
+                SetFeatureDiscoveryState(FeatureDiscoveryState);
+            }
+
             // Обработка конфигурации предыдущих релизов, где версия представляла собой строку.
             try
             {

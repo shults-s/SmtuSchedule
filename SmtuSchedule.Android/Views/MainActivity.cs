@@ -732,17 +732,17 @@ namespace SmtuSchedule.Android.Views
                     targets.Add(dateTarget);
                 }
 
-                if (!state.HasFlag(FeatureDiscoveryState.UpdateSchedulesOnStart))
-                {
-                    TapTarget updateTarget = TapTarget.ForToolbarOverflow(
-                        _toolbar,
-                        Resources.GetString(Resource.String.updateSchedulesOnStartFeatureDiscoveryTitle),
-                        Resources.GetString(Resource.String.updateSchedulesOnStartFeatureDiscoveryMessage)
-                    );
-
-                    updateTarget.Stylize().Id((Int32)FeatureDiscoveryState.UpdateSchedulesOnStart);
-                    targets.Add(updateTarget);
-                }
+                // if (!state.HasFlag(FeatureDiscoveryState.UpdateSchedulesOnStart))
+                // {
+                //     TapTarget updateTarget = TapTarget.ForToolbarOverflow(
+                //         _toolbar,
+                //         Resources.GetString(Resource.String.updateSchedulesOnStartFeatureDiscoveryTitle),
+                //         Resources.GetString(Resource.String.updateSchedulesOnStartFeatureDiscoveryMessage)
+                //     );
+                //
+                //     updateTarget.Stylize().Id((Int32)FeatureDiscoveryState.UpdateSchedulesOnStart);
+                //     targets.Add(updateTarget);
+                // }
             }
 
             if (targets.Count == 0)
