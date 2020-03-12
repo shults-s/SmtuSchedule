@@ -41,7 +41,7 @@ namespace SmtuSchedule.Android.Utilities
 
         private Schedule GetScheduleById(Int32 scheduleId)
         {
-            _application.Manager.ReadSchedules();
+            _application.Manager.ReadSchedulesAsync().Wait();
 
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
             return schedules.ContainsKey(scheduleId) ? schedules[scheduleId] : null;

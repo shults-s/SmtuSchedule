@@ -243,14 +243,15 @@ namespace SmtuSchedule.Core
             });
         }
 
-        public Task<Boolean> ReadSchedulesAsync() => Task.Run(ReadSchedules);
-
-        public Boolean ReadSchedules()
+        public Task<Boolean> ReadSchedulesAsync()
         {
-            Dictionary<Int32, Schedule> schedules = _schedulesRepository.Read(out Boolean haveReadingErrors);
-            _schedules = new ConcurrentDictionary<Int32, Schedule>(schedules);
+            return Task.Run(() =>
+            {
+                Dictionary<Int32, Schedule> schedules = _schedulesRepository.Read(out Boolean haveReadingErrors);
+                _schedules = new ConcurrentDictionary<Int32, Schedule>(schedules);
 
-            return haveReadingErrors;
+                return haveReadingErrors;
+            });
         }
 
         private Boolean _isLecturersMapReadedFromCache;
