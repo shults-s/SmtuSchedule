@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AndroidX.Work;
 using Android.App;
 using Android.Content;
+using SmtuSchedule.Core;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Android.Enumerations;
 
@@ -17,16 +18,16 @@ namespace SmtuSchedule.Android.Utilities
             _context = context;
             _application = ApplicationContext as SmtuScheduleApplication;
 
+            _localSchedulesManager = new SchedulesManager(
+                _application.GetModernExternalStoragePath(),
+                SmtuScheduleApplication.SchedulesDirectoryName
+            );
+
             _currentUtcUnixTime = GetDateTimeInUtcUnixTime(DateTime.UtcNow);
         }
 
         public override Result DoWork()
         {
-            if (!_application.Initialize(out InitializationStatus _))
-            {
-                return Result.InvokeFailure();
-            }
-
             try
             {
                 Work();
@@ -41,9 +42,9 @@ namespace SmtuSchedule.Android.Utilities
 
         private Schedule GetScheduleById(Int32 scheduleId)
         {
-            _application.Manager.ReadSchedulesAsync().Wait();
+            _localSchedulesManager.ReadSchedulesAsync().Wait();
 
-            IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
+            IReadOnlyDictionary<Int32, Schedule> schedules = _localSchedulesManager.Schedules;
             return schedules.ContainsKey(scheduleId) ? schedules[scheduleId] : null;
         }
 
@@ -228,5 +229,6 @@ namespace SmtuSchedule.Android.Utilities
 
         private readonly Context _context;
         private readonly SmtuScheduleApplication _application;
+        private readonly SchedulesManager _localSchedulesManager;
     }
 }

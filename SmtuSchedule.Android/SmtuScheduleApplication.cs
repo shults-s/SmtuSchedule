@@ -24,6 +24,8 @@ namespace SmtuSchedule.Android
     [Application]
     internal class SmtuScheduleApplication : Application
     {
+        public const String SchedulesDirectoryName = "Schedules";
+
         public SchedulesManager Manager { get; private set; }
 
         public Preferences Preferences { get; private set; }
@@ -158,8 +160,6 @@ namespace SmtuSchedule.Android
 
         public Boolean Initialize(out InitializationStatus status)
         {
-            const String SchedulesDirectoryName = "Schedules";
-
             String modernStoragePath = GetModernExternalStoragePath();
             String modernSchedulesPath = $"{modernStoragePath}/{SchedulesDirectoryName}/";
 
