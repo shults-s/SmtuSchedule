@@ -15,6 +15,7 @@ using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Android.Utilities;
+using SmtuSchedule.Android.Exceptions;
 using SmtuSchedule.Android.Enumerations;
 
 using Environment = Android.OS.Environment;
@@ -76,7 +77,7 @@ namespace SmtuSchedule.Android
             Logger.ExceptionLogged += (e) =>
             {
                 if (e is LecturersDownloaderException || e is SchedulesDownloaderException
-                    || e is SchedulesRepositoryException)
+                    || e is SchedulesRepositoryException || e is WorkerException)
                 {
                     Crashes.TrackError(e);
                 }

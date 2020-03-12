@@ -6,6 +6,7 @@ using Android.App;
 using Android.Content;
 using SmtuSchedule.Core;
 using SmtuSchedule.Core.Models;
+using SmtuSchedule.Android.Exceptions;
 using SmtuSchedule.Android.Enumerations;
 
 namespace SmtuSchedule.Android.Utilities
@@ -32,9 +33,10 @@ namespace SmtuSchedule.Android.Utilities
             {
                 Work();
             }
-            catch
+            catch (Exception exception)
             {
-                return Result.InvokeSuccess();
+                _application.Logger.Log(
+                    new WorkerException("Error of scheduling notifications about the lesson.", exception));
             }
 
             return Result.InvokeSuccess();
