@@ -86,6 +86,7 @@
     <Compile Include="Preferences.cs" />
     <Compile Include="Utilities\IntentUtilities.cs" />
     <Compile Include="Utilities\LessonsRemindPublisher.cs" />
+    <Compile Include="Utilities\PeriodicWorkUtilities.cs" />
     <Compile Include="Utilities\UpdateSchedulesWorker.cs" />
     <Compile Include="Utilities\LessonsRemindWorker.cs" />
     <Compile Include="Utilities\NotificationUtilities.cs" />

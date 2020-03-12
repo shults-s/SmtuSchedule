@@ -3,7 +3,6 @@ using System.Linq;
 using System.Timers;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using AndroidX.Work;
 using Android;
 using Android.OS;
 using Android.App;
@@ -178,24 +177,35 @@ namespace SmtuSchedule.Android.Views
                 _isThemeChanged = (_currentlyUsedDarkTheme != _application.Preferences.UseDarkTheme);
             };
 
-            _application.Preferences.LessonRemindTimesChanged += () =>
+            _application.Preferences.UpdateSchedulesOnStartChanged += () =>
             {
-                if (_application.Preferences.LessonRemindTimes != LessonRemindTime.Never)
+                if (_application.Preferences.UpdateSchedulesOnStart)
                 {
-                    PeriodicWorkRequest work = PeriodicWorkRequest.Builder.From<LessonsRemindWorker>(
-                        TimeSpan.FromDays(1)
-                    )
-                    .Build();
-
-                    WorkManager.Instance.EnqueueUniquePeriodicWork(
-                        UpcomingLessonRemindWorkerTag,
-                        ExistingPeriodicWorkPolicy.Replace,
-                        work
+                    PeriodicWorkUtilities.CreateWork<UpdateSchedulesWorker>(
+                        UpdateSchedulesWorkerTag,
+                        TimeSpan.FromHours(12),
+                        true
                     );
                 }
                 else
                 {
-                    WorkManager.Instance.CancelUniqueWork(UpcomingLessonRemindWorkerTag);
+                    PeriodicWorkUtilities.CancelWorkByTag(UpdateSchedulesWorkerTag);
+                }
+            };
+
+            _application.Preferences.LessonRemindTimesChanged += () =>
+            {
+                if (_application.Preferences.LessonRemindTimes != LessonRemindTime.Never)
+                {
+                    PeriodicWorkUtilities.CreateWork<LessonsRemindWorker>(
+                        UpcomingLessonRemindWorkerTag,
+                        TimeSpan.FromDays(1),
+                        false
+                    );
+                }
+                else
+                {
+                    PeriodicWorkUtilities.CancelWorkByTag(UpcomingLessonRemindWorkerTag);
                 }
             };
 
