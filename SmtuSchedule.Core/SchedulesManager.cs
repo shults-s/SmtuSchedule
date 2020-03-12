@@ -97,7 +97,7 @@ namespace SmtuSchedule.Core
                 };
 
                 Dictionary<Int32, Schedule> updatedSchedules = await schedulesLoader.DownloadAsync(
-                    _schedules.Keys,
+                    _schedules.Values.Where(s => !s.IsActual).Select(s => s.ScheduleId),
                     false
                 )
                 .ConfigureAwait(false);
@@ -114,16 +114,6 @@ namespace SmtuSchedule.Core
                     {
                         _schedules[scheduleId] = schedule;
                     }
-                }
-
-                foreach ((Int32 scheduleId, Schedule schedule) in _schedules)
-                {
-                    if (updatedSchedules.ContainsKey(scheduleId))
-                    {
-                        continue;
-                    }
-
-                    schedule.IsNotUpdated = true;
                 }
 
                 IsDownloadingInProgress = false;

@@ -35,6 +35,7 @@ namespace SmtuSchedule.Android.Views
     internal class MainActivity : AppCompatActivity, ISchedulesViewer
     {
         private const String UpcomingLessonRemindWorkerTag = "Shults.SmtuSchedule.LessonsReminderWork";
+        private const String UpdateSchedulesWorkerTag = "Shults.SmtuSchedule.UpdateSchedulesWork";
 
         private const Int32 ExternalStoragePermissionsRequestCode = 30;
         private const Int32 InternetPermissionRequestCode = 31;
@@ -853,8 +854,11 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            String title = schedules[scheduleId].DisplayedName;
-            _toolbarTitle.Text = schedules[scheduleId].IsNotUpdated ? title + " (!)" : title;
+            Schedule schedule = schedules[scheduleId];
+
+            String scheduleTitle = schedule.DisplayedName;
+            String suffix = $"({schedule.GetFormattedLastUpdate()})";
+            _toolbarTitle.Text = schedule.IsActual ? scheduleTitle : scheduleTitle + suffix;
 
             _application.Preferences.SetCurrentScheduleId(scheduleId);
             ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate);
@@ -889,7 +893,7 @@ namespace SmtuSchedule.Android.Views
                 return values.Select<Schedule, (Int32, String, Boolean)>(s => (
                     s.ScheduleId,
                     s.DisplayedName,
-                    s.IsNotUpdated
+                    s.IsActual
                 ));
             }
 
@@ -901,9 +905,10 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            foreach ((Int32 scheduleId, String displayedName, Boolean isNotUpdated) in Fetch(schedules))
+            foreach ((Int32 scheduleId, String displayedName, Boolean isActual) in Fetch(schedules))
             {
-                String scheduleTitle = isNotUpdated ? displayedName + " (!)" : displayedName;
+                String suffix = $"({schedules[scheduleId].GetFormattedLastUpdate()})";
+                String scheduleTitle = isActual ? displayedName : displayedName + suffix;
                 _schedulesMenu.Menu.Add(Menu.None, scheduleId, Menu.None, scheduleTitle);
             }
 

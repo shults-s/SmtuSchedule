@@ -35,6 +35,8 @@ namespace SmtuSchedule.Core.Models
             WriteIndented = true
         };
 
+        public Boolean IsActual => LastUpdate >= DateTime.Now.AddHours(-12);
+
         // [JsonProperty(Required = Required.Always)]
         public String DisplayedName { get; set; }
 
@@ -48,9 +50,8 @@ namespace SmtuSchedule.Core.Models
         // [JsonProperty(Required = Required.Always)]
         public Timetable Timetable { get; set; }
 
-        [JsonIgnore]
-        public Boolean IsNotUpdated { get; set; }
-
+        [JsonConverter(typeof(JsonDateTimeConverter))]
+        public DateTime LastUpdate { get; set; }
 
         public void Validate()
         {
@@ -95,5 +96,7 @@ namespace SmtuSchedule.Core.Models
 
             return (subjects.Length == 0) ? null : subjects;
         }
+
+        public String GetFormattedLastUpdate() => LastUpdate.ToString("dd.MM.yyyy HH:mm");
     }
 }

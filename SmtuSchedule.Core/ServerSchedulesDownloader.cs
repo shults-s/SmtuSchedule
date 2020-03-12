@@ -223,6 +223,7 @@ namespace SmtuSchedule.Core
             {
                 Type = scheduleType,
                 ScheduleId = scheduleId,
+                LastUpdate = DateTime.Now,
                 Timetable = new Timetable()
             };
 

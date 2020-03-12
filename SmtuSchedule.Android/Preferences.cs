@@ -39,6 +39,8 @@ namespace SmtuSchedule.Android
 
         public event Action LessonRemindTimesChanged;
 
+        public event Action UpdateSchedulesOnStartChanged;
+
         public Preferences(Context context)
         {
             _preferences = PreferenceManager.GetDefaultSharedPreferences(context);
@@ -191,6 +193,7 @@ namespace SmtuSchedule.Android
 
                 case "UpdateSchedulesOnStart":
                     UpdateSchedulesOnStart = preferences.GetBoolean("UpdateSchedulesOnStart", true);
+                    UpdateSchedulesOnStartChanged?.Invoke();
                     break;
 
                 case "ReplayFeatureDiscovery":
