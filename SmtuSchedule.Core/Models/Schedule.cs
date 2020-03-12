@@ -42,6 +42,7 @@ namespace SmtuSchedule.Core.Models
         public Int32 ScheduleId { get; set; }
 
         // [JsonProperty(Required = Required.Default)]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ScheduleType Type { get; set; }
 
         // [JsonProperty(Required = Required.Always)]
@@ -50,11 +51,6 @@ namespace SmtuSchedule.Core.Models
         [JsonIgnore]
         public Boolean IsNotUpdated { get; set; }
 
-        static Schedule()
-        {
-            Options.Converters.Add(new DateTimeConverter("HH:mm"));
-            Options.Converters.Add(new JsonStringEnumConverter());
-        }
 
         public void Validate()
         {
