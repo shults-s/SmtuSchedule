@@ -70,7 +70,10 @@
     <!-- Сообщения об ошибках -->
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
     <string name="schedulesReadingErrorMessage">Не все расписания удалось открыть.</string>
-    <string name="schedulesUpdatingErrorMessage">Не все расписания удалось обновить.</string>
+    <string name="schedulesUpdatingErrorMessage">
+        Не все расписания удалось обновить.
+        \nВероятнее всего, они удалены с сайта.
+    </string>
     <string name="schedulesMigrationErrorMessage">Не все расписания удалось преобразовать к актуальному формату.</string>
     <string name="scheduleDownloadErrorMessage">
         Ошибка при загрузке расписания.
