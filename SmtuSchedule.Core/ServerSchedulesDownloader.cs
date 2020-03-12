@@ -44,7 +44,7 @@ namespace SmtuSchedule.Core
         {
             ["Лабораторное занятие"] = "лабораторная",
             ["Практическое занятие"] = "практика",
-            ["Лекция"] = "лекция",
+            ["Лекция"] = "лекция"
         };
 
         private static readonly CultureInfo Culture = new CultureInfo("ru-RU");
