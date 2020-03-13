@@ -4,12 +4,12 @@ using Android.App;
 
 namespace SmtuSchedule.Android.Utilities
 {
-    internal class ProcessLifecycleListener : Java.Lang.Object, Application.IActivityLifecycleCallbacks
+    internal class ApplicationLifecycleListener : Java.Lang.Object, Application.IActivityLifecycleCallbacks
     {
         public event Action Started;
         public event Action Stopped;
 
-        public ProcessLifecycleListener() => _activitiesReferencesNumber = 0;
+        public ApplicationLifecycleListener() => _activitiesReferencesNumber = 0;
 
         public void OnActivityStarted(Activity activity)
         {

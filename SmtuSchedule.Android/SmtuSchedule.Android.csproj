@@ -94,7 +94,7 @@
     <Compile Include="Utilities\JavaSetExtensions.cs" />
     <Compile Include="Utilities\TapTargetExtensions.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
-    <Compile Include="Utilities\ProcessLifecycleListener.cs" />
+    <Compile Include="Utilities\ApplicationLifecycleListener.cs" />
     <Compile Include="Utilities\TapTargetSequenceListener.cs" />
     <Compile Include="Utilities\TapTargetViewListener.cs" />
     <Compile Include="Views\CustomMultiSelectListPreference.cs" />

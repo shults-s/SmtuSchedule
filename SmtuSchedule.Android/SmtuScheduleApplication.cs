@@ -74,6 +74,11 @@ namespace SmtuSchedule.Android
             NotificationUtilities.CreateNotificationChannels(this);
 
 #if !DEBUG
+            ApplicationLifecycleListener listener = new ApplicationLifecycleListener();
+            listener.Started += () => Analytics.TrackEvent("The application is started");
+            listener.Stopped += () => Analytics.TrackEvent("The application is stopped");
+            RegisterActivityLifecycleCallbacks(listener);
+
             Logger.ExceptionLogged += (e) =>
             {
                 if (e is LecturersDownloaderException || e is SchedulesDownloaderException
@@ -123,11 +128,6 @@ namespace SmtuSchedule.Android
             };
 
             AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
-
-            ProcessLifecycleListener listener = new ProcessLifecycleListener();
-            listener.Started += () => Analytics.TrackEvent("The application is started");
-            listener.Stopped += () => Analytics.TrackEvent("The application is stopped");
-            RegisterActivityLifecycleCallbacks(listener);
 #endif
         }
 
