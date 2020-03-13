@@ -67,6 +67,56 @@ namespace SmtuSchedule.Android
             _logsDirectoryPath = GetModernExternalStoragePath() + "/Logs/";
         }
 
+        private Boolean ShouldTrackError(Exception exception) =>
+            exception switch
+            {
+                LecturersDownloaderException _ => true,
+                SchedulesDownloaderException _ => true,
+                SchedulesRepositoryException _ => true,
+                ApplicationException         _ => true,
+                WorkerException              _ => true,
+                _ => false
+            };
+
+        private ErrorAttachmentLog[] GetErrorAttachmentsWithLog()
+        {
+            FileInfo[] files = null;
+            try
+            {
+                files = new DirectoryInfo(_logsDirectoryPath).GetFiles("*.log");
+            }
+            catch
+            {
+                return null;
+            }
+
+            if (files.Length == 0)
+            {
+                return null;
+            }
+
+            FileInfo file = files.OrderByDescending(f => f.LastWriteTime).First();
+            if (file == null)
+            {
+                return null;
+            }
+
+            String lastCrashLogText = String.Empty;
+            try
+            {
+                lastCrashLogText = File.ReadAllText(file.FullName);
+            }
+            catch
+            {
+                return null;
+            }
+
+            return new ErrorAttachmentLog[]
+            {
+                ErrorAttachmentLog.AttachmentWithText(lastCrashLogText, file.Name)
+            };
+        }
+
         public override void OnCreate()
         {
             base.OnCreate();
@@ -81,51 +131,14 @@ namespace SmtuSchedule.Android
 
             Logger.ExceptionLogged += (e) =>
             {
-                if (e is LecturersDownloaderException || e is SchedulesDownloaderException
-                    || e is SchedulesRepositoryException || e is WorkerException)
+                if (ShouldTrackError(e))
                 {
                     Crashes.TrackError(e);
+                    // Crashes.TrackError(e, null, GetErrorAttachmentsWithLog());
                 }
             };
 
-            Crashes.GetErrorAttachments = (ErrorReport report) =>
-            {
-                FileInfo[] files = null;
-                try
-                {
-                    files = new DirectoryInfo(_logsDirectoryPath).GetFiles("*.log");
-                }
-                catch
-                {
-                    return null;
-                }
-
-                if (files.Length == 0)
-                {
-                    return null;
-                }
-
-                FileInfo file = files.OrderByDescending(f => f.LastWriteTime).First();
-                if (file == null)
-                {
-                    return null;
-                }
-
-                String lastCrashLogText = String.Empty;
-                try
-                {
-                    lastCrashLogText = File.ReadAllText(file.FullName);
-                }
-                catch
-                {
-                    return null;
-                }
-
-                return new ErrorAttachmentLog[]
-                {
-                    ErrorAttachmentLog.AttachmentWithText(lastCrashLogText, file.Name)
-                };
-            };
+            Crashes.GetErrorAttachments = (ErrorReport _) => GetErrorAttachmentsWithLog();
 
             AppCenter.Start(PrivateKeys.AppCenterKey, typeof(Analytics), typeof(Crashes));
 #endif
@@ -178,7 +191,9 @@ namespace SmtuSchedule.Android
                 {
                     status = InitializationStatus.FailedToCreateDirectory;
 #if !DEBUG
-                    Crashes.TrackError(exception);
+                    Logger.Log(
+                        new ApplicationException(
+                            "Error of creating modern schedules directory.", exception));
 #endif
                     return false;
                 }
@@ -200,7 +215,9 @@ namespace SmtuSchedule.Android
                 {
                     status = InitializationStatus.FailedToMoveSchedules;
 #if !DEBUG
-                    Crashes.TrackError(exception);
+                    Logger.Log(
+                        new ApplicationException(
+                            "Error of moving schedules to modern directory.", exception));
 #endif
                     return false;
                 }
@@ -219,7 +236,9 @@ namespace SmtuSchedule.Android
                 {
                     status = InitializationStatus.FailedToRemoveDirectory;
 #if !DEBUG
-                    Crashes.TrackError(exception);
+                    Logger.Log(
+                        new ApplicationException(
+                            "Error of removing legacy schedules directory.", exception));
 #endif
                 }
             }
