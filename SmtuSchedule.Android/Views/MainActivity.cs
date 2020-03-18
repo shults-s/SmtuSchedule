@@ -181,7 +181,8 @@ namespace SmtuSchedule.Android.Views
             {
                 if (_application.Preferences.UpdateSchedulesOnStart)
                 {
-                    PeriodicWorkUtilities.CreateWork<UpdateSchedulesWorker>(
+                    PeriodicWorkUtilities.CreateAndEnqueueWork<UpdateSchedulesWorker>(
+                        this,
                         UpdateSchedulesWorkerTag,
                         TimeSpan.FromHours(12),
                         true
@@ -189,7 +190,7 @@ namespace SmtuSchedule.Android.Views
                 }
                 else
                 {
-                    PeriodicWorkUtilities.CancelWorkByTag(UpdateSchedulesWorkerTag);
+                    PeriodicWorkUtilities.CancelWork(this, UpdateSchedulesWorkerTag);
                 }
             };
 
@@ -197,7 +198,8 @@ namespace SmtuSchedule.Android.Views
             {
                 if (_application.Preferences.LessonRemindTimes != LessonRemindTime.Never)
                 {
-                    PeriodicWorkUtilities.CreateWork<LessonsRemindWorker>(
+                    PeriodicWorkUtilities.CreateAndEnqueueWork<LessonsRemindWorker>(
+                        this,
                         UpcomingLessonRemindWorkerTag,
                         TimeSpan.FromDays(1),
                         false
@@ -205,7 +207,7 @@ namespace SmtuSchedule.Android.Views
                 }
                 else
                 {
-                    PeriodicWorkUtilities.CancelWorkByTag(UpcomingLessonRemindWorkerTag);
+                    PeriodicWorkUtilities.CancelWork(this, UpcomingLessonRemindWorkerTag);
                 }
             };
 
