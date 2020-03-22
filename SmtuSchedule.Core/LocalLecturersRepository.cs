@@ -24,19 +24,21 @@ namespace SmtuSchedule.Core
 
         public Boolean Save(Dictionary<String, Int32> lecturers)
         {
+            Boolean hasNoSavingError = true;
+
             String filePath = _storagePath + LecturersMapFileName;
             try
             {
                 String json = JsonSerializer.Serialize<Dictionary<String, Int32>>(lecturers, Options);
                 File.WriteAllText(filePath, json);
-
-                return false;
             }
             catch (Exception exception)
             {
+                hasNoSavingError = false;
                 Logger?.Log(new LecturersRepositoryException($"Error of saving lecturers map file.", exception));
-                return true;
             }
+
+            return hasNoSavingError;
         }
 
         public Dictionary<String, Int32> Read()
