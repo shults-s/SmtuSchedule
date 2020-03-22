@@ -30,12 +30,12 @@
         \n\nМежду смежными датами проще переключаться с помощью вкладок, либо перелистывая страницы расписания влево-вправо.
         \n\nВернуться к текущей дате можно нажав кнопку «Назад».
     </string>
-    <string name="updateSchedulesOnStartFeatureDiscoveryTitle">Автоматическое обновление расписаний</string>
-    <string name="updateSchedulesOnStartFeatureDiscoveryMessage">
+    <!-- <string name="updateSchedulesOnStartFeatureDiscoveryTitle">Автоматическое обновление расписаний</string> -->
+    <!-- <string name="updateSchedulesOnStartFeatureDiscoveryMessage">
         Приложение теперь умеет автоматически обновлять расписания при запуске.
         \n\nЭто актуально в начале семестра, когда происходит наибольшее количество изменений.
         \n\nСмахиванием вниз расписание можно обновить вручную.
-    </string>
+    </string> -->
 
     <!-- Заголовки диалогов, уведомлений и панелей инструментов -->
     <string name="preferencesToolbarTitle">Настройки</string>
