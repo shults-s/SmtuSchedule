@@ -35,6 +35,7 @@ namespace SmtuSchedule.Core.Models
             WriteIndented = true
         };
 
+        [JsonIgnore]
         public Boolean IsActual => LastUpdate >= DateTime.Now.AddHours(-12);
 
         // [JsonProperty(Required = Required.Always)]
