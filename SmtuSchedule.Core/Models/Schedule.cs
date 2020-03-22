@@ -44,14 +44,19 @@ namespace SmtuSchedule.Core.Models
         public Int32 ScheduleId { get; set; }
 
         // [JsonProperty(Required = Required.Default)]
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ScheduleType Type { get; set; }
+
+        [JsonConverter(typeof(JsonDateTimeConverter))]
+        public DateTime LastUpdate { get; set; }
 
         // [JsonProperty(Required = Required.Always)]
         public Timetable Timetable { get; set; }
 
-        [JsonConverter(typeof(JsonDateTimeConverter))]
-        public DateTime LastUpdate { get; set; }
+        static Schedule()
+        {
+            // Библиотечный конвертер указан не в атрибутах по причине, описанной выше.
+            Options.Converters.Add(new JsonStringEnumConverter());
+        }
 
         public void Validate()
         {

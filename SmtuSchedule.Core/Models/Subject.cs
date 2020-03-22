@@ -28,7 +28,6 @@ namespace SmtuSchedule.Core.Models
         public String Auditorium { get; set; }
 
         // [JsonProperty(Required = Required.Always)]
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public WeekType Week { get; set; }
 
         // [JsonProperty(Required = Required.Always)]

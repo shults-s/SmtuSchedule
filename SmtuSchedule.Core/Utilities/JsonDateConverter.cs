@@ -2,6 +2,7 @@ using System;
 
 namespace SmtuSchedule.Core.Utilities
 {
+    [Android.Runtime.Preserve(AllMembers = true)]
     internal class JsonDateConverter : JsonDateTimeConverter
     {
         public new const String DefaultFormat = "dd.MM.yyyy";
