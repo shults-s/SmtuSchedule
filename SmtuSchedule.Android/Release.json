@@ -1,7 +1,7 @@
 {
-    "IsCriticalUpdate": true,
-    "VersionCode": 26,
-    "VersionName": "1.2.1",
-    "VersionNotes": "Исправлены все известные на данный момент причины вылета приложения;<br><br>Сообщения об ошибках при загрузке расписаний сделаны более понятными;<br><br>Загрузка расписаний теперь возможна даже при стабильном возникновении внутренней сетевой ошибки.",
+    "IsCriticalUpdate": false,
+    "VersionCode": 27,
+    "VersionName": "1.3.0-β",
+    "VersionNotes": "",
     "GooglePlayStorePackageId": "shults.smtuschedule"
 }
