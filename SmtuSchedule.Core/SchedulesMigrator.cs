@@ -21,6 +21,11 @@ namespace SmtuSchedule.Core
 
         public async IAsyncEnumerable<Schedule> MigrateAsync(IEnumerable<Schedule> schedules)
         {
+            if (schedules == null)
+            {
+                throw new ArgumentNullException(nameof(schedules));
+            }
+
             HaveMigrationErrors = false;
 
             static Boolean RecoverMissedScheduleType(Schedule schedule)

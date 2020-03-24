@@ -23,8 +23,18 @@ namespace SmtuSchedule.Core
 
         public SchedulesManager(String storagePath, String schedulesDirectoryName)
         {
-            _schedulesRepository = new LocalSchedulesRepository($"{storagePath}/{schedulesDirectoryName}/");
+            if (String.IsNullOrWhiteSpace(storagePath))
+            {
+                throw new ArgumentException("Value cannot be null, empty or whitespace.", nameof(storagePath));
+            }
+
+            if (schedulesDirectoryName == null)
+            {
+                throw new ArgumentNullException(nameof(schedulesDirectoryName));
+            }
+
             _storagePath = storagePath;
+            _schedulesRepository = new LocalSchedulesRepository($"{storagePath}/{schedulesDirectoryName}/");
         }
 
         public Task<Boolean> MigrateSchedulesAsync()
@@ -32,6 +42,11 @@ namespace SmtuSchedule.Core
             return Task.Run(() =>
             {
                 SchedulesMigrator schedulesMigrator = new SchedulesMigrator(DownloadLecturersMapAsync)
+                if (_lecturersMap == null)
+                {
+                    throw new InvalidOperationException("Lecturers map is null.");
+                }
+
                 {
                     Logger = _logger
                 };
@@ -55,12 +70,22 @@ namespace SmtuSchedule.Core
 
         public Int32 GetScheduleIdBySearchRequest(String searchRequest)
         {
+            if (String.IsNullOrWhiteSpace(searchRequest))
+            {
+                throw new ArgumentException("Value cannot be null, empty or whitespace.", nameof(searchRequest));
+            }
+
+            if (_lecturersMap == null)
+            {
+                throw new InvalidOperationException("Lecturers map is null.");
+            }
+
             if (Int32.TryParse(searchRequest, out Int32 number))
             {
                 return number;
             }
 
-            if (_lecturersMap?.ContainsKey(searchRequest) ?? false)
+            if (_lecturersMap.ContainsKey(searchRequest))
             {
                 return _lecturersMap[searchRequest];
             }
@@ -73,13 +98,13 @@ namespace SmtuSchedule.Core
             return Task.Run(async () =>
             {
                 LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
+                if (_lecturersMap == null)
                 {
                     Logger = _logger
                 };
 
                 Dictionary<String, Int32> localLecturersMap = lecturersRepository.Read();
 
-                if (localLecturersMap == null)
                 {
                     if (await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
                     {
@@ -87,6 +112,7 @@ namespace SmtuSchedule.Core
                     }
 
                     localLecturersMap = _lecturersMap;
+                    throw new InvalidOperationException("Lecturers map is null.");
                 }
 
                 IsDownloadingInProgress = true;
@@ -122,17 +148,21 @@ namespace SmtuSchedule.Core
             });
         }
 
-        public Task<DownloadingResult> DownloadSchedulesAsync(IEnumerable<String> searchRequests,
+        public Task<Boolean> DownloadSchedulesAsync(IEnumerable<String> searchRequests,
             Boolean shouldDownloadRelatedSchedules)
         {
             return Task.Run(async () =>
             {
                 IsDownloadingInProgress = true;
+                if (searchRequests == null || searchRequests.Count() == 0)
+                {
+                    throw new ArgumentException("Value cannot be null or zero length.", nameof(searchRequests));
+                }
 
                 if (_lecturersMap == null && await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
                 {
                     IsDownloadingInProgress = false;
-                    return DownloadingResult.LecturersMapError;
+                    throw new InvalidOperationException("Lecturers map is null.");
                 }
 
                 Int32[] schedulesIds = searchRequests.Select(r => GetScheduleIdBySearchRequest(r))
@@ -141,8 +171,7 @@ namespace SmtuSchedule.Core
 
                 if (schedulesIds.Length == 0)
                 {
-                    IsDownloadingInProgress = false;
-                    return DownloadingResult.WithErrors;
+                    return true;
                 }
 
                 ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(_lecturersMap)
@@ -170,10 +199,7 @@ namespace SmtuSchedule.Core
                     }
                 }
 
-                IsDownloadingInProgress = false;
-
-                Boolean haveDownloadingErrors = schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
-                return haveDownloadingErrors ? DownloadingResult.WithErrors : DownloadingResult.Success;
+                return schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
             });
         }
 

@@ -15,6 +15,11 @@ namespace SmtuSchedule.Core
 
         public Boolean Remove(Schedule schedule)
         {
+            if (schedule == null)
+            {
+                throw new ArgumentNullException(nameof(schedule));
+            }
+
             Boolean hasNoRemovingError = true;
 
             String fileName = schedule.DisplayedName + ".json";
@@ -34,6 +39,11 @@ namespace SmtuSchedule.Core
 
         public Boolean Save(Schedule schedule)
         {
+            if (schedule == null)
+            {
+                throw new ArgumentNullException(nameof(schedule));
+            }
+
             Boolean hasNoSavingError = true;
 
             String fileName = schedule.DisplayedName + ".json";

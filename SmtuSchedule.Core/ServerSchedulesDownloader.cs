@@ -57,12 +57,17 @@ namespace SmtuSchedule.Core
 
         public ServerSchedulesDownloader(IReadOnlyDictionary<String, Int32> lecturersMap)
         {
-            _lecturersMap = lecturersMap;
+            _lecturersMap = lecturersMap ?? throw new ArgumentNullException(nameof(lecturersMap));
         }
 
         public async Task<Dictionary<Int32, Schedule>> DownloadAsync(IEnumerable<Int32> schedulesIds,
             Boolean shouldDownloadRelatedLecturersSchedules)
         {
+            if (schedulesIds == null || schedulesIds.Count() == 0)
+            {
+                throw new ArgumentException("Value cannot be null or zero length.", nameof(schedulesIds));
+            }
+
             Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
             HaveDownloadingErrors = false;
 

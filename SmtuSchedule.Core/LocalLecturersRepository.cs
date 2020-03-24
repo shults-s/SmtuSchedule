@@ -24,6 +24,11 @@ namespace SmtuSchedule.Core
 
         public Boolean Save(Dictionary<String, Int32> lecturers)
         {
+            if (lecturers == null)
+            {
+                throw new ArgumentNullException(nameof(lecturers));
+            }
+
             Boolean hasNoSavingError = true;
 
             String filePath = _storagePath + LecturersMapFileName;
