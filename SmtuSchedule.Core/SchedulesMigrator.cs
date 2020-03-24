@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Interfaces;
@@ -8,18 +7,18 @@ using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core
 {
-    internal class SchedulesMigrator
+    internal sealed class SchedulesMigrator
     {
         public Boolean HaveMigrationErrors { get; private set; }
 
         public ILogger Logger { get; set; }
 
-        public SchedulesMigrator(Func<Task<IReadOnlyDictionary<String, Int32>>> lecturersDownloaderCallback)
+        public SchedulesMigrator(IReadOnlyDictionary<String, Int32> lecturersMap)
         {
-            _lecturersDownloaderCallback = lecturersDownloaderCallback;
+            _lecturersMap = lecturersMap ?? throw new ArgumentNullException(nameof(lecturersMap));
         }
 
-        public async IAsyncEnumerable<Schedule> MigrateAsync(IEnumerable<Schedule> schedules)
+        public IEnumerable<Schedule> Migrate(IEnumerable<Schedule> schedules)
         {
             if (schedules == null)
             {
@@ -39,16 +38,8 @@ namespace SmtuSchedule.Core
                 return true;
             }
 
-            IReadOnlyDictionary<String, Int32> lecturers = null;
-            Boolean failedToLoadLecturers = false;
-
-            async Task<Boolean> RecoverNonScheduledLecturersAsync(Schedule schedule)
+            Boolean RecoverNonScheduledLecturers(Schedule schedule)
             {
-                if (failedToLoadLecturers)
-                {
-                    return false;
-                }
-
                 Boolean isScheduleAffected = false;
 
                 IScheduleReference[] nonScheduledLecturers = schedule.Timetable.GetLecturers()
@@ -60,21 +51,12 @@ namespace SmtuSchedule.Core
                     return false;
                 }
 
-                lecturers ??= await _lecturersDownloaderCallback().ConfigureAwait(false);
-                if (lecturers == null)
-                {
-                    failedToLoadLecturers = true;
-                    HaveMigrationErrors = true;
-
-                    return false;
-                }
-
                 foreach (Lecturer lecturer in nonScheduledLecturers)
                 {
-                    if (lecturers.ContainsKey(lecturer.Name))
+                    if (_lecturersMap.ContainsKey(lecturer.Name))
                     {
                         isScheduleAffected = true;
-                        lecturer.ScheduleId = lecturers[lecturer.Name];
+                        lecturer.ScheduleId = _lecturersMap[lecturer.Name];
                     }
                 }
 
@@ -83,13 +65,13 @@ namespace SmtuSchedule.Core
 
             foreach (Schedule schedule in schedules)
             {
-                if (RecoverMissedScheduleType(schedule) || await RecoverNonScheduledLecturersAsync(schedule))
+                if (RecoverMissedScheduleType(schedule) || RecoverNonScheduledLecturers(schedule))
                 {
                     yield return schedule;
                 }
             }
         }
 
-        private readonly Func<Task<IReadOnlyDictionary<String, Int32>>> _lecturersDownloaderCallback;
+        private readonly IReadOnlyDictionary<String, Int32> _lecturersMap;
     }
 }

@@ -5,15 +5,16 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Interfaces;
-using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core
 {
-    public class SchedulesManager
+    public sealed class SchedulesManager
     {
+        public IReadOnlyDictionary<String, Int32> LecturersMap => _lecturersMap;
+
         public IReadOnlyDictionary<Int32, Schedule> Schedules => _schedules;
 
-        public Boolean IsDownloadingInProgress { get; private set; }
+        public Boolean IsLecturersMapReadedFromCache { get; private set; }
 
         public ILogger Logger
         {
@@ -34,6 +35,7 @@ namespace SmtuSchedule.Core
             }
 
             _storagePath = storagePath;
+            _schedules = new ConcurrentDictionary<Int32, Schedule>();
             _schedulesRepository = new LocalSchedulesRepository($"{storagePath}/{schedulesDirectoryName}/");
         }
 
@@ -41,18 +43,17 @@ namespace SmtuSchedule.Core
         {
             return Task.Run(() =>
             {
-                SchedulesMigrator schedulesMigrator = new SchedulesMigrator(DownloadLecturersMapAsync)
-                if (_lecturersMap == null)
+                if (_lecturersMap == null || _lecturersMap.Count == 0)
                 {
-                    throw new InvalidOperationException("Lecturers map is null.");
+                    throw new InvalidOperationException("Lecturers map is null or zero length.");
                 }
 
+                SchedulesMigrator schedulesMigrator = new SchedulesMigrator(_lecturersMap)
                 {
                     Logger = _logger
                 };
 
-                IEnumerable<Schedule> affectedSchedules = schedulesMigrator.MigrateAsync(_schedules.Values)
-                    .ToEnumerable();
+                IEnumerable<Schedule> affectedSchedules = schedulesMigrator.Migrate(_schedules.Values);
 
                 Boolean haveSavingErrors = false;
 
@@ -75,9 +76,9 @@ namespace SmtuSchedule.Core
                 throw new ArgumentException("Value cannot be null, empty or whitespace.", nameof(searchRequest));
             }
 
-            if (_lecturersMap == null)
+            if (_lecturersMap == null || _lecturersMap.Count == 0)
             {
-                throw new InvalidOperationException("Lecturers map is null.");
+                throw new InvalidOperationException("Lecturers map is null or zero length.");
             }
 
             if (Int32.TryParse(searchRequest, out Int32 number))
@@ -97,27 +98,12 @@ namespace SmtuSchedule.Core
         {
             return Task.Run(async () =>
             {
-                LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
-                if (_lecturersMap == null)
+                if (_lecturersMap == null || _lecturersMap.Count == 0)
                 {
-                    Logger = _logger
-                };
-
-                Dictionary<String, Int32> localLecturersMap = lecturersRepository.Read();
-
-                {
-                    if (await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
-                    {
-                        return true;
-                    }
-
-                    localLecturersMap = _lecturersMap;
-                    throw new InvalidOperationException("Lecturers map is null.");
+                    throw new InvalidOperationException("Lecturers map is null or zero length.");
                 }
 
-                IsDownloadingInProgress = true;
-
-                ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(localLecturersMap)
+                ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(_lecturersMap)
                 {
                     Logger = _logger
                 };
@@ -142,8 +128,6 @@ namespace SmtuSchedule.Core
                     }
                 }
 
-                IsDownloadingInProgress = false;
-
                 return schedulesLoader.HaveDownloadingErrors || haveSavingErrors;
             });
         }
@@ -153,16 +137,14 @@ namespace SmtuSchedule.Core
         {
             return Task.Run(async () =>
             {
-                IsDownloadingInProgress = true;
                 if (searchRequests == null || searchRequests.Count() == 0)
                 {
                     throw new ArgumentException("Value cannot be null or zero length.", nameof(searchRequests));
                 }
 
-                if (_lecturersMap == null && await DownloadLecturersMapAsync().ConfigureAwait(false) == null)
+                if (_lecturersMap == null || _lecturersMap.Count == 0)
                 {
-                    IsDownloadingInProgress = false;
-                    throw new InvalidOperationException("Lecturers map is null.");
+                    throw new InvalidOperationException("Lecturers map is null or zero length.");
                 }
 
                 Int32[] schedulesIds = searchRequests.Select(r => GetScheduleIdBySearchRequest(r))
@@ -216,7 +198,7 @@ namespace SmtuSchedule.Core
             });
         }
 
-        public Task<IReadOnlyDictionary<String, Int32>> ReadCachedLecturersMapAsync()
+        public Task<Boolean> ReadLecturersMapAsync()
         {
             return Task.Run(() =>
             {
@@ -225,21 +207,21 @@ namespace SmtuSchedule.Core
                     Logger = _logger
                 };
 
-                _isLecturersMapReadedFromCache = true;
+                IsLecturersMapReadedFromCache = true;
 
-                return (_lecturersMap = lecturersRepository.Read()) as IReadOnlyDictionary<String, Int32>;
+                return (_lecturersMap = lecturersRepository.Read()) == null;
             });
         }
 
-        public Task<IReadOnlyDictionary<String, Int32>> DownloadLecturersMapAsync()
+        public Task<Boolean> DownloadLecturersMapAsync()
         {
             return Task.Run(async () =>
             {
                 // Если в этой сессии карта преподавателей уже загружалась с сайта, то нет необходимости
                 // делать это вновь. За одно использование приложения она не успеет устареть.
-                if (_lecturersMap != null && !_isLecturersMapReadedFromCache)
+                if (_lecturersMap != null && !IsLecturersMapReadedFromCache)
                 {
-                    return _lecturersMap as IReadOnlyDictionary<String, Int32>;
+                    return false;
                 }
 
                 LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
@@ -247,15 +229,20 @@ namespace SmtuSchedule.Core
                     Logger = _logger
                 };
 
-                _isLecturersMapReadedFromCache = false;
+                IsLecturersMapReadedFromCache = false;
 
-                _lecturersMap = await ServerLecturersDownloader.DownloadAsync(_logger).ConfigureAwait(false);
-                if (_lecturersMap != null)
+                ServerLecturersDownloader lecturersDownloader = new ServerLecturersDownloader()
+                {
+                    Logger = _logger
+                };
+
+                _lecturersMap = await lecturersDownloader.DownloadAsync().ConfigureAwait(false);
+                if (!lecturersDownloader.HaveDownloadingErrors)
                 {
                     lecturersRepository.Save(_lecturersMap);
                 }
 
-                return _lecturersMap as IReadOnlyDictionary<String, Int32>;
+                return lecturersDownloader.HaveDownloadingErrors;
             });
         }
 
@@ -265,16 +252,15 @@ namespace SmtuSchedule.Core
             {
                 Dictionary<Int32, Schedule> schedules = _schedulesRepository.Read(out Boolean haveReadingErrors);
                 _schedules = new ConcurrentDictionary<Int32, Schedule>(schedules);
+
                 return haveReadingErrors;
             });
         }
 
-        private Boolean _isLecturersMapReadedFromCache;
+        private ILogger _logger;
 
         private Dictionary<String, Int32> _lecturersMap;
         private ConcurrentDictionary<Int32, Schedule> _schedules;
-
-        private ILogger _logger;
 
         private readonly String _storagePath;
         private readonly LocalSchedulesRepository _schedulesRepository;

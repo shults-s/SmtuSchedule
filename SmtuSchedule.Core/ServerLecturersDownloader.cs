@@ -9,18 +9,22 @@ using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core
 {
-    internal static class ServerLecturersDownloader
+    internal sealed class ServerLecturersDownloader
     {
         private const Int32 IntervalBetweenRequestsInMilliseconds = 300;
 
         private const Int32 MaximumAttemptsNumber = 5;
 
-        public static Task<Dictionary<String, Int32>> DownloadAsync(ILogger logger)
+        public Boolean HaveDownloadingErrors { get; private set; }
+
+        public ILogger Logger { get; set; }
+
+        public Task<Dictionary<String, Int32>> DownloadAsync()
         {
-            return TryDownloadAsync(logger, 1);
+            return TryDownloadAsync(1);
         }
 
-        private static async Task<Dictionary<String, Int32>> TryDownloadAsync(ILogger logger, Int32 attempt)
+        private async Task<Dictionary<String, Int32>> TryDownloadAsync(Int32 attemptNumber)
         {
             const String SearchPageUrl = "https://www.smtu.ru/ru/searchschedule/";
 
@@ -34,7 +38,9 @@ namespace SmtuSchedule.Core
                 return Int32.Parse(url.Substring(url.LastIndexOf('/') + 1));
             }
 
-            Dictionary<String, Int32> lecturers = null;
+            HaveDownloadingErrors = false;
+
+            Dictionary<String, Int32> lecturers = new Dictionary<String, Int32>();
             try
             {
                 String html = await HttpUtilities.GetAsync(SearchPageUrl).ConfigureAwait(false);
@@ -52,7 +58,7 @@ namespace SmtuSchedule.Core
                 };
 
                 // Первая попытка без задержки.
-                if (attempt > 1)
+                if (attemptNumber > 1)
                 {
                     // Bugfix: "unexpected end of stream" или "\\n not found: size=1 content=0d..."
                     System.Threading.Thread.Sleep(IntervalBetweenRequestsInMilliseconds);
@@ -63,9 +69,9 @@ namespace SmtuSchedule.Core
                     html = await HttpUtilities.PostAsync(SearchPageUrl, parameters).ConfigureAwait(false);
                 }
                 // Предотвращаем бесконечную рекурсию в случае, если ошибка произошла в каждой из попыток.
-                catch when (attempt <= MaximumAttemptsNumber)
+                catch when (attemptNumber <= MaximumAttemptsNumber)
                 {
-                    return await TryDownloadAsync(logger, attempt + 1).ConfigureAwait(false);
+                    return await TryDownloadAsync(attemptNumber + 1).ConfigureAwait(false);
                 }
 
                 document.LoadHtml(html);
@@ -75,8 +81,6 @@ namespace SmtuSchedule.Core
                     .Elements("li")
                     .Select(e => e.Element("a"))
                     .Distinct(new UrlComparer());
-
-                lecturers = new Dictionary<String, Int32>();
 
                 foreach (HtmlNode link in links)
                 {
@@ -88,18 +92,17 @@ namespace SmtuSchedule.Core
                 if (lecturers.Count == 0)
                 {
                     throw new Exception(
-                        $"The list of lecturers at the end of download is empty in {attempt} attempts.");
+                        $"The list of lecturers at the end of download is empty in {attemptNumber} attempts.");
                 }
-
-                return lecturers;
             }
             catch (Exception exception)
             {
-                logger?.Log(
+                HaveDownloadingErrors = true;
+                Logger?.Log(
                     new LecturersDownloaderException("Error of downloading list of the lecturers.", exception));
-
-                return null;
             }
+
+            return lecturers;
         }
     }
 }
