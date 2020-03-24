@@ -10,7 +10,7 @@ namespace SmtuSchedule.Core.Utilities
             // Неприятность заключается в том, что у нас неделя начинается с понедельника,
             // а в DayOfWeek – с воскресенья. Из-за чего воскресенье считается не по той
             // неделе, к которой оно в действительности относится.
-            Int32 GetCorrectDayOfWeekIndex(DayOfWeek dayOfWeek)
+            static Int32 GetCorrectDayOfWeekIndex(DayOfWeek dayOfWeek)
             {
                 return (dayOfWeek == DayOfWeek.Sunday) ? 6 : (Int32)(dayOfWeek - 1);
             }
