@@ -2,15 +2,9 @@ using System;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-// using Newtonsoft.Json.Converters;
 
 namespace SmtuSchedule.Core.Utilities
 {
-    // internal class JsonDateTimeConverter : IsoDateTimeConverter
-    // {
-    //     public JsonDateTimeConverter(String format) => DateTimeFormat = format;
-    // }
-
     [Android.Runtime.Preserve(AllMembers = true)]
     internal class JsonDateTimeConverter : JsonConverter<DateTime>
     {

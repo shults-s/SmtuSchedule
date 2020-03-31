@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-// using Newtonsoft.Json;
 using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
@@ -10,22 +9,16 @@ namespace SmtuSchedule.Core.Models
 {
     public sealed class Timetable
     {
-        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Monday { get; set; }
 
-        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Tuesday { get; set; }
 
-        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Wednesday { get; set; }
 
-        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Thursday { get; set; }
 
-        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Friday { get; set; }
 
-        // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Saturday { get; set; }
 
         public void Validate()

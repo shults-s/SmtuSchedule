@@ -1,6 +1,5 @@
 using System;
 using System.Text.Json;
-// using Newtonsoft.Json;
 using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core.Models
@@ -11,19 +10,14 @@ namespace SmtuSchedule.Core.Models
     [Android.Runtime.Preserve(AllMembers = true)]
     public sealed class ReleaseDescription
     {
-        // [JsonProperty(Required = Required.DisallowNull)]
         public String GooglePlayStorePackageId { get; set; }
 
-        // [JsonProperty(Required = Required.DisallowNull)]
         public String VersionNotes { get; set; }
 
-        // [JsonProperty(Required = Required.Always)]
         public String VersionName { get; set; }
 
-        // [JsonProperty(Required = Required.Always)]
         public Int32 VersionCode { get; set; }
 
-        // [JsonProperty(Required = Required.Always)]
         public Boolean IsCriticalUpdate { get; set; }
 
         public static ReleaseDescription FromJson(String json)

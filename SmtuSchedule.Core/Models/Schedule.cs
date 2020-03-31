@@ -3,8 +3,6 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-// using Newtonsoft.Json;
-// using Newtonsoft.Json.Converters;
 using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Core.Enumerations;
@@ -13,21 +11,6 @@ namespace SmtuSchedule.Core.Models
 {
     public sealed class Schedule
     {
-        // private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings()
-        // {
-        //     NullValueHandling = NullValueHandling.Ignore,
-        //     Formatting = Formatting.Indented,
-        //
-        //     // При сборке в релиз с параметром Связывание = Сборки пакета SDK и пользователя,
-        //     // конвертеры, указанные в атрибутах, падают при попытке создания объекта.
-        //     // Вероятно, компилятор удаляет эти классы, считая, что они не используются.
-        //     Converters = new JsonConverter[]
-        //     {
-        //          new DateTimeConverter("HH:mm"),
-        //          new StringEnumConverter()
-        //     }
-        // };
-
         private static readonly JsonSerializerOptions Options = new JsonSerializerOptions()
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
@@ -38,24 +21,25 @@ namespace SmtuSchedule.Core.Models
         [JsonIgnore]
         public Boolean IsActual => LastUpdate >= DateTime.Now.AddHours(-12);
 
-        // [JsonProperty(Required = Required.Always)]
         public String DisplayedName { get; set; }
 
-        // [JsonProperty(Required = Required.Always)]
         public Int32 ScheduleId { get; set; }
 
-        // [JsonProperty(Required = Required.Default)]
         public ScheduleType Type { get; set; }
 
         [JsonConverter(typeof(JsonDateTimeConverter))]
         public DateTime LastUpdate { get; set; }
 
-        // [JsonProperty(Required = Required.Always)]
         public Timetable Timetable { get; set; }
 
         static Schedule()
         {
-            // Библиотечный конвертер указан не в атрибутах по причине, описанной выше.
+            // При сборке с параметром 'Связывание' = 'Сборки пакета SDK и пользователя',
+            // конвертеры, указанные в атрибутах, падают при создании объекта.
+            // Вероятно, компилятор удаляет эти классы, считая, что они не используются.
+            // Поскольку конвертер JsonStringEnumConverter библиотечный, защитить его
+            // атрибутом Android.Runtime.Preserve невозможно, поэтому единственное что
+            // можно сделать – создать статическую ссылку.
             Options.Converters.Add(new JsonStringEnumConverter());
         }
 
@@ -73,13 +57,6 @@ namespace SmtuSchedule.Core.Models
 
             Timetable.Validate();
         }
-
-        // public String ToJson() => JsonConvert.SerializeObject(this, Settings);
-
-        // public static Schedule FromJson(String json)
-        // {
-        //     return JsonConvert.DeserializeObject<Schedule>(json, Settings);
-        // }
 
         public String ToJson() => JsonSerializer.Serialize<Schedule>(this, Options);
 
