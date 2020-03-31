@@ -21,7 +21,7 @@ namespace SmtuSchedule.Android.Utilities
 
         public static Java.Lang.ICharSequence FromMarkdown(this String markdown)
         {
-            foreach((String pattern, String replacement) in MarkdownRegexes)
+            foreach ((String pattern, String replacement) in MarkdownRegexes)
             {
                 markdown = Regex.Replace(markdown, pattern, replacement);
             }
