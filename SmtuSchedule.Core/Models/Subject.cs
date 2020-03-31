@@ -8,7 +8,7 @@ using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core.Models
 {
-    [DebuggerDisplay("{From.ToShortTimeString()}, {Week}: {Title} @ {Group?.Name ?? Lecturer?.Name}")]
+    [DebuggerDisplay("{From.ToShortTimeString()}, {Week}: '{Title}' @ {Group?.Name ?? Lecturer?.Name}")]
     public sealed class Subject
     {
         public Boolean IsDisplayed { get; set; }
@@ -51,22 +51,22 @@ namespace SmtuSchedule.Core.Models
         {
             if (From == default(DateTime) || To == default(DateTime))
             {
-                throw new ValidationException("Both properties From and To must be set.");
+                throw new ValidationException("Both properties 'From' and 'To' must be set.");
             }
 
-            if (String.IsNullOrEmpty(Auditorium))
+            if (String.IsNullOrWhiteSpace(Auditorium))
             {
-                throw new ValidationException("Property Auditorium must be set.");
+                throw new ValidationException("Property 'Auditorium' must be set.");
             }
 
-            if (String.IsNullOrEmpty(Title))
+            if (String.IsNullOrWhiteSpace(Title))
             {
-                throw new ValidationException("Property Title must be set.");
+                throw new ValidationException("Property 'Title' must be set.");
             }
 
             if (Group != null && Lecturer != null)
             {
-                throw new ValidationException("Only one of properties Lecturer or Group must be set.");
+                throw new ValidationException("Only one of properties 'Lecturer' or 'Group' must be set.");
             }
 
             (Group as IScheduleReference)?.Validate();

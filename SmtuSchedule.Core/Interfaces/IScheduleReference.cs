@@ -11,9 +11,9 @@ namespace SmtuSchedule.Core.Interfaces
 
         void Validate()
         {
-            if (String.IsNullOrEmpty(Name))
+            if (String.IsNullOrWhiteSpace(Name))
             {
-                throw new ValidationException("Property Name must be set.");
+                throw new ValidationException("Property 'Name' must be set.");
             }
         }
     }

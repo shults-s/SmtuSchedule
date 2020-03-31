@@ -45,14 +45,14 @@ namespace SmtuSchedule.Core.Models
 
         public void Validate()
         {
-            if (String.IsNullOrEmpty(DisplayedName))
+            if (String.IsNullOrWhiteSpace(DisplayedName))
             {
-                throw new ValidationException("Property DisplayedName must be set.");
+                throw new ValidationException("Property 'DisplayedName' must be set.");
             }
 
             if (ScheduleId == default(Int32))
             {
-                throw new ValidationException("Property ScheduleId must be set.");
+                throw new ValidationException("Property 'ScheduleId' must be set.");
             }
 
             Timetable.Validate();

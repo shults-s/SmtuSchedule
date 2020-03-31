@@ -29,12 +29,12 @@ namespace SmtuSchedule.Core.Models
         {
             if (VersionCode == default(Int32))
             {
-                throw new ValidationException("Property VersionCode must be set");
+                throw new ValidationException("Property 'VersionCode' must be set");
             }
 
-            if (String.IsNullOrEmpty(VersionName))
+            if (String.IsNullOrWhiteSpace(VersionName))
             {
-                throw new ValidationException("Property VersionName must be set");
+                throw new ValidationException("Property 'VersionName' must be set");
             }
 
             return this;
