@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Diagnostics;
 using System.Collections.Generic;
 using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
@@ -7,6 +8,10 @@ using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core.Models
 {
+    [DebuggerDisplay(
+        "[{Monday?.Length}], [{Tuesday?.Length}], [{Wednesday?.Length}], "
+        + "[{Thursday?.Length}], [{Friday?.Length}], [{Saturday?.Length}]"
+    )]
     public sealed class Timetable
     {
         public Subject[] Monday { get; set; }
