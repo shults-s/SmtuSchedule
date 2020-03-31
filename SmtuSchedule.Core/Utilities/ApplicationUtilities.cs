@@ -50,7 +50,7 @@ namespace SmtuSchedule.Core.Utilities
             }
         }
 
-        public static Task<ReleaseDescription> GetLatestReleaseDescription()
+        public static Task<ReleaseDescription> GetLatestReleaseDescriptionAsync()
         {
             return Task.Run(async () =>
             {
@@ -72,7 +72,7 @@ namespace SmtuSchedule.Core.Utilities
             });
         }
 
-        public static Task<String> ParseLatestReleaseVersionFromRepositoryChangeLogAsync()
+        public static Task<String> GetLatestReleaseVersionFromRepositoryChangeLogAsync()
         {
             return Task.Run(async () =>
             {
@@ -98,7 +98,6 @@ namespace SmtuSchedule.Core.Utilities
             });
         }
 
-        // Если v1 > v2, вернется 1; если v1 = v2, вернется 0; если v1 < v2, вернется -1.
         public static Int32 CompareVersions(String version1, String version2)
         {
             if (String.IsNullOrWhiteSpace(version1))
@@ -134,6 +133,7 @@ namespace SmtuSchedule.Core.Utilities
                 ? (v1[2] > v2[2] ? 1 : v1[2] < v2[2] ? -1 : 0)
                 : (v1.Length == v2.Length ? 0 : v1.Length > v2.Length ? 1 : -1);
 
+            // Если v1 > v2, вернется 1; если v1 = v2, вернется 0; если v1 < v2, вернется -1.
             return (majorComparsion == 0) ? (minorComparsion == 0 ? patchComparsion : minorComparsion) : majorComparsion;
         }
     }
