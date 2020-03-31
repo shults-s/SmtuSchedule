@@ -80,7 +80,7 @@ namespace SmtuSchedule.Core
                 );
 
                 Boolean haveNoSavingErrors = _schedulesRepository.SaveSchedules(affectedSchedules);
-                return haveNoSavingErrors && schedulesMigrator.HaveNoMigrationErrors;
+                return schedulesMigrator.HaveNoMigrationErrors && haveNoSavingErrors;
             });
         }
 
@@ -159,10 +159,10 @@ namespace SmtuSchedule.Core
 
             return Task.Run(() =>
             {
-                Boolean hasRemovingError = _schedulesRepository.RemoveSchedule(
+                Boolean hasNoRemovingError = _schedulesRepository.RemoveSchedule(
                     _schedules[scheduleId].DisplayedName);
 
-                return hasRemovingError || !_schedules.TryRemove(scheduleId, out Schedule _);
+                return hasNoRemovingError && _schedules.TryRemove(scheduleId, out Schedule _);
             });
         }
 
@@ -177,9 +177,9 @@ namespace SmtuSchedule.Core
 
                 IsLecturersMapReadedFromCache = true;
 
-                LecturersMap = lecturersRepository.ReadLecturersMap(out Boolean hasReadingError);
+                LecturersMap = _lecturersRepository.ReadLecturersMap(out Boolean hasNoReadingError);
 
-                return hasReadingError;
+                return hasNoReadingError;
             });
         }
 
@@ -191,7 +191,7 @@ namespace SmtuSchedule.Core
                 // делать это вновь. За одно использование приложения она не успеет устареть.
                 if (LecturersMap != null && !IsLecturersMapReadedFromCache)
                 {
-                    return false;
+                    return true;
                 }
 
                 LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
