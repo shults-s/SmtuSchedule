@@ -279,7 +279,7 @@ namespace SmtuSchedule.Android
                 }
 
                 DateTime storingTime = DateTime.Today.AddDays(-7);
-                files.Where(f => f.LastWriteTime < storingTime).foreach (f => f.Delete());
+                files.Where(f => f.LastWriteTime < storingTime).ForEach(f => f.Delete());
             });
         }
 
