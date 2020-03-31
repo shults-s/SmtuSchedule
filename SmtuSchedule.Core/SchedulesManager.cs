@@ -114,16 +114,6 @@ namespace SmtuSchedule.Core
             });
         }
 
-        public IEnumerable<Int32> GetSchedulesIdsBySearchRequests(IEnumerable<String> searchRequests)
-        {
-            if (LecturersMap == null || LecturersMap.Count == 0)
-            {
-                throw new InvalidOperationException("Lecturers map is null or empty.");
-            }
-
-            return searchRequests.Select(r => GetScheduleIdBySearchRequest(r)).Where(id => id != 0);
-        }
-
         public Task<Boolean> DownloadSchedulesAsync(IEnumerable<Int32> schedulesIds,
             Boolean shouldDownloadRelatedLecturersSchedules)
         {
@@ -243,6 +233,16 @@ namespace SmtuSchedule.Core
 
                 return haveNoReadingErrors;
             });
+        }
+
+        public IEnumerable<Int32> GetSchedulesIdsBySearchRequests(IEnumerable<String> searchRequests)
+        {
+            if (LecturersMap == null || LecturersMap.Count == 0)
+            {
+                throw new InvalidOperationException("Lecturers map is null or empty.");
+            }
+
+            return searchRequests.Select(r => GetScheduleIdBySearchRequest(r)).Where(id => id != 0);
         }
 
         private Int32 GetScheduleIdBySearchRequest(String searchRequest)
