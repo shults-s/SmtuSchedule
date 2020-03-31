@@ -335,11 +335,6 @@ namespace SmtuSchedule.Android.Views
                     return ;
                 }
 
-                // if (status == InitializationStatus.FailedToRemoveDirectory)
-                // {
-                //     ShowSnackbar(Resource.String.failedToRemoveDirectoryErrorMessage);
-                // }
-
                 ShowProgressBar();
 
                 Boolean haveReadingErrors = await _application.Manager.ReadSchedulesAsync();
@@ -744,18 +739,6 @@ namespace SmtuSchedule.Android.Views
                     dateTarget.Stylize().Id((Int32)FeatureDiscoveryState.ScheduleChangeDate);
                     targets.Add(dateTarget);
                 }
-
-                // if (!state.HasFlag(FeatureDiscoveryState.UpdateSchedulesOnStart))
-                // {
-                //     TapTarget updateTarget = TapTarget.ForToolbarOverflow(
-                //         _toolbar,
-                //         Resources.GetString(Resource.String.updateSchedulesOnStartFeatureDiscoveryTitle),
-                //         Resources.GetString(Resource.String.updateSchedulesOnStartFeatureDiscoveryMessage)
-                //     );
-                //
-                //     updateTarget.Stylize().Id((Int32)FeatureDiscoveryState.UpdateSchedulesOnStart);
-                //     targets.Add(updateTarget);
-                // }
             }
 
             if (targets.Count == 0)

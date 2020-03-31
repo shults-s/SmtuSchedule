@@ -30,12 +30,6 @@
         \n\nМежду смежными датами проще переключаться с помощью вкладок, либо перелистывая страницы расписания влево-вправо.
         \n\nВернуться к текущей дате можно нажав кнопку «Назад».
     </string>
-    <!-- <string name="updateSchedulesOnStartFeatureDiscoveryTitle">Автоматическое обновление расписаний</string> -->
-    <!-- <string name="updateSchedulesOnStartFeatureDiscoveryMessage">
-        Приложение теперь умеет автоматически обновлять расписания при запуске.
-        \n\nЭто актуально в начале семестра, когда происходит наибольшее количество изменений.
-        \n\nСмахиванием вниз расписание можно обновить вручную.
-    </string> -->
 
     <!-- Заголовки диалогов, уведомлений и панелей инструментов -->
     <string name="preferencesToolbarTitle">Настройки</string>
@@ -92,9 +86,6 @@
     <string name="applicationInitializationErrorMessage">
         Ошибка при инициализации приложения: {0}.
         \n\nПожалуйста, [сообщите мне](https://vk.com/write62700344) об этом.
-    </string>
-    <string name="failedToRemoveDirectoryErrorMessage">
-        В старой директории приложения остались файлы, созданные Вами вручную. Посмотрите, возможно их стоит удалить.
     </string>
     <string name="externalStoragePermissionsDeclinedErrorMessage">
         Приложение не может загружать и открывать расписания без разрешения на доступ к файлам.
