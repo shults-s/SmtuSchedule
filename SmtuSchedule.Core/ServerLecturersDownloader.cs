@@ -25,7 +25,12 @@ namespace SmtuSchedule.Core
             _httpClient = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        private async Task<Dictionary<String, Int32>> TryDownloadAsync(Int32 attemptNumber)
+        public Task<IReadOnlyDictionary<String, Int32>> DownloadLecturersMapAsync()
+        {
+            return TryDownloadLecturersMapAsync(1);
+        }
+
+        private async Task<IReadOnlyDictionary<String, Int32>> TryDownloadLecturersMapAsync(Int32 attemptNumber)
         {
             const String SearchPageUrl = "https://www.smtu.ru/ru/searchschedule/";
 
@@ -41,7 +46,6 @@ namespace SmtuSchedule.Core
 
             HaveDownloadingErrors = false;
 
-            Dictionary<String, Int32> lecturers = new Dictionary<String, Int32>();
             try
             {
                 String html = await _httpClient.GetAsync(SearchPageUrl).ConfigureAwait(false);
@@ -72,7 +76,7 @@ namespace SmtuSchedule.Core
                 // Предотвращаем бесконечную рекурсию в случае, если ошибка произошла в каждой из попыток.
                 catch (HttpRequestException) when (attemptNumber <= MaximumAttemptsNumber)
                 {
-                    return await TryDownloadAsync(attemptNumber + 1).ConfigureAwait(false);
+                    return await TryDownloadLecturersMapAsync(attemptNumber + 1).ConfigureAwait(false);
                 }
 
                 document.LoadHtml(html);
@@ -81,7 +85,9 @@ namespace SmtuSchedule.Core
                     .First()
                     .Elements("li")
                     .Select(e => e.Element("a"))
-                    .Distinct(new UrlComparer());
+                    .Distinct(new LinksEqualityComparer());
+
+                Dictionary<String, Int32> lecturers = new Dictionary<String, Int32>();
 
                 foreach (HtmlNode link in links)
                 {
@@ -95,16 +101,18 @@ namespace SmtuSchedule.Core
                     throw new LecturersDownloaderException(
                         $"The list of lecturers at the end of download is empty in {attemptNumber} attempts.");
                 }
+
+                return lecturers;
             }
             catch (Exception exception)
                 when (exception is HttpRequestException || exception is LecturersDownloaderException)
             {
                 HaveDownloadingErrors = true;
                 Logger?.Log(
-                    new LecturersDownloaderException("Error of downloading list of the lecturers.", exception));
-            }
+                    new LecturersDownloaderException("Error of downloading the list of lecturers.", exception));
 
-            return lecturers;
+                return null;
+            }
         }
 
         private readonly IHttpClient _httpClient;

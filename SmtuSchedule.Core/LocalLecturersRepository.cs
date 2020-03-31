@@ -20,21 +20,24 @@ namespace SmtuSchedule.Core
 
         public ILogger Logger { get; set; }
 
-        public LocalLecturersRepository(String storagePath) => _storagePath = storagePath;
-
-        public Boolean Save(Dictionary<String, Int32> lecturers)
+        public LocalLecturersRepository(String storagePath)
         {
-            if (lecturers == null)
+            if (String.IsNullOrWhiteSpace(storagePath))
             {
-                throw new ArgumentNullException(nameof(lecturers));
+                throw new ArgumentException("String cannot be null, empty or whitespace.", nameof(storagePath));
             }
 
+            _storagePath = storagePath;
+        }
+
+        public Boolean SaveLecturersMap(IReadOnlyDictionary<String, Int32> lecturers)
+        {
             Boolean hasNoSavingError = true;
 
             String filePath = _storagePath + LecturersMapFileName;
             try
             {
-                String json = JsonSerializer.Serialize<Dictionary<String, Int32>>(lecturers, Options);
+                String json = JsonSerializer.Serialize<IReadOnlyDictionary<String, Int32>>(lecturers, Options);
                 File.WriteAllText(filePath, json);
             }
             catch (IOException exception)
@@ -46,8 +49,10 @@ namespace SmtuSchedule.Core
             return hasNoSavingError;
         }
 
-        public Dictionary<String, Int32> Read()
+        public Dictionary<String, Int32> ReadLecturersMap(out Boolean hasReadingError)
         {
+            hasReadingError = false;
+
             String filePath = _storagePath + LecturersMapFileName;
             try
             {
@@ -55,7 +60,9 @@ namespace SmtuSchedule.Core
             }
             catch (Exception exception) when (exception is IOException || exception is JsonException)
             {
+                hasReadingError = true;
                 Logger?.Log(new LecturersRepositoryException($"Error of reading lecturers map file.", exception));
+
                 return null;
             }
         }

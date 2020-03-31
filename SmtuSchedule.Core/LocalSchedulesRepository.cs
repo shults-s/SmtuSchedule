@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text.Json;
 using System.Collections.Generic;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Interfaces;
@@ -11,77 +12,77 @@ namespace SmtuSchedule.Core
     {
         public ILogger Logger { get; set; }
 
-        public LocalSchedulesRepository(String storagePath) => _storagePath = storagePath;
-
-        public Boolean Remove(Schedule schedule)
+        public LocalSchedulesRepository(String storagePath)
         {
-            if (schedule == null)
+            if (String.IsNullOrWhiteSpace(storagePath))
             {
-                throw new ArgumentNullException(nameof(schedule));
+                throw new ArgumentException("String cannot be null, empty or whitespace.", nameof(storagePath));
             }
 
-            Boolean hasNoRemovingError = true;
+            _storagePath = storagePath;
+        }
 
-            String fileName = schedule.DisplayedName + ".json";
+        public Boolean SaveSchedules(IEnumerable<Schedule> schedules,
+            Action<Schedule> scheduleSavedSuccessfulCallback = null)
+        {
+            Boolean haveSavingErrors = false;
+
+            foreach (Schedule schedule in schedules)
+            {
+                String fileName = schedule.DisplayedName + ".json";
+                try
+                {
+                    File.WriteAllText(_storagePath + fileName, schedule.ToJson());
+                    scheduleSavedSuccessfulCallback?.Invoke(schedule);
+                }
+                catch (IOException exception)
+                {
+                    haveSavingErrors = true;
+                    Logger?.Log(new SchedulesRepositoryException($"Error of saving file '{fileName}'.", exception));
+                }
+            }
+
+            return haveSavingErrors;
+        }
+
+        public Boolean RemoveSchedule(String displayedName)
+        {
+            Boolean hasRemovingError = false;
+
+            String fileName = displayedName + ".json";
             try
             {
                 File.Delete(_storagePath + fileName);
             }
-            {
-                hasNoRemovingError = false;
-                Logger?.Log(
-                    new SchedulesRepositoryException($"Error of removing file \"{fileName}\".", exception));
-                catch (IOException exception)
-            }
-
-            return hasNoRemovingError;
-        }
-
-        public Boolean Save(Schedule schedule)
-        {
-            if (schedule == null)
-            {
-                throw new ArgumentNullException(nameof(schedule));
-            }
-
-            Boolean hasNoSavingError = true;
-
-            String fileName = schedule.DisplayedName + ".json";
-            try
-            {
-                File.WriteAllText(_storagePath + fileName, schedule.ToJson());
-            }
             catch (IOException exception)
             {
-                hasNoSavingError = false;
-                Logger?.Log(
-                    new SchedulesRepositoryException($"Error of saving file \"{fileName}\".", exception));
+                hasRemovingError = true;
+                Logger?.Log(new SchedulesRepositoryException($"Error of removing file '{fileName}'.", exception));
             }
 
-            return hasNoSavingError;
+            return hasRemovingError;
         }
 
-        public Dictionary<Int32, Schedule> Read(out Boolean haveReadingErrors)
+        public IReadOnlyDictionary<Int32, Schedule> ReadSchedules(out Boolean haveReadingErrors)
         {
-            Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
-
             haveReadingErrors = false;
 
-            String[] filePaths;
+            String[] filesPaths;
             try
             {
-                filePaths = Directory.GetFiles(_storagePath, "*.json");
+                filesPaths = Directory.GetFiles(_storagePath, "*.json");
             }
             catch (IOException exception)
             {
                 haveReadingErrors = true;
-                Logger?.Log(
-                    new SchedulesRepositoryException("Error of reading list of local schedules.", exception));
+                Logger?.Log(new SchedulesRepositoryException("Error of reading list of local schedules.", exception));
 
-                return schedules;
+                return null;
             }
 
-            foreach (String filePath in filePaths)
+            Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>(filesPaths.Length);
+
+            foreach (String filePath in filesPaths)
             {
                 try
                 {
@@ -105,8 +106,7 @@ namespace SmtuSchedule.Core
                     haveReadingErrors = true;
 
                     String fileName = Path.GetFileName(filePath);
-                    Logger?.Log(
-                        new SchedulesRepositoryException($"Error of reading file \"{fileName}\".", exception));
+                    Logger?.Log(new SchedulesRepositoryException($"Error of reading file '{fileName}'.", exception));
                 }
             }
 

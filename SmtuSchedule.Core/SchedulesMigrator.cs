@@ -13,13 +13,14 @@ namespace SmtuSchedule.Core
 
         public ILogger Logger { get; set; }
 
-        public SchedulesMigrator(IReadOnlyDictionary<String, Int32> lecturersMap)
+        public IEnumerable<Schedule> Migrate(IEnumerable<Schedule> schedules,
+            IReadOnlyDictionary<String, Int32> lecturersMap)
         {
-            _lecturersMap = lecturersMap ?? throw new ArgumentNullException(nameof(lecturersMap));
-        }
+            if (lecturersMap == null || lecturersMap.Count == 0)
+            {
+                throw new ArgumentException("Collection cannot be null or empty.", nameof(lecturersMap));
+            }
 
-        public IEnumerable<Schedule> Migrate(IEnumerable<Schedule> schedules)
-        {
             if (schedules == null)
             {
                 throw new ArgumentNullException(nameof(schedules));
@@ -27,7 +28,7 @@ namespace SmtuSchedule.Core
 
             HaveMigrationErrors = false;
 
-            static Boolean RecoverMissedScheduleType(Schedule schedule)
+            static Boolean HadToRecoverMissedScheduleType(Schedule schedule)
             {
                 if (schedule.Type != ScheduleType.NotSet)
                 {
@@ -38,25 +39,26 @@ namespace SmtuSchedule.Core
                 return true;
             }
 
-            Boolean RecoverNonScheduledLecturers(Schedule schedule)
+            Boolean HadToRecoverNonScheduledLecturers(Schedule schedule)
             {
-                Boolean isScheduleAffected = false;
 
                 IScheduleReference[] nonScheduledLecturers = schedule.Timetable.GetLecturers()
                     .Where(l => l.ScheduleId == 0)
                     .ToArray();
 
+                Boolean isScheduleAffected = false;
+
                 if (nonScheduledLecturers.Length == 0)
                 {
-                    return false;
+                    return isScheduleAffected;
                 }
 
                 foreach (Lecturer lecturer in nonScheduledLecturers)
                 {
-                    if (_lecturersMap.ContainsKey(lecturer.Name))
+                    if (lecturersMap.ContainsKey(lecturer.Name))
                     {
                         isScheduleAffected = true;
-                        lecturer.ScheduleId = _lecturersMap[lecturer.Name];
+                        lecturer.ScheduleId = lecturersMap[lecturer.Name];
                     }
                 }
 
@@ -65,13 +67,11 @@ namespace SmtuSchedule.Core
 
             foreach (Schedule schedule in schedules)
             {
-                if (RecoverMissedScheduleType(schedule) || RecoverNonScheduledLecturers(schedule))
+                if (HadToRecoverMissedScheduleType(schedule) || HadToRecoverNonScheduledLecturers(schedule))
                 {
                     yield return schedule;
                 }
             }
         }
-
-        private readonly IReadOnlyDictionary<String, Int32> _lecturersMap;
     }
 }

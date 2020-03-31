@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using SmtuSchedule.Core.Models;
-using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Core.Enumerations;
@@ -60,50 +59,39 @@ namespace SmtuSchedule.Core
             _httpClient = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task<Dictionary<Int32, Schedule>> DownloadAsync(IEnumerable<Int32> schedulesIds,
-            Boolean shouldDownloadRelatedLecturersSchedules)
+        public async Task<IEnumerable<Schedule>> DownloadSchedulesAsync(IEnumerable<Int32> schedulesIds,
+            IReadOnlyDictionary<String, Int32> lecturersMap, Boolean shouldDownloadRelatedSchedules)
         {
-            if (schedulesIds == null || schedulesIds.Count() == 0)
+            if (lecturersMap == null || lecturersMap.Count == 0)
             {
-                throw new ArgumentException("Value cannot be null or zero length.", nameof(schedulesIds));
+                throw new ArgumentException(
+                    "Provided lecturers map is null or empty, therefore, in any loaded schedule, all of "
+                    + "lecturers id's will be zero. So, switching between schedules will be impossible.",
+                    nameof(lecturersMap)
+                );
             }
 
-            Dictionary<Int32, Schedule> schedules = new Dictionary<Int32, Schedule>();
+            if (schedulesIds == null)
+            {
+                throw new ArgumentNullException(nameof(schedulesIds));
+            }
+
             HaveDownloadingErrors = false;
 
-            if (_lecturersMap == null)
+            async Task<List<Schedule>> DownloadSchedulesAsync(IEnumerable<Int32> schedulesIdsLocal)
             {
-                Logger?.Log(
-                    new SchedulesDownloaderException(
-                        "Provided lecturers map is null, therefore, in any loaded schedule, the "
-                        + "lecturers id's will be zero. So, switching between schedules will be impossible."
-                    )
-                );
+                List<Schedule> schedulesLocal = new List<Schedule>(schedulesIdsLocal.Count());
 
-                HaveDownloadingErrors = true;
-                return schedules;
-            }
-
-            async Task<Boolean> DownloadAsync(IEnumerable<Int32> schedulesIdsLocal)
-            {
                 foreach (Int32 scheduleId in schedulesIdsLocal)
                 {
                     try
                     {
-                        Schedule schedule = await DownloadScheduleAsync(scheduleId).ConfigureAwait(false);
+                        Schedule schedule = await DownloadScheduleAsync(scheduleId, lecturersMap)
+                            .ConfigureAwait(false);
+
                         schedule.Validate();
 
-                        schedules[scheduleId] = schedule;
-                    }
-                    catch (HttpRequestException exception)
-                    {
-                        HaveDownloadingErrors = true;
-                        Logger?.Log(
-                            new SchedulesDownloaderException(
-                                $"Error of downloading schedules: network error.", exception)
-                        );
-
-                        return true;
+                        schedulesLocal.Add(schedule);
                     }
                     catch (Exception exception) when (
                         exception is HttpRequestException
@@ -119,7 +107,7 @@ namespace SmtuSchedule.Core
                     }
                 }
 
-                return false;
+                return schedulesLocal;
             }
 
             static IEnumerable<Int32> GetRelatedLecturersSchedulesIds(IEnumerable<Schedule> schedulesLocal)
@@ -140,18 +128,19 @@ namespace SmtuSchedule.Core
                 return schedulesIdsLocal;
             }
 
-            Boolean hasNetworkError = await DownloadAsync(schedulesIds).ConfigureAwait(false);
+            List<Schedule> schedules = await DownloadSchedulesAsync(schedulesIds).ConfigureAwait(false);
 
-            if (!hasNetworkError && shouldDownloadRelatedLecturersSchedules)
+            if (shouldDownloadRelatedSchedules)
             {
-                IEnumerable<Int32> relatedSchedulesIds = GetRelatedLecturersSchedulesIds(schedules.Values);
-                await DownloadAsync(relatedSchedulesIds).ConfigureAwait(false);
+                IEnumerable<Int32> relatedSchedulesIds = GetRelatedLecturersSchedulesIds(schedules);
+                schedules.AddRange(await DownloadSchedulesAsync(relatedSchedulesIds).ConfigureAwait(false));
             }
 
             return schedules;
         }
 
-        private async Task<Schedule> DownloadScheduleAsync(Int32 scheduleId)
+        private async Task<Schedule> DownloadScheduleAsync(Int32 scheduleId,
+            IReadOnlyDictionary<String, Int32> lecturersMap)
         {
             const String LecturerScheduleBaseUrl = "https://www.smtu.ru/ru/viewschedule/teacher/";
             const String GroupScheduleBaseUrl = "https://www.smtu.ru/ru/viewschedule/";
@@ -218,10 +207,10 @@ namespace SmtuSchedule.Core
                     }
 
                     Boolean isLecturerScheduleExists = name != null
-                        && _lecturersMap != null
-                        && _lecturersMap.ContainsKey(name);
+                        && lecturersMap != null
+                        && lecturersMap.ContainsKey(name);
 
-                    id = isLecturerScheduleExists ? _lecturersMap[name] : 0;
+                    id = isLecturerScheduleExists ? lecturersMap[name] : 0;
                 }
             }
 
@@ -264,7 +253,8 @@ namespace SmtuSchedule.Core
 
             if (heads.Length == 1 && bodyes.Length == 1)
             {
-                throw new Exception("Timetable is empty, therefore, such a schedule does not exist.");
+                throw new SchedulesDownloaderException(
+                    "Timetable is empty, therefore, such a schedule does not exist.");
             }
 
             // Первые элементы относятся к заголовку таблицы и интереса не представляют.
@@ -320,7 +310,6 @@ namespace SmtuSchedule.Core
             return schedule;
         }
 
-        private readonly IReadOnlyDictionary<String, Int32> _lecturersMap;
         private readonly IHttpClient _httpClient;
     }
 }
