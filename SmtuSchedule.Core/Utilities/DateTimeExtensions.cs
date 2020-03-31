@@ -19,6 +19,7 @@ namespace SmtuSchedule.Core.Utilities
             Int32 targetDayIndex = GetCorrectDayOfWeekIndex(date.DayOfWeek);
 
             Int32 numberOfDaysBetweenDates;
+
             if (targetDayIndex == upperWeekDayIndex)
             {
                 numberOfDaysBetweenDates = (upperWeekDate - date).Days;
