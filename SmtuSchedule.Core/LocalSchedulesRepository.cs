@@ -25,7 +25,7 @@ namespace SmtuSchedule.Core
         public Boolean SaveSchedules(IEnumerable<Schedule> schedules,
             Action<Schedule> scheduleSavedSuccessfulCallback = null)
         {
-            Boolean haveSavingErrors = false;
+            Boolean haveNoSavingErrors = true;
 
             foreach (Schedule schedule in schedules)
             {
@@ -37,17 +37,17 @@ namespace SmtuSchedule.Core
                 }
                 catch (IOException exception)
                 {
-                    haveSavingErrors = true;
+                    haveNoSavingErrors = false;
                     Logger?.Log(new SchedulesRepositoryException($"Error of saving file '{fileName}'.", exception));
                 }
             }
 
-            return haveSavingErrors;
+            return haveNoSavingErrors;
         }
 
         public Boolean RemoveSchedule(String displayedName)
         {
-            Boolean hasRemovingError = false;
+            Boolean hasNoRemovingError = true;
 
             String fileName = displayedName + ".json";
             try
@@ -56,16 +56,16 @@ namespace SmtuSchedule.Core
             }
             catch (IOException exception)
             {
-                hasRemovingError = true;
+                hasNoRemovingError = false;
                 Logger?.Log(new SchedulesRepositoryException($"Error of removing file '{fileName}'.", exception));
             }
 
-            return hasRemovingError;
+            return hasNoRemovingError;
         }
 
-        public IReadOnlyDictionary<Int32, Schedule> ReadSchedules(out Boolean haveReadingErrors)
+        public IReadOnlyDictionary<Int32, Schedule> ReadSchedules(out Boolean haveNoReadingErrors)
         {
-            haveReadingErrors = false;
+            haveNoReadingErrors = true;
 
             String[] filesPaths;
             try
@@ -74,7 +74,7 @@ namespace SmtuSchedule.Core
             }
             catch (IOException exception)
             {
-                haveReadingErrors = true;
+                haveNoReadingErrors = false;
                 Logger?.Log(new SchedulesRepositoryException("Error of reading list of local schedules.", exception));
 
                 return null;
@@ -103,7 +103,7 @@ namespace SmtuSchedule.Core
                     || exception is SchedulesRepositoryException
                 )
                 {
-                    haveReadingErrors = true;
+                    haveNoReadingErrors = false;
 
                     String fileName = Path.GetFileName(filePath);
                     Logger?.Log(new SchedulesRepositoryException($"Error of reading file '{fileName}'.", exception));

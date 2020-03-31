@@ -50,7 +50,7 @@ namespace SmtuSchedule.Core
 
         private const String GroupNamePrefixInLecturerSchedule = "Группа ";
 
-        public Boolean HaveDownloadingErrors { get; private set; }
+        public Boolean HaveNoDownloadingErrors { get; private set; }
 
         public ILogger Logger { get; set; }
 
@@ -76,7 +76,7 @@ namespace SmtuSchedule.Core
                 throw new ArgumentNullException(nameof(schedulesIds));
             }
 
-            HaveDownloadingErrors = false;
+            HaveNoDownloadingErrors = true;
 
             async Task<List<Schedule>> DownloadSchedulesAsync(IEnumerable<Int32> schedulesIdsLocal)
             {
@@ -99,7 +99,7 @@ namespace SmtuSchedule.Core
                         || exception is SchedulesDownloaderException
                     )
                     {
-                        HaveDownloadingErrors = true;
+                        HaveNoDownloadingErrors = false;
                         Logger?.Log(
                             new SchedulesDownloaderException(
                                 $"Error of downloading schedule with id {scheduleId}.", exception)

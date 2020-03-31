@@ -49,9 +49,9 @@ namespace SmtuSchedule.Core
             return hasNoSavingError;
         }
 
-        public Dictionary<String, Int32> ReadLecturersMap(out Boolean hasReadingError)
+        public Dictionary<String, Int32> ReadLecturersMap(out Boolean hasNoReadingError)
         {
-            hasReadingError = false;
+            hasNoReadingError = true;
 
             String filePath = _storagePath + LecturersMapFileName;
             try
@@ -60,7 +60,7 @@ namespace SmtuSchedule.Core
             }
             catch (Exception exception) when (exception is IOException || exception is JsonException)
             {
-                hasReadingError = true;
+                hasNoReadingError = false;
                 Logger?.Log(new LecturersRepositoryException($"Error of reading lecturers map file.", exception));
 
                 return null;

@@ -16,7 +16,7 @@ namespace SmtuSchedule.Core
 
         private const Int32 MaximumAttemptsNumber = 5;
 
-        public Boolean HaveDownloadingErrors { get; private set; }
+        public Boolean HaveNoDownloadingErrors { get; private set; }
 
         public ILogger Logger { get; set; }
 
@@ -44,7 +44,7 @@ namespace SmtuSchedule.Core
                 return Int32.Parse(url.Substring(url.LastIndexOf('/') + 1));
             }
 
-            HaveDownloadingErrors = false;
+            HaveNoDownloadingErrors = true;
 
             try
             {
@@ -107,7 +107,7 @@ namespace SmtuSchedule.Core
             catch (Exception exception)
                 when (exception is HttpRequestException || exception is LecturersDownloaderException)
             {
-                HaveDownloadingErrors = true;
+                HaveNoDownloadingErrors = false;
                 Logger?.Log(
                     new LecturersDownloaderException("Error of downloading the list of lecturers.", exception));
 

@@ -79,8 +79,8 @@ namespace SmtuSchedule.Core
                     LecturersMap
                 );
 
-                Boolean haveSavingErrors = _schedulesRepository.SaveSchedules(affectedSchedules);
-                return haveSavingErrors || schedulesMigrator.HaveMigrationErrors;
+                Boolean haveNoSavingErrors = _schedulesRepository.SaveSchedules(affectedSchedules);
+                return haveNoSavingErrors && schedulesMigrator.HaveNoMigrationErrors;
             });
         }
 
@@ -105,12 +105,12 @@ namespace SmtuSchedule.Core
                 )
                 .ConfigureAwait(false);
 
-                Boolean haveSavingErrors = _schedulesRepository.SaveSchedules(
+                Boolean haveNoSavingErrors = _schedulesRepository.SaveSchedules(
                     updatedSchedules,
                     (schedule) => _schedules[schedule.ScheduleId] = schedule
                 );
 
-                return schedulesDownloader.HaveDownloadingErrors || haveSavingErrors;
+                return schedulesDownloader.HaveNoDownloadingErrors && haveNoSavingErrors;
             });
         }
 
@@ -151,12 +151,12 @@ namespace SmtuSchedule.Core
                 )
                 .ConfigureAwait(false);
 
-                Boolean haveSavingErrors = _schedulesRepository.SaveSchedules(
+                Boolean haveNoSavingErrors = _schedulesRepository.SaveSchedules(
                     schedules,
                     (schedule) => _schedules[schedule.ScheduleId] = schedule
                 );
 
-                return schedulesDownloader.HaveDownloadingErrors || haveSavingErrors;
+                return schedulesDownloader.HaveNoDownloadingErrors && haveNoSavingErrors;
             });
         }
 
@@ -218,12 +218,12 @@ namespace SmtuSchedule.Core
 
                 LecturersMap = await lecturersDownloader.DownloadLecturersMapAsync().ConfigureAwait(false);
 
-                if (!lecturersDownloader.HaveDownloadingErrors)
+                if (lecturersDownloader.HaveNoDownloadingErrors)
                 {
                     lecturersRepository.SaveLecturersMap(LecturersMap);
                 }
 
-                return lecturersDownloader.HaveDownloadingErrors;
+                return lecturersDownloader.HaveNoDownloadingErrors;
             });
         }
 
@@ -232,7 +232,7 @@ namespace SmtuSchedule.Core
             return Task.Run(() =>
             {
                 IReadOnlyDictionary<Int32, Schedule> schedules = _schedulesRepository.ReadSchedules(
-                    out Boolean haveReadingErrors);
+                    out Boolean haveNoReadingErrors);
 
                 if (schedules == null)
                 {
@@ -241,7 +241,7 @@ namespace SmtuSchedule.Core
 
                 _schedules = new ConcurrentDictionary<Int32, Schedule>(schedules);
 
-                return haveReadingErrors;
+                return haveNoReadingErrors;
             });
         }
 

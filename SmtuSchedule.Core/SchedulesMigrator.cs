@@ -9,7 +9,7 @@ namespace SmtuSchedule.Core
 {
     internal sealed class SchedulesMigrator
     {
-        public Boolean HaveMigrationErrors { get; private set; }
+        public Boolean HaveNoMigrationErrors { get; private set; }
 
         public ILogger Logger { get; set; }
 
@@ -26,7 +26,7 @@ namespace SmtuSchedule.Core
                 throw new ArgumentNullException(nameof(schedules));
             }
 
-            HaveMigrationErrors = false;
+            HaveNoMigrationErrors = true;
 
             static Boolean HadToRecoverMissedScheduleType(Schedule schedule)
             {
