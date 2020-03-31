@@ -48,7 +48,7 @@ namespace SmtuSchedule.Core.Utilities
             return (Int32)(date - _minimumDate).TotalDays;
         }
 
-        public Boolean IsDateInside(DateTime date) => (date >= _minimumDate) && (date <= _maximumDate);
+        public Boolean IsDateInsideRange(DateTime date) => (date >= _minimumDate) && (date <= _maximumDate);
 
         private DateTime _minimumDate;
         private DateTime _maximumDate;

@@ -30,8 +30,7 @@ namespace SmtuSchedule.Core.Models
 
         public Lecturer Lecturer { get; set; }
 
-        // Проверяет, принадлежит ли данный момент времени занятию.
-        public Boolean IsTimeInside(DateTime time)
+        public Boolean IsTimeInsideLesson(DateTime time)
         {
             if (time.Hour < From.Hour || time.Hour > To.Hour)
             {
