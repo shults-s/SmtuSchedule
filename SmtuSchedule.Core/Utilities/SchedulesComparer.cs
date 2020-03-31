@@ -9,6 +9,21 @@ namespace SmtuSchedule.Core.Utilities
     {
         public Int32 Compare(Schedule schedule1, Schedule schedule2)
         {
+            if (schedule1 == null)
+            {
+                return -1;
+            }
+
+            if (schedule2 == null)
+            {
+                return 1;
+            }
+
+            if (schedule1 == schedule2)
+            {
+                return 0;
+            }
+
             // Сначала расписания групп с большим номером, затем с меньшим.
             if (schedule1.Type == ScheduleType.Group && schedule2.Type == ScheduleType.Group)
             {
