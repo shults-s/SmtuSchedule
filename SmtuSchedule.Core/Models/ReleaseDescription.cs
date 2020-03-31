@@ -9,7 +9,7 @@ namespace SmtuSchedule.Core.Models
     // компилятор неведомым образом удаляет все свойства класса, в результате
     // чего при десереализации значения в них не записываются.
     [Android.Runtime.Preserve(AllMembers = true)]
-    public class ReleaseDescription
+    public sealed class ReleaseDescription
     {
         // [JsonProperty(Required = Required.DisallowNull)]
         public String GooglePlayStorePackageId { get; set; }

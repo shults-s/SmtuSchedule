@@ -5,7 +5,7 @@ using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core.Utilities
 {
-    public class SchedulesComparer : IComparer<Schedule>
+    public sealed class SchedulesComparer : IComparer<Schedule>
     {
         public Int32 Compare(Schedule schedule1, Schedule schedule2)
         {

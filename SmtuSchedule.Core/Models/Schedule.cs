@@ -11,7 +11,7 @@ using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core.Models
 {
-    public class Schedule
+    public sealed class Schedule
     {
         // private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings()
         // {

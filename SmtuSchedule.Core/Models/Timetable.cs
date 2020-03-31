@@ -8,7 +8,7 @@ using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core.Models
 {
-    public class Timetable
+    public sealed class Timetable
     {
         // [JsonProperty(Required = Required.DisallowNull)]
         public Subject[] Monday { get; set; }

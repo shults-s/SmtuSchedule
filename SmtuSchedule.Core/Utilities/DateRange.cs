@@ -2,7 +2,7 @@ using System;
 
 namespace SmtuSchedule.Core.Utilities
 {
-    public class DateRange
+    public sealed class DateRange
     {
         public const Int32 DefaultHalfRangeInDays = 15;
 

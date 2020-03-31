@@ -4,7 +4,7 @@ using SmtuSchedule.Core.Interfaces;
 
 namespace SmtuSchedule.Core.Models
 {
-    public class Group : IScheduleReference
+    public sealed class Group : IScheduleReference
     {
         // [JsonProperty(Required = Required.Always)]
         public Int32 ScheduleId { get; set; }

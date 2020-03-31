@@ -4,7 +4,7 @@ using SmtuSchedule.Core.Interfaces;
 
 namespace SmtuSchedule.Core.Utilities
 {
-    public class InMemoryLogger : ILogger
+    public sealed class InMemoryLogger : ILogger
     {
         public event Action<Exception> ExceptionLogged;
 

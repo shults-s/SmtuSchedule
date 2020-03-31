@@ -10,7 +10,7 @@ using SmtuSchedule.Core.Enumerations;
 namespace SmtuSchedule.Core.Models
 {
     [DebuggerDisplay("{From.ToShortTimeString()}, {Week}: {Title} @ {Group?.Name ?? Lecturer?.Name}")]
-    public class Subject
+    public sealed class Subject
     {
         // [JsonProperty(Required = Required.DisallowNull)]
         public Boolean IsDisplayed { get; set; }
