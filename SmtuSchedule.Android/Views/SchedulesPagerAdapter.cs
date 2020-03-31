@@ -11,6 +11,8 @@ namespace SmtuSchedule.Android.Views
 
         public DateRange RenderingDateRange { get; private set; }
 
+        private static readonly CultureInfo Culture = new CultureInfo("ru-RU");
+
         public SchedulesPagerAdapter(FragmentManager manager, DateTime medianDate) : base(manager)
         {
             RenderingDateRange = new DateRange(medianDate);
@@ -19,14 +21,12 @@ namespace SmtuSchedule.Android.Views
         public override Java.Lang.ICharSequence GetPageTitleFormatted(Int32 position)
         {
             DateTime date = RenderingDateRange.GetDateByIndex(position);
-            return new Java.Lang.String(date.ToString("ddd\ndd.MM", _culture));
+            return new Java.Lang.String(date.ToString("ddd\ndd.MM", Culture));
         }
 
         public override Fragment GetItem(Int32 position)
         {
             return new ScheduleFragment() { Date = RenderingDateRange.GetDateByIndex(position) };
         }
-
-        private static readonly CultureInfo _culture = new CultureInfo("ru-RU");
     }
 }
