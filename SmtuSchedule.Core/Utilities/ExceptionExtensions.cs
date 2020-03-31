@@ -9,6 +9,11 @@ namespace SmtuSchedule.Core.Utilities
         // Type. \n Message \n Data \n StackTrace \n InnerException
         public static String Format(this Exception exception)
         {
+            if (exception == null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
             static String FormatData(IDictionary dictionary)
             {
                 StringBuilder keyValuePairs = new StringBuilder(Environment.NewLine);

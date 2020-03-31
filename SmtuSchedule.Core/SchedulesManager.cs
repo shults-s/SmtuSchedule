@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -26,17 +27,32 @@ namespace SmtuSchedule.Core
         {
             if (String.IsNullOrWhiteSpace(storagePath))
             {
-                throw new ArgumentException("Value cannot be null, empty or whitespace.", nameof(storagePath));
+                throw new ArgumentException("String cannot be null, empty or whitespace.", nameof(storagePath));
             }
 
-            if (schedulesDirectoryName == null)
+            if (String.IsNullOrWhiteSpace(schedulesDirectoryName))
             {
-                throw new ArgumentNullException(nameof(schedulesDirectoryName));
+                throw new ArgumentException(
+                    "String cannot be null, empty or whitespace.", nameof(schedulesDirectoryName));
             }
+
+            if (!Directory.Exists(storagePath))
+            {
+                throw new DirectoryNotFoundException("Storage directory does not exists or is not accessible.");
+            }
+
+            String schedulesPath = $"{storagePath}/{schedulesDirectoryName}/";
+            if (!Directory.Exists(schedulesPath))
+            {
+                throw new DirectoryNotFoundException("Schedules directory does not exists or is not accessible.");
+            }
+
+            _httpClient = client ?? throw new ArgumentNullException(nameof(client));
 
             _storagePath = storagePath;
             _schedules = new ConcurrentDictionary<Int32, Schedule>();
-            _schedulesRepository = new LocalSchedulesRepository($"{storagePath}/{schedulesDirectoryName}/");
+            _schedulesRepository = new LocalSchedulesRepository(schedulesPath);
+        }
         }
 
         public Task<Boolean> MigrateSchedulesAsync()
@@ -187,6 +203,11 @@ namespace SmtuSchedule.Core
 
         public Task<Boolean> RemoveScheduleAsync(Int32 scheduleId)
         {
+            if (scheduleId <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(scheduleId), "Number must be positive.");
+            }
+
             return Task.Run(() =>
             {
                 if (!_schedulesRepository.Remove(_schedules[scheduleId]))

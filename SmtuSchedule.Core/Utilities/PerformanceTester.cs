@@ -8,6 +8,17 @@ namespace SmtuSchedule.Core.Utilities
     {
         public static String Test(Action callback, Int32 testIterationsNumber = 1000)
         {
+            if (testIterationsNumber <= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(testIterationsNumber), "Number must be positive.");
+            }
+
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
             Int64[] times = new Int64[testIterationsNumber];
             Stopwatch sw = new Stopwatch();
 

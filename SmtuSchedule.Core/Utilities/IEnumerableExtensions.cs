@@ -7,7 +7,17 @@ namespace SmtuSchedule.Core.Utilities
     {
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T> callback)
         {
-            foreach(T item in collection)
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            foreach (T item in collection)
             {
                 callback(item);
             }

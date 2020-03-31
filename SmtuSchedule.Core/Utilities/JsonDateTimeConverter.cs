@@ -12,19 +12,24 @@ namespace SmtuSchedule.Core.Utilities
 
         public JsonDateTimeConverter() => _format = DefaultFormat;
 
-        public JsonDateTimeConverter(String format) => _format = format;
-
-        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert,
-            JsonSerializerOptions options)
+        public JsonDateTimeConverter(String format)
         {
-            String value = reader.GetString();
-            return DateTime.ParseExact(value, _format, CultureInfo.InvariantCulture);
+            if (String.IsNullOrWhiteSpace(format))
+            {
+                throw new ArgumentException("String cannot be null, empty or whitespace.", nameof(format));
+            }
+
+            _format = format;
         }
 
-        public override void Write(Utf8JsonWriter writer, DateTime value,
-            JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
             writer.WriteStringValue(value.ToString(_format, CultureInfo.InvariantCulture));
+        }
+
+        public override DateTime Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options)
+        {
+            return DateTime.ParseExact(reader.GetString(), _format, CultureInfo.InvariantCulture);
         }
 
         private readonly String _format;

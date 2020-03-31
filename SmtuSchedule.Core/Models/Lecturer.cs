@@ -20,16 +20,23 @@ namespace SmtuSchedule.Core.Models
             ScheduleId = scheduleId;
         }
 
-        public static String GetShortName(String name)
+        public static String GetShortName(String fullName)
         {
-            String[] parts = name.Split();
-
-            if (parts.Length == 2)
+            if (String.IsNullOrWhiteSpace(fullName))
             {
-                return $"{parts[0]} {parts[1][0]}.";
+                throw new ArgumentException("String cannot be null, empty or whitespace.", nameof(fullName));
             }
 
-            return $"{parts[0]} {parts[1][0]}. {parts[2][0]}.";
+            String[] parts = fullName.Split();
+
+            if (parts.Length < 2 || parts.Length > 3)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(fullName), "String must match the format: 'LastName FirstName[ MiddleName]'.");
+            }
+
+            Boolean hasMiddleName = (parts.Length == 3);
+            return hasMiddleName ? $"{parts[0]} {parts[1][0]}. {parts[2][0]}." : $"{parts[0]} {parts[1][0]}.";
         }
     }
 }
