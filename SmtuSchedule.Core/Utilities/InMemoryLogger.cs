@@ -45,6 +45,8 @@ namespace SmtuSchedule.Core.Utilities
             }
 
             Write(message + exception.Format());
+
+            ExceptionLogged?.Invoke(exception);
         }
 
         public void Log(String format, params Object[] parameters)
