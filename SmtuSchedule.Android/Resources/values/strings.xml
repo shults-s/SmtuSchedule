@@ -4,7 +4,7 @@
     <string name="applicationCompleteName">Расписание СПбГМТУ</string>
     <string name="applicationLabel">Расписание</string>
 
-    <!-- Заголовки и описания обучающих экранов -->
+    <!-- Заголовки и сообщения обучающих экранов -->
     <string name="applicationSettingsFeatureDiscoveryTitle">Настройте приложение</string>
     <string name="applicationSettingsFeatureDiscoveryMessage">
         Задайте первым параметром любой день текущего семестра, принадлежащий верхней неделе.
