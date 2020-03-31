@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using HtmlAgilityPack;
@@ -69,7 +70,7 @@ namespace SmtuSchedule.Core
                     html = await HttpUtilities.PostAsync(SearchPageUrl, parameters).ConfigureAwait(false);
                 }
                 // Предотвращаем бесконечную рекурсию в случае, если ошибка произошла в каждой из попыток.
-                catch when (attemptNumber <= MaximumAttemptsNumber)
+                catch (HttpRequestException) when (attemptNumber <= MaximumAttemptsNumber)
                 {
                     return await TryDownloadAsync(attemptNumber + 1).ConfigureAwait(false);
                 }
@@ -91,11 +92,12 @@ namespace SmtuSchedule.Core
 
                 if (lecturers.Count == 0)
                 {
-                    throw new Exception(
+                    throw new LecturersDownloaderException(
                         $"The list of lecturers at the end of download is empty in {attemptNumber} attempts.");
                 }
             }
             catch (Exception exception)
+                when (exception is HttpRequestException || exception is LecturersDownloaderException)
             {
                 HaveDownloadingErrors = true;
                 Logger?.Log(

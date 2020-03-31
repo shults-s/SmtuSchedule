@@ -1,9 +1,12 @@
 using System;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using SmtuSchedule.Core.Models;
+using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core.Utilities
 {
@@ -35,7 +38,7 @@ namespace SmtuSchedule.Core.Utilities
 
                 return (reply.Status == IPStatus.Success);
             }
-            catch (Exception exception)
+            catch (PingException exception)
             {
                 failReason = $"Ping failed with the {reply?.Status} status and threw an exception: {exception.Format()}";
                 return false;
@@ -53,7 +56,11 @@ namespace SmtuSchedule.Core.Utilities
                     String json = await HttpUtilities.GetAsync(Url).ConfigureAwait(false);
                     return ReleaseDescription.FromJson(json).Validate();
                 }
-                catch
+                catch (Exception exception) when (
+                    exception is HttpRequestException
+                    || exception is JsonException
+                    || exception is ValidationException
+                )
                 {
                     return null;
                 }
@@ -79,7 +86,7 @@ namespace SmtuSchedule.Core.Utilities
 
                     return match.Groups["version"].Value;
                 }
-                catch
+                catch (HttpRequestException)
                 {
                     return null;
                 }

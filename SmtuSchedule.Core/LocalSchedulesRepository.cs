@@ -27,11 +27,11 @@ namespace SmtuSchedule.Core
             {
                 File.Delete(_storagePath + fileName);
             }
-            catch (Exception exception)
             {
                 hasNoRemovingError = false;
                 Logger?.Log(
                     new SchedulesRepositoryException($"Error of removing file \"{fileName}\".", exception));
+                catch (IOException exception)
             }
 
             return hasNoRemovingError;
@@ -51,7 +51,7 @@ namespace SmtuSchedule.Core
             {
                 File.WriteAllText(_storagePath + fileName, schedule.ToJson());
             }
-            catch (Exception exception)
+            catch (IOException exception)
             {
                 hasNoSavingError = false;
                 Logger?.Log(
@@ -72,7 +72,7 @@ namespace SmtuSchedule.Core
             {
                 filePaths = Directory.GetFiles(_storagePath, "*.json");
             }
-            catch (Exception exception)
+            catch (IOException exception)
             {
                 haveReadingErrors = true;
                 Logger?.Log(
@@ -90,12 +90,17 @@ namespace SmtuSchedule.Core
 
                     if (schedules.ContainsKey(schedule.ScheduleId))
                     {
-                        throw new Exception("Schedule with same id already loaded.");
+                        throw new SchedulesRepositoryException(
+                            $"Schedule with id '{schedule.ScheduleId}' already loaded.");
                     }
 
                     schedules[schedule.ScheduleId] = schedule;
                 }
-                catch (Exception exception)
+                catch (Exception exception) when (
+                    exception is IOException
+                    || exception is JsonException
+                    || exception is SchedulesRepositoryException
+                )
                 {
                     haveReadingErrors = true;
 

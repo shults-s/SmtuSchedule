@@ -105,7 +105,11 @@ namespace SmtuSchedule.Core
 
                         return true;
                     }
-                    catch (Exception exception)
+                    catch (Exception exception) when (
+                        exception is HttpRequestException
+                        || exception is ValidationException
+                        || exception is SchedulesDownloaderException
+                    )
                     {
                         HaveDownloadingErrors = true;
                         Logger?.Log(

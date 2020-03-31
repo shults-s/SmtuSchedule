@@ -37,7 +37,7 @@ namespace SmtuSchedule.Core
                 String json = JsonSerializer.Serialize<Dictionary<String, Int32>>(lecturers, Options);
                 File.WriteAllText(filePath, json);
             }
-            catch (Exception exception)
+            catch (IOException exception)
             {
                 hasNoSavingError = false;
                 Logger?.Log(new LecturersRepositoryException($"Error of saving lecturers map file.", exception));
@@ -53,7 +53,7 @@ namespace SmtuSchedule.Core
             {
                 return JsonSerializer.Deserialize<Dictionary<String, Int32>>(File.ReadAllText(filePath), Options);
             }
-            catch (Exception exception)
+            catch (Exception exception) when (exception is IOException || exception is JsonException)
             {
                 Logger?.Log(new LecturersRepositoryException($"Error of reading lecturers map file.", exception));
                 return null;

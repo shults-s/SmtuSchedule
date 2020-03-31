@@ -8,5 +8,9 @@ namespace SmtuSchedule.Core.Exceptions
             : base(message, innerException)
         {
         }
+
+        public LecturersDownloaderException(String message) : base(message)
+        {
+        }
     }
 }
