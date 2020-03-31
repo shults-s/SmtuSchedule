@@ -55,9 +55,9 @@ namespace SmtuSchedule.Core
 
         public ILogger Logger { get; set; }
 
-        public ServerSchedulesDownloader(IReadOnlyDictionary<String, Int32> lecturersMap)
+        public ServerSchedulesDownloader(IHttpClient client)
         {
-            _lecturersMap = lecturersMap ?? throw new ArgumentNullException(nameof(lecturersMap));
+            _httpClient = client ?? throw new ArgumentNullException(nameof(client));
         }
 
         public async Task<Dictionary<Int32, Schedule>> DownloadAsync(IEnumerable<Int32> schedulesIds,
@@ -239,7 +239,7 @@ namespace SmtuSchedule.Core
             String baseUrl = (scheduleType == ScheduleType.Group) ? GroupScheduleBaseUrl
                 : LecturerScheduleBaseUrl;
 
-            String html = await HttpUtilities.GetAsync(baseUrl + scheduleId + "/").ConfigureAwait(false);
+            String html = await _httpClient.GetAsync(baseUrl + scheduleId + "/").ConfigureAwait(false);
 
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
@@ -321,5 +321,6 @@ namespace SmtuSchedule.Core
         }
 
         private readonly IReadOnlyDictionary<String, Int32> _lecturersMap;
+        private readonly IHttpClient _httpClient;
     }
 }

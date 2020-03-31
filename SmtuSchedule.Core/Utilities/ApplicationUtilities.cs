@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using SmtuSchedule.Core.Models;
+using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core.Utilities
@@ -15,6 +16,10 @@ namespace SmtuSchedule.Core.Utilities
         public const String LatestReleaseDownloadPageUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest/";
 
         private const String RepositoryRawUrl = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/";
+
+        public static IHttpClient HttpClient { get; internal set; }
+
+        static ApplicationUtilities() => HttpClient = new HttpClientProxy();
 
         public static Boolean IsUniversitySiteConnectionAvailable(out String failReason)
         {
@@ -53,7 +58,7 @@ namespace SmtuSchedule.Core.Utilities
 
                 try
                 {
-                    String json = await HttpUtilities.GetAsync(Url).ConfigureAwait(false);
+                    String json = await HttpClient.GetAsync(Url).ConfigureAwait(false);
                     return ReleaseDescription.FromJson(json).Validate();
                 }
                 catch (Exception exception) when (
@@ -75,7 +80,7 @@ namespace SmtuSchedule.Core.Utilities
 
                 try
                 {
-                    String changeLog = await HttpUtilities.GetAsync(Url).ConfigureAwait(false);
+                    String changeLog = await HttpClient.GetAsync(Url).ConfigureAwait(false);
 
                     // ## [Версия X.X.X]
                     Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");

@@ -20,9 +20,9 @@ namespace SmtuSchedule.Core
 
         public ILogger Logger { get; set; }
 
-        public Task<Dictionary<String, Int32>> DownloadAsync()
+        public ServerLecturersDownloader(IHttpClient client)
         {
-            return TryDownloadAsync(1);
+            _httpClient = client ?? throw new ArgumentNullException(nameof(client));
         }
 
         private async Task<Dictionary<String, Int32>> TryDownloadAsync(Int32 attemptNumber)
@@ -44,7 +44,7 @@ namespace SmtuSchedule.Core
             Dictionary<String, Int32> lecturers = new Dictionary<String, Int32>();
             try
             {
-                String html = await HttpUtilities.GetAsync(SearchPageUrl).ConfigureAwait(false);
+                String html = await _httpClient.GetAsync(SearchPageUrl).ConfigureAwait(false);
                 HtmlDocument document = new HtmlDocument();
                 document.LoadHtml(html);
 
@@ -67,7 +67,7 @@ namespace SmtuSchedule.Core
 
                 try
                 {
-                    html = await HttpUtilities.PostAsync(SearchPageUrl, parameters).ConfigureAwait(false);
+                    html = await _httpClient.PostAsync(SearchPageUrl, parameters).ConfigureAwait(false);
                 }
                 // Предотвращаем бесконечную рекурсию в случае, если ошибка произошла в каждой из попыток.
                 catch (HttpRequestException) when (attemptNumber <= MaximumAttemptsNumber)
@@ -106,5 +106,7 @@ namespace SmtuSchedule.Core
 
             return lecturers;
         }
+
+        private readonly IHttpClient _httpClient;
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using SmtuSchedule.Core.Models;
+using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 
 namespace SmtuSchedule.Core
@@ -23,7 +24,7 @@ namespace SmtuSchedule.Core
             set => _logger = _schedulesRepository.Logger = value;
         }
 
-        public SchedulesManager(String storagePath, String schedulesDirectoryName)
+        public SchedulesManager(String storagePath, String schedulesDirectoryName, IHttpClient client)
         {
             if (String.IsNullOrWhiteSpace(storagePath))
             {
@@ -53,6 +54,10 @@ namespace SmtuSchedule.Core
             _schedules = new ConcurrentDictionary<Int32, Schedule>();
             _schedulesRepository = new LocalSchedulesRepository(schedulesPath);
         }
+
+        public SchedulesManager(String storagePath, String schedulesDirectoryName)
+            : this(storagePath, schedulesDirectoryName, new HttpClientProxy())
+        {
         }
 
         public Task<Boolean> MigrateSchedulesAsync()
@@ -119,7 +124,7 @@ namespace SmtuSchedule.Core
                     throw new InvalidOperationException("Lecturers map is null or zero length.");
                 }
 
-                ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(_lecturersMap)
+                ServerSchedulesDownloader schedulesDownloader = new ServerSchedulesDownloader(_httpClient)
                 {
                     Logger = _logger
                 };
@@ -172,7 +177,7 @@ namespace SmtuSchedule.Core
                     return true;
                 }
 
-                ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(_lecturersMap)
+                ServerSchedulesDownloader schedulesDownloader = new ServerSchedulesDownloader(_httpClient)
                 {
                     Logger = _logger
                 };
@@ -252,7 +257,7 @@ namespace SmtuSchedule.Core
 
                 IsLecturersMapReadedFromCache = false;
 
-                ServerLecturersDownloader lecturersDownloader = new ServerLecturersDownloader()
+                ServerLecturersDownloader lecturersDownloader = new ServerLecturersDownloader(_httpClient)
                 {
                     Logger = _logger
                 };
@@ -277,6 +282,8 @@ namespace SmtuSchedule.Core
                 return haveReadingErrors;
             });
         }
+
+        private readonly IHttpClient _httpClient;
 
         private ILogger _logger;
 
