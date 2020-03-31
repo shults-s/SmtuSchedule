@@ -85,7 +85,7 @@ namespace SmtuSchedule.Android
             {
                 files = new DirectoryInfo(_logsDirectoryPath).GetFiles("*.log");
             }
-            catch
+            catch (DirectoryNotFoundException)
             {
                 return null;
             }
@@ -106,7 +106,7 @@ namespace SmtuSchedule.Android
             {
                 lastCrashLogText = File.ReadAllText(file.FullName);
             }
-            catch
+            catch (IOException)
             {
                 return null;
             }
@@ -187,7 +187,7 @@ namespace SmtuSchedule.Android
                 {
                     Directory.CreateDirectory(modernSchedulesPath);
                 }
-                catch(Exception exception)
+                catch (IOException exception)
                 {
                     status = InitializationStatus.FailedToCreateDirectory;
 #if !DEBUG
@@ -211,7 +211,7 @@ namespace SmtuSchedule.Android
                         file.MoveTo(modernSchedulesPath + file.Name);
                     }
                 }
-                catch(Exception exception)
+                catch (IOException exception)
                 {
                     status = InitializationStatus.FailedToMoveSchedules;
 #if !DEBUG
@@ -232,7 +232,7 @@ namespace SmtuSchedule.Android
 
                     Directory.Delete(legacySchedulesPath);
                 }
-                catch (Exception exception)
+                catch (IOException exception)
                 {
                     status = InitializationStatus.FailedToRemoveDirectory;
 #if !DEBUG
@@ -279,7 +279,7 @@ namespace SmtuSchedule.Android
                 }
 
                 DateTime storingTime = DateTime.Today.AddDays(-7);
-                files.Where(f => f.LastWriteTime < storingTime).ForEach(f => f.Delete());
+                files.Where(f => f.LastWriteTime < storingTime).foreach (f => f.Delete());
             });
         }
 
