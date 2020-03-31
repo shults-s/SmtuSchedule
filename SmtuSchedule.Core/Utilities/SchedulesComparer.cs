@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Enumerations;
@@ -7,6 +8,8 @@ namespace SmtuSchedule.Core.Utilities
 {
     public sealed class SchedulesComparer : IComparer<Schedule>
     {
+        private static readonly CultureInfo Culture = new CultureInfo("ru-RU");
+
         public Int32 Compare(Schedule schedule1, Schedule schedule2)
         {
             if (schedule1 == null)
@@ -30,18 +33,19 @@ namespace SmtuSchedule.Core.Utilities
                 return (schedule2.ScheduleId - schedule1.ScheduleId);
             }
 
-            // Сначала расписания групп, затем преподавателей.
+            // Сначала расписания групп...
             if (schedule1.Type == ScheduleType.Lecturer && schedule2.Type == ScheduleType.Group)
             {
                 return 1;
             }
 
+            // ...затем преподавателей.
             if (schedule1.Type == ScheduleType.Group && schedule2.Type == ScheduleType.Lecturer)
             {
                 return -1;
             }
 
-            return schedule1.DisplayedName.CompareTo(schedule2.DisplayedName);
+            return String.Compare(schedule1.DisplayedName, schedule2.DisplayedName, false, Culture);
         }
     }
 }
