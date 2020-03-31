@@ -169,11 +169,11 @@ namespace SmtuSchedule.Android.Views
 
             _application = ApplicationContext as SmtuScheduleApplication;
 
-            _currentlyUsedDarkTheme = _application.Preferences.UseDarkTheme;
+            _isCurrentlyUsedDarkTheme = _application.Preferences.UseDarkTheme;
             _isThemeChanged = false;
             _application.Preferences.ThemeChanged += () =>
             {
-                _isThemeChanged = (_currentlyUsedDarkTheme != _application.Preferences.UseDarkTheme);
+                _isThemeChanged = (_isCurrentlyUsedDarkTheme != _application.Preferences.UseDarkTheme);
             };
 
             _application.Preferences.UpdateSchedulesOnStartChanged += () =>
@@ -1159,7 +1159,7 @@ namespace SmtuSchedule.Android.Views
         }
 
         private Boolean _isThemeChanged;
-        private Boolean _currentlyUsedDarkTheme;
+        private Boolean _isCurrentlyUsedDarkTheme;
 
         private Toolbar _toolbar;
         private ViewPager _viewPager;
@@ -1171,6 +1171,7 @@ namespace SmtuSchedule.Android.Views
         private SchedulesPagerAdapter _pagerAdapter;
 
         private SmtuScheduleApplication _application;
+
         private Timer _currentSubjectHighlightTimer;
         private MainActivityStateManager _stateManager;
     }
