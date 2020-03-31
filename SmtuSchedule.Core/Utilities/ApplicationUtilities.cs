@@ -50,6 +50,11 @@ namespace SmtuSchedule.Core.Utilities
             }
         }
 
+        public static Task<Boolean> IsUniversitySiteConnectionAvailableAsync()
+        {
+            return Task.Run(() => IsUniversitySiteConnectionAvailable(out String _));
+        }
+
         public static Task<ReleaseDescription> GetLatestReleaseDescriptionAsync()
         {
             return Task.Run(async () =>
