@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -21,7 +20,7 @@ namespace SmtuSchedule.Core
         public ILogger Logger
         {
             get => _logger;
-            set => _logger = _schedulesRepository.Logger = value;
+            set => _logger = _lecturersRepository.Logger = _schedulesRepository.Logger = value;
         }
 
         public SchedulesManager(String storagePath, String schedulesDirectoryName, IHttpClient client)
@@ -37,22 +36,11 @@ namespace SmtuSchedule.Core
                     "String cannot be null, empty or whitespace.", nameof(schedulesDirectoryName));
             }
 
-            if (!Directory.Exists(storagePath))
-            {
-                throw new DirectoryNotFoundException("Storage directory does not exists or is not accessible.");
-            }
-
-            String schedulesPath = $"{storagePath}/{schedulesDirectoryName}/";
-            if (!Directory.Exists(schedulesPath))
-            {
-                throw new DirectoryNotFoundException("Schedules directory does not exists or is not accessible.");
-            }
-
             _httpClient = client ?? throw new ArgumentNullException(nameof(client));
 
-            _storagePath = storagePath;
             _schedules = new ConcurrentDictionary<Int32, Schedule>();
-            _schedulesRepository = new LocalSchedulesRepository(schedulesPath);
+            _lecturersRepository = new LocalLecturersRepository(storagePath);
+            _schedulesRepository = new LocalSchedulesRepository($"{storagePath}/{schedulesDirectoryName}/");
         }
 
         public SchedulesManager(String storagePath, String schedulesDirectoryName)
@@ -170,11 +158,6 @@ namespace SmtuSchedule.Core
         {
             return Task.Run(() =>
             {
-                LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
-                {
-                    Logger = _logger
-                };
-
                 IsLecturersMapReadedFromCache = true;
 
                 LecturersMap = _lecturersRepository.ReadLecturersMap(out Boolean hasNoReadingError);
@@ -194,11 +177,6 @@ namespace SmtuSchedule.Core
                     return true;
                 }
 
-                LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
-                {
-                    Logger = _logger
-                };
-
                 IsLecturersMapReadedFromCache = false;
 
                 ServerLecturersDownloader lecturersDownloader = new ServerLecturersDownloader(_httpClient)
@@ -210,7 +188,7 @@ namespace SmtuSchedule.Core
 
                 if (lecturersDownloader.HaveNoDownloadingErrors)
                 {
-                    lecturersRepository.SaveLecturersMap(LecturersMap);
+                    _lecturersRepository.SaveLecturersMap(LecturersMap);
                 }
 
                 return lecturersDownloader.HaveNoDownloadingErrors;
@@ -266,7 +244,7 @@ namespace SmtuSchedule.Core
 
         private ConcurrentDictionary<Int32, Schedule> _schedules;
 
-        private readonly String _storagePath;
+        private readonly LocalLecturersRepository _lecturersRepository;
         private readonly LocalSchedulesRepository _schedulesRepository;
     }
 }

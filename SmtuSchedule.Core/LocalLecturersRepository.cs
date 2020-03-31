@@ -27,6 +27,11 @@ namespace SmtuSchedule.Core
                 throw new ArgumentException("String cannot be null, empty or whitespace.", nameof(storagePath));
             }
 
+            if (!Directory.Exists(storagePath))
+            {
+                throw new DirectoryNotFoundException("Storage directory does not exists or is not accessible.");
+            }
+
             _storagePath = storagePath;
         }
 
