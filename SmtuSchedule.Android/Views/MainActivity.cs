@@ -414,7 +414,7 @@ namespace SmtuSchedule.Android.Views
 
             _ = _application.ClearLogsAsync();
 
-            MigrateSchedulesAsync(currentVersion);
+            // MigrateSchedulesAsync(currentVersion);
             CheckForCriticalUpdatesAsync(currentVersion);
 
 #if DEBUG
@@ -434,8 +434,14 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            Boolean haveMigrationErrors = await _application.Manager.MigrateSchedulesAsync();
-            if (haveMigrationErrors)
+            if (_application.Manager.LecturersMap == null
+                && !await _application.Manager.DownloadLecturersMapAsync())
+            {
+                ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
+                return ;
+            }
+
+            if (!await _application.Manager.MigrateSchedulesAsync())
             {
                 ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
                 _ = _application.SaveLogAsync();
@@ -845,6 +851,12 @@ namespace SmtuSchedule.Android.Views
             StartActivityForResult(typeof(DownloadActivity), StartDownloadActivityRequestCode);
         }
 
+        private String GetScheduleDisplayedNameGivenActuality(Schedule schedule)
+        {
+            String suffix = $"({schedule.GetFormattedLastUpdate()})";
+            return schedule.IsActual ? schedule.DisplayedName : schedule.DisplayedName + suffix;
+        }
+
         public void ShowSchedule(Int32 scheduleId)
         {
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
@@ -866,11 +878,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            Schedule schedule = schedules[scheduleId];
-
-            String scheduleTitle = schedule.DisplayedName;
-            String suffix = $"({schedule.GetFormattedLastUpdate()})";
-            _toolbarTitle.Text = schedule.IsActual ? scheduleTitle : scheduleTitle + suffix;
+            _toolbarTitle.Text = GetScheduleDisplayedNameGivenActuality(schedules[scheduleId]);
 
             _application.Preferences.SetCurrentScheduleId(scheduleId);
             ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate);
@@ -898,13 +906,13 @@ namespace SmtuSchedule.Android.Views
             _viewPager.SetCurrentItem(_pagerAdapter.RenderingDateRange.GetIndexByDate(date), true);
         }
 
-        private void SetSchedulesMenu(IReadOnlyList<Schedule> schedules)
+        private void SetSchedulesMenu(IReadOnlyCollection<Schedule> schedules)
         {
-            static IEnumerable<(Int32, String, Boolean)> Fetch(IEnumerable<Schedule> values)
+            IEnumerable<(Int32, String, Boolean)> Fetch(IEnumerable<Schedule> values)
             {
                 return values.Select<Schedule, (Int32, String, Boolean)>(s => (
                     s.ScheduleId,
-                    s.DisplayedName,
+                    GetScheduleDisplayedNameGivenActuality(s),
                     s.IsActual
                 ));
             }
@@ -917,10 +925,8 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            foreach ((Int32 scheduleId, String displayedName, Boolean isActual) in Fetch(schedules))
+            foreach ((Int32 scheduleId, String scheduleTitle, Boolean isActual) in Fetch(schedules))
             {
-                String suffix = $"({schedules[scheduleId].GetFormattedLastUpdate()})";
-                String scheduleTitle = isActual ? displayedName : displayedName + suffix;
                 _schedulesMenu.Menu.Add(IMenu.None, scheduleId, IMenu.None, scheduleTitle);
             }
 
