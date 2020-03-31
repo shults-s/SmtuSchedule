@@ -20,8 +20,8 @@ namespace SmtuSchedule.Core.Utilities
             }
 
             Int64[] times = new Int64[testIterationsNumber];
-            Stopwatch sw = new Stopwatch();
 
+            Stopwatch sw = new Stopwatch();
             for (Int32 i = 0; i < testIterationsNumber; i++)
             {
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
