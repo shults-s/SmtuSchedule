@@ -71,7 +71,7 @@ namespace SmtuSchedule.Android.Views
 
             Int32 currentSubjectIndex = (Date != DateTime.Today)
                 ? -1
-                : Array.FindIndex(subjects, s => s.IsTimeInside(DateTime.Now));
+                : Array.FindIndex(subjects, s => s.IsTimeInsideLesson(DateTime.Now));
 
             TableLayout table = layout.FindViewById<TableLayout>(Resource.Id.scheduleTableLayout);
 

@@ -120,13 +120,16 @@ namespace SmtuSchedule.Android.Views
         {
             TextView errorTextView = FindViewById<TextView>(Resource.Id.downloadLecturersErrorTextView);
 
-            IEnumerable<String> lecturers = (await _application.Manager.DownloadLecturersMapAsync())?.Keys;
-
-            Boolean isUsedCachedLecturersMap = false;
-            if (_lecturersDownloadingAttempt++ >= MaximumAttemptsNumber && lecturers == null)
+            IEnumerable<String> lecturers = _application.Manager.LecturersMap?.Keys;
+            if (lecturers == null && await _application.Manager.DownloadLecturersMapAsync())
             {
-                lecturers = (await _application.Manager.ReadCachedLecturersMapAsync())?.Keys;
-                isUsedCachedLecturersMap = true;
+                lecturers = _application.Manager.LecturersMap.Keys;
+            }
+
+            if (_lecturersDownloadingAttempt++ >= MaximumAttemptsNumber && lecturers == null
+                && await _application.Manager.ReadCachedLecturersMapAsync())
+            {
+                lecturers = _application.Manager.LecturersMap.Keys;
             }
 
             _progressBarLayout.Visibility = ViewStates.Gone;
@@ -150,7 +153,9 @@ namespace SmtuSchedule.Android.Views
             }
 
             errorTextView.SetText(Resource.String.lecturersMapReadedFromCacheMessage);
-            errorTextView.Visibility = isUsedCachedLecturersMap ? ViewStates.Visible : ViewStates.Gone;
+            errorTextView.Visibility = _application.Manager.IsLecturersMapReadedFromCache
+                ? ViewStates.Visible
+                : ViewStates.Gone;
 
             _downloadLecturersErrorRetryButton.Visibility = ViewStates.Gone;
 

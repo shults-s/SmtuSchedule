@@ -6,6 +6,7 @@ using Android.App;
 using Android.Content;
 using SmtuSchedule.Core;
 using SmtuSchedule.Core.Models;
+using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Android.Exceptions;
 using SmtuSchedule.Android.Enumerations;
 
@@ -44,7 +45,7 @@ namespace SmtuSchedule.Android.Utilities
 
         private Schedule GetScheduleById(Int32 scheduleId)
         {
-            _localSchedulesManager.ReadSchedulesAsync().Wait();
+            AsynchronousUtilities.RunSynchronously(() => _localSchedulesManager.ReadSchedulesAsync());
 
             IReadOnlyDictionary<Int32, Schedule> schedules = _localSchedulesManager.Schedules;
             return schedules.ContainsKey(scheduleId) ? schedules[scheduleId] : null;

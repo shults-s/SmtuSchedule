@@ -2,6 +2,7 @@ using System;
 using AndroidX.Work;
 using Android.Content;
 using SmtuSchedule.Core;
+using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Android.Exceptions;
 
 namespace SmtuSchedule.Android.Utilities
@@ -23,8 +24,14 @@ namespace SmtuSchedule.Android.Utilities
         {
             try
             {
-                _localSchedulesManager.ReadSchedulesAsync().Wait();
-                _localSchedulesManager.UpdateSchedulesAsync().Wait();
+                AsynchronousUtilities.RunSynchronously(
+                    () => _localSchedulesManager.ReadCachedLecturersMapAsync());
+
+                AsynchronousUtilities.RunSynchronously(
+                    () => _localSchedulesManager.ReadSchedulesAsync());
+
+                AsynchronousUtilities.RunSynchronously(
+                    () => _localSchedulesManager.UpdateSchedulesAsync());
             }
             catch (Exception exception)
             {

@@ -19,7 +19,6 @@ using Android.Support.Design.Widget;
 using Com.Getkeepsafe.Taptargetview;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Utilities;
-using SmtuSchedule.Core.Enumerations;
 using SmtuSchedule.Android.Utilities;
 using SmtuSchedule.Android.Interfaces;
 using SmtuSchedule.Android.Enumerations;
@@ -337,8 +336,7 @@ namespace SmtuSchedule.Android.Views
 
                 ShowProgressBar();
 
-                Boolean haveReadingErrors = await _application.Manager.ReadSchedulesAsync();
-                if (haveReadingErrors)
+                if (!await _application.Manager.ReadSchedulesAsync())
                 {
                     ShowSnackbar(Resource.String.schedulesReadingErrorMessage);
                     _ = _application.SaveLogAsync();
@@ -429,8 +427,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            Boolean haveMigrationErrors = await _application.Manager.MigrateSchedulesAsync();
-            if (haveMigrationErrors)
+            if (!await _application.Manager.MigrateSchedulesAsync())
             {
                 ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
                 _ = _application.SaveLogAsync();
@@ -449,7 +446,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            ReleaseDescription latest = await ApplicationUtilities.GetLatestReleaseDescription();
+            ReleaseDescription latest = await ApplicationUtilities.GetLatestReleaseDescriptionAsync();
             if (latest == null)
             {
                 return ;
@@ -791,12 +788,6 @@ namespace SmtuSchedule.Android.Views
             StartActivityForResult(typeof(PreferencesActivity), StartPreferencesActivityRequestCode);
         }
 
-        private Task<Boolean> IsUniversitySiteConnectionAvailableAsync()
-        {
-            return Task.Run(
-                () => ApplicationUtilities.IsUniversitySiteConnectionAvailable(out String _));
-        }
-
         private async void StartDownloadActivityAsync()
         {
             if (IsPermissionDenied(Manifest.Permission.Internet))
@@ -805,18 +796,17 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            Boolean isConnected = await IsUniversitySiteConnectionAvailableAsync();
-            if (!isConnected)
+            if (!await ApplicationUtilities.IsUniversitySiteConnectionAvailableAsync())
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
                 return ;
             }
 
-            if (_application.Manager.IsDownloadingInProgress)
-            {
-                ShowSnackbar(Resource.String.waitUntilSchedulesFinishDownloading);
-                return ;
-            }
+            // if (_application.Manager.IsDownloadingInProgress)
+            // {
+            //     ShowSnackbar(Resource.String.waitUntilSchedulesFinishDownloading);
+            //     return ;
+            // }
 
             if (_stateManager.CurrentState == MainActivityState.DownloadingScreenStarted)
             {
@@ -866,7 +856,7 @@ namespace SmtuSchedule.Android.Views
         {
             // Предотвращаем ситуацию, когда диапазон отображаемых дат перерассчитывается каждый раз
             // при переходе между расписаниями, если перед этим перелистнуть страницу.
-            if (!_pagerAdapter.RenderingDateRange.IsDateInside(date) || forceRecomputeDateRange)
+            if (!_pagerAdapter.RenderingDateRange.IsDateInsideRange(date) || forceRecomputeDateRange)
             {
                 adapterResetRequired = true;
                 _pagerAdapter.RenderingDateRange.Recompute(date);
@@ -918,15 +908,13 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            Boolean isConnected = await IsUniversitySiteConnectionAvailableAsync();
-            if (!isConnected)
+            if (!await ApplicationUtilities.IsUniversitySiteConnectionAvailableAsync())
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
                 return ;
             }
 
-            Boolean haveUpdatingErrors = await _application.Manager.UpdateSchedulesAsync();
-            if (haveUpdatingErrors)
+            if (!await _application.Manager.UpdateSchedulesAsync())
             {
                 ShowSnackbar(Resource.String.schedulesUpdatingErrorMessage);
                 _ = _application.SaveLogAsync();
@@ -936,9 +924,7 @@ namespace SmtuSchedule.Android.Views
         private async void RemoveCurrentScheduleAsync()
         {
             Int32 scheduleId = _application.Preferences.CurrentScheduleId;
-
-            Boolean hasRemovingError = await _application.Manager.RemoveScheduleAsync(scheduleId);
-            if (hasRemovingError)
+            if (!await _application.Manager.RemoveScheduleAsync(scheduleId))
             {
                 ShowSnackbar(Resource.String.scheduleRemovingErrorMessage);
                 return ;
@@ -962,8 +948,7 @@ namespace SmtuSchedule.Android.Views
 
         private async Task DownloadSchedulesAsync(String[] requests, Boolean shouldDownloadRelatedSchedules)
         {
-            Boolean isConnected = await IsUniversitySiteConnectionAvailableAsync();
-            if (!isConnected)
+            if (!await ApplicationUtilities.IsUniversitySiteConnectionAvailableAsync())
             {
                 ShowSnackbar(Resource.String.noUniversitySiteConnectionErrorMessage);
                 return ;
@@ -971,29 +956,27 @@ namespace SmtuSchedule.Android.Views
 
             ShowSnackbar(Resource.String.schedulesDownloadingStarted);
 
-            DownloadingResult result = await _application.Manager.DownloadSchedulesAsync(
-                requests,
-                shouldDownloadRelatedSchedules
-            );
-
-            if (result == DownloadingResult.LecturersMapError)
+            if (_application.Manager.LecturersMap == null &&
+                !await _application.Manager.DownloadLecturersMapAsync())
             {
                 ShowSnackbar(Resource.String.lecturersMapDownloadErrorShortMessage);
                 return ;
             }
 
-            Int32 preferredScheduleId = 0;
-            if (requests.Length == 1)
-            {
-                preferredScheduleId = _application.Manager.GetScheduleIdBySearchRequest(requests[0]);
-            }
+            Int32[] schedulesIds = _application.Manager.GetSchedulesIdsBySearchRequests(requests)
+                .ToArray();
 
+            Boolean haveDownloadingErrors = !await _application.Manager.DownloadSchedulesAsync(
+                schedulesIds,
+                shouldDownloadRelatedSchedules
+            );
+
+            Int32 preferredScheduleId = (schedulesIds.Length == 1) ? schedulesIds[0] : 0;
             RestartSchedulesRenderingSubsystem(preferredScheduleId);
 
-            if (result == DownloadingResult.WithErrors)
+            if (haveDownloadingErrors)
             {
-                isConnected = await IsUniversitySiteConnectionAvailableAsync();
-                if (!isConnected)
+                if (!await ApplicationUtilities.IsUniversitySiteConnectionAvailableAsync())
                 {
                     ShowSnackbar(Resource.String.universitySiteConnectionLostErrorMessage);
                     return ;
@@ -1002,7 +985,7 @@ namespace SmtuSchedule.Android.Views
 
             Boolean isSingularSchedule = (requests.Length == 1 && !shouldDownloadRelatedSchedules);
             Int32 messageId;
-            if (result == DownloadingResult.WithErrors)
+            if (haveDownloadingErrors)
             {
                 messageId = isSingularSchedule ? Resource.String.scheduleDownloadErrorMessage
                     : Resource.String.schedulesDownloadErrorMessage;
