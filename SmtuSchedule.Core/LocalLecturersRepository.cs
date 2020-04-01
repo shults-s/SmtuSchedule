@@ -54,7 +54,7 @@ namespace SmtuSchedule.Core
             return hasNoSavingError;
         }
 
-        public Dictionary<String, Int32> ReadLecturersMap(out Boolean hasNoReadingError)
+        public IReadOnlyDictionary<String, Int32>? ReadLecturersMap(out Boolean hasNoReadingError)
         {
             hasNoReadingError = true;
 
