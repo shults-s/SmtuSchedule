@@ -20,7 +20,12 @@ namespace SmtuSchedule.Core
         public ILogger? Logger
         {
             get => _logger;
-            set => _logger = _lecturersRepository.Logger = _schedulesRepository.Logger = value;
+            set
+            {
+                _logger = value;
+                _lecturersRepository.Logger = value;
+                _schedulesRepository.Logger = value;
+            }
         }
 
         public SchedulesManager(String storagePath, String schedulesDirectoryName, IHttpClient client)
