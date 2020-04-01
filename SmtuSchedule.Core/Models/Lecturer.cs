@@ -7,14 +7,14 @@ namespace SmtuSchedule.Core.Models
     {
         public Int32 ScheduleId { get; set; }
 
-        public String Name { get; set; }
+        public String? Name { get; set; }
 
         [Android.Runtime.Preserve]
         public Lecturer()
         {
         }
 
-        public Lecturer(String name, Int32 scheduleId)
+        public Lecturer(String? name, Int32 scheduleId)
         {
             Name = name;
             ScheduleId = scheduleId;

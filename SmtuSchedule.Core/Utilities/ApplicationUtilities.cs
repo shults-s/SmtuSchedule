@@ -21,7 +21,7 @@ namespace SmtuSchedule.Core.Utilities
 
         static ApplicationUtilities() => HttpClient = new HttpClientProxy();
 
-        public static Boolean IsUniversitySiteConnectionAvailable(out String failReason)
+        public static Boolean IsUniversitySiteConnectionAvailable(out String? failReason)
         {
             // Эмулятор Android, созданный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping в нем не работает,
             // что делает невозможным тестирование некоторых возможностей приложения в режиме отладки.
@@ -55,7 +55,7 @@ namespace SmtuSchedule.Core.Utilities
             return Task.Run(() => IsUniversitySiteConnectionAvailable(out String _));
         }
 
-        public static Task<ReleaseDescription> GetLatestReleaseDescriptionAsync()
+        public static Task<ReleaseDescription?> GetLatestReleaseDescriptionAsync()
         {
             return Task.Run(async () =>
             {
@@ -77,7 +77,7 @@ namespace SmtuSchedule.Core.Utilities
             });
         }
 
-        public static Task<String> GetLatestReleaseVersionFromRepositoryChangeLogAsync()
+        public static Task<String?> GetLatestReleaseVersionFromRepositoryChangeLogAsync()
         {
             return Task.Run(async () =>
             {

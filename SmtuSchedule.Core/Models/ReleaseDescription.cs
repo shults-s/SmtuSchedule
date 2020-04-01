@@ -10,15 +10,17 @@ namespace SmtuSchedule.Core.Models
     [Android.Runtime.Preserve(AllMembers = true)]
     public sealed class ReleaseDescription
     {
-        public String GooglePlayStorePackageId { get; set; }
+        public String? GooglePlayStorePackageId { get; set; }
 
-        public String VersionNotes { get; set; }
+        public String? VersionNotes { get; set; }
 
         public String VersionName { get; set; }
 
         public Int32 VersionCode { get; set; }
 
         public Boolean IsCriticalUpdate { get; set; }
+
+        public ReleaseDescription() => VersionName = String.Empty;
 
         public static ReleaseDescription FromJson(String json)
         {

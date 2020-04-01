@@ -6,7 +6,7 @@ namespace SmtuSchedule.Core.Utilities
 {
     public sealed class InMemoryLogger : ILogger
     {
-        public event Action<Exception> ExceptionLogged;
+        public event Action<Exception>? ExceptionLogged;
 
         public InMemoryLogger() => _entries = new BlockingCollection<String>();
 

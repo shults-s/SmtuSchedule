@@ -26,9 +26,15 @@ namespace SmtuSchedule.Core.Models
 
         public String Title { get; set; }
 
-        public Group Group { get; set; }
+        public Group? Group { get; set; }
 
-        public Lecturer Lecturer { get; set; }
+        public Lecturer? Lecturer { get; set; }
+
+        public Subject()
+        {
+            Auditorium = String.Empty;
+            Title = String.Empty;
+        }
 
         public Boolean IsTimeInsideLesson(DateTime time)
         {

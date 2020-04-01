@@ -28,8 +28,8 @@ namespace SmtuSchedule.Core.Utilities
                 return true;
             }
 
-            String value1 = node1.Attributes["href"]?.Value;
-            String value2 = node2.Attributes["href"]?.Value;
+            String? value1 = node1.Attributes["href"]?.Value;
+            String? value2 = node2.Attributes["href"]?.Value;
             return (value1 == null || value2 == null) ? false : (value1 == value2);
         }
     }

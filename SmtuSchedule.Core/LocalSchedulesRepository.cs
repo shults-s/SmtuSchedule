@@ -10,7 +10,7 @@ namespace SmtuSchedule.Core
 {
     internal sealed class LocalSchedulesRepository
     {
-        public ILogger Logger { get; set; }
+        public ILogger? Logger { get; set; }
 
         public LocalSchedulesRepository(String storagePath)
         {
@@ -28,7 +28,7 @@ namespace SmtuSchedule.Core
         }
 
         public Boolean SaveSchedules(IEnumerable<Schedule> schedules,
-            Action<Schedule> scheduleSavedSuccessfulCallback = null)
+            Action<Schedule>? scheduleSavedSuccessfulCallback = null)
         {
             Boolean haveNoSavingErrors = true;
 
@@ -68,7 +68,7 @@ namespace SmtuSchedule.Core
             return hasNoRemovingError;
         }
 
-        public IReadOnlyDictionary<Int32, Schedule> ReadSchedules(out Boolean haveNoReadingErrors)
+        public IReadOnlyDictionary<Int32, Schedule>? ReadSchedules(out Boolean haveNoReadingErrors)
         {
             haveNoReadingErrors = true;
 

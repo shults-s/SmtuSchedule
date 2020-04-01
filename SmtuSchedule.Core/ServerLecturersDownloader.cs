@@ -18,19 +18,19 @@ namespace SmtuSchedule.Core
 
         public Boolean HaveNoDownloadingErrors { get; private set; }
 
-        public ILogger Logger { get; set; }
+        public ILogger? Logger { get; set; }
 
         public ServerLecturersDownloader(IHttpClient client)
         {
             _httpClient = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public Task<IReadOnlyDictionary<String, Int32>> DownloadLecturersMapAsync()
+        public Task<IReadOnlyDictionary<String, Int32>?> DownloadLecturersMapAsync()
         {
             return TryDownloadLecturersMapAsync(1);
         }
 
-        private async Task<IReadOnlyDictionary<String, Int32>> TryDownloadLecturersMapAsync(Int32 attemptNumber)
+        private async Task<IReadOnlyDictionary<String, Int32>?> TryDownloadLecturersMapAsync(Int32 attemptNumber)
         {
             const String SearchPageUrl = "https://www.smtu.ru/ru/searchschedule/";
 

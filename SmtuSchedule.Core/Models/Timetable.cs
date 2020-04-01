@@ -14,21 +14,21 @@ namespace SmtuSchedule.Core.Models
     )]
     public sealed class Timetable
     {
-        public Subject[] Monday { get; set; }
+        public Subject[]? Monday { get; set; }
 
-        public Subject[] Tuesday { get; set; }
+        public Subject[]? Tuesday { get; set; }
 
-        public Subject[] Wednesday { get; set; }
+        public Subject[]? Wednesday { get; set; }
 
-        public Subject[] Thursday { get; set; }
+        public Subject[]? Thursday { get; set; }
 
-        public Subject[] Friday { get; set; }
+        public Subject[]? Friday { get; set; }
 
-        public Subject[] Saturday { get; set; }
+        public Subject[]? Saturday { get; set; }
 
         public void Validate()
         {
-            static Boolean IsEmpty(Subject[] subjects)
+            static Boolean IsEmpty(Subject[]? subjects)
             {
                 return subjects == null || subjects.Length == 0;
             }
@@ -48,7 +48,7 @@ namespace SmtuSchedule.Core.Models
             Saturday?.ForEach(s => s.Validate());
         }
 
-        public Subject[] GetSubjects(DayOfWeek dayOfWeek) =>
+        public Subject[]? GetSubjects(DayOfWeek dayOfWeek) =>
             dayOfWeek switch
             {
                 DayOfWeek.Monday    => Monday,
@@ -134,7 +134,7 @@ namespace SmtuSchedule.Core.Models
                 subjects.AddRange(Saturday);
             }
 
-            return subjects.Select(s => s.Lecturer).Where(l => l != null);
+            return subjects.Select(s => s.Lecturer).Where(l => l != null)!;
         }
     }
 }

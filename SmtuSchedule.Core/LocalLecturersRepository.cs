@@ -18,7 +18,7 @@ namespace SmtuSchedule.Core
 
         private const String LecturersMapFileName = "Lecturers.json";
 
-        public ILogger Logger { get; set; }
+        public ILogger? Logger { get; set; }
 
         public LocalLecturersRepository(String storagePath)
         {

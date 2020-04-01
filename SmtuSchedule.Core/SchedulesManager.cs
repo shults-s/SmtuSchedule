@@ -11,13 +11,13 @@ namespace SmtuSchedule.Core
 {
     public sealed class SchedulesManager
     {
-        public IReadOnlyDictionary<String, Int32> LecturersMap { get; private set; }
+        public IReadOnlyDictionary<String, Int32>? LecturersMap { get; private set; }
 
         public IReadOnlyDictionary<Int32, Schedule> Schedules => _schedules;
 
         public Boolean IsLecturersMapReadedFromCache { get; private set; }
 
-        public ILogger Logger
+        public ILogger? Logger
         {
             get => _logger;
             set => _logger = _lecturersRepository.Logger = _schedulesRepository.Logger = value;
@@ -188,7 +188,7 @@ namespace SmtuSchedule.Core
 
                 if (lecturersDownloader.HaveNoDownloadingErrors)
                 {
-                    _lecturersRepository.SaveLecturersMap(LecturersMap);
+                    _lecturersRepository.SaveLecturersMap(LecturersMap!);
                 }
 
                 return lecturersDownloader.HaveNoDownloadingErrors;
@@ -199,7 +199,7 @@ namespace SmtuSchedule.Core
         {
             return Task.Run(() =>
             {
-                IReadOnlyDictionary<Int32, Schedule> schedules = _schedulesRepository.ReadSchedules(
+                IReadOnlyDictionary<Int32, Schedule>? schedules = _schedulesRepository.ReadSchedules(
                     out Boolean haveNoReadingErrors);
 
                 if (schedules == null)
@@ -235,12 +235,12 @@ namespace SmtuSchedule.Core
                 return number;
             }
 
-            return LecturersMap.ContainsKey(searchRequest) ? LecturersMap[searchRequest] : 0;
+            return LecturersMap!.ContainsKey(searchRequest) ? LecturersMap[searchRequest] : 0;
         }
 
         private readonly IHttpClient _httpClient;
 
-        private ILogger _logger;
+        private ILogger? _logger;
 
         private ConcurrentDictionary<Int32, Schedule> _schedules;
 

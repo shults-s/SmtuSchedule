@@ -52,7 +52,7 @@ namespace SmtuSchedule.Core
 
         public Boolean HaveNoDownloadingErrors { get; private set; }
 
-        public ILogger Logger { get; set; }
+        public ILogger? Logger { get; set; }
 
         public ServerSchedulesDownloader(IHttpClient client)
         {
@@ -148,7 +148,7 @@ namespace SmtuSchedule.Core
             // На входе: ЧЧ:ММ-ЧЧ:ММ[<br><span class="s_small">Вид недели</span>]
             static void ParseTime(HtmlNode td, out DateTime from, out DateTime to, out WeekType type)
             {
-                String weekType = td.Element("span")?.InnerText.Trim();
+                String? weekType = td.Element("span")?.InnerText.Trim();
                 String timeRange = td.InnerHtml.Trim();
 
                 if (weekType != null)
@@ -189,7 +189,7 @@ namespace SmtuSchedule.Core
             }
 
             // На входе: Номер группы|<a href="/ru/viewperson/Идентификатор/">ФИО</a>|ФИО
-            void ParseLecturerOrGroup(HtmlNode td, out String name, out Int32 id)
+            void ParseLecturerOrGroup(HtmlNode td, out String? name, out Int32 id)
             {
                 if (Int32.TryParse(td.InnerText, out Int32 groupId))
                 {
@@ -199,7 +199,7 @@ namespace SmtuSchedule.Core
                 else
                 {
                     name = td.Element("a")?.InnerText ?? td.InnerText;
-                    name = name.Trim();
+                    name = name?.Trim();
 
                     if (name == String.Empty)
                     {
@@ -210,7 +210,7 @@ namespace SmtuSchedule.Core
                         && lecturersMap != null
                         && lecturersMap.ContainsKey(name);
 
-                    id = isLecturerScheduleExists ? lecturersMap[name] : 0;
+                    id = isLecturerScheduleExists ? lecturersMap![name!] : 0;
                 }
             }
 
@@ -284,7 +284,7 @@ namespace SmtuSchedule.Core
 
                     ParseLecturerOrGroup(
                         cells[3],
-                        out String lecturerOrGroupName,
+                        out String? lecturerOrGroupName,
                         out Int32 lecturerOrGroupScheduleId
                     );
 

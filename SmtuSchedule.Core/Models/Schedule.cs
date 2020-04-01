@@ -43,6 +43,12 @@ namespace SmtuSchedule.Core.Models
             Options.Converters.Add(new JsonStringEnumConverter());
         }
 
+        public Schedule()
+        {
+            DisplayedName = String.Empty;
+            Timetable = new Timetable();
+        }
+
         public void Validate()
         {
             if (String.IsNullOrWhiteSpace(DisplayedName))
@@ -65,9 +71,9 @@ namespace SmtuSchedule.Core.Models
             return JsonSerializer.Deserialize<Schedule>(json, Options);
         }
 
-        public Subject[] GetSubjects(DateTime upperWeekDate, DateTime date)
+        public Subject[]? GetSubjects(DateTime upperWeekDate, DateTime date)
         {
-            Subject[] subjects = Timetable.GetSubjects(date.DayOfWeek);
+            Subject[]? subjects = Timetable.GetSubjects(date.DayOfWeek);
 
             if (subjects == null || subjects.Length == 0)
             {

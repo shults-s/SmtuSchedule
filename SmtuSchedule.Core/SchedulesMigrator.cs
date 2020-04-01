@@ -11,7 +11,7 @@ namespace SmtuSchedule.Core
     {
         public Boolean HaveNoMigrationErrors { get; private set; }
 
-        public ILogger Logger { get; set; }
+        public ILogger? Logger { get; set; }
 
         public IEnumerable<Schedule> Migrate(IEnumerable<Schedule> schedules,
             IReadOnlyDictionary<String, Int32> lecturersMap)

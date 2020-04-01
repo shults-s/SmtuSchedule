@@ -13,7 +13,7 @@ namespace SmtuSchedule.Core.Utilities
         // HttpClient использует cookies по-умолчанию, создавать объект HttpClientHandler нет необходимости.
         static HttpClientProxy() => Client = new HttpClient();
 
-        public async Task<String> GetAsync(String url, IReadOnlyDictionary<String, String> parameters = null)
+        public async Task<String> GetAsync(String url, IReadOnlyDictionary<String, String>? parameters = null)
         {
             if (String.IsNullOrWhiteSpace(url))
             {
@@ -30,14 +30,14 @@ namespace SmtuSchedule.Core.Utilities
             return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
-        public async Task<String> PostAsync(String url, IReadOnlyDictionary<String, String> parameters = null)
+        public async Task<String> PostAsync(String url, IReadOnlyDictionary<String, String>? parameters = null)
         {
             if (String.IsNullOrWhiteSpace(url))
             {
                 throw new ArgumentException("String cannot be null, empty or whitespace.", nameof(url));
             }
 
-            FormUrlEncodedContent content = null;
+            FormUrlEncodedContent? content = null;
 
             if (parameters != null)
             {
