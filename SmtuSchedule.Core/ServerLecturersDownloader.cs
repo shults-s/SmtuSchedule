@@ -34,14 +34,41 @@ namespace SmtuSchedule.Core
         {
             const String SearchPageUrl = "https://www.smtu.ru/ru/searchschedule/";
 
-            // На входе: Фамилия Имя Отчество (Должность в университете)
-            static String GetPureLecturerName(String name) => name.Substring(0, name.IndexOf('(') - 1);
-
-            // На входе: /ru/viewschedule/teacher/Идентификатор/
-            static Int32 GetScheduleIdFromUrl(String url)
+            // На входе: <a href="/ru/viewschedule/teacher/ИдентификаторРасписания/">...</a>
+            static Int32 ParseScheduleId(HtmlNode link)
             {
-                url = url.TrimEnd('/');
-                return Int32.Parse(url.Substring(url.LastIndexOf('/') + 1));
+                String? scheduleUrl = link.Attributes["href"]?.Value;
+                if (scheduleUrl == null)
+                {
+                    throw new HtmlParsingException("Schedule link URL is null. Missing 'href' attribute?", link);
+                }
+
+                scheduleUrl = scheduleUrl.TrimEnd('/');
+
+                try
+                {
+                    // Обрезаем '/ru/viewschedule/teacher/'.
+                    return Int32.Parse(scheduleUrl.Substring(scheduleUrl.LastIndexOf('/') + 1));
+                }
+                catch (Exception exception)
+                    when (exception is ArgumentOutOfRangeException || exception is FormatException)
+                {
+                    throw new HtmlParsingException("Invalid format of schedule link URL.", exception, link);
+                }
+            }
+
+            // На входе: <a href="...">Фамилия Имя Отчество (Должность в университете)</a>
+            static String ParseLecturerName(HtmlNode link)
+            {
+                try
+                {
+                    // Обрезаем ' (Должность в университете)'.
+                    return link.InnerHtml.Substring(0, link.InnerHtml.IndexOf('(') - 1);
+                }
+                catch (ArgumentOutOfRangeException exception)
+                {
+                    throw new HtmlParsingException("Invalid format of schedule link content.", exception, link);
+                }
             }
 
             HaveNoDownloadingErrors = true;
@@ -52,9 +79,14 @@ namespace SmtuSchedule.Core
                 HtmlDocument document = new HtmlDocument();
                 document.LoadHtml(html);
 
-                HtmlNode searchKeyField = document.DocumentNode.Descendants("input")
-                    .Where(f => f.Attributes["name"]?.Value == "search_key")
+                HtmlNode? searchKeyField = document.DocumentNode.Descendants("input")
+                    ?.Where(f => f.Attributes["name"]?.Value == "search_key")
                     .First();
+
+                if (searchKeyField == null)
+                {
+                    throw new HtmlParsingException("Search page does not contains input field named 'search_key'.");
+                }
 
                 Dictionary<String, String> parameters = new Dictionary<String, String>()
                 {
@@ -81,35 +113,48 @@ namespace SmtuSchedule.Core
 
                 document.LoadHtml(html);
 
-                IEnumerable<HtmlNode> links = document.DocumentNode.Descendants("article")
-                    .First()
-                    .Elements("li")
+                IEnumerable<HtmlNode>? links = document.DocumentNode.Descendants("article")
+                    ?.First()
+                    ?.Elements("li")
                     .Select(e => e.Element("a"))
                     .Distinct(new LinksEqualityComparer());
+
+                if (links == null)
+                {
+                    throw new HtmlParsingException("Search results page does not contains list of links.");
+                }
 
                 Dictionary<String, Int32> lecturers = new Dictionary<String, Int32>();
 
                 foreach (HtmlNode link in links)
                 {
-                    Int32 scheduleId = GetScheduleIdFromUrl(link.Attributes["href"].Value);
-                    String name = GetPureLecturerName(link.InnerHtml);
+                    if (link == null)
+                    {
+                        throw new HtmlParsingException("Schedule link is null. Missing 'a' tag?");
+                    }
+
+                    Int32 scheduleId = ParseScheduleId(link);
+                    String name = ParseLecturerName(link);
                     lecturers[name] = scheduleId;
                 }
 
                 if (lecturers.Count == 0)
                 {
                     throw new LecturersDownloaderException(
-                        $"The list of lecturers at the end of download is empty in {attemptNumber} attempts.");
+                        $"List of lecturers at end of download is empty in {attemptNumber} attempts.");
                 }
 
                 return lecturers;
             }
-            catch (Exception exception)
-                when (exception is HttpRequestException || exception is LecturersDownloaderException)
+            catch (Exception exception) when (
+                exception is HttpRequestException
+                || exception is NullReferenceException
+                || exception is HtmlParsingException
+                || exception is LecturersDownloaderException
+            )
             {
                 HaveNoDownloadingErrors = false;
-                Logger?.Log(
-                    new LecturersDownloaderException("Error of downloading the list of lecturers.", exception));
+                Logger?.Log(new LecturersDownloaderException("Error of downloading list of lecturers.", exception));
 
                 return null;
             }

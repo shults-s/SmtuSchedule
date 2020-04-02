@@ -39,7 +39,7 @@ namespace SmtuSchedule.Core
             ["Нижняя неделя"] = WeekType.Lower
         };
 
-        private static readonly Dictionary<String, String> Studies = new Dictionary<String, String>()
+        private static readonly Dictionary<String, String> Subjects = new Dictionary<String, String>()
         {
             ["Лабораторное занятие"] = "лабораторная",
             ["Практическое занятие"] = "практика",
@@ -94,9 +94,10 @@ namespace SmtuSchedule.Core
                         schedulesLocal.Add(schedule);
                     }
                     catch (Exception exception) when (
-                        exception is HttpRequestException
-                        || exception is ValidationException
-                        || exception is SchedulesDownloaderException
+                        exception is ValidationException
+                        || exception is HtmlParsingException
+                        || exception is HttpRequestException
+                        || exception is NullReferenceException
                     )
                     {
                         HaveNoDownloadingErrors = false;
@@ -146,24 +147,41 @@ namespace SmtuSchedule.Core
             const String GroupScheduleBaseUrl = "https://www.smtu.ru/ru/viewschedule/";
 
             // На входе: ЧЧ:ММ-ЧЧ:ММ[<br><span class="s_small">Вид недели</span>]
-            static void ParseTime(HtmlNode td, out DateTime from, out DateTime to, out WeekType type)
+            static void ParseTime(HtmlNode td, out DateTime from, out DateTime to, out WeekType weekType)
             {
-                String? weekType = td.Element("span")?.InnerText.Trim();
+                String? weekTypeName = td.Element("span")?.InnerText.Trim();
                 String timeRange = td.InnerHtml.Trim();
 
-                if (weekType != null)
+                if (weekTypeName == null)
                 {
-                    type = Weeks[weekType];
-                    timeRange = timeRange.Substring(0, timeRange.IndexOf('<'));
+                    weekType = WeekType.Upper | WeekType.Lower;
                 }
                 else
                 {
-                    type = WeekType.Upper | WeekType.Lower;
+                    // Обрезаем '<br><span class="s_small">Вид недели</span>'.
+                    timeRange = timeRange.Substring(0, timeRange.IndexOf('<'));
+
+                    try
+                    {
+                        weekType = Weeks[weekTypeName];
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        throw new HtmlParsingException($"Invalid subject week type: '{weekTypeName}'.", td);
+                    }
                 }
 
-                DateTime[] times = timeRange.Split('-').Select(t => DateTime.Parse(t)).ToArray();
-                from = times[0];
-                to = times[1];
+                try
+                {
+                    DateTime[] times = timeRange.Split('-').Select(t => DateTime.Parse(t)).ToArray();
+                    from = times[0];
+                    to = times[1];
+                }
+                catch (Exception exception)
+                    when (exception is FormatException || exception is IndexOutOfRangeException)
+                {
+                    throw new HtmlParsingException("Invalid format of subject time range.", exception, td);
+                }
             }
 
             // На входе: Корпус Аудитория[Литера]|Корпус каф.[ФВ|ВК|...]|Корпус Лаборатория
@@ -176,16 +194,34 @@ namespace SmtuSchedule.Core
                     return auditorium;
                 }
 
+                // Обрезаем '.[ФВ|ВК|...]', ведь из контекста и так понятно о какой кафедре речь.
                 return auditorium.Substring(0, auditorium.IndexOf('.'));
             }
 
             // На входе: Название предмета<br><span class="s_small">Вид занятия</span>
             static String ParseTitle(HtmlNode td)
             {
-                String subject = td.InnerHtml.Substring(0, td.InnerHtml.IndexOf('<'));
-                String studyType = Studies[td.Element("span").InnerText.Trim()];
+                String? subjectTypeName = td.Element("span")?.InnerText.Trim();
+                if (subjectTypeName == null)
+                {
+                    throw new HtmlParsingException("Subject title not contains 'span' tag.", td);
+                }
 
-                return $"{subject.Trim()} ({studyType})";
+                // Обрезаем '<br><span class="s_small">Вид занятия</span>'.
+                // На этом моменте уже известно, что как минимум один тег в строке да есть.
+                String subjectTitle = td.InnerHtml.Substring(0, td.InnerHtml.IndexOf('<'));
+
+                String subjectType;
+                try
+                {
+                    subjectType = Subjects[subjectTypeName];
+                }
+                catch (KeyNotFoundException)
+                {
+                    throw new HtmlParsingException($"Invalid subject type: '{subjectTypeName}'.", td);
+                }
+
+                return $"{subjectTitle.Trim()} ({subjectType})";
             }
 
             // На входе: Номер группы|<a href="/ru/viewperson/Идентификатор/">ФИО</a>|ФИО
@@ -199,7 +235,7 @@ namespace SmtuSchedule.Core
                 else
                 {
                     name = td.Element("a")?.InnerText ?? td.InnerText;
-                    name = name?.Trim();
+                    name = name.Trim();
 
                     if (name == String.Empty)
                     {
@@ -233,8 +269,14 @@ namespace SmtuSchedule.Core
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
 
-            String h1 = document.DocumentNode.SelectSingleNode("//h1[@class=\"c-main-content__title\"]")
-                .InnerText;
+            String? h1 = document.DocumentNode.SelectSingleNode("//h1[@class=\"c-main-content__title\"]")
+                ?.InnerText;
+
+            if (h1 == null)
+            {
+                throw new HtmlParsingException(
+                    "Timetable does not contains 'h1' tag with class 'c-main-content__title'.");
+            }
 
             (String pattern, String replacement) = (scheduleType == ScheduleType.Lecturer)
                 ? ContentTitleReplacementPatterns[0]
@@ -247,26 +289,74 @@ namespace SmtuSchedule.Core
                 schedule.DisplayedName = Lecturer.GetShortName(schedule.DisplayedName);
             }
 
-            HtmlNode table = document.DocumentNode.Descendants("table").First();
+            HtmlNode? table = document.DocumentNode.Descendants("table").FirstOrDefault();
+            if (table == null)
+            {
+                throw new HtmlParsingException("Timetable does not contains no one 'table' tag.");
+            }
+
             HtmlNode[] heads = table.Elements("thead").ToArray();
+            if (heads.Length == 0)
+            {
+                throw new HtmlParsingException("Timetable does not contains 'thead' tags.", table);
+            }
+
             HtmlNode[] bodyes = table.Elements("tbody").ToArray();
+            if (bodyes.Length == 0)
+            {
+                throw new HtmlParsingException("Timetable does not contains 'tbody' tags.", table);
+            }
+
+            if (heads.Length != bodyes.Length)
+            {
+                throw new HtmlParsingException(
+                    "Timetable contains different number of 'thead' and 'tbody' tags.", table);
+            }
 
             if (heads.Length == 1 && bodyes.Length == 1)
             {
-                throw new SchedulesDownloaderException(
-                    "Timetable is empty, therefore, such a schedule does not exist.");
+                throw new HtmlParsingException(
+                    "Timetable is empty, therefore, such a schedule does not exists.", table);
             }
 
             // Первые элементы относятся к заголовку таблицы и интереса не представляют.
             for (Int32 i = 1; i < heads.Length; i++)
             {
-                DayOfWeek day = Days[heads[i].Element("tr").Element("th").InnerText];
+                String? dayOfWeekName = heads[i].Element("tr")?.Element("th")?.InnerText;
+                if (dayOfWeekName == null)
+                {
+                    throw new HtmlParsingException(
+                        "Timetable 'thead' tag does not contains 'tr' or 'th' tag.", heads[i]);
+                }
+
+                DayOfWeek dayOfWeek;
+                try
+                {
+                    dayOfWeek = Days[dayOfWeekName];
+                }
+                catch (KeyNotFoundException)
+                {
+                    throw new HtmlParsingException(
+                        $"Invalid day of week: '{dayOfWeekName}' in 'thead' tag.", heads[i]);
+                }
 
                 List<Subject> subjects = new List<Subject>();
 
                 foreach (HtmlNode row in bodyes[i].Elements("tr"))
                 {
                     HtmlNode[] cells = row.Elements("td").ToArray();
+
+                    const Int32 numberOfRowCells = 4;
+                    if (cells.Length < numberOfRowCells || cells.Length > numberOfRowCells)
+                    {
+                        String message = String.Format(
+                            "Timetable 'tr' tag contains {0} instead of {1} 'td' tags.",
+                            cells.Length,
+                            numberOfRowCells
+                        );
+
+                        throw new HtmlParsingException(message, row);
+                    }
 
                     ParseTime(cells[0], out DateTime from, out DateTime to, out WeekType week);
                     String auditorium = ParseAuditorium(cells[1]);
@@ -304,7 +394,7 @@ namespace SmtuSchedule.Core
                     subjects.Add(subject);
                 }
 
-                schedule.Timetable.SetSubjects(day, subjects.ToArray());
+                schedule.Timetable.SetSubjects(dayOfWeek, subjects.ToArray());
             }
 
             return schedule;
