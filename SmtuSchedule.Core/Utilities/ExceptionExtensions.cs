@@ -6,7 +6,7 @@ namespace SmtuSchedule.Core.Utilities
 {
     internal static class ExceptionExtensions
     {
-        // Type. \n Message \n ExtraProperties \n Data \n StackTrace \n InnerException
+        // Type. \n Message \n Data \n StackTrace \n InnerException
         public static String Format(this Exception exception)
         {
             if (exception == null)
@@ -20,7 +20,7 @@ namespace SmtuSchedule.Core.Utilities
 
                 foreach (DictionaryEntry entry in dictionary)
                 {
-                    keyValuePairs.AppendLine($"  {entry.Key} = {entry.Value}");
+                    keyValuePairs.AppendLine($"  {entry.Key} = '{entry.Value}'");
                 }
 
                 return keyValuePairs.ToString();
@@ -30,11 +30,6 @@ namespace SmtuSchedule.Core.Utilities
 
             report.AppendLine(exception.GetType() + ".");
             report.AppendLine("Message: " + exception.Message);
-
-            if (exception is ArgumentException argumentException)
-            {
-                report.AppendLine("Parameter name: " + argumentException.ParamName);
-            }
 
             if (exception.Data.Count != 0)
             {
