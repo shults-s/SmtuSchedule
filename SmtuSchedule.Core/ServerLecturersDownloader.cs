@@ -16,7 +16,7 @@ namespace SmtuSchedule.Core
 
         private const Int32 MaximumAttemptsNumber = 5;
 
-        public Boolean HaveNoDownloadingErrors { get; private set; }
+        public Boolean HasNoDownloadingError { get; private set; }
 
         public ILogger? Logger { get; set; }
 
@@ -71,7 +71,7 @@ namespace SmtuSchedule.Core
                 }
             }
 
-            HaveNoDownloadingErrors = true;
+            HasNoDownloadingError = true;
 
             try
             {
@@ -153,7 +153,7 @@ namespace SmtuSchedule.Core
                 || exception is LecturersDownloaderException
             )
             {
-                HaveNoDownloadingErrors = false;
+                HasNoDownloadingError = false;
                 Logger?.Log(new LecturersDownloaderException("Error of downloading list of lecturers.", exception));
 
                 return null;
