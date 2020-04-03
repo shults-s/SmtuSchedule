@@ -21,18 +21,19 @@ namespace SmtuSchedule.Core.Utilities
 
             Int64[] times = new Int64[testIterationsNumber];
 
-            Stopwatch sw = new Stopwatch();
+            Stopwatch stopwatch = new Stopwatch();
             for (Int32 i = 0; i < testIterationsNumber; i++)
             {
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
                 GC.WaitForPendingFinalizers();
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
-                sw.Restart();
+                stopwatch.Restart();
                 callback();
-                sw.Stop();
+                stopwatch.Stop();
 
-                times[i] = (Int64)(sw.ElapsedTicks * 1.0e6 / Stopwatch.Frequency + 0.499);
+                Int64 elapsedTicks = stopwatch.ElapsedTicks;
+                times[i] = (Int64)(elapsedTicks * 1.0e6 / Stopwatch.Frequency + 0.499);
             }
 
             return String.Format(
