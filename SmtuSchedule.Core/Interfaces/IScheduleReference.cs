@@ -7,7 +7,7 @@ namespace SmtuSchedule.Core.Interfaces
     {
         Int32 ScheduleId { get; set; }
 
-        String? Name { get; set; }
+        String Name { get; set; }
 
         void Validate()
         {

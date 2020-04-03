@@ -380,7 +380,7 @@ namespace SmtuSchedule.Core
 
                     if (scheduleType == ScheduleType.Lecturer)
                     {
-                        subject.Group = new Group(lecturerOrGroupName, lecturerOrGroupScheduleId);
+                        subject.Group = new Group(lecturerOrGroupName!, lecturerOrGroupScheduleId);
                     }
                     else
                     {
