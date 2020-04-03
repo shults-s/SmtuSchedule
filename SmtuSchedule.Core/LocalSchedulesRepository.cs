@@ -68,7 +68,7 @@ namespace SmtuSchedule.Core
             return hasNoRemovingError;
         }
 
-        public IReadOnlyDictionary<Int32, Schedule>? ReadSchedules(out Boolean haveNoReadingErrors)
+        public IEnumerable<Schedule>? ReadSchedules(out Boolean haveNoReadingErrors)
         {
             haveNoReadingErrors = true;
 
@@ -115,7 +115,7 @@ namespace SmtuSchedule.Core
                 }
             }
 
-            return schedules;
+            return schedules.Values;
         }
 
         private readonly String _storagePath;
