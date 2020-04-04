@@ -16,7 +16,7 @@ namespace SmtuSchedule.Core.Interfaces
         Task<Boolean> ReadSchedulesAsync();
 
         Task<Boolean> DownloadSchedulesAsync(
-            IEnumerable<Int32> schedulesIds,
+            IReadOnlyCollection<Int32> schedulesIds,
             IReadOnlyDictionary<String, Int32> lecturersMap,
             Boolean shouldDownloadGroupsRelatedLecturersSchedules
         );

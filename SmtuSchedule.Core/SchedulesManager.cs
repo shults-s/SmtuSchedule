@@ -117,25 +117,28 @@ namespace SmtuSchedule.Core
             });
         }
 
-        public Task<Boolean> DownloadSchedulesAsync(IEnumerable<Int32> schedulesIds,
-            IReadOnlyDictionary<String, Int32> lecturersMap, Boolean shouldDownloadRelatedSchedules)
+        public Task<Boolean> DownloadSchedulesAsync(
+            IReadOnlyCollection<Int32> schedulesIds,
+            IReadOnlyDictionary<String, Int32> lecturersMap,
+            Boolean shouldDownloadGroupsRelatedLecturersSchedules
+        )
         {
             return DownloadSchedulesAsync(
                 new ServerSchedulesDownloader(_httpClient) { Logger = _logger },
                 schedulesIds,
                 lecturersMap,
-                shouldDownloadRelatedSchedules
+                shouldDownloadGroupsRelatedLecturersSchedules
             );
         }
 
         internal Task<Boolean> DownloadSchedulesAsync(
             ISchedulesDownloader downloader,
-            IEnumerable<Int32> schedulesIds,
+            IReadOnlyCollection<Int32> schedulesIds,
             IReadOnlyDictionary<String, Int32> lecturersMap,
-            Boolean shouldDownloadRelatedSchedules
+            Boolean shouldDownloadGroupsRelatedLecturersSchedules
         )
         {
-            if (schedulesIds == null || schedulesIds.Count() == 0)
+            if (schedulesIds == null || schedulesIds.Count == 0)
             {
                 throw new ArgumentException("Collection cannot be null or empty.", nameof(schedulesIds));
             }
@@ -150,7 +153,7 @@ namespace SmtuSchedule.Core
                 IEnumerable<Schedule> schedules = await downloader.DownloadSchedulesAsync(
                     schedulesIds,
                     lecturersMap,
-                    shouldDownloadRelatedSchedules
+                    shouldDownloadGroupsRelatedLecturersSchedules
                 )
                 .ConfigureAwait(false);
 

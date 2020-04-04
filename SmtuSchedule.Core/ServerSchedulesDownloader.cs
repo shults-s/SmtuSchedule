@@ -59,8 +59,11 @@ namespace SmtuSchedule.Core
             _httpClient = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task<IEnumerable<Schedule>> DownloadSchedulesAsync(IEnumerable<Int32> schedulesIds,
-            IReadOnlyDictionary<String, Int32> lecturersMap, Boolean shouldDownloadRelatedSchedules)
+        public async Task<IEnumerable<Schedule>> DownloadSchedulesAsync(
+            IReadOnlyCollection<Int32> schedulesIds,
+            IReadOnlyDictionary<String, Int32> lecturersMap,
+            Boolean shouldDownloadGroupsRelatedLecturersSchedules
+        )
         {
             if (lecturersMap == null || lecturersMap.Count == 0)
             {
@@ -77,9 +80,9 @@ namespace SmtuSchedule.Core
 
             HaveNoDownloadingErrors = true;
 
-            async Task<List<Schedule>> DownloadSchedulesAsync(IEnumerable<Int32> schedulesIdsLocal)
+            async Task<List<Schedule>> DownloadSchedulesAsync(IReadOnlyCollection<Int32> schedulesIdsLocal)
             {
-                List<Schedule> schedulesLocal = new List<Schedule>(schedulesIdsLocal.Count());
+                List<Schedule> schedulesLocal = new List<Schedule>(schedulesIdsLocal.Count);
 
                 foreach (Int32 scheduleId in schedulesIdsLocal)
                 {
@@ -111,7 +114,7 @@ namespace SmtuSchedule.Core
                 return schedulesLocal;
             }
 
-            static IEnumerable<Int32> GetRelatedLecturersSchedulesIds(IEnumerable<Schedule> schedulesLocal)
+            static List<Int32> GetRelatedLecturersSchedulesIds(IEnumerable<Schedule> schedulesLocal)
             {
                 List<Int32> schedulesIdsLocal = new List<Int32>();
 
@@ -131,9 +134,9 @@ namespace SmtuSchedule.Core
 
             List<Schedule> schedules = await DownloadSchedulesAsync(schedulesIds).ConfigureAwait(false);
 
-            if (shouldDownloadRelatedSchedules)
+            if (shouldDownloadGroupsRelatedLecturersSchedules)
             {
-                IEnumerable<Int32> relatedSchedulesIds = GetRelatedLecturersSchedulesIds(schedules);
+                List<Int32> relatedSchedulesIds = GetRelatedLecturersSchedulesIds(schedules);
                 schedules.AddRange(await DownloadSchedulesAsync(relatedSchedulesIds).ConfigureAwait(false));
             }
 
@@ -336,6 +339,7 @@ namespace SmtuSchedule.Core
                 }
 
                 DayOfWeek dayOfWeek;
+
                 try
                 {
                     dayOfWeek = Days[dayOfWeekName];

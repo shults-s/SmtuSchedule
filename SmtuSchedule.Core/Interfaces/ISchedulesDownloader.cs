@@ -12,9 +12,9 @@ namespace SmtuSchedule.Core.Interfaces
         ILogger? Logger { get; set; }
 
         Task<IEnumerable<Schedule>> DownloadSchedulesAsync(
-            IEnumerable<Int32> schedulesIds,
+            IReadOnlyCollection<Int32> schedulesIds,
             IReadOnlyDictionary<String, Int32> lecturersMap,
-            Boolean shouldDownloadRelatedSchedules
+            Boolean shouldDownloadGroupsRelatedLecturersSchedules
         );
     }
 }
