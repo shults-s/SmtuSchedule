@@ -22,21 +22,25 @@ namespace SmtuSchedule.Core
             }
         }
 
-        public LecturersManager(String storagePath)
+        public LecturersManager(String storagePath) : this()
         {
             if (String.IsNullOrWhiteSpace(storagePath))
             {
                 throw new ArgumentException("String cannot be null, empty or whitespace.", nameof(storagePath));
             }
 
-            _httpClient = new HttpClientProxy();
             _repository = new LocalLecturersRepository(storagePath);
         }
 
-        internal LecturersManager(ILecturersRepository repository, IHttpClient client)
+        internal LecturersManager(ILecturersRepository repository) : this()
         {
-            _httpClient = client ?? throw new ArgumentNullException(nameof(client));
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
+
+        private LecturersManager()
+        {
+            _repository = null!;
+            _httpClient = new HttpClientProxy();
         }
 
         public Task<Boolean> ReadCachedLecturersMapAsync()
@@ -58,10 +62,7 @@ namespace SmtuSchedule.Core
 
         public Task<Boolean> DownloadLecturersMapAsync()
         {
-            return DownloadLecturersMapAsync(new ServerLecturersDownloader(_httpClient)
-            {
-                Logger = _logger
-            });
+            return DownloadLecturersMapAsync(new ServerLecturersDownloader(_httpClient) { Logger = _logger });
         }
 
         internal Task<Boolean> DownloadLecturersMapAsync(ILecturersDownloader downloader)

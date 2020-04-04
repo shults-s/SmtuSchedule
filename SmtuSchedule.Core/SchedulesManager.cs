@@ -22,25 +22,26 @@ namespace SmtuSchedule.Core
             }
         }
 
-        public SchedulesManager(String storagePath)
+        public SchedulesManager(String storagePath) : this()
         {
             if (String.IsNullOrWhiteSpace(storagePath))
             {
                 throw new ArgumentException("String cannot be null, empty or whitespace.", nameof(storagePath));
             }
 
-            _schedules = new Dictionary<Int32, Schedule>();
-
-            _httpClient = new HttpClientProxy();
             _repository = new LocalSchedulesRepository(storagePath);
         }
 
-        internal SchedulesManager(ISchedulesRepository repository, IHttpClient client)
+        internal SchedulesManager(ISchedulesRepository repository) : this()
         {
-            _schedules = new Dictionary<Int32, Schedule>();
-
-            _httpClient = client ?? throw new ArgumentNullException(nameof(client));
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
+
+        private SchedulesManager()
+        {
+            _repository = null!;
+            _httpClient = new HttpClientProxy();
+            _schedules = new Dictionary<Int32, Schedule>();
         }
 
         public Task<Boolean> ReadSchedulesAsync()
