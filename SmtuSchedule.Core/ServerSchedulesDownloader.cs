@@ -242,11 +242,8 @@ namespace SmtuSchedule.Core
                         name = null;
                     }
 
-                    Boolean isLecturerScheduleExists = name != null
-                        && lecturersMap != null
-                        && lecturersMap.ContainsKey(name);
-
-                    id = isLecturerScheduleExists ? lecturersMap![name!] : 0;
+                    Boolean isLecturerScheduleExists = name != null && lecturersMap.ContainsKey(name);
+                    id = isLecturerScheduleExists ? lecturersMap[name!] : 0;
                 }
             }
 
