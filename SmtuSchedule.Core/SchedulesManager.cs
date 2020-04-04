@@ -49,12 +49,10 @@ namespace SmtuSchedule.Core
             {
                 IEnumerable<Schedule>? schedules = _repository.ReadSchedules(out Boolean haveNoReadingErrors);
 
-                if (schedules == null)
+                if (schedules != null)
                 {
-                    return false;
+                    schedules.ForEach(schedule => _schedules[schedule.ScheduleId] = schedule);
                 }
-
-                schedules.ForEach(schedule => _schedules[schedule.ScheduleId] = schedule);
 
                 return haveNoReadingErrors;
             });
@@ -130,9 +128,12 @@ namespace SmtuSchedule.Core
             );
         }
 
-        internal Task<Boolean> DownloadSchedulesAsync(ISchedulesDownloader downloader,
-            IEnumerable<Int32> schedulesIds, IReadOnlyDictionary<String, Int32> lecturersMap,
-            Boolean shouldDownloadRelatedSchedules)
+        internal Task<Boolean> DownloadSchedulesAsync(
+            ISchedulesDownloader downloader,
+            IEnumerable<Int32> schedulesIds,
+            IReadOnlyDictionary<String, Int32> lecturersMap,
+            Boolean shouldDownloadRelatedSchedules
+        )
         {
             if (schedulesIds == null || schedulesIds.Count() == 0)
             {
