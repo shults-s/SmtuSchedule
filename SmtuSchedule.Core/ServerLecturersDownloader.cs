@@ -117,7 +117,7 @@ namespace SmtuSchedule.Core
                     ?.First()
                     ?.Elements("li")
                     .Select(e => e.Element("a"))
-                    .Distinct(new LinksEqualityComparer());
+                    .Distinct(new HrefsEqualityComparer());
 
                 if (links == null)
                 {
