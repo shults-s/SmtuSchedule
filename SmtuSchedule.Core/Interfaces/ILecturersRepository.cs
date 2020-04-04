@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SmtuSchedule.Core.Interfaces
 {
-    public interface ILecturersRepository
+    internal interface ILecturersRepository
     {
         ILogger? Logger { get; set; }
 

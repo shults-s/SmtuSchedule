@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SmtuSchedule.Core.Interfaces
 {
-    public interface ILecturersDownloader
+    internal interface ILecturersDownloader
     {
         Boolean HasNoDownloadingError { get; }
 

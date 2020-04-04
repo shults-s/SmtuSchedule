@@ -4,7 +4,7 @@ using SmtuSchedule.Core.Models;
 
 namespace SmtuSchedule.Core.Interfaces
 {
-    public interface ISchedulesRepository
+    internal interface ISchedulesRepository
     {
         ILogger? Logger { get; set; }
 

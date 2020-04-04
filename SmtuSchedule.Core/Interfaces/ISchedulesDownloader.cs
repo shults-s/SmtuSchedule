@@ -5,7 +5,7 @@ using SmtuSchedule.Core.Models;
 
 namespace SmtuSchedule.Core.Interfaces
 {
-    public interface ISchedulesDownloader
+    internal interface ISchedulesDownloader
     {
         Boolean HaveNoDownloadingErrors { get; }
 

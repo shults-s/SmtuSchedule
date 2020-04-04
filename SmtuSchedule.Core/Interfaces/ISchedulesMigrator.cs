@@ -4,7 +4,7 @@ using SmtuSchedule.Core.Models;
 
 namespace SmtuSchedule.Core.Interfaces
 {
-    public interface ISchedulesMigrator
+    internal interface ISchedulesMigrator
     {
         Boolean HaveNoMigrationErrors { get; }
 
