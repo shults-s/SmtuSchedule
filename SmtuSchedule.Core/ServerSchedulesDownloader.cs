@@ -15,7 +15,7 @@ using Group = SmtuSchedule.Core.Models.Group;
 
 namespace SmtuSchedule.Core
 {
-    internal class ServerSchedulesDownloader
+    internal sealed class ServerSchedulesDownloader
     {
         private static readonly (String, String)[] ContentTitleReplacementPatterns = new (String, String)[]
         {
