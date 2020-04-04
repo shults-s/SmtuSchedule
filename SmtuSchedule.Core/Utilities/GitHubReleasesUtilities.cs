@@ -10,7 +10,7 @@ using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core.Utilities
 {
-    public static class ReleaseUtilities
+    public static class GitHubReleasesUtilities
     {
         public const String LatestReleaseDownloadPageUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest/";
 
@@ -18,7 +18,7 @@ namespace SmtuSchedule.Core.Utilities
 
         internal static IHttpClient HttpClient { get; set; }
 
-        static ReleaseUtilities() => HttpClient = new HttpClientProxy();
+        static GitHubReleasesUtilities() => HttpClient = new HttpClientProxy();
 
         public static Task<ReleaseDescription?> GetLatestReleaseDescriptionAsync()
         {
@@ -42,7 +42,7 @@ namespace SmtuSchedule.Core.Utilities
             });
         }
 
-        public static Task<String?> GetLatestReleaseVersionFromRepositoryChangeLogAsync()
+        public static Task<String?> ParseLatestReleaseVersionFromRepositoryChangeLogAsync()
         {
             return Task.Run(async () =>
             {
@@ -54,6 +54,7 @@ namespace SmtuSchedule.Core.Utilities
 
                     // ## [Версия X.X.X]
                     Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");
+
                     if (!match.Success)
                     {
                         return null;
@@ -103,7 +104,7 @@ namespace SmtuSchedule.Core.Utilities
                 ? (v1[2] > v2[2] ? 1 : v1[2] < v2[2] ? -1 : 0)
                 : (v1.Length == v2.Length ? 0 : v1.Length > v2.Length ? 1 : -1);
 
-            // Если v1 > v2, вернется 1; если v1 = v2, вернется 0; если v1 < v2, вернется -1.
+            // Если v1 < v2, вернется -1; если v1 = v2, вернется 0; если v1 > v2, вернется 1.
             return (majorComparsion == 0) ? (minorComparsion == 0 ? patchComparsion : minorComparsion) : majorComparsion;
         }
     }
