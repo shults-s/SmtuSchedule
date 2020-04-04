@@ -2,20 +2,15 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 
 namespace SmtuSchedule.Core
 {
-    public sealed class SchedulesManager
+    public sealed class SchedulesManager : ISchedulesManager
     {
-        public IReadOnlyDictionary<String, Int32>? LecturersMap { get; private set; }
-
         public IReadOnlyDictionary<Int32, Schedule> Schedules => _schedules;
-
-        public Boolean IsLecturersMapReadedFromCache { get; private set; }
 
         public ILogger? Logger
         {
@@ -23,123 +18,147 @@ namespace SmtuSchedule.Core
             set
             {
                 _logger = value;
-                _lecturersRepository.Logger = value;
-                _schedulesRepository.Logger = value;
+                _repository.Logger = value;
             }
         }
 
-        public SchedulesManager(String storagePath, String schedulesDirectoryName, IHttpClient client)
+        public SchedulesManager(String storagePath)
         {
             if (String.IsNullOrWhiteSpace(storagePath))
             {
                 throw new ArgumentException("String cannot be null, empty or whitespace.", nameof(storagePath));
             }
 
-            if (String.IsNullOrWhiteSpace(schedulesDirectoryName))
-            {
-                throw new ArgumentException(
-                    "String cannot be null, empty or whitespace.", nameof(schedulesDirectoryName));
-            }
+            _schedules = new Dictionary<Int32, Schedule>();
+
+            _httpClient = new HttpClientProxy();
+            _repository = new LocalSchedulesRepository(storagePath);
+        }
+
+        internal SchedulesManager(ISchedulesRepository repository, IHttpClient client)
+        {
+            _schedules = new Dictionary<Int32, Schedule>();
 
             _httpClient = client ?? throw new ArgumentNullException(nameof(client));
-
-            _schedules = new ConcurrentDictionary<Int32, Schedule>();
-            _lecturersRepository = new LocalLecturersRepository(storagePath);
-            _schedulesRepository = new LocalSchedulesRepository($"{storagePath}/{schedulesDirectoryName}/");
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public SchedulesManager(String storagePath, String schedulesDirectoryName)
-            : this(storagePath, schedulesDirectoryName, new HttpClientProxy())
+        public Task<Boolean> ReadSchedulesAsync()
         {
-        }
-
-        public Task<Boolean> MigrateSchedulesAsync()
-        {
-            if (LecturersMap == null || LecturersMap.Count == 0)
+            return Task.Run(() =>
             {
-                throw new InvalidOperationException("Lecturers map is null or empty.");
+                IEnumerable<Schedule>? schedules = _repository.ReadSchedules(out Boolean haveNoReadingErrors);
+
+                if (schedules == null)
+                {
+                    return false;
+                }
+
+                schedules.ForEach(schedule => _schedules[schedule.ScheduleId] = schedule);
+
+                return haveNoReadingErrors;
+            });
+        }
+
+        public Task<Boolean> MigrateSchedulesAsync(IReadOnlyDictionary<String, Int32> lecturersMap)
+        {
+            return MigrateSchedulesAsync(new SchedulesMigrator() { Logger = _logger }, lecturersMap);
+        }
+
+        internal Task<Boolean> MigrateSchedulesAsync(ISchedulesMigrator migrator,
+            IReadOnlyDictionary<String, Int32> lecturersMap)
+        {
+            if (lecturersMap == null || lecturersMap.Count == 0)
+            {
+                throw new ArgumentException("Collection cannot be null or empty.", nameof(lecturersMap));
             }
 
             return Task.Run(() =>
             {
-                SchedulesMigrator schedulesMigrator = new SchedulesMigrator()
-                {
-                    Logger = _logger
-                };
-
-                IEnumerable<Schedule> affectedSchedules = schedulesMigrator.Migrate(
+                IEnumerable<Schedule> affectedSchedules = migrator.Migrate(
                     _schedules.Values,
-                    LecturersMap
+                    lecturersMap
                 );
 
-                Boolean haveNoSavingErrors = _schedulesRepository.SaveSchedules(affectedSchedules);
-                return schedulesMigrator.HaveNoMigrationErrors && haveNoSavingErrors;
+                Boolean haveNoSavingErrors = _repository.SaveSchedules(affectedSchedules);
+                return migrator.HaveNoMigrationErrors && haveNoSavingErrors;
             });
         }
 
-        public Task<Boolean> UpdateSchedulesAsync()
+        public Task<Boolean> UpdateSchedulesAsync(IReadOnlyDictionary<String, Int32> lecturersMap)
         {
-            if (LecturersMap == null || LecturersMap.Count == 0)
+            return UpdateSchedulesAsync(
+                new ServerSchedulesDownloader(_httpClient) { Logger = _logger },
+                lecturersMap
+            );
+        }
+
+        internal Task<Boolean> UpdateSchedulesAsync(ISchedulesDownloader downloader,
+            IReadOnlyDictionary<String, Int32> lecturersMap)
+        {
+            if (lecturersMap == null || lecturersMap.Count == 0)
             {
-                throw new InvalidOperationException("Lecturers map is null or empty.");
+                throw new ArgumentException("Collection cannot be null or empty.", nameof(lecturersMap));
             }
 
             return Task.Run(async () =>
             {
-                ServerSchedulesDownloader schedulesDownloader = new ServerSchedulesDownloader(_httpClient)
-                {
-                    Logger = _logger
-                };
-
-                IEnumerable<Schedule> updatedSchedules = await schedulesDownloader.DownloadSchedulesAsync(
+                IEnumerable<Schedule> updatedSchedules = await downloader.DownloadSchedulesAsync(
                     _schedules.Values.Where(s => !s.IsActual).Select(s => s.ScheduleId).ToArray(),
-                    LecturersMap,
+                    lecturersMap,
                     false
                 )
                 .ConfigureAwait(false);
 
-                Boolean haveNoSavingErrors = _schedulesRepository.SaveSchedules(
+                Boolean haveNoSavingErrors = _repository.SaveSchedules(
                     updatedSchedules,
                     (schedule) => _schedules[schedule.ScheduleId] = schedule
                 );
 
-                return schedulesDownloader.HaveNoDownloadingErrors && haveNoSavingErrors;
+                return downloader.HaveNoDownloadingErrors && haveNoSavingErrors;
             });
         }
 
         public Task<Boolean> DownloadSchedulesAsync(IEnumerable<Int32> schedulesIds,
-            Boolean shouldDownloadRelatedLecturersSchedules)
+            IReadOnlyDictionary<String, Int32> lecturersMap, Boolean shouldDownloadRelatedSchedules)
+        {
+            return DownloadSchedulesAsync(
+                new ServerSchedulesDownloader(_httpClient) { Logger = _logger },
+                schedulesIds,
+                lecturersMap,
+                shouldDownloadRelatedSchedules
+            );
+        }
+
+        internal Task<Boolean> DownloadSchedulesAsync(ISchedulesDownloader downloader,
+            IEnumerable<Int32> schedulesIds, IReadOnlyDictionary<String, Int32> lecturersMap,
+            Boolean shouldDownloadRelatedSchedules)
         {
             if (schedulesIds == null || schedulesIds.Count() == 0)
             {
                 throw new ArgumentException("Collection cannot be null or empty.", nameof(schedulesIds));
             }
 
-            if (LecturersMap == null || LecturersMap.Count == 0)
+            if (lecturersMap == null || lecturersMap.Count == 0)
             {
-                throw new InvalidOperationException("Lecturers map is null or empty.");
+                throw new ArgumentException("Collection cannot be null or empty.", nameof(lecturersMap));
             }
 
             return Task.Run(async () =>
             {
-                ServerSchedulesDownloader schedulesDownloader = new ServerSchedulesDownloader(_httpClient)
-                {
-                    Logger = _logger
-                };
-
-                IEnumerable<Schedule> schedules = await schedulesDownloader.DownloadSchedulesAsync(
+                IEnumerable<Schedule> schedules = await downloader.DownloadSchedulesAsync(
                     schedulesIds,
-                    LecturersMap,
-                    shouldDownloadRelatedLecturersSchedules
+                    lecturersMap,
+                    shouldDownloadRelatedSchedules
                 )
                 .ConfigureAwait(false);
 
-                Boolean haveNoSavingErrors = _schedulesRepository.SaveSchedules(
+                Boolean haveNoSavingErrors = _repository.SaveSchedules(
                     schedules,
                     (schedule) => _schedules[schedule.ScheduleId] = schedule
                 );
 
-                return schedulesDownloader.HaveNoDownloadingErrors && haveNoSavingErrors;
+                return downloader.HaveNoDownloadingErrors && haveNoSavingErrors;
             });
         }
 
@@ -150,106 +169,22 @@ namespace SmtuSchedule.Core
                 throw new ArgumentOutOfRangeException(nameof(scheduleId), "Number must be positive.");
             }
 
-            return Task.Run(() =>
+            if (!_schedules.ContainsKey(scheduleId))
             {
-                Boolean hasNoRemovingError = _schedulesRepository.RemoveSchedule(
-                    _schedules[scheduleId].DisplayedName);
-
-                return hasNoRemovingError && _schedules.TryRemove(scheduleId, out Schedule _);
-            });
-        }
-
-        public Task<Boolean> ReadCachedLecturersMapAsync()
-        {
-            return Task.Run(() =>
-            {
-                IsLecturersMapReadedFromCache = true;
-
-                LecturersMap = _lecturersRepository.ReadLecturersMap(out Boolean hasNoReadingError);
-
-                return hasNoReadingError;
-            });
-        }
-
-        public Task<Boolean> DownloadLecturersMapAsync()
-        {
-            return Task.Run(async () =>
-            {
-                // Если в этой сессии карта преподавателей уже загружалась с сайта, то нет необходимости
-                // делать это вновь. За одно использование приложения она не успеет устареть.
-                if (LecturersMap != null && !IsLecturersMapReadedFromCache)
-                {
-                    return true;
-                }
-
-                IsLecturersMapReadedFromCache = false;
-
-                ServerLecturersDownloader lecturersDownloader = new ServerLecturersDownloader(_httpClient)
-                {
-                    Logger = _logger
-                };
-
-                LecturersMap = await lecturersDownloader.DownloadLecturersMapAsync().ConfigureAwait(false);
-
-                if (lecturersDownloader.HaveNoDownloadingErrors)
-                {
-                    _lecturersRepository.SaveLecturersMap(LecturersMap!);
-                }
-
-                return lecturersDownloader.HaveNoDownloadingErrors;
-            });
-        }
-
-        public Task<Boolean> ReadSchedulesAsync()
-        {
-            return Task.Run(() =>
-            {
-                IReadOnlyDictionary<Int32, Schedule>? schedules = _schedulesRepository.ReadSchedules(
-                    out Boolean haveNoReadingErrors);
-
-                if (schedules == null)
-                {
-                    return true;
-                }
-
-                _schedules = new ConcurrentDictionary<Int32, Schedule>(schedules);
-
-                return haveNoReadingErrors;
-            });
-        }
-
-        public IEnumerable<Int32> GetSchedulesIdsBySearchRequests(IEnumerable<String> searchRequests)
-        {
-            if (LecturersMap == null || LecturersMap.Count == 0)
-            {
-                throw new InvalidOperationException("Lecturers map is null or empty.");
+                throw new ArgumentException("No schedule with this id.", nameof(scheduleId));
             }
 
-            return searchRequests.Select(r => GetScheduleIdBySearchRequest(r)).Where(id => id != 0);
-        }
-
-        private Int32 GetScheduleIdBySearchRequest(String searchRequest)
-        {
-            if (String.IsNullOrWhiteSpace(searchRequest))
+            return Task.Run(() =>
             {
-                throw new ArgumentException("String cannot be null, empty or whitespace.", nameof(searchRequest));
-            }
-
-            if (Int32.TryParse(searchRequest, out Int32 number))
-            {
-                return number;
-            }
-
-            return LecturersMap!.ContainsKey(searchRequest) ? LecturersMap[searchRequest] : 0;
+                Boolean hasNoRemovingError = _repository.RemoveSchedule(_schedules[scheduleId].DisplayedName);
+                return hasNoRemovingError && _schedules.Remove(scheduleId, out Schedule _);
+            });
         }
-
-        private readonly IHttpClient _httpClient;
 
         private ILogger? _logger;
 
-        private ConcurrentDictionary<Int32, Schedule> _schedules;
-
-        private readonly LocalLecturersRepository _lecturersRepository;
-        private readonly LocalSchedulesRepository _schedulesRepository;
+        private readonly IHttpClient _httpClient;
+        private readonly ISchedulesRepository _repository;
+        private readonly Dictionary<Int32, Schedule> _schedules;
     }
 }
