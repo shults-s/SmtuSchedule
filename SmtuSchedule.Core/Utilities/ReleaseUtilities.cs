@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Interfaces;
@@ -11,49 +10,15 @@ using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core.Utilities
 {
-    public static class ApplicationUtilities
+    public static class ReleaseUtilities
     {
         public const String LatestReleaseDownloadPageUrl = "https://github.com/shults-s/SmtuSchedule/releases/latest/";
 
         private const String RepositoryRawUrl = "https://raw.githubusercontent.com/shults-s/SmtuSchedule/master/";
 
-        public static IHttpClient HttpClient { get; internal set; }
+        internal static IHttpClient HttpClient { get; set; }
 
-        static ApplicationUtilities() => HttpClient = new HttpClientProxy();
-
-        public static Boolean IsUniversitySiteConnectionAvailable(out String? failReason)
-        {
-            // Эмулятор Android, созданный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping в нем не работает,
-            // что делает невозможным тестирование некоторых возможностей приложения в режиме отладки.
-#if DEBUG
-            failReason = null;
-            return true;
-#endif
-
-            const String UniversitySiteHostName = "www.smtu.ru";
-
-            PingReply reply = null;
-            try
-            {
-                reply = new Ping().Send(UniversitySiteHostName);
-
-                failReason = (reply.Status != IPStatus.Success)
-                    ? $"Ping failed with the status {reply?.Status} without throwing an exception."
-                    : null;
-
-                return (reply.Status == IPStatus.Success);
-            }
-            catch (PingException exception)
-            {
-                failReason = $"Ping failed with the {reply?.Status} status and threw an exception: {exception.Format()}";
-                return false;
-            }
-        }
-
-        public static Task<Boolean> IsUniversitySiteConnectionAvailableAsync()
-        {
-            return Task.Run(() => IsUniversitySiteConnectionAvailable(out String _));
-        }
+        static ReleaseUtilities() => HttpClient = new HttpClientProxy();
 
         public static Task<ReleaseDescription?> GetLatestReleaseDescriptionAsync()
         {
