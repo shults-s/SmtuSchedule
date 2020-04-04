@@ -98,6 +98,7 @@ namespace SmtuSchedule.Core
                         || exception is HtmlParsingException
                         || exception is HttpRequestException
                         || exception is NullReferenceException
+                        || exception is ArgumentOutOfRangeException
                     )
                     {
                         HaveNoDownloadingErrors = false;
@@ -245,6 +246,11 @@ namespace SmtuSchedule.Core
                     Boolean isLecturerScheduleExists = name != null && lecturersMap.ContainsKey(name);
                     id = isLecturerScheduleExists ? lecturersMap[name!] : 0;
                 }
+            }
+
+            if (scheduleId <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(scheduleId), "Number must be positive.");
             }
 
             // Групп с большим номером у нас нет, значит это расписание преподавателя.
