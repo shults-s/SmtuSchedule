@@ -12,7 +12,7 @@ namespace SmtuSchedule.Core.Interfaces
 
         Boolean SaveSchedules(
             IEnumerable<Schedule> schedules,
-            Action<Schedule>? scheduleSavedSuccessfulCallback = null
+            Action<Schedule>? scheduleSavedSuccessfullyCallback = null
         );
 
         IEnumerable<Schedule>? ReadSchedules(out Boolean haveNoReadingErrors);

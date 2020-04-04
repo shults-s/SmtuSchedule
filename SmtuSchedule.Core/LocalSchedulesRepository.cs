@@ -28,7 +28,7 @@ namespace SmtuSchedule.Core
         }
 
         public Boolean SaveSchedules(IEnumerable<Schedule> schedules,
-            Action<Schedule>? scheduleSavedSuccessfulCallback = null)
+            Action<Schedule>? scheduleSavedSuccessfullyCallback = null)
         {
             Boolean haveNoSavingErrors = true;
 
@@ -38,7 +38,7 @@ namespace SmtuSchedule.Core
                 try
                 {
                     File.WriteAllText(_storagePath + fileName, schedule.ToJson());
-                    scheduleSavedSuccessfulCallback?.Invoke(schedule);
+                    scheduleSavedSuccessfullyCallback?.Invoke(schedule);
                 }
                 catch (IOException exception)
                 {
