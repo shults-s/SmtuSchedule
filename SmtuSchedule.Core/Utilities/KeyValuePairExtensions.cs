@@ -4,7 +4,8 @@ namespace SmtuSchedule.Core.Utilities
 {
     internal static class KeyValuePairExtensions
     {
-        public static void Deconstruct<T1, T2>(this in KeyValuePair<T1, T2> tuple, out T1 key, out T2 value)
+        public static void Deconstruct<TKey, TValue>(this in KeyValuePair<TKey, TValue> tuple,
+            out TKey key, out TValue value)
         {
             key = tuple.Key;
             value = tuple.Value;
