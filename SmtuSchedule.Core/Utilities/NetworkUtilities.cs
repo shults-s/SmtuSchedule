@@ -15,6 +15,7 @@ namespace SmtuSchedule.Core.Utilities
 
         public static Boolean IsUniversitySiteConnectionAvailable(out String? failReason)
         {
+#pragma warning disable CS0162
             // Эмулятор Android, разработанный на основе QEMU, не поддерживает ICMP-запросы, поэтому ping не работает,
             // что делает невозможным тестирование некоторых возможностей приложения в режиме отладки.
 #if DEBUG
@@ -38,6 +39,7 @@ namespace SmtuSchedule.Core.Utilities
                 failReason = $"Ping failed with {reply?.Status} status and threw an exception:\n{exception.Format()}";
                 return false;
             }
+#pragma warning restore CS0162
         }
     }
 }
