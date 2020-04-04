@@ -4,12 +4,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup>
-    <Authors>Svyatoslav Shults</Authors>
+    <Copyright>Copyright © 2020 Svyatoslav Shults</Copyright>
     <Product>SmtuSchedule</Product>
+    <Version>1.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.22" />
     <PackageReference Include="System.Text.Json" Version="4.7.1" />
-    <PackageReference Include="System.Linq.Async" Version="4.0.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.23" />
   </ItemGroup>
 </Project>
