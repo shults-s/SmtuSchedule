@@ -7,7 +7,7 @@ using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core
 {
-    internal sealed class SchedulesMigrator
+    internal sealed class SchedulesMigrator : ISchedulesMigrator
     {
         public Boolean HaveNoMigrationErrors { get; private set; }
 

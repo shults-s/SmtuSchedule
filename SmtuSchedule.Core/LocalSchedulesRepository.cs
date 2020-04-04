@@ -8,7 +8,7 @@ using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core
 {
-    internal sealed class LocalSchedulesRepository
+    internal sealed class LocalSchedulesRepository : ISchedulesRepository
     {
         public ILogger? Logger { get; set; }
 

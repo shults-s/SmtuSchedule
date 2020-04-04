@@ -8,7 +8,7 @@ using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core
 {
-    internal sealed class LocalLecturersRepository
+    internal sealed class LocalLecturersRepository : ILecturersRepository
     {
         private static readonly JsonSerializerOptions Options = new JsonSerializerOptions()
         {

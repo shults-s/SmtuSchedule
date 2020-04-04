@@ -10,7 +10,7 @@ using SmtuSchedule.Core.Exceptions;
 
 namespace SmtuSchedule.Core
 {
-    internal sealed class ServerLecturersDownloader
+    internal sealed class ServerLecturersDownloader : ILecturersDownloader
     {
         private const Int32 IntervalBetweenRequestsInMilliseconds = 300;
 
