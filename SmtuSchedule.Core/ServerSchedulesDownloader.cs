@@ -59,11 +59,8 @@ namespace SmtuSchedule.Core
             _httpClient = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task<IEnumerable<Schedule>> DownloadSchedulesAsync(
-            IReadOnlyCollection<Int32> schedulesIds,
-            IReadOnlyDictionary<String, Int32> lecturersMap,
-            Boolean shouldDownloadGroupsRelatedLecturersSchedules
-        )
+        public async Task<IEnumerable<Schedule>> DownloadSchedulesAsync(DownloadingOptions options,
+            IReadOnlyCollection<Int32> schedulesIds, IReadOnlyDictionary<String, Int32> lecturersMap)
         {
             if (lecturersMap == null || lecturersMap.Count == 0)
             {
@@ -134,7 +131,7 @@ namespace SmtuSchedule.Core
 
             List<Schedule> schedules = await DownloadSchedulesAsync(schedulesIds).ConfigureAwait(false);
 
-            if (shouldDownloadGroupsRelatedLecturersSchedules)
+            if (options.HasFlag(DownloadingOptions.DownloadGroupsRelatedLecturersSchedules))
             {
                 List<Int32> relatedSchedulesIds = GetRelatedLecturersSchedulesIds(schedules);
                 schedules.AddRange(await DownloadSchedulesAsync(relatedSchedulesIds).ConfigureAwait(false));

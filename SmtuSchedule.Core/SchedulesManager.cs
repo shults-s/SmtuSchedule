@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
+using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core
 {
@@ -102,9 +103,9 @@ namespace SmtuSchedule.Core
             return Task.Run(async () =>
             {
                 IEnumerable<Schedule> updatedSchedules = await downloader.DownloadSchedulesAsync(
+                    DownloadingOptions.None,
                     _schedules.Values.Where(s => !s.IsActual).Select(s => s.ScheduleId).ToArray(),
-                    lecturersMap,
-                    false
+                    lecturersMap
                 )
                 .ConfigureAwait(false);
 
@@ -117,25 +118,22 @@ namespace SmtuSchedule.Core
             });
         }
 
-        public Task<Boolean> DownloadSchedulesAsync(
-            IReadOnlyCollection<Int32> schedulesIds,
-            IReadOnlyDictionary<String, Int32> lecturersMap,
-            Boolean shouldDownloadGroupsRelatedLecturersSchedules
-        )
+        public Task<Boolean> DownloadSchedulesAsync(DownloadingOptions options,
+            IReadOnlyCollection<Int32> schedulesIds, IReadOnlyDictionary<String, Int32> lecturersMap)
         {
             return DownloadSchedulesAsync(
                 new ServerSchedulesDownloader(_httpClient) { Logger = _logger },
+                options,
                 schedulesIds,
-                lecturersMap,
-                shouldDownloadGroupsRelatedLecturersSchedules
+                lecturersMap
             );
         }
 
         internal Task<Boolean> DownloadSchedulesAsync(
             ISchedulesDownloader downloader,
+            DownloadingOptions options,
             IReadOnlyCollection<Int32> schedulesIds,
-            IReadOnlyDictionary<String, Int32> lecturersMap,
-            Boolean shouldDownloadGroupsRelatedLecturersSchedules
+            IReadOnlyDictionary<String, Int32> lecturersMap
         )
         {
             if (schedulesIds == null || schedulesIds.Count == 0)
@@ -151,9 +149,9 @@ namespace SmtuSchedule.Core
             return Task.Run(async () =>
             {
                 IEnumerable<Schedule> schedules = await downloader.DownloadSchedulesAsync(
+                    options,
                     schedulesIds,
-                    lecturersMap,
-                    shouldDownloadGroupsRelatedLecturersSchedules
+                    lecturersMap
                 )
                 .ConfigureAwait(false);
 

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using SmtuSchedule.Core.Models;
+using SmtuSchedule.Core.Enumerations;
 
 namespace SmtuSchedule.Core.Interfaces
 {
@@ -12,9 +13,9 @@ namespace SmtuSchedule.Core.Interfaces
         ILogger? Logger { get; set; }
 
         Task<IEnumerable<Schedule>> DownloadSchedulesAsync(
+            DownloadingOptions options,
             IReadOnlyCollection<Int32> schedulesIds,
-            IReadOnlyDictionary<String, Int32> lecturersMap,
-            Boolean shouldDownloadGroupsRelatedLecturersSchedules
+            IReadOnlyDictionary<String, Int32> lecturersMap
         );
     }
 }
