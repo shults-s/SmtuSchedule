@@ -54,7 +54,6 @@ namespace SmtuSchedule.Core.Utilities
 
                     // ## [Версия X.X.X]
                     Match match = Regex.Match(changeLog, @"\#\# \[[\p{L}\s]*(?<version>[\d.]+)\]");
-
                     if (!match.Success)
                     {
                         return null;

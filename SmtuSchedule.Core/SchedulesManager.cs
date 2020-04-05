@@ -49,7 +49,6 @@ namespace SmtuSchedule.Core
             return Task.Run(() =>
             {
                 IEnumerable<Schedule>? schedules = _repository.ReadSchedules(out Boolean haveNoReadingErrors);
-
                 if (schedules != null)
                 {
                     schedules.ForEach(schedule => _schedules[schedule.ScheduleId] = schedule);
@@ -187,7 +186,6 @@ namespace SmtuSchedule.Core
         }
 
         private ILogger? _logger;
-
         private readonly IHttpClient _httpClient;
         private readonly ISchedulesRepository _repository;
         private readonly Dictionary<Int32, Schedule> _schedules;

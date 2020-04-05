@@ -270,7 +270,6 @@ namespace SmtuSchedule.Core
                 : LecturerScheduleBaseUrl;
 
             String html = await _httpClient.GetAsync(baseUrl + scheduleId + "/").ConfigureAwait(false);
-
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
 
@@ -295,21 +294,18 @@ namespace SmtuSchedule.Core
             }
 
             HtmlNode? table = document.DocumentNode.Descendants("table").FirstOrDefault();
-
             if (table == null)
             {
                 throw new HtmlParsingException("Timetable does not contains no one 'table' tag.");
             }
 
             HtmlNode[] heads = table.Elements("thead").ToArray();
-
             if (heads.Length == 0)
             {
                 throw new HtmlParsingException("Timetable does not contains 'thead' tags.", table);
             }
 
             HtmlNode[] bodyes = table.Elements("tbody").ToArray();
-
             if (bodyes.Length == 0)
             {
                 throw new HtmlParsingException("Timetable does not contains 'tbody' tags.", table);
@@ -331,7 +327,6 @@ namespace SmtuSchedule.Core
             for (Int32 i = 1; i < heads.Length; i++)
             {
                 String? dayOfWeekName = heads[i].Element("tr")?.Element("th")?.InnerText;
-
                 if (dayOfWeekName == null)
                 {
                     throw new HtmlParsingException(
@@ -339,7 +334,6 @@ namespace SmtuSchedule.Core
                 }
 
                 DayOfWeek dayOfWeek;
-
                 try
                 {
                     dayOfWeek = Days[dayOfWeekName];

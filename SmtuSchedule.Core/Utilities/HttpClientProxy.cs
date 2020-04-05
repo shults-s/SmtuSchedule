@@ -38,7 +38,6 @@ namespace SmtuSchedule.Core.Utilities
             }
 
             FormUrlEncodedContent? content = null;
-
             if (parameters != null)
             {
                 content = new FormUrlEncodedContent(parameters);

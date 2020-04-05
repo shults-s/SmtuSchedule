@@ -84,7 +84,6 @@ namespace SmtuSchedule.Core
         }
 
         private ILogger? _logger;
-
         private readonly IHttpClient _httpClient;
         private readonly ILecturersRepository _repository;
     }
