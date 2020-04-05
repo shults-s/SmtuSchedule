@@ -208,7 +208,7 @@ namespace SmtuSchedule.Core
                 }
 
                 // Обрезаем '<br><span class="s_small">Вид занятия</span>'.
-                // На этом моменте уже известно, что как минимум один тег в строке да есть.
+                // Проверка выше гарантирует, что как минимум один какой-то тег в строке да есть.
                 String subjectTitle = td.InnerHtml.Substring(0, td.InnerHtml.IndexOf('<'));
 
                 String subjectType;
@@ -242,7 +242,7 @@ namespace SmtuSchedule.Core
                         name = null;
                     }
 
-                    Boolean isLecturerScheduleExists = name != null && lecturersMap.ContainsKey(name);
+                    Boolean isLecturerScheduleExists = (name != null) && lecturersMap.ContainsKey(name);
                     id = isLecturerScheduleExists ? lecturersMap[name!] : 0;
                 }
             }
@@ -320,7 +320,7 @@ namespace SmtuSchedule.Core
                     "Timetable is empty, therefore, such a schedule does not exists.", table);
             }
 
-            // Первые элементы относятся к заголовку таблицы и интереса не представляют.
+            // Первые элементы (i = 0) относятся к заголовку таблицы и интереса не представляют.
             for (Int32 i = 1; i < heads.Length; i++)
             {
                 String? dayOfWeekName = heads[i].Element("tr")?.Element("th")?.InnerText;
@@ -379,17 +379,16 @@ namespace SmtuSchedule.Core
                         out Int32 lecturerOrGroupScheduleId
                     );
 
-                    if (scheduleType == ScheduleType.Lecturer)
+                    switch (scheduleType)
                     {
-                        subject.Group = new Group(lecturerOrGroupName!, lecturerOrGroupScheduleId);
-                    }
-                    else
-                    {
-                        // У некоторых предметов в расписании группы преподаватель может быть не задан.
-                        if (lecturerOrGroupName != null)
-                        {
+                        case ScheduleType.Lecturer:
+                            subject.Group = new Group(lecturerOrGroupName!, lecturerOrGroupScheduleId);
+                            break;
+
+                        case ScheduleType.Group when (lecturerOrGroupName != null):
+                            // У некоторых предметов в расписании группы преподаватель может быть не задан.
                             subject.Lecturer = new Lecturer(lecturerOrGroupName, lecturerOrGroupScheduleId);
-                        }
+                            break;
                     }
 
                     subjects.Add(subject);
