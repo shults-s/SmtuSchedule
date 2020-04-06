@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/mainActivityAppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/mainActivityToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            style="?attr/toolbarStyle">
+            <TextView
+                android:id="@+id/mainActivityToolbarTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="4dp"
+                android:layout_gravity="left"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="@string/mainActivityToolbarTitle"
+                android:textAppearance="?attr/titleTextAppearance" />
+        </androidx.appcompat.widget.Toolbar>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/mainActivityTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textSize="@dimen/normalTextSize"
+            app:tabMode="scrollable"
+            app:tabGravity="fill"
+            app:tabTextColor="?attr/textColorToolbar"
+            app:tabIndicatorColor="?attr/textColorToolbar"
+            app:tabSelectedTextColor="?attr/textColorToolbar" />
+    </com.google.android.material.appbar.AppBarLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/mainActivityShowViewingDateDialogFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_margin="@dimen/normalPadding"
+        android:clickable="true"
+        android:visibility="gone"
+        android:src="@drawable/calendar"
+        app:fabSize="normal"
+        app:backgroundTint="?attr/colorAccent" />
+    <RelativeLayout
+        android:id="@+id/mainActivityContentRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -88,6 +88,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ApplicationLifecycleListener.cs" />
     <Compile Include="Utilities\NotificationUtilities.cs" />
+    <Compile Include="Views\MainActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <GoogleServicesJson Include="Properties\GoogleServices.json" />
@@ -129,6 +130,7 @@
   <ItemGroup>
     <ProguardConfiguration Include="Properties\ProGuard.txt" />
     <AndroidResource Include="Resources\layout\customPreference.xml" />
+    <AndroidResource Include="Resources\layout\mainActivity.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\arrowDown.xml" />
