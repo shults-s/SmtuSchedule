@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:icon="@drawable/done"
-        android:title="@string/downloadSchedulesMenuItem"
+        android:title="@string/downloadMenuDoneMenuItemTitle"
         android:enabled="false"
         app:showAsAction="always" />
 </menu>

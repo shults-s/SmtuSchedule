@@ -92,6 +92,7 @@
   <ItemGroup>
     <GoogleServicesJson Include="Properties\GoogleServices.json" />
     <None Include="Properties\AndroidManifest.xml" />
+    <AndroidResource Include="Resources\drawable\starredList.xml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AppCenter.Analytics">

@@ -3,23 +3,29 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/selectViewingDateMenuItem"
+        android:id="@+id/mainMenuShowScheduleActionsDialogMenuItem"
         android:visible="false"
-        android:icon="@drawable/calendar"
-        android:title="@string/selectViewingDateMenuItem"
+        android:icon="@drawable/starredList"
+        android:title="@string/mainMenuShowScheduleActionsDialogMenuItemTitle"
         app:showAsAction="always" />
     <item
-        android:id="@+id/downloadSchedulesMenuItem"
+        android:id="@+id/mainMenuShowViewingDateDialogMenuItem"
+        android:visible="false"
+        android:icon="@drawable/calendar"
+        android:title="@string/mainMenuShowViewingDateDialogMenuItemTitle"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/mainMenuStartDownloadActivityMenuItem"
         android:visible="false"
         android:icon="@drawable/download"
-        android:title="@string/downloadSchedulesMenuItem"
+        android:title="@string/mainMenuStartDownloadActivityMenuItemTitle"
         app:showAsAction="never" />
     <item
-        android:id="@+id/startPreferencesMenuItem"
-        android:title="@string/startPreferencesMenuItem"
+        android:id="@+id/mainMenuStartPreferencesActivityMenuItem"
+        android:title="@string/mainMenuStartPreferencesActivityMenuItemTitle"
         app:showAsAction="never" />
     <item
-        android:id="@+id/aboutApplicationMenuItem"
-        android:title="@string/aboutApplicationMenuItem"
+        android:id="@+id/mainMenuShowAboutApplicationDialogMenuItem"
+        android:title="@string/mainMenuShowAboutApplicationDialogMenuItemTitle"
         app:showAsAction="never" />
 </menu>
