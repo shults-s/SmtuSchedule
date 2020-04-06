@@ -94,10 +94,10 @@ namespace SmtuSchedule.Core
                     ["search_key"] = searchKeyField.Attributes["value"].Value
                 };
 
-                // Первая попытка без задержки.
+                // Первая попытка загрузки происходит без задержки.
                 if (attemptNumber > 1)
                 {
-                    // Bugfix: "unexpected end of stream" или "\\n not found: size=1 content=0d..."
+                    // Bugfix: "unexpected end of stream" или "\\n not found: size=1 content=0d...".
                     System.Threading.Thread.Sleep(IntervalBetweenRequestsInMilliseconds);
                 }
 
