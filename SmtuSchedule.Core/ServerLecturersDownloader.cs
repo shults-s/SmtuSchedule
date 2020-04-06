@@ -32,8 +32,6 @@ namespace SmtuSchedule.Core
 
         private async Task<IReadOnlyDictionary<String, Int32>?> TryDownloadLecturersMapAsync(Int32 attemptNumber)
         {
-            const String SearchPageUrl = "https://www.smtu.ru/ru/searchschedule/";
-
             // На входе: <a href="/ru/viewschedule/teacher/ИдентификаторРасписания/">...</a>
             static Int32 ParseScheduleId(HtmlNode link)
             {
@@ -72,6 +70,8 @@ namespace SmtuSchedule.Core
             }
 
             HasNoDownloadingError = true;
+
+            const String SearchPageUrl = "https://www.smtu.ru/ru/searchschedule/";
 
             try
             {

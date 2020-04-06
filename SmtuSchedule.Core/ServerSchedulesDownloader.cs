@@ -143,9 +143,6 @@ namespace SmtuSchedule.Core
         private async Task<Schedule> DownloadScheduleAsync(Int32 scheduleId,
             IReadOnlyDictionary<String, Int32> lecturersMap)
         {
-            const String LecturerScheduleBaseUrl = "https://www.smtu.ru/ru/viewschedule/teacher/";
-            const String GroupScheduleBaseUrl = "https://www.smtu.ru/ru/viewschedule/";
-
             // На входе: ЧЧ:ММ-ЧЧ:ММ[<br><span class="s_small">Вид недели</span>]
             static void ParseTime(HtmlNode td, out DateTime from, out DateTime to, out WeekType weekType)
             {
@@ -262,6 +259,9 @@ namespace SmtuSchedule.Core
                 LastUpdate = DateTime.Now,
                 Timetable = new Timetable()
             };
+
+            const String LecturerScheduleBaseUrl = "https://www.smtu.ru/ru/viewschedule/teacher/";
+            const String GroupScheduleBaseUrl = "https://www.smtu.ru/ru/viewschedule/";
 
             String baseUrl = (scheduleType == ScheduleType.Group) ? GroupScheduleBaseUrl
                 : LecturerScheduleBaseUrl;
