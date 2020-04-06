@@ -50,11 +50,11 @@ namespace SmtuSchedule.Core
             return haveNoSavingErrors;
         }
 
-        public Boolean RemoveSchedule(String displayedName)
+        public Boolean RemoveSchedule(Schedule schedule)
         {
             Boolean hasNoRemovingError = true;
 
-            String fileName = displayedName + ".json";
+            String fileName = schedule.DisplayedName + ".json";
             try
             {
                 File.Delete(Path.Join(_storagePath, fileName));

@@ -8,7 +8,7 @@ namespace SmtuSchedule.Core.Interfaces
     {
         ILogger? Logger { get; set; }
 
-        Boolean RemoveSchedule(String displayedName);
+        Boolean RemoveSchedule(Schedule schedule);
 
         Boolean SaveSchedules(
             IEnumerable<Schedule> schedules,

@@ -45,20 +45,6 @@ namespace SmtuSchedule.Core
             _schedules = new Dictionary<Int32, Schedule>();
         }
 
-        public Task<Boolean> ReadSchedulesAsync()
-        {
-            return Task.Run(() =>
-            {
-                IEnumerable<Schedule>? schedules = _repository.ReadSchedules(out Boolean haveNoReadingErrors);
-                if (schedules != null)
-                {
-                    schedules.ForEach(schedule => _schedules[schedule.ScheduleId] = schedule);
-                }
-
-                return haveNoReadingErrors;
-            });
-        }
-
         public Task<Boolean> MigrateSchedulesAsync(IReadOnlyDictionary<String, Int32> lecturersMap)
         {
             return MigrateSchedulesAsync(new SchedulesMigrator() { Logger = _logger }, lecturersMap);
@@ -178,8 +164,21 @@ namespace SmtuSchedule.Core
 
             return Task.Run(() =>
             {
-                Boolean hasNoRemovingError = _repository.RemoveSchedule(_schedules[scheduleId].DisplayedName);
-                return hasNoRemovingError && _schedules.Remove(scheduleId, out Schedule _);
+                return _repository.RemoveSchedule(_schedules[scheduleId]) && _schedules.Remove(scheduleId);
+            });
+        }
+
+        public Task<Boolean> ReadSchedulesAsync()
+        {
+            return Task.Run(() =>
+            {
+                IEnumerable<Schedule>? schedules = _repository.ReadSchedules(out Boolean haveNoReadingErrors);
+                if (schedules != null)
+                {
+                    schedules.ForEach(schedule => _schedules[schedule.ScheduleId] = schedule);
+                }
+
+                return haveNoReadingErrors;
             });
         }
 
