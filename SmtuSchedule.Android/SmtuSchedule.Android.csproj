@@ -75,43 +75,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enumerations\InitializationStatus.cs" />
-    <Compile Include="Enumerations\FeatureDiscoveryState.cs" />
-    <Compile Include="Enumerations\LessonRemindTime.cs" />
-    <Compile Include="Exceptions\WorkerException.cs" />
-    <Compile Include="Interfaces\ISchedulesViewer.cs" />
     <Compile Include="Properties\PrivateKeys.cs" />
     <Compile Include="Preferences.cs" />
-    <Compile Include="Utilities\IntentUtilities.cs" />
-    <Compile Include="Utilities\LessonsRemindPublisher.cs" />
-    <Compile Include="Utilities\PeriodicWorkUtilities.cs" />
-    <Compile Include="Utilities\UpdateSchedulesWorker.cs" />
-    <Compile Include="Utilities\LessonsRemindWorker.cs" />
-    <Compile Include="Utilities\NotificationUtilities.cs" />
-    <Compile Include="Utilities\MessagingService.cs" />
-    <Compile Include="Utilities\JavaSetExtensions.cs" />
-    <Compile Include="Utilities\TapTargetExtensions.cs" />
-    <Compile Include="Utilities\StringExtensions.cs" />
-    <Compile Include="Utilities\ApplicationLifecycleListener.cs" />
-    <Compile Include="Utilities\TapTargetSequenceListener.cs" />
-    <Compile Include="Utilities\TapTargetViewListener.cs" />
-    <Compile Include="Views\CustomMultiSelectListPreference.cs" />
-    <Compile Include="Views\CustomSwipeRefreshLayout.cs" />
-    <Compile Include="Views\CustomArrayAdapter.cs" />
-    <Compile Include="Views\CustomClickableSpan.cs" />
-    <Compile Include="Utilities\ICharSequenceExtensions.cs" />
-    <Compile Include="Utilities\UiUtilities.cs" />
-    <Compile Include="Views\CustomAlertDialog.cs" />
-    <Compile Include="Views\DownloadActivity.cs" />
-    <Compile Include="Views\PreferencesActivity.cs" />
-    <Compile Include="Views\CustomDatePickerDialog.cs" />
     <Compile Include="SmtuScheduleApplication.cs" />
-    <Compile Include="Views\MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\ScheduleFragment.cs" />
-    <Compile Include="Views\SchedulesPagerAdapter.cs" />
-    <Compile Include="Views\DatePreference.cs" />
   </ItemGroup>
   <ItemGroup>
     <GoogleServicesJson Include="Properties\GoogleServices.json" />
@@ -156,26 +124,6 @@
     <AndroidResource Include="Resources\drawable\arrowDown.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\mainActivity.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\message.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\schedulePage.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\subject.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\mipmap\launcherIcon.png" />
   </ItemGroup>
   <ItemGroup>
@@ -200,45 +148,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\progressBar.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\scheduleViewPager.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\dialogDatePicker.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\download.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\xml\preferences.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\preferencesActivity.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\customPreference.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\customDialogLayout.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\downloadActivity.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>
@@ -271,21 +184,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\darkTheme.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\dialogListItem.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\dialogMessage.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\dialogListView.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>
