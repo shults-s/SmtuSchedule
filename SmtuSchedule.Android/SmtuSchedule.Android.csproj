@@ -76,6 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\PrivateKeys.cs" />
+    <Compile Include="Enumerations\FeatureDiscoveryState.cs" />
+    <Compile Include="Enumerations\InitializationStatus.cs" />
+    <Compile Include="Enumerations\LessonRemindTime.cs" />
     <Compile Include="Preferences.cs" />
     <Compile Include="SmtuScheduleApplication.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
