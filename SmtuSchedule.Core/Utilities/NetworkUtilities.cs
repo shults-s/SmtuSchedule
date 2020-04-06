@@ -6,8 +6,6 @@ namespace SmtuSchedule.Core.Utilities
 {
     public static class NetworkUtilities
     {
-        public const String UniversitySiteHostName = "www.smtu.ru";
-
         public static Task<Boolean> IsUniversitySiteConnectionAvailableAsync()
         {
             return Task.Run(() => IsUniversitySiteConnectionAvailable(out String _));
@@ -22,6 +20,8 @@ namespace SmtuSchedule.Core.Utilities
             failReason = null;
             return true;
 #endif
+
+            const String UniversitySiteHostName = "www.smtu.ru";
 
             PingReply? reply = null;
             try
