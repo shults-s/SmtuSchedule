@@ -1,21 +1,23 @@
-# Screens
--keep class android.support.v4.view.ViewPager
--keep class android.support.v4.widget.SwipeRefreshLayout
--keep class android.support.v7.widget.Toolbar
--keep class android.support.v7.widget.PopupMenu
--keep class android.support.v7.widget.FitWindowsFrameLayout
--keep class android.support.v7.widget.FitWindowsLinearLayout
--keep class android.support.design.widget.TabLayout
--keep class android.support.design.widget.AppBarLayout
--keep class android.support.design.widget.CoordinatorLayout
--keep class android.support.design.widget.FloatingActionButton
--keep class android.support.design.widget.Snackbar
--keep class android.support.design.widget.Snackbar$SnackbarLayout
+# Widgets
+-keep class androidx.viewpager.widget.ViewPager
+-keep class androidx.appcompat.widget.Toolbar
+-keep class androidx.appcompat.widget.PopupMenu
+-keep class androidx.appcompat.widget.FitWindowsFrameLayout
+-keep class androidx.appcompat.widget.FitWindowsLinearLayout
+-keep class androidx.coordinatorlayout.widget.CoordinatorLayout
+-keep class androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+
+#  Material Components 
+-keep class com.google.android.material.tabs.TabLayout
+-keep class com.google.android.material.appbar.AppBarLayout
+-keep class com.google.android.material.snackbar.Snackbar
+-keep class com.google.android.material.snackbar.Snackbar$SnackbarLayout
+-keep class com.google.android.material.floatingactionbutton.FloatingActionButton
 
 # Dialogs
--keep class android.support.v7.widget.DialogTitle
--keep class android.support.v7.widget.ButtonBarLayout
--keep class android.support.v7.widget.AlertDialogLayout
+-keep class androidx.appcompat.widget.DialogTitle
+-keep class androidx.appcompat.widget.ButtonBarLayout
+-keep class androidx.appcompat.widget.AlertDialogLayout
 
 # Firebase Cloud Messaging
 -keep class com.google.firebase.provider.FirebaseInitProvider
