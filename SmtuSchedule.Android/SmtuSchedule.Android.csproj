@@ -79,6 +79,9 @@
     <Compile Include="Enumerations\FeatureDiscoveryState.cs" />
     <Compile Include="Enumerations\InitializationStatus.cs" />
     <Compile Include="Enumerations\LessonRemindTime.cs" />
+    <Compile Include="Exceptions\WorkerException.cs" />
+    <Compile Include="Interfaces\IApplicationManager.cs" />
+    <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Preferences.cs" />
     <Compile Include="SmtuScheduleApplication.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
