@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<android.support.v7.preference.PreferenceScreen
+<androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <shults.smtuschedule.android.views.DatePreference
@@ -15,38 +15,44 @@
         android:defaultValue="@array/lessonRemindTimesDefaultValues"
         android:layout="@layout/customPreference"
         app:summaryNothingSelected="@string/preferenceLessonRemindSummary" />
-    <SwitchPreferenceCompat
+    <androidx.preference.SwitchPreference
         android:key="UpdateSchedulesOnStart"
         android:title="@string/preferenceUpdateSchedulesOnStartTitle"
         android:summary="@string/preferenceUpdateSchedulesOnStartSummary"
         android:defaultValue="true"
         android:layout="@layout/customPreference" />
-    <SwitchPreferenceCompat
+    <androidx.preference.SwitchPreference
         android:key="UseDarkTheme"
         android:title="@string/preferenceUseDarkThemeTitle"
         android:defaultValue="false"
         android:layout="@layout/customPreference" />
-    <SwitchPreferenceCompat
+    <androidx.preference.SwitchPreference
         android:key="UseFabDateSelector"
         android:title="@string/preferenceUseFabDateSelectorTitle"
         android:summary="@string/preferenceUseFabDateSelectorSummary"
         android:defaultValue="true"
         android:layout="@layout/customPreference" />
-    <SwitchPreferenceCompat
+    <androidx.preference.SwitchPreference
         android:key="DisplaySubjectEndTime"
         android:title="@string/preferenceDisplaySubjectEndTimeTitle"
         android:summary="@string/preferenceDisplaySubjectEndTimeSummary"
         android:defaultValue="true"
         android:layout="@layout/customPreference" />
-    <!-- <SwitchPreferenceCompat
+    <androidx.preference.SwitchPreference
+        android:key="DisplayAnotherWeekSubjects"
+        android:title="@string/preferenceDisplayAnotherWeekSubjectsTitle"
+        android:summary="@string/preferenceDisplayAnotherWeekSubjectsSummary"
+        android:defaultValue="false"
+        android:layout="@layout/customPreference" />
+    <androidx.preference.SwitchPreference
         android:key="CheckUpdatesOnStart"
         android:title="@string/preferenceCheckUpdatesOnStartTitle"
         android:summary="@string/preferenceCheckUpdatesOnStartSummary"
         android:defaultValue="true"
-        android:layout="@layout/customPreference" /> -->
-    <CheckBoxPreference
+        android:layout="@layout/customPreference" />
+    <androidx.preference.CheckBoxPreference
         android:key="ReplayFeatureDiscovery"
         android:title="@string/preferenceReplayFeatureDiscoveryTitle"
         android:summaryOn="@string/preferenceReplayFeatureDiscoverySummaryOn"
         android:layout="@layout/customPreference" />
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>
