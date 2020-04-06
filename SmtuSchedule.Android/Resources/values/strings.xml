@@ -5,51 +5,52 @@
     <string name="applicationLabel">Расписание</string>
 
     <!-- Заголовки и сообщения обучающих экранов -->
-    <string name="applicationSettingsFeatureDiscoveryTitle">Настройте приложение</string>
-    <string name="applicationSettingsFeatureDiscoveryMessage">
+    <string name="configureApplicationFeatureDiscoveryTitle">Настройте приложение</string>
+    <string name="configureApplicationFeatureDiscoveryMessage">
         Задайте первым параметром любой день текущего семестра, принадлежащий верхней неделе.
         \n\nОбновляйте значение каждый семестр.
     </string>
-    <string name="schedulesDownloadFeatureDiscoveryTitle">Загрузите расписания</string>
-    <string name="schedulesDownloadFeatureDiscoveryMessage">
+    <string name="downloadSchedulesFeatureDiscoveryTitle">Загрузите расписания</string>
+    <string name="downloadSchedulesFeatureDiscoveryMessage">
         Введите номера нужных групп и/или ФИО преподавателей.
         \n\nВпоследствии загружать нужные расписания можно будет прямо из просматриваемого расписания нажав на имя преподавателя
         или номер группы.
     </string>
-    <string name="schedulesManagementFeatureDiscoveryTitle">Управление и переключение между расписаниями</string>
-    <string name="schedulesManagementFeatureDiscoveryMessage">
+    <string name="manageSchedulesFeatureDiscoveryTitle">Управляйте и переключайтесь между расписаниями</string>
+    <string name="manageSchedulesFeatureDiscoveryMessage">
         Короткое нажатие покажет список загруженных расписаний.
-        \n\nДлительное – откроет меню действий над выбранным расписанием: удалить или перезагрузить.
         \n\nМежду расписаниями можно переключаться быстрее: нажав на имя преподавателя или номер группы в просматриваемом
         расписании.
     </string>
-    <string name="scheduleChangeDateFeatureDiscoveryTitle">Изменение просматриваемой даты</string>
-    <string name="scheduleChangeDateFeatureDiscoveryMessage">
+    <string name="changeViewingDateFeatureDiscoveryTitle">Изменяйте просматриваемую дату</string>
+    <string name="changeViewingDateFeatureDiscoveryMessage">
         Короткое нажатие откроет календарь для выбора произвольной даты.
         \n\nДлительное – покажет тип просматриваемой недели: верхняя или нижняя.
-        \n\nМежду смежными датами проще переключаться с помощью вкладок, либо перелистывая страницы расписания влево-вправо.
         \n\nВернуться к текущей дате можно нажав кнопку «Назад».
+        \n\nМежду смежными датами проще переключаться с помощью вкладок, либо перелистывая страницы расписания влево-вправо.
     </string>
 
-    <!-- Заголовки диалогов, уведомлений и панелей инструментов -->
-    <string name="preferencesToolbarTitle">Настройки</string>
-    <string name="downloadToolbarTitle">Загрузка расписаний</string>
-    <string name="welcomeToolbarTitle">@string/applicationCompleteName</string>
+    <!-- Заголовки панелей инструментов -->
+    <string name="preferencesActivityToolbarTitle">Настройки</string>
+    <string name="downloadActivityToolbarTitle">Загрузка расписаний</string>
+    <string name="mainActivityToolbarTitle">@string/applicationCompleteName</string>
+
+    <!-- Заголовки диалогов -->
     <string name="aboutApplicationDialogTitle">О приложении</string>
     <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
-    <string name="upcomingLessonRemindNotificationTitle">Напоминание о занятии</string>
     <string name="googlePlayStoreReleaseAvailableDialogTitle">Релиз в Google Play</string>
     <string name="applicationUpdateAvailableDialogTitle">Вышло обновление</string>
     <string name="applicationCriticalUpdateAvailableDialogTitle">Критическое обновление</string>
 
-    <!-- Названия пунктов меню в панелях инстументов -->
-    <string name="selectViewingDateMenuItem">Выбрать дату</string>
-    <string name="downloadSchedulesMenuItem">Загрузить расписания</string>
-    <string name="removeCurrentScheduleMenuItem">Удалить расписание</string>
-    <string name="startPreferencesMenuItem">@string/preferencesToolbarTitle</string>
-    <string name="aboutApplicationMenuItem">@string/aboutApplicationDialogTitle</string>
+    <!-- Заголовки пунктов меню в панелях инстументов -->
+    <string name="downloadMenuDoneMenuItemTitle">@string/mainMenuStartDownloadActivityMenuItemTitle</string>
+    <string name="mainMenuShowScheduleActionsDialogMenuItemTitle">Выбрать действие</string>
+    <string name="mainMenuShowViewingDateDialogMenuItemTitle">Выбрать дату</string>
+    <string name="mainMenuStartDownloadActivityMenuItemTitle">Загрузить расписания</string>
+    <string name="mainMenuShowAboutApplicationDialogMenuItemTitle">@string/aboutApplicationDialogTitle</string>
+    <string name="mainMenuStartPreferencesActivityMenuItemTitle">@string/preferencesActivityToolbarTitle</string>
 
-    <!-- Названия действий Snackbar'ов, кнопок и диалогов -->
+    <!-- Заголовки действий -->
     <string name="gotItActionTitle">Понял</string>
     <string name="cancelActionTitle">Отмена</string>
     <string name="removeActionTitle">Удалить</string>
@@ -59,7 +60,7 @@
     <string name="grantAccessActionTitle">Разрешить</string>
     <string name="tryAgainActionTitle">Повторить попытку ({0})</string>
     <string name="openPlayMarketActionTitle">Открыть Play Маркет</string>
-    <string name="openUpdateDownloadPageActionTitle">Страница загрузки</string>
+    <string name="openDownloadPageActionTitle">Страница загрузки</string>
 
     <!-- Сообщения об ошибках -->
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
@@ -94,6 +95,10 @@
     <string name="noUniversitySiteConnectionErrorMessage">Нет соединения с интернетом или с сайтом университета.</string>
     <string name="universitySiteConnectionLostErrorMessage">Потеряно соединение с интернетом или с сайтом университета.</string>
 
+    <!-- Заголовки и сообщения уведомлений -->
+    <string name="upcomingLessonRemindNotificationTitle">Напоминание о занятии</string>
+    <string name="upcomingLessonRemindNotificationMessage">{0}: {1} в {2} «{3}».</string>
+
     <!-- Заголовки и описания каналов уведомлений -->
     <string name="updatesNotificationChannelName">Обновления приложения</string>
     <string name="updatesNotificationChannelDescription">Сообщения о выходе новых версий приложения</string>
@@ -110,9 +115,10 @@
 
     <!-- Подсказки ввода -->
     <string name="downloadRequestHintMessage">Введите номера групп и/или ФИО преподавателей через запятую:</string>
-    <string name="shouldDownloadRelatedSchedulesMessage">
-        Загрузить расписания преподавателей, присутствующих в перечисленных расписаниях групп
-    </string>
+
+    <!-- Фрагменты текстов сообщений и элементов интерфейса -->
+    <string name="multiGroupSubjectPrefix">Группы</string>
+    <string name="shouldDownloadRelatedSchedulesMessage">Загрузить расписания преподавателей из указанных групп</string>
 
     <!-- Заголовки и описания настроек приложения -->
     <string name="preferenceUseDarkThemeTitle">Темная тема</string>
@@ -124,15 +130,14 @@
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
     <string name="preferenceReplayFeatureDiscoveryTitle">Повторить обучение использованию</string>
     <string name="preferenceReplayFeatureDiscoverySummaryOn">Перезапуcтите приложение, чтобы начать</string>
+    <string name="preferenceCheckUpdatesOnStartTitle">Проверять обновления</string>
+    <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string>
+    <string name="preferenceDisplayAnotherWeekSubjectsTitle">Занятия другой недели</string>
+    <string name="preferenceDisplayAnotherWeekSubjectsSummary">Отображать занятия другой недели (как на сайте)</string>
     <string name="preferenceUseFabDateSelectorTitle">Плавающая кнопка</string>
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
     <string name="preferenceUpdateSchedulesOnStartTitle">Обновлять расписания</string>
     <string name="preferenceUpdateSchedulesOnStartSummary">Автоматически обновлять расписания (может замедлять запуск)</string>
-    <!-- <string name="preferenceCheckUpdatesOnStartTitle">Проверять обновления</string> -->
-    <!-- <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string> -->
-
-    <!-- Фрагменты текстов сообщений и элементов интерфейса -->
-    <string name="multiGroupSubjectPrefix">Группы</string>
 
     <!-- Сообщения уведомительного характера -->
     <string name="aboutApplicationMessage">
@@ -150,12 +155,11 @@
     <string name="scheduleDownloadedSuccessfullyMessage">Расписание загружено.</string>
     <string name="schedulesDownloadedSuccessfullyMessage">Все расписания загружены.</string>
     <string name="scheduleNotYetDownloadedMessage">Это расписание еще не загружено.</string>
-    <string name="waitUntilSchedulesFinishDownloading">Дождитесь окончания загрузки расписаний.</string>
+    <string name="waitUntilSchedulesFinishDownloadingMessage">Дождитесь окончания загрузки расписаний.</string>
     <string name="configureApplicationMessage">Настройте приложение для корректного отображения занятий.</string>
     <string name="lecturersMapReadedFromCacheMessage">
         Применено обходное решение проблемы. Не все расписания могут быть доступны вплоть до перезапуска приложения.
     </string>
-    <string name="upcomingLessonRemindNotificationMessage">{0}: {1} в {2} «{3}».</string>
     <string name="applicationUpdateAvailableMessage">
         Доступна [**новая версия**](https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md) приложения.
     </string>

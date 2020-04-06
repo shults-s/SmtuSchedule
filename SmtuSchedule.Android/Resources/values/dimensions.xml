@@ -2,8 +2,8 @@
 <resources>
     <dimen name="extraLargeTextSize">20sp</dimen>
     <dimen name="largeTextSize">18sp</dimen>
-    <dimen name="smallTextSize">14sp</dimen>
     <dimen name="normalTextSize">16sp</dimen>
+    <dimen name="smallTextSize">14sp</dimen>
 
     <dimen name="toolbarElevation">4dp</dimen>
 
