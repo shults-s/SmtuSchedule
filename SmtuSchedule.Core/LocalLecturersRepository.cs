@@ -39,7 +39,7 @@ namespace SmtuSchedule.Core
         {
             Boolean hasNoSavingError = true;
 
-            String filePath = _storagePath + LecturersMapFileName;
+            String filePath = Path.Join(_storagePath, LecturersMapFileName);
             try
             {
                 String json = JsonSerializer.Serialize<IReadOnlyDictionary<String, Int32>>(lecturers, Options);
@@ -58,7 +58,7 @@ namespace SmtuSchedule.Core
         {
             hasNoReadingError = true;
 
-            String filePath = _storagePath + LecturersMapFileName;
+            String filePath = Path.Join(_storagePath, LecturersMapFileName);
             try
             {
                 return JsonSerializer.Deserialize<Dictionary<String, Int32>>(File.ReadAllText(filePath), Options);

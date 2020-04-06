@@ -37,7 +37,7 @@ namespace SmtuSchedule.Core
                 String fileName = schedule.DisplayedName + ".json";
                 try
                 {
-                    File.WriteAllText(_storagePath + fileName, schedule.ToJson());
+                    File.WriteAllText(Path.Join(_storagePath, fileName), schedule.ToJson());
                     scheduleSavedSuccessfullyCallback?.Invoke(schedule);
                 }
                 catch (IOException exception)
@@ -57,7 +57,7 @@ namespace SmtuSchedule.Core
             String fileName = displayedName + ".json";
             try
             {
-                File.Delete(_storagePath + fileName);
+                File.Delete(Path.Join(_storagePath, fileName));
             }
             catch (IOException exception)
             {
