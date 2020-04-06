@@ -128,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProguardConfiguration Include="Properties\ProGuard.txt" />
+    <AndroidResource Include="Resources\layout\customPreference.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\arrowDown.xml" />
