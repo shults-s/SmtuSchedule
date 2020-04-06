@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
-    <style name="Theme.SmtuSchedule.Dark" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.SmtuSchedule.Dark" parent="Theme.MaterialComponents.NoActionBar">
         <item name="titleTextAppearance">@style/TextAppearance.Widget.SmtuSchedule.Dark.Toolbar.Title</item>
 
         <item name="colorDivider">@color/dividerNight</item>
@@ -38,10 +38,10 @@
         <item name="android:textColor">@color/toolbarTitleTextNight</item>
     </style>
 
-    <style name="Widget.SmtuSchedule.Dark.Toolbar" parent="Widget.AppCompat.Toolbar">
+    <style name="Widget.SmtuSchedule.Dark.Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">@color/primaryNight</item>
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat</item>
-        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.MaterialComponents</item>
+        <item name="android:theme">@style/ThemeOverlay.MaterialComponents.Dark.ActionBar</item>
     </style>
 
     <style name="Widget.SmtuSchedule.Dark.Snackbar" parent="Widget.MaterialComponents.Snackbar">
@@ -57,7 +57,7 @@
         <item name="android:headerBackground">@color/primaryNight</item>
     </style>
 
-    <style name="Theme.SmtuSchedule.Dark.Dialog" parent="Theme.AppCompat.Dialog">
+    <style name="Theme.SmtuSchedule.Dark.Dialog" parent="Theme.MaterialComponents.Dialog">
         <item name="colorAccent">@color/accentNight</item>
         <item name="android:windowBackground">@color/primaryNight</item>
 
@@ -66,7 +66,7 @@
         <item name="android:datePickerStyle">@style/Widget.SmtuSchedule.Dark.DatePicker</item>
     </style>
 
-    <style name="ThemeOverlay.SmtuSchedule.Dark.Popup" parent="ThemeOverlay.AppCompat" />
+    <style name="ThemeOverlay.SmtuSchedule.Dark.Popup" parent="ThemeOverlay.MaterialComponents" />
 
     <style name="ThemeOverlay.SmtuSchedule.Dark.Preference" parent="PreferenceThemeOverlay.v14.Material" />
 </resources>

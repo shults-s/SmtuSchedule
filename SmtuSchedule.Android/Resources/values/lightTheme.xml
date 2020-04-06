@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
-    <style name="Theme.SmtuSchedule.Light" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.SmtuSchedule.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="titleTextAppearance">@style/TextAppearance.Widget.SmtuSchedule.Light.Toolbar.Title</item>
 
         <item name="colorDivider">@color/dividerDay</item>
@@ -33,23 +33,23 @@
         <item name="android:textColor">@color/toolbarTitleTextDay</item>
     </style>
 
-    <style name="Widget.SmtuSchedule.Light.Toolbar" parent="Widget.AppCompat.Toolbar">
+    <style name="Widget.SmtuSchedule.Light.Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">@color/primaryDay</item>
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
+        <item name="android:theme">@style/ThemeOverlay.MaterialComponents.Dark.ActionBar</item>
     </style>
 
     <style name="Widget.SmtuSchedule.Light.Snackbar" parent="Widget.MaterialComponents.Snackbar" />
 
-    <style name="Widget.SmtuSchedule.Light.PopupMenu" parent="Widget.AppCompat.Light.PopupMenu">
+    <style name="Widget.SmtuSchedule.Light.PopupMenu" parent="Widget.AppCompat.PopupMenu">
         <item name="overlapAnchor">true</item>
     </style>
 
-    <style name="Theme.SmtuSchedule.Light.Dialog" parent="Theme.AppCompat.Light.Dialog">
+    <style name="Theme.SmtuSchedule.Light.Dialog" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorAccent">@color/primaryDay</item>
     </style>
 
-    <style name="ThemeOverlay.SmtuSchedule.Light.Popup" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="ThemeOverlay.SmtuSchedule.Light.Popup" parent="ThemeOverlay.MaterialComponents.Light" />
 
     <style name="ThemeOverlay.SmtuSchedule.Light.Preference" parent="PreferenceThemeOverlay.v14.Material" />
 </resources>
