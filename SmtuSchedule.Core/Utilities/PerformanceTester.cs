@@ -37,7 +37,7 @@ namespace SmtuSchedule.Core.Utilities
             }
 
             return String.Format(
-                "First: {0} us, minimum: {1} us, maximum: {2} us, average: {3:f3} us",
+                "First: {0} us, minimum: {1} us, maximum: {2} us, average: {3:f3} us.",
                 times[0],
                 times.Skip(1).Min(),
                 times.Skip(1).Max(),
