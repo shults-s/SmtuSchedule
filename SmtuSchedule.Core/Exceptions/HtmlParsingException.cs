@@ -5,8 +5,10 @@ namespace SmtuSchedule.Core.Exceptions
 {
     internal sealed class HtmlParsingException : Exception
     {
-        public override String Message =>
-            (_node == null) ? base.Message : base.Message + " " + GetHtmlNodeInformation();
+        public override String Message
+        {
+            get => (_node == null) ? base.Message : base.Message + " " + GetHtmlNodeInformation();
+        }
 
         public HtmlParsingException(String message, Exception innerException, HtmlNode node)
             : base(message, innerException)
@@ -25,7 +27,7 @@ namespace SmtuSchedule.Core.Exceptions
 
         private String GetHtmlNodeInformation()
         {
-            return $"(Line: {_node!.Line}, Position: {_node.LinePosition}, Name: {_node.Name})";
+            return $"(Line: {_node!.Line}, Position: {_node.LinePosition}, Name: <{_node.Name}>)";
         }
 
         private readonly HtmlNode? _node;
