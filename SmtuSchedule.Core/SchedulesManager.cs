@@ -11,7 +11,16 @@ namespace SmtuSchedule.Core
 {
     public sealed class SchedulesManager : ISchedulesManager
     {
-        public IReadOnlyDictionary<Int32, Schedule> Schedules => _schedules;
+        public IReadOnlyDictionary<Int32, Schedule> Schedules
+        {
+            get
+            {
+                lock (_schedulesLock)
+                {
+                    return new Dictionary<Int32, Schedule>(_schedules) as IReadOnlyDictionary<Int32, Schedule>;
+                }
+            }
+        }
 
         public ILogger? Logger
         {
@@ -41,6 +50,7 @@ namespace SmtuSchedule.Core
         private SchedulesManager()
         {
             _repository = null!;
+            _schedulesLock = new Object();
             _httpClient = new HttpClientProxy();
             _schedules = new Dictionary<Int32, Schedule>();
         }
@@ -60,13 +70,16 @@ namespace SmtuSchedule.Core
 
             return Task.Run(() =>
             {
-                IEnumerable<Schedule> affectedSchedules = migrator.Migrate(
-                    _schedules.Values,
-                    lecturersMap
-                );
+                lock (_schedulesLock)
+                {
+                    IEnumerable<Schedule> affectedSchedules = migrator.Migrate(
+                        _schedules.Values,
+                        lecturersMap
+                    );
 
-                Boolean haveNoSavingErrors = _repository.SaveSchedules(affectedSchedules);
-                return migrator.HaveNoMigrationErrors && haveNoSavingErrors;
+                    Boolean haveNoSavingErrors = _repository.SaveSchedules(affectedSchedules);
+                    return migrator.HaveNoMigrationErrors && haveNoSavingErrors;
+                }
             });
         }
 
@@ -88,17 +101,28 @@ namespace SmtuSchedule.Core
 
             return Task.Run(async () =>
             {
+                Int32[] schedulesIds;
+                lock (_schedulesLock)
+                {
+                    schedulesIds = _schedules.Values.Where(s => !s.IsActual).Select(s => s.ScheduleId)
+                        .ToArray();
+                }
+
                 IEnumerable<Schedule> updatedSchedules = await downloader.DownloadSchedulesAsync(
                     DownloadingOptions.None,
-                    _schedules.Values.Where(s => !s.IsActual).Select(s => s.ScheduleId).ToArray(),
+                    schedulesIds,
                     lecturersMap
                 )
                 .ConfigureAwait(false);
 
-                Boolean haveNoSavingErrors = _repository.SaveSchedules(
-                    updatedSchedules,
-                    (schedule) => _schedules[schedule.ScheduleId] = schedule
-                );
+                Boolean haveNoSavingErrors;
+                lock (_schedulesLock)
+                {
+                    haveNoSavingErrors = _repository.SaveSchedules(
+                        updatedSchedules,
+                        (schedule) => _schedules[schedule.ScheduleId] = schedule
+                    );
+                }
 
                 return downloader.HaveNoDownloadingErrors && haveNoSavingErrors;
             });
@@ -141,12 +165,34 @@ namespace SmtuSchedule.Core
                 )
                 .ConfigureAwait(false);
 
-                Boolean haveNoSavingErrors = _repository.SaveSchedules(
-                    schedules,
-                    (schedule) => _schedules[schedule.ScheduleId] = schedule
-                );
+                Boolean haveNoSavingErrors;
+                lock (_schedulesLock)
+                {
+                    haveNoSavingErrors = _repository.SaveSchedules(
+                        schedules,
+                        (schedule) => _schedules[schedule.ScheduleId] = schedule
+                    );
+                }
 
                 return downloader.HaveNoDownloadingErrors && haveNoSavingErrors;
+            });
+        }
+
+        public Task<Boolean> ReadSchedulesAsync()
+        {
+            return Task.Run(() =>
+            {
+                IEnumerable<Schedule>? schedules = _repository.ReadSchedules(out Boolean haveNoReadingErrors);
+
+                lock (_schedulesLock)
+                {
+                    if (schedules != null)
+                    {
+                        schedules.ForEach(schedule => _schedules[schedule.ScheduleId] = schedule);
+                    }
+                }
+
+                return haveNoReadingErrors;
             });
         }
 
@@ -157,30 +203,24 @@ namespace SmtuSchedule.Core
                 throw new ArgumentOutOfRangeException(nameof(scheduleId), "Number must be positive.");
             }
 
-            if (!_schedules.ContainsKey(scheduleId))
+            lock (_schedulesLock)
             {
-                throw new ArgumentException("No schedule with this id.", nameof(scheduleId));
+                if (!_schedules.ContainsKey(scheduleId))
+                {
+                    throw new ArgumentException("No schedule with this id.", nameof(scheduleId));
+                }
             }
 
             return Task.Run(() =>
             {
-                return _repository.RemoveSchedule(_schedules[scheduleId]) && _schedules.Remove(scheduleId);
-            });
-        }
-
-        public Task<Boolean> ReadSchedulesAsync()
-        {
-            return Task.Run(() =>
-            {
-                IEnumerable<Schedule>? schedules = _repository.ReadSchedules(out Boolean haveNoReadingErrors);
-                if (schedules != null)
+                lock (_schedulesLock)
                 {
-                    schedules.ForEach(schedule => _schedules[schedule.ScheduleId] = schedule);
+                    return _repository.RemoveSchedule(_schedules[scheduleId]) && _schedules.Remove(scheduleId);
                 }
-
-                return haveNoReadingErrors;
             });
         }
+
+        private readonly Object _schedulesLock;
 
         private ILogger? _logger;
         private readonly IHttpClient _httpClient;

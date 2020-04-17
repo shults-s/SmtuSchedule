@@ -8,7 +8,16 @@ namespace SmtuSchedule.Core
 {
     public sealed class LecturersManager : ILecturersManager
     {
-        public IReadOnlyDictionary<String, Int32>? LecturersMap { get; private set; }
+        public IReadOnlyDictionary<String, Int32>? LecturersMap
+        {
+            get
+            {
+                lock (_lecturersMapLock)
+                {
+                    return (_lecturersMap == null) ? null : new Dictionary<String, Int32>(_lecturersMap);
+                }
+            }
+        }
 
         public Boolean IsLecturersMapReadedFromCache { get; private set; }
 
@@ -40,6 +49,7 @@ namespace SmtuSchedule.Core
         private LecturersManager()
         {
             _repository = null!;
+            _lecturersMapLock = new Object();
             _httpClient = new HttpClientProxy();
         }
 
@@ -50,10 +60,13 @@ namespace SmtuSchedule.Core
                 IReadOnlyDictionary<String, Int32>? lecturersMap = _repository.ReadLecturersMap(
                     out Boolean hasNoReadingError);
 
-                if (lecturersMap != null)
+                lock (_lecturersMapLock)
                 {
-                    LecturersMap = lecturersMap;
-                    IsLecturersMapReadedFromCache = true;
+                    if (lecturersMap != null)
+                    {
+                        _lecturersMap = lecturersMap;
+                        IsLecturersMapReadedFromCache = true;
+                    }
                 }
 
                 return hasNoReadingError;
@@ -72,19 +85,25 @@ namespace SmtuSchedule.Core
                 IReadOnlyDictionary<String, Int32>? lecturersMap = await downloader.DownloadLecturersMapAsync()
                     .ConfigureAwait(false);
 
-                if (lecturersMap != null)
+                lock (_lecturersMapLock)
                 {
-                    LecturersMap = lecturersMap;
-                    IsLecturersMapReadedFromCache = false;
-                    _repository.SaveLecturersMap(lecturersMap);
+                    if (lecturersMap != null)
+                    {
+                        _lecturersMap = lecturersMap;
+                        IsLecturersMapReadedFromCache = false;
+                        _repository.SaveLecturersMap(lecturersMap);
+                    }
                 }
 
                 return downloader.HasNoDownloadingError;
             });
         }
 
+        private readonly Object _lecturersMapLock;
+
         private ILogger? _logger;
         private readonly IHttpClient _httpClient;
         private readonly ILecturersRepository _repository;
+        private IReadOnlyDictionary<String, Int32>? _lecturersMap;
     }
 }
