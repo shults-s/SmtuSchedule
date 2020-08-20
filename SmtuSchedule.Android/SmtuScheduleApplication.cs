@@ -44,7 +44,7 @@ namespace SmtuSchedule.Android
                 GetVersionName(),
                 Build.Manufacturer,
                 Build.Model,
-                Build.VERSION.Sdk,
+                Build.VERSION.SdkInt,
                 Build.VERSION.Release
             );
 
