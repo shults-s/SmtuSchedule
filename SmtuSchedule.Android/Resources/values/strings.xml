@@ -136,7 +136,7 @@
     <string name="preferenceUseFabDateSelectorTitle">Плавающая кнопка</string>
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
     <string name="preferenceUpdateSchedulesOnStartTitle">Обновлять расписания</string>
-    <string name="preferenceUpdateSchedulesOnStartSummary">Автоматически обновлять расписания (может замедлять запуск)</string>
+    <string name="preferenceUpdateSchedulesOnStartSummary">Автоматически обновлять расписания (иногда замедляет запуск)</string>
     <!-- <string name="preferenceCheckUpdatesOnStartTitle">Проверять обновления</string> -->
     <!-- <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string> -->
 
