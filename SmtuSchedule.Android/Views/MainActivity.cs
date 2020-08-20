@@ -921,7 +921,7 @@ namespace SmtuSchedule.Android.Views
             {
                 String suffix = $"({schedules[scheduleId].GetFormattedLastUpdate()})";
                 String scheduleTitle = isActual ? displayedName : displayedName + suffix;
-                _schedulesMenu.Menu.Add(Menu.None, scheduleId, Menu.None, scheduleTitle);
+                _schedulesMenu.Menu.Add(IMenu.None, scheduleId, IMenu.None, scheduleTitle);
             }
 
             _toolbarTitle.SetCompoundDrawablesWithIntrinsicBounds(0, 0, Resource.Drawable.arrowDown, 0);
