@@ -167,7 +167,7 @@ namespace SmtuSchedule.Android
 
         public String GetModernExternalStoragePath()
         {
-            return Context.GetExternalFilesDir(null).AbsolutePath + "/";
+            return Context.GetExternalFilesDir(null)?.AbsolutePath + "/";
         }
 
         public String GetInternalStoragePath() => FilesDir.AbsolutePath + "/";
