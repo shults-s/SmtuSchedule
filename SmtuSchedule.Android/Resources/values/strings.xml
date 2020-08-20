@@ -127,7 +127,7 @@
     <string name="preferenceUseDarkThemeTitle">Темная тема</string>
     <string name="preferenceUpperWeekDateTitle">Любой день семестра по числителю</string>
     <string name="preferenceUpperWeekDateSummary">Не задан</string>
-    <string name="preferenceLessonRemindTitle">Напоминать о первом занятии</string>
+    <string name="preferenceLessonRemindTitle">Напоминать о первом занятии (beta)</string>
     <string name="preferenceLessonRemindSummary">Никогда</string>
     <string name="preferenceDisplaySubjectEndTimeTitle">Время окончания занятий</string>
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
@@ -136,7 +136,9 @@
     <string name="preferenceUseFabDateSelectorTitle">Плавающая кнопка</string>
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
     <string name="preferenceUpdateSchedulesOnStartTitle">Обновлять расписания</string>
-    <string name="preferenceUpdateSchedulesOnStartSummary">Автоматически обновлять расписания (иногда замедляет запуск)</string>
+    <string name="preferenceUpdateSchedulesOnStartSummary">
+        Автоматически обновлять расписания (иногда замедляет запуск приложения)
+    </string>
     <!-- <string name="preferenceCheckUpdatesOnStartTitle">Проверять обновления</string> -->
     <!-- <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string> -->
 
