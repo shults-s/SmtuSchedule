@@ -2,6 +2,7 @@ using System;
 using Android.Util;
 using Android.Views;
 using Android.Content;
+using Android.Graphics;
 
 namespace SmtuSchedule.Android.Utilities
 {
@@ -9,10 +10,15 @@ namespace SmtuSchedule.Android.Utilities
     {
         public static (Int32 width, Int32 height) GetScreenPixelSize(IWindowManager manager)
         {
-            DisplayMetrics metrics = new DisplayMetrics();
-            manager.DefaultDisplay.GetMetrics(metrics);
+            WindowMetrics metrics = manager.CurrentWindowMetrics;
+            WindowInsets windowInsets = metrics.WindowInsets;
 
-            return (metrics.WidthPixels, metrics.HeightPixels);
+            Int32 mask = WindowInsets.Type.NavigationBars() | WindowInsets.Type.DisplayCutout();
+            Insets insets = windowInsets.GetInsetsIgnoringVisibility(mask);
+
+            Size insetsSize = new Size(insets.Right + insets.Left, insets.Top + insets.Bottom);
+            Rect bounds = metrics.Bounds;
+            return (bounds.Width() - insetsSize.Width, bounds.Height() - insetsSize.Height);
         }
 
         public static Int32 GetAttributeValue(Context context, Int32 attributeId)
