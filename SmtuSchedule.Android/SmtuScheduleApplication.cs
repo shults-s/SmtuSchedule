@@ -144,9 +144,9 @@ namespace SmtuSchedule.Android
 #endif
         }
 
-        public Int32 GetVersionCode()
+        public Int64 GetVersionCode()
         {
-            return PackageManager.GetPackageInfo(PackageName, 0).VersionCode;
+            return PackageManager.GetPackageInfo(PackageName, 0).LongVersionCode;
         }
 
         public String GetVersionName()

@@ -356,7 +356,7 @@ namespace SmtuSchedule.Android.Views
                 }
             }
 
-            Int32 currentVersion = _application.GetVersionCode();
+            Int64 currentVersion = _application.GetVersionCode();
             if (_application.Preferences.LastSeenUpdateVersion == 0)
             {
                 _application.Preferences.SetLastSeenUpdateVersion(currentVersion);
@@ -427,7 +427,7 @@ namespace SmtuSchedule.Android.Views
             return _application.Preferences.UpperWeekDate != default(DateTime);
         }
 
-        private async void MigrateSchedulesAsync(Int32 currentVersion)
+        private async void MigrateSchedulesAsync(Int64 currentVersion)
         {
             if (_application.Preferences.LastMigrationVersion == currentVersion)
             {
@@ -446,7 +446,7 @@ namespace SmtuSchedule.Android.Views
             }
         }
 
-        private async void CheckForCriticalUpdatesAsync(Int32 currentVersion)
+        private async void CheckForCriticalUpdatesAsync(Int64 currentVersion)
         {
             if (IsPermissionDenied(Manifest.Permission.Internet))
             {

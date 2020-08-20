@@ -31,9 +31,9 @@ namespace SmtuSchedule.Android
 
         public DateTime CurrentScheduleDate { get; set; }
 
-        public Int32 LastMigrationVersion { get; private set; }
+        public Int64 LastMigrationVersion { get; private set; }
 
-        public Int32 LastSeenUpdateVersion { get; private set; }
+        public Int64 LastSeenUpdateVersion { get; private set; }
 
         public event Action ThemeChanged;
 
@@ -117,19 +117,19 @@ namespace SmtuSchedule.Android
             ReplayFeatureDiscovery = replayFeatureDiscovery;
         }
 
-        public void SetLastMigrationVersion(Int32 lastMigrationVersion)
+        public void SetLastMigrationVersion(Int64 lastMigrationVersion)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutInt("LastMigrationVersion", lastMigrationVersion);
+            editor.PutLong("LastMigrationVersion", lastMigrationVersion);
             editor.Apply();
 
             LastMigrationVersion = lastMigrationVersion;
         }
 
-        public void SetLastSeenUpdateVersion(Int32 lastSeenUpdateVersion)
+        public void SetLastSeenUpdateVersion(Int64 lastSeenUpdateVersion)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutInt("LastSeenUpdateVersion", lastSeenUpdateVersion);
+            editor.PutLong("LastSeenUpdateVersion", lastSeenUpdateVersion);
             editor.Apply();
 
             LastSeenUpdateVersion = lastSeenUpdateVersion;
@@ -138,7 +138,7 @@ namespace SmtuSchedule.Android
         public void SetCurrentScheduleId(Int32 currentScheduleId)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutInt("CurrentScheduleId", currentScheduleId);
+            editor.PutLong("CurrentScheduleId", currentScheduleId);
             editor.Apply();
 
             CurrentScheduleId = currentScheduleId;
