@@ -146,6 +146,13 @@ namespace SmtuSchedule.Android
 
         public Int64 GetVersionCode()
         {
+            if (Build.VERSION.SdkInt < BuildVersionCodes.P)
+            {
+#pragma warning disable CS0618
+                return PackageManager.GetPackageInfo(PackageName, 0).VersionCode;
+#pragma warning restore CS0618
+            }
+
             return PackageManager.GetPackageInfo(PackageName, 0).LongVersionCode;
         }
 
