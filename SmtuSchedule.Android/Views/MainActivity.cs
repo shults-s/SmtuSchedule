@@ -434,13 +434,6 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            if (_application.Manager.LecturersMap == null
-                && !await _application.Manager.DownloadLecturersMapAsync())
-            {
-                ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
-                return ;
-            }
-
             if (!await _application.Manager.MigrateSchedulesAsync())
             {
                 ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
