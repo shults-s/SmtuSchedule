@@ -15,7 +15,6 @@
         android:targetSdkVersion="30" />
     <application
         android:allowBackup="true"
-        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/launcherIcon"
         android:label="@string/applicationCompleteName"
         android:theme="@style/Theme.SmtuSchedule.Launch">

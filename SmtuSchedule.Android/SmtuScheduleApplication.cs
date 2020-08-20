@@ -154,16 +154,16 @@ namespace SmtuSchedule.Android
             return PackageManager.GetPackageInfo(PackageName, 0).VersionName;
         }
 
-        public String GetLegacyExternalStoragePath()
-        {
-#pragma warning disable CS0618
-            return String.Format(
-                "{0}/{1}/",
-                Environment.ExternalStorageDirectory.AbsolutePath,
-                Resources.GetString(Resource.String.applicationCompleteName)
-            );
-#pragma warning restore CS0618
-        }
+//         public String GetLegacyExternalStoragePath()
+//         {
+// #pragma warning disable CS0618
+//             return String.Format(
+//                 "{0}/{1}/",
+//                 Environment.ExternalStorageDirectory.AbsolutePath,
+//                 Resources.GetString(Resource.String.applicationCompleteName)
+//             );
+// #pragma warning restore CS0618
+//         }
 
         public String GetModernExternalStoragePath()
         {
@@ -176,8 +176,6 @@ namespace SmtuSchedule.Android
         {
             String modernStoragePath = GetModernExternalStoragePath();
             String modernSchedulesPath = $"{modernStoragePath}/{SchedulesDirectoryName}/";
-
-            String legacySchedulesPath = GetLegacyExternalStoragePath();
 
             status = InitializationStatus.Success;
 
@@ -199,49 +197,51 @@ namespace SmtuSchedule.Android
                 }
             }
 
-            if (Directory.Exists(legacySchedulesPath))
-            {
-                try
-                {
-                    FileInfo[] files = new DirectoryInfo(legacySchedulesPath)
-                        .GetFiles("*.json");
-
-                    foreach (FileInfo file in files)
-                    {
-                        file.MoveTo(modernSchedulesPath + file.Name);
-                    }
-                }
-                catch(Exception exception)
-                {
-                    status = InitializationStatus.FailedToMoveSchedules;
-#if !DEBUG
-                    Logger.Log(
-                        new ApplicationException(
-                            "Error of moving schedules to modern directory.", exception));
-#endif
-                    return false;
-                }
-
-                try
-                {
-                    String legacyLogsPath = legacySchedulesPath + "/Logs/";
-                    if (Directory.Exists(legacyLogsPath))
-                    {
-                        Directory.Delete(legacyLogsPath, true);
-                    }
-
-                    Directory.Delete(legacySchedulesPath);
-                }
-                catch (Exception exception)
-                {
-                    status = InitializationStatus.FailedToRemoveDirectory;
-#if !DEBUG
-                    Logger.Log(
-                        new ApplicationException(
-                            "Error of removing legacy schedules directory.", exception));
-#endif
-                }
-            }
+//             String legacySchedulesPath = GetLegacyExternalStoragePath();
+//
+//             if (Directory.Exists(legacySchedulesPath))
+//             {
+//                 try
+//                 {
+//                     FileInfo[] files = new DirectoryInfo(legacySchedulesPath)
+//                         .GetFiles("*.json");
+//
+//                     foreach (FileInfo file in files)
+//                     {
+//                         file.MoveTo(modernSchedulesPath + file.Name);
+//                     }
+//                 }
+//                 catch(Exception exception)
+//                 {
+//                     status = InitializationStatus.FailedToMoveSchedules;
+// #if !DEBUG
+//                     Logger.Log(
+//                         new ApplicationException(
+//                             "Error of moving schedules to modern directory.", exception));
+// #endif
+//                     return false;
+//                 }
+//
+//                 try
+//                 {
+//                     String legacyLogsPath = legacySchedulesPath + "/Logs/";
+//                     if (Directory.Exists(legacyLogsPath))
+//                     {
+//                         Directory.Delete(legacyLogsPath, true);
+//                     }
+//
+//                     Directory.Delete(legacySchedulesPath);
+//                 }
+//                 catch (Exception exception)
+//                 {
+//                     status = InitializationStatus.FailedToRemoveDirectory;
+// #if !DEBUG
+//                     Logger.Log(
+//                         new ApplicationException(
+//                             "Error of removing legacy schedules directory.", exception));
+// #endif
+//                 }
+//             }
 
             Manager = new SchedulesManager(modernStoragePath, SchedulesDirectoryName)
             {
