@@ -7,7 +7,7 @@ namespace SmtuSchedule.Android.Utilities
 {
     [IntentFilter(new String[] { "com.google.firebase.MESSAGING_EVENT" })]
     [Service]
-    public class MessagingService : FirebaseMessagingService
+    internal class MessagingService : FirebaseMessagingService
     {
 #if DEBUG
         private const String FirebasePreferencesName = "Firebase";

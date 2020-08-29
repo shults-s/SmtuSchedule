@@ -11,7 +11,7 @@ using SmtuSchedule.Android.Enumerations;
 
 namespace SmtuSchedule.Android.Utilities
 {
-    class LessonsRemindWorker : Worker
+    internal class LessonsRemindWorker : Worker
     {
         public LessonsRemindWorker(Context context, WorkerParameters workerParameters)
             : base(context, workerParameters)

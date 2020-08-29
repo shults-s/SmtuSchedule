@@ -6,7 +6,7 @@ using SmtuSchedule.Android.Exceptions;
 
 namespace SmtuSchedule.Android.Utilities
 {
-    class UpdateSchedulesWorker : Worker
+    internal class UpdateSchedulesWorker : Worker
     {
         public UpdateSchedulesWorker(Context context, WorkerParameters workerParameters)
             : base(context, workerParameters)

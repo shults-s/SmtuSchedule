@@ -13,7 +13,7 @@ using SmtuSchedule.Android.Utilities;
 namespace SmtuSchedule.Android.Views
 {
     [Register("shults.smtuschedule.android.views.CustomMultiSelectListPreference")]
-    class CustomMultiSelectListPreference : MultiSelectListPreference
+    internal class CustomMultiSelectListPreference : MultiSelectListPreference
     {
         private static readonly CultureInfo Culture = new CultureInfo("ru-RU");
 
