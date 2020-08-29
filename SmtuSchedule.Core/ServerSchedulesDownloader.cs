@@ -51,6 +51,8 @@ namespace SmtuSchedule.Core
 
         private const String GroupNamePrefixInLecturerSchedule = "Группа ";
 
+        private const String AuditoriumPlaceholder = "—";
+
         public Boolean HaveDownloadingErrors { get; private set; }
 
         public ILogger Logger { get; set; }
@@ -269,9 +271,36 @@ namespace SmtuSchedule.Core
                 {
                     HtmlNode[] cells = row.Elements("td").ToArray();
 
-                    ParseTime(cells[0], out DateTime from, out DateTime to, out WeekType week);
-                    String auditorium = ParseAuditorium(cells[1]);
-                    String title = ParseTitle(cells[2]);
+                    Int32 timeCellIndex;
+                    Int32 auditoriumCellIndex;
+                    Int32 titleCellIndex;
+                    Int32 lecturerOrGroupCellIndex;
+
+                    // В связи с вводом дистанционного обучения аудитория теперь может быть не указана.
+                    switch (cells.Length)
+                    {
+                        case 3:
+                            timeCellIndex = 0;
+                            auditoriumCellIndex = -1;
+                            titleCellIndex = 1;
+                            lecturerOrGroupCellIndex = 2;
+                            break;
+
+                        default:
+                            timeCellIndex = 0;
+                            auditoriumCellIndex = 1;
+                            titleCellIndex = 2;
+                            lecturerOrGroupCellIndex = 3;
+                            break;
+                    }
+
+                    ParseTime(cells[timeCellIndex], out DateTime from, out DateTime to, out WeekType week);
+
+                    String auditorium = (auditoriumCellIndex == -1)
+                        ? AuditoriumPlaceholder
+                        : ParseAuditorium(cells[auditoriumCellIndex]);
+
+                    String title = ParseTitle(cells[titleCellIndex]);
 
                     Subject subject = new Subject()
                     {
@@ -284,7 +313,7 @@ namespace SmtuSchedule.Core
                     };
 
                     ParseLecturerOrGroup(
-                        cells[3],
+                        cells[lecturerOrGroupCellIndex],
                         out String lecturerOrGroupName,
                         out Int32 lecturerOrGroupScheduleId
                     );
