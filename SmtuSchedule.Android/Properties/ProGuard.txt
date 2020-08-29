@@ -28,3 +28,4 @@
 -keep class androidx.work.impl.background.systemjob.SystemJobService
 -keep class androidx.work.impl.background.systemalarm.SystemAlarmService
 -keep class androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver
+-keep class androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy
