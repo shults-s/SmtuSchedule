@@ -128,7 +128,7 @@
     <string name="preferenceUpperWeekDateTitle">Любой день семестра по числителю</string>
     <string name="preferenceUpperWeekDateSummary">Не задан</string>
     <string name="preferenceLessonRemindTitle">Напоминать о первом занятии (beta)</string>
-    <string name="preferenceLessonRemindSummary">Никогда</string>
+    <string name="preferenceLessonRemindSummary">* может работать нестабильно</string>
     <string name="preferenceDisplaySubjectEndTimeTitle">Время окончания занятий</string>
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
     <string name="preferenceReplayFeatureDiscoveryTitle">Повторить обучение использованию</string>
