@@ -69,7 +69,7 @@ namespace SmtuSchedule.Android
             // Обработка конфигурации предыдущих релизов, где версия представляла собой строку.
             try
             {
-                LastSeenUpdateVersion = _preferences.GetInt("LastSeenUpdateVersion", 0);
+                LastSeenUpdateVersion = _preferences.GetLong("LastSeenUpdateVersion", 0);
             }
             catch (Java.Lang.ClassCastException)
             {
@@ -78,7 +78,7 @@ namespace SmtuSchedule.Android
 
             try
             {
-                LastMigrationVersion = _preferences.GetInt("LastMigrationVersion", 0);
+                LastMigrationVersion = _preferences.GetLong("LastMigrationVersion", 0);
             }
             catch (Java.Lang.ClassCastException)
             {
@@ -138,7 +138,7 @@ namespace SmtuSchedule.Android
         public void SetCurrentScheduleId(Int32 currentScheduleId)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutLong("CurrentScheduleId", currentScheduleId);
+            editor.PutInt("CurrentScheduleId", currentScheduleId);
             editor.Apply();
 
             CurrentScheduleId = currentScheduleId;
