@@ -166,7 +166,7 @@
     <string name="lecturersMapReadedFromCacheMessage">
         Применено обходное решение проблемы. Не все расписания могут быть доступны вплоть до перезапуска приложения.
     </string>
-    <string name="upcomingLessonRemindNotificationMessage">{0}: {1} в {2} «{3}».</string>
+    <string name="upcomingLessonRemindNotificationMessage">{0}: {1} в аудитории {2} «{3}»</string>
     <string name="applicationUpdateAvailableMessage">
         Доступна [**новая версия**](https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md) приложения.
     </string>
