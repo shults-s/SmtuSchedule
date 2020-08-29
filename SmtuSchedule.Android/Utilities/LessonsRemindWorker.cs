@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using AndroidX.Work;
+using Android.OS;
 using Android.App;
 using Android.Content;
+using AndroidX.Work;
 using SmtuSchedule.Core;
 using SmtuSchedule.Core.Models;
 using SmtuSchedule.Android.Exceptions;
@@ -224,7 +225,14 @@ namespace SmtuSchedule.Android.Utilities
             );
 
             Int64 timeInMilliseconds = whenDisplayNotificationInUtcUnixTime * 1000;
-            alarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, timeInMilliseconds, pendingIntent);
+            if (Build.VERSION.SdkInt < BuildVersionCodes.M)
+            {
+                alarmManager.SetExact(AlarmType.RtcWakeup, timeInMilliseconds, pendingIntent);
+            }
+            else
+            {
+                alarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, timeInMilliseconds, pendingIntent);
+            }
         }
 
         private readonly Int64 _currentUtcUnixTime;
