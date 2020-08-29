@@ -60,6 +60,10 @@ namespace SmtuSchedule.Android.Utilities
             }
 
             Subject[] subjects = schedule.GetSubjects(upperWeekDate, date);
+            if (subjects == null)
+            {
+                return null;
+            }
 
             Int32 leastFromHour = subjects.Min(s => s.From.Hour);
             return subjects.FirstOrDefault(s => s.From.Hour <= leastFromHour);
