@@ -19,7 +19,7 @@ namespace SmtuSchedule.Core.Models
         //     Formatting = Formatting.Indented,
         //
         //     // При сборке в релиз с параметром Связывание = Сборки пакета SDK и пользователя,
-        //     // конвертеры, указанные в аттрибутах, пададают при попытке создания объекта.
+        //     // конвертеры, указанные в атрибутах, падают при попытке создания объекта.
         //     // Вероятно, компилятор удаляет эти классы, считая, что они не используются.
         //     Converters = new JsonConverter[]
         //     {
@@ -35,6 +35,9 @@ namespace SmtuSchedule.Core.Models
             WriteIndented = true
         };
 
+        [JsonIgnore]
+        public Boolean IsActual => LastUpdate >= DateTime.Now.AddHours(-12);
+
         // [JsonProperty(Required = Required.Always)]
         public String DisplayedName { get; set; }
 
@@ -44,15 +47,15 @@ namespace SmtuSchedule.Core.Models
         // [JsonProperty(Required = Required.Default)]
         public ScheduleType Type { get; set; }
 
+        [JsonConverter(typeof(JsonDateTimeConverter))]
+        public DateTime LastUpdate { get; set; }
+
         // [JsonProperty(Required = Required.Always)]
         public Timetable Timetable { get; set; }
 
-        [JsonIgnore]
-        public Boolean IsNotUpdated { get; set; }
-
         static Schedule()
         {
-            Options.Converters.Add(new DateTimeConverter("HH:mm"));
+            // Библиотечный конвертер указан не в атрибутах по причине, описанной выше.
             Options.Converters.Add(new JsonStringEnumConverter());
         }
 
@@ -99,5 +102,7 @@ namespace SmtuSchedule.Core.Models
 
             return (subjects.Length == 0) ? null : subjects;
         }
+
+        public String GetFormattedLastUpdate() => LastUpdate.ToString("dd.MM.yyyy HH:mm");
     }
 }

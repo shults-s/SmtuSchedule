@@ -30,19 +30,20 @@
         \n\nМежду смежными датами проще переключаться с помощью вкладок, либо перелистывая страницы расписания влево-вправо.
         \n\nВернуться к текущей дате можно нажав кнопку «Назад».
     </string>
-    <string name="updateSchedulesOnStartFeatureDiscoveryTitle">Автоматическое обновление расписаний</string>
-    <string name="updateSchedulesOnStartFeatureDiscoveryMessage">
+    <!-- <string name="updateSchedulesOnStartFeatureDiscoveryTitle">Автоматическое обновление расписаний</string> -->
+    <!-- <string name="updateSchedulesOnStartFeatureDiscoveryMessage">
         Приложение теперь умеет автоматически обновлять расписания при запуске.
         \n\nЭто актуально в начале семестра, когда происходит наибольшее количество изменений.
         \n\nСмахиванием вниз расписание можно обновить вручную.
-    </string>
+    </string> -->
 
-    <!-- Заголовки диалогов и панелей инструментов -->
+    <!-- Заголовки диалогов, уведомлений и панелей инструментов -->
     <string name="preferencesToolbarTitle">Настройки</string>
     <string name="downloadToolbarTitle">Загрузка расписаний</string>
     <string name="welcomeToolbarTitle">@string/applicationCompleteName</string>
     <string name="aboutApplicationDialogTitle">О приложении</string>
     <string name="currentScheduleActionsDialogTitle">Выберите действие</string>
+    <string name="upcomingLessonRemindNotificationTitle">Напоминание о занятии</string>
     <string name="googlePlayStoreReleaseAvailableDialogTitle">Релиз в Google Play</string>
     <string name="applicationUpdateAvailableDialogTitle">Вышло обновление</string>
     <string name="applicationCriticalUpdateAvailableDialogTitle">Критическое обновление</string>
@@ -55,10 +56,6 @@
     <string name="aboutApplicationMenuItem">@string/aboutApplicationDialogTitle</string>
 
     <!-- Названия действий Snackbar'ов, кнопок и диалогов -->
-    <string-array name="currentScheduleActionsTitles">
-        <item>Удалить расписание</item>
-        <item>Обновить расписание</item>
-    </string-array>
     <string name="gotItActionTitle">Понял</string>
     <string name="cancelActionTitle">Отмена</string>
     <string name="removeActionTitle">Удалить</string>
@@ -73,7 +70,10 @@
     <!-- Сообщения об ошибках -->
     <string name="scheduleRemovingErrorMessage">Ошибка при удалении расписания.</string>
     <string name="schedulesReadingErrorMessage">Не все расписания удалось открыть.</string>
-    <string name="schedulesUpdatingErrorMessage">Не все расписания удалось обновить.</string>
+    <string name="schedulesUpdatingErrorMessage">
+        Не все расписания удалось обновить.
+        \nВероятнее всего, они удалены с сайта.
+    </string>
     <string name="schedulesMigrationErrorMessage">Не все расписания удалось преобразовать к актуальному формату.</string>
     <string name="scheduleDownloadErrorMessage">
         Ошибка при загрузке расписания.
@@ -85,7 +85,7 @@
         \nВоспользуйтесь меню загрузки расписаний.
     </string>
     <string name="lecturersMapDownloadErrorLongMessage">
-        Внутренняя сетевая ошибка. Повторите попытку.
+        Внутренняя сетевая ошибка. Проверьте соединение с интернетом и повторите попытку.
         \n\nЕсли используется мобильный интернет, подключитесь через Wi-Fi.
         \n\nПроблема замечена при использовании VPN, proxy-серверов и ряда операторов мобильной связи.
     </string>
@@ -127,6 +127,8 @@
     <string name="preferenceUseDarkThemeTitle">Темная тема</string>
     <string name="preferenceUpperWeekDateTitle">Любой день семестра по числителю</string>
     <string name="preferenceUpperWeekDateSummary">Не задан</string>
+    <string name="preferenceLessonRemindTitle">Напоминать о первом занятии (beta)</string>
+    <string name="preferenceLessonRemindSummary">Никогда</string>
     <string name="preferenceDisplaySubjectEndTimeTitle">Время окончания занятий</string>
     <string name="preferenceDisplaySubjectEndTimeSummary">Отображать время окончания занятий</string>
     <string name="preferenceReplayFeatureDiscoveryTitle">Повторить обучение использованию</string>
@@ -134,20 +136,18 @@
     <string name="preferenceUseFabDateSelectorTitle">Плавающая кнопка</string>
     <string name="preferenceUseFabDateSelectorSummary">Использовать плавающую кнопку для выбора даты в расписании</string>
     <string name="preferenceUpdateSchedulesOnStartTitle">Обновлять расписания</string>
-    <string name="preferenceUpdateSchedulesOnStartSummary">Автоматически обновлять расписания при запуске приложения</string>
+    <string name="preferenceUpdateSchedulesOnStartSummary">
+        Автоматически обновлять расписания (иногда замедляет запуск приложения)
+    </string>
     <!-- <string name="preferenceCheckUpdatesOnStartTitle">Проверять обновления</string> -->
     <!-- <string name="preferenceCheckUpdatesOnStartSummary">Проверять наличие новых версий при запуске приложения</string> -->
 
     <!-- Фрагменты текстов сообщений и элементов интерфейса -->
-    <string-array name="weeksTypesInNominativeCase">
-        <item>верхняя неделя</item>
-        <item>нижняя неделя</item>
-    </string-array>
     <string name="multiGroupSubjectPrefix">Группы</string>
 
     <!-- Сообщения уведомительного характера -->
     <string name="aboutApplicationMessage">
-        Версия 1.2.1 от 🐈 1 марта 2020.
+        Версия 1.3.0 от 30 августа 2020.
         \n\nРазработчик: [@shults_s](https://vk.com/shults_s).
         \n\n[Политика конфиденциальности](https://github.com/shults-s/SmtuSchedule/wiki/Privacy-policy).
         \n\nИсходный код и информация о проекте размещены на [GitHub](https://github.com/shults-s/SmtuSchedule).
@@ -166,6 +166,7 @@
     <string name="lecturersMapReadedFromCacheMessage">
         Применено обходное решение проблемы. Не все расписания могут быть доступны вплоть до перезапуска приложения.
     </string>
+    <string name="upcomingLessonRemindNotificationMessage">{0}: {1} в аудитории {2} «{3}»</string>
     <string name="applicationUpdateAvailableMessage">
         Доступна [**новая версия**](https://github.com/shults-s/SmtuSchedule/blob/master/CHANGELOG.md) приложения.
     </string>

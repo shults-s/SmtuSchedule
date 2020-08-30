@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 // using Newtonsoft.Json;
+using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
 using SmtuSchedule.Core.Enumerations;
@@ -15,9 +16,11 @@ namespace SmtuSchedule.Core.Models
         public Boolean IsDisplayed { get; set; }
 
         // [JsonProperty(Required = Required.Always)]
+        [JsonConverter(typeof(JsonTimeConverter))]
         public DateTime From { get; set; }
 
         // [JsonProperty(Required = Required.Always)]
+        [JsonConverter(typeof(JsonTimeConverter))]
         public DateTime To { get; set; }
 
         // [JsonProperty("Audience", Required = Required.Always)]

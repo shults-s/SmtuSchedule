@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using Android.Content;
 using Android.Support.V7.Preferences;
 using SmtuSchedule.Android.Enumerations;
@@ -8,6 +10,8 @@ namespace SmtuSchedule.Android
     internal class Preferences : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
     {
         public FeatureDiscoveryState FeatureDiscoveryState { get; private set; }
+
+        public LessonRemindTime LessonRemindTimes { get; private set; }
 
         public Boolean UpdateSchedulesOnStart { get; private set; }
 
@@ -27,11 +31,15 @@ namespace SmtuSchedule.Android
 
         public DateTime CurrentScheduleDate { get; set; }
 
-        public Int32 LastMigrationVersion { get; private set; }
+        public Int64 LastMigrationVersion { get; private set; }
 
-        public Int32 LastSeenUpdateVersion { get; private set; }
+        public Int64 LastSeenUpdateVersion { get; private set; }
 
         public event Action ThemeChanged;
+
+        public event Action LessonRemindTimesChanged;
+
+        public event Action UpdateSchedulesOnStartChanged;
 
         public Preferences(Context context)
         {
@@ -50,10 +58,18 @@ namespace SmtuSchedule.Android
                 FeatureDiscoveryState = (FeatureDiscoveryState)state;
             }
 
+            // Сброс флага UpdateSchedulesOnStart, который более не используется по назначению
+            // и в дальнейшем может быть переиспользован для другого обучающего экрана.
+            if (FeatureDiscoveryState.HasFlag(FeatureDiscoveryState.UpdateSchedulesOnStart))
+            {
+                FeatureDiscoveryState &= ~FeatureDiscoveryState.UpdateSchedulesOnStart;
+                SetFeatureDiscoveryState(FeatureDiscoveryState);
+            }
+
             // Обработка конфигурации предыдущих релизов, где версия представляла собой строку.
             try
             {
-                LastSeenUpdateVersion = _preferences.GetInt("LastSeenUpdateVersion", 0);
+                LastSeenUpdateVersion = _preferences.GetLong("LastSeenUpdateVersion", 0);
             }
             catch (Java.Lang.ClassCastException)
             {
@@ -62,7 +78,7 @@ namespace SmtuSchedule.Android
 
             try
             {
-                LastMigrationVersion = _preferences.GetInt("LastMigrationVersion", 0);
+                LastMigrationVersion = _preferences.GetLong("LastMigrationVersion", 0);
             }
             catch (Java.Lang.ClassCastException)
             {
@@ -73,6 +89,8 @@ namespace SmtuSchedule.Android
             CurrentScheduleId = _preferences.GetInt("CurrentScheduleId", 0);
 
             UpperWeekDate = new DateTime(_preferences.GetLong("UpperWeekDate", 0));
+
+            LessonRemindTimes = ParseLessonRemindTimes(_preferences);
 
             UseDarkTheme = _preferences.GetBoolean("UseDarkTheme", false);
             UseFabDateSelector = _preferences.GetBoolean("UseFabDateSelector", true);
@@ -99,19 +117,19 @@ namespace SmtuSchedule.Android
             ReplayFeatureDiscovery = replayFeatureDiscovery;
         }
 
-        public void SetLastMigrationVersion(Int32 lastMigrationVersion)
+        public void SetLastMigrationVersion(Int64 lastMigrationVersion)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutInt("LastMigrationVersion", lastMigrationVersion);
+            editor.PutLong("LastMigrationVersion", lastMigrationVersion);
             editor.Apply();
 
             LastMigrationVersion = lastMigrationVersion;
         }
 
-        public void SetLastSeenUpdateVersion(Int32 lastSeenUpdateVersion)
+        public void SetLastSeenUpdateVersion(Int64 lastSeenUpdateVersion)
         {
             ISharedPreferencesEditor editor = _preferences.Edit();
-            editor.PutInt("LastSeenUpdateVersion", lastSeenUpdateVersion);
+            editor.PutLong("LastSeenUpdateVersion", lastSeenUpdateVersion);
             editor.Apply();
 
             LastSeenUpdateVersion = lastSeenUpdateVersion;
@@ -124,6 +142,17 @@ namespace SmtuSchedule.Android
             editor.Apply();
 
             CurrentScheduleId = currentScheduleId;
+        }
+
+        private static LessonRemindTime ParseLessonRemindTimes(ISharedPreferences preferences)
+        {
+            IEnumerable<String> values = preferences.GetStringSet("LessonRemindTimes", null);
+            if (values == null)
+            {
+                return LessonRemindTime.Never;
+            }
+
+            return (LessonRemindTime)(values.Select(v => Int32.Parse(v)).Sum());
         }
 
         public void OnSharedPreferenceChanged(ISharedPreferences preferences, String key)
@@ -153,12 +182,18 @@ namespace SmtuSchedule.Android
                     ThemeChanged?.Invoke();
                     break;
 
+                case "LessonRemindTimes":
+                    LessonRemindTimes = ParseLessonRemindTimes(preferences);
+                    LessonRemindTimesChanged?.Invoke();
+                    break;
+
                 case "DisplaySubjectEndTime":
                     DisplaySubjectEndTime = preferences.GetBoolean("DisplaySubjectEndTime", true);
                     break;
 
                 case "UpdateSchedulesOnStart":
                     UpdateSchedulesOnStart = preferences.GetBoolean("UpdateSchedulesOnStart", true);
+                    UpdateSchedulesOnStartChanged?.Invoke();
                     break;
 
                 case "ReplayFeatureDiscovery":

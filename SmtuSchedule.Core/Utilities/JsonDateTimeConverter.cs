@@ -6,14 +6,19 @@ using System.Text.Json.Serialization;
 
 namespace SmtuSchedule.Core.Utilities
 {
-    // internal class DateTimeConverter : IsoDateTimeConverter
+    // internal class JsonDateTimeConverter : IsoDateTimeConverter
     // {
-    //     public DateTimeConverter(String format) => DateTimeFormat = format;
+    //     public JsonDateTimeConverter(String format) => DateTimeFormat = format;
     // }
 
-    internal class DateTimeConverter : JsonConverter<DateTime>
+    [Android.Runtime.Preserve(AllMembers = true)]
+    internal class JsonDateTimeConverter : JsonConverter<DateTime>
     {
-        public DateTimeConverter(String format) => _format = format;
+        public const String DefaultFormat = "dd.MM.yyyy HH:mm";
+
+        public JsonDateTimeConverter() => _format = DefaultFormat;
+
+        public JsonDateTimeConverter(String format) => _format = format;
 
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert,
             JsonSerializerOptions options)

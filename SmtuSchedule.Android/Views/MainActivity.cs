@@ -33,6 +33,9 @@ namespace SmtuSchedule.Android.Views
         ScreenOrientation = ScreenOrientation.Portrait)]
     internal class MainActivity : AppCompatActivity, ISchedulesViewer
     {
+        private const String UpcomingLessonRemindWorkerTag = "Shults.SmtuSchedule.LessonsReminderWork";
+        private const String UpdateSchedulesWorkerTag = "Shults.SmtuSchedule.UpdateSchedulesWork";
+
         private const Int32 ExternalStoragePermissionsRequestCode = 30;
         private const Int32 InternetPermissionRequestCode = 31;
 
@@ -128,33 +131,84 @@ namespace SmtuSchedule.Android.Views
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            _application = ApplicationContext as SmtuScheduleApplication;
+
             // Если пользователь нажал на уведомление, содержащее полезную нагрузку и пришедшее, когда
             // приложение не было запущено, либо находилось в фоновом режиме.
-            if (Intent.Extras != null
-                && IntentUtilities.IsDataKeysCollectionValidToCreateViewIntent(Intent.Extras.KeySet()))
+            if (Intent.Extras != null)
             {
-                Dictionary<String, String> data = new Dictionary<String, String>();
-                foreach (String key in Intent.Extras.KeySet())
+                ICollection<String> keys = Intent.Extras.KeySet();
+                if (IntentUtilities.IsDataKeysCollectionValidToCreateViewIntent(keys))
                 {
-                    data[key] = Intent.Extras.GetString(key);
-                }
+                    Dictionary<String, String> data = new Dictionary<String, String>();
+                    foreach (String key in keys)
+                    {
+                        data[key] = Intent.Extras.GetString(key);
+                    }
 
-                Intent intent = IntentUtilities.CreateViewIntentFromData(this, data);
-                if (intent != null)
+                    Intent intent = IntentUtilities.CreateIntentFromData(this, data);
+                    if (intent != null)
+                    {
+                        StartActivity(intent);
+                    }
+
+                    Finish();
+                }
+                else if (IntentUtilities.IsDataKeysCollectionValidToCreateUpcomingLessonIntent(keys))
                 {
-                    StartActivity(intent);
-                }
+                    const String dateKey = IntentUtilities.DataUpcomingLessonDateKey;
+                    if (Int64.TryParse(Intent.Extras.GetString(dateKey), out Int64 ticks))
+                    {
+                        _application.Preferences.CurrentScheduleDate = new DateTime(ticks);
+                    }
 
-                Finish();
+                    const String scheduleIdKey = IntentUtilities.DataUpcomingLessonScheduleIdKey;
+                    if (Int32.TryParse(Intent.Extras.GetString(scheduleIdKey), out Int32 scheduleId))
+                    {
+                        _application.Preferences.SetCurrentScheduleId(scheduleId);
+                    }
+                }
             }
-
-            _application = ApplicationContext as SmtuScheduleApplication;
 
             _currentlyUsedDarkTheme = _application.Preferences.UseDarkTheme;
             _isThemeChanged = false;
             _application.Preferences.ThemeChanged += () =>
             {
                 _isThemeChanged = (_currentlyUsedDarkTheme != _application.Preferences.UseDarkTheme);
+            };
+
+            _application.Preferences.UpdateSchedulesOnStartChanged += () =>
+            {
+                if (_application.Preferences.UpdateSchedulesOnStart)
+                {
+                    PeriodicWorkUtilities.CreateAndEnqueueWork<UpdateSchedulesWorker>(
+                        this,
+                        UpdateSchedulesWorkerTag,
+                        TimeSpan.FromHours(12),
+                        true
+                    );
+                }
+                else
+                {
+                    PeriodicWorkUtilities.CancelWork(this, UpdateSchedulesWorkerTag);
+                }
+            };
+
+            _application.Preferences.LessonRemindTimesChanged += () =>
+            {
+                if (_application.Preferences.LessonRemindTimes != LessonRemindTime.Never)
+                {
+                    PeriodicWorkUtilities.CreateAndEnqueueWork<LessonsRemindWorker>(
+                        this,
+                        UpcomingLessonRemindWorkerTag,
+                        TimeSpan.FromDays(1),
+                        false
+                    );
+                }
+                else
+                {
+                    PeriodicWorkUtilities.CancelWork(this, UpcomingLessonRemindWorkerTag);
+                }
             };
 
             SetTheme(_application.Preferences.UseDarkTheme ? Resource.Style.Theme_SmtuSchedule_Dark
@@ -234,6 +288,7 @@ namespace SmtuSchedule.Android.Views
                 if (_isThemeChanged)
                 {
                     Recreate();
+                    return ;
                 }
 
                 if (IsPreferencesValid())
@@ -301,7 +356,7 @@ namespace SmtuSchedule.Android.Views
                 }
             }
 
-            Int32 currentVersion = _application.GetVersionCode();
+            Int64 currentVersion = _application.GetVersionCode();
             if (_application.Preferences.LastSeenUpdateVersion == 0)
             {
                 _application.Preferences.SetLastSeenUpdateVersion(currentVersion);
@@ -359,7 +414,7 @@ namespace SmtuSchedule.Android.Views
 
             _ = _application.ClearLogsAsync();
 
-            MigrateSchedulesAsync(currentVersion);
+            // MigrateSchedulesAsync(currentVersion);
             CheckForCriticalUpdatesAsync(currentVersion);
 
 #if DEBUG
@@ -372,15 +427,14 @@ namespace SmtuSchedule.Android.Views
             return _application.Preferences.UpperWeekDate != default(DateTime);
         }
 
-        private async void MigrateSchedulesAsync(Int32 currentVersion)
+        private async void MigrateSchedulesAsync(Int64 currentVersion)
         {
             if (_application.Preferences.LastMigrationVersion == currentVersion)
             {
                 return ;
             }
 
-            Boolean haveMigrationErrors = await _application.Manager.MigrateSchedulesAsync();
-            if (haveMigrationErrors)
+            if (!await _application.Manager.MigrateSchedulesAsync())
             {
                 ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
                 _ = _application.SaveLogAsync();
@@ -391,7 +445,7 @@ namespace SmtuSchedule.Android.Views
             }
         }
 
-        private async void CheckForCriticalUpdatesAsync(Int32 currentVersion)
+        private async void CheckForCriticalUpdatesAsync(Int64 currentVersion)
         {
             if (IsPermissionDenied(Manifest.Permission.Internet))
             {
@@ -690,17 +744,17 @@ namespace SmtuSchedule.Android.Views
                     targets.Add(dateTarget);
                 }
 
-                if (!state.HasFlag(FeatureDiscoveryState.UpdateSchedulesOnStart))
-                {
-                    TapTarget updateTarget = TapTarget.ForToolbarOverflow(
-                        _toolbar,
-                        Resources.GetString(Resource.String.updateSchedulesOnStartFeatureDiscoveryTitle),
-                        Resources.GetString(Resource.String.updateSchedulesOnStartFeatureDiscoveryMessage)
-                    );
-
-                    updateTarget.Stylize().Id((Int32)FeatureDiscoveryState.UpdateSchedulesOnStart);
-                    targets.Add(updateTarget);
-                }
+                // if (!state.HasFlag(FeatureDiscoveryState.UpdateSchedulesOnStart))
+                // {
+                //     TapTarget updateTarget = TapTarget.ForToolbarOverflow(
+                //         _toolbar,
+                //         Resources.GetString(Resource.String.updateSchedulesOnStartFeatureDiscoveryTitle),
+                //         Resources.GetString(Resource.String.updateSchedulesOnStartFeatureDiscoveryMessage)
+                //     );
+                //
+                //     updateTarget.Stylize().Id((Int32)FeatureDiscoveryState.UpdateSchedulesOnStart);
+                //     targets.Add(updateTarget);
+                // }
             }
 
             if (targets.Count == 0)
@@ -790,6 +844,12 @@ namespace SmtuSchedule.Android.Views
             StartActivityForResult(typeof(DownloadActivity), StartDownloadActivityRequestCode);
         }
 
+        private String GetScheduleDisplayedNameGivenActuality(Schedule schedule)
+        {
+            String suffix = $"({schedule.GetFormattedLastUpdate()})";
+            return schedule.IsActual ? schedule.DisplayedName : schedule.DisplayedName + suffix;
+        }
+
         public void ShowSchedule(Int32 scheduleId)
         {
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
@@ -811,8 +871,7 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            String title = schedules[scheduleId].DisplayedName;
-            _toolbarTitle.Text = schedules[scheduleId].IsNotUpdated ? title + " (!)" : title;
+            _toolbarTitle.Text = GetScheduleDisplayedNameGivenActuality(schedules[scheduleId]);
 
             _application.Preferences.SetCurrentScheduleId(scheduleId);
             ViewPagerMoveToDate(_application.Preferences.CurrentScheduleDate);
@@ -840,14 +899,14 @@ namespace SmtuSchedule.Android.Views
             _viewPager.SetCurrentItem(_pagerAdapter.RenderingDateRange.GetIndexByDate(date), true);
         }
 
-        private void SetSchedulesMenu(IReadOnlyList<Schedule> schedules)
+        private void SetSchedulesMenu(IReadOnlyCollection<Schedule> schedules)
         {
-            static IEnumerable<(Int32, String, Boolean)> Fetch(IEnumerable<Schedule> values)
+            IEnumerable<(Int32, String, Boolean)> Fetch(IEnumerable<Schedule> values)
             {
                 return values.Select<Schedule, (Int32, String, Boolean)>(s => (
                     s.ScheduleId,
-                    s.DisplayedName,
-                    s.IsNotUpdated
+                    GetScheduleDisplayedNameGivenActuality(s),
+                    s.IsActual
                 ));
             }
 
@@ -859,10 +918,9 @@ namespace SmtuSchedule.Android.Views
                 return ;
             }
 
-            foreach ((Int32 scheduleId, String displayedName, Boolean isNotUpdated) in Fetch(schedules))
+            foreach ((Int32 scheduleId, String scheduleTitle, Boolean isActual) in Fetch(schedules))
             {
-                String scheduleTitle = isNotUpdated ? displayedName + " (!)" : displayedName;
-                _schedulesMenu.Menu.Add(Menu.None, scheduleId, Menu.None, scheduleTitle);
+                _schedulesMenu.Menu.Add(IMenu.None, scheduleId, IMenu.None, scheduleTitle);
             }
 
             _toolbarTitle.SetCompoundDrawablesWithIntrinsicBounds(0, 0, Resource.Drawable.arrowDown, 0);

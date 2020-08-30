@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Android.Content;
+using SmtuSchedule.Android.Views;
 
 using Uri = Android.Net.Uri;
 
@@ -8,6 +9,11 @@ namespace SmtuSchedule.Android.Utilities
 {
     internal static class IntentUtilities
     {
+        // Ключи в словаре данных, наличие которых означает, что необходимо открыть указанное расписание
+        // на указанную дату.
+        public const String DataUpcomingLessonScheduleIdKey = "UpcomingLessonScheduleId";
+        public const String DataUpcomingLessonDateKey = "UpcomingLessonDate";
+
         // Ключ в словаре данных, наличие которого означает, что необходимо открыть страницу указанного
         // приложения в Google Play Store.
         private const String DataGooglePlayStoreKey = "GooglePlayStore";
@@ -18,6 +24,29 @@ namespace SmtuSchedule.Android.Utilities
         public static Boolean IsDataKeysCollectionValidToCreateViewIntent(ICollection<String> collection)
         {
             return collection.Contains(DataUrlKey) || collection.Contains(DataGooglePlayStoreKey);
+        }
+
+        public static Boolean IsDataKeysCollectionValidToCreateUpcomingLessonIntent(
+            ICollection<String> collection)
+        {
+            return collection.Contains(DataUpcomingLessonDateKey)
+                && collection.Contains(DataUpcomingLessonScheduleIdKey);
+        }
+
+        public static Boolean IsDataKeysCollectionValidToCreateIntent(ICollection<String> collection)
+        {
+            return IsDataKeysCollectionValidToCreateViewIntent(collection)
+                || IsDataKeysCollectionValidToCreateUpcomingLessonIntent(collection);
+        }
+
+        public static Intent CreateIntentForUpcomingLesson(Context context,
+            String dataUpcomingLessonDateValue, String dataUpcomingLessonScheduleIdValue)
+        {
+            Intent intent = new Intent(context, typeof(MainActivity));
+            intent.PutExtra(DataUpcomingLessonDateKey, dataUpcomingLessonDateValue);
+            intent.PutExtra(DataUpcomingLessonScheduleIdKey, dataUpcomingLessonScheduleIdValue);
+
+            return intent;
         }
 
         public static Intent CreateViewIntentFromUrl(String url)
@@ -35,14 +64,22 @@ namespace SmtuSchedule.Android.Utilities
             return new Intent(Intent.ActionView, uri);
         }
 
-        public static Intent CreateViewIntentFromData(Context context, IDictionary<String, String> data)
+        public static Intent CreateIntentFromData(Context context, IDictionary<String, String> data)
         {
             if (data == null)
             {
                 return null;
             }
 
-            if (data.ContainsKey(DataUrlKey))
+            if (data.ContainsKey(DataUpcomingLessonDateKey))
+            {
+                return CreateIntentForUpcomingLesson(
+                    context,
+                    data[DataUpcomingLessonDateKey],
+                    data[DataUpcomingLessonScheduleIdKey]
+                );
+            }
+            else if (data.ContainsKey(DataUrlKey))
             {
                 return CreateViewIntentFromUrl(data[DataUrlKey]);
             }

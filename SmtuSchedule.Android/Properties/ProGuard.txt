@@ -1,5 +1,4 @@
 # Screens
-# -keep class android.support.v4.widget.Space
 -keep class android.support.v4.view.ViewPager
 -keep class android.support.v4.widget.SwipeRefreshLayout
 -keep class android.support.v7.widget.Toolbar
@@ -23,3 +22,11 @@
 -keep class com.google.firebase.iid.FirebaseInstanceIdService
 -keep class com.google.firebase.iid.FirebaseInstanceIdReceiver
 -keep class com.google.firebase.messaging.FirebaseMessagingService
+
+# WorkManager
+-keep class androidx.work.impl.WorkManagerInitializer
+-keep class androidx.work.impl.background.systemjob.SystemJobService
+-keep class androidx.work.impl.background.systemalarm.SystemAlarmService
+-keep class androidx.work.impl.background.systemalarm.RescheduleReceiver
+-keep class androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver
+-keep class androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy

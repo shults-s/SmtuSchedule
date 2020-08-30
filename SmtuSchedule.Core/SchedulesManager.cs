@@ -15,15 +15,15 @@ namespace SmtuSchedule.Core
 
         public Boolean IsDownloadingInProgress { get; private set; }
 
-        public ILogger Logger { get; set; }
+        public ILogger Logger
+        {
+            get => _logger;
+            set => _logger = _schedulesRepository.Logger = value;
+        }
 
         public SchedulesManager(String storagePath, String schedulesDirectoryName)
         {
-            _schedulesRepository = new LocalSchedulesRepository($"{storagePath}/{schedulesDirectoryName}/")
-            {
-                Logger = Logger
-            };
-
+            _schedulesRepository = new LocalSchedulesRepository($"{storagePath}/{schedulesDirectoryName}/");
             _storagePath = storagePath;
         }
 
@@ -33,7 +33,7 @@ namespace SmtuSchedule.Core
             {
                 SchedulesMigrator schedulesMigrator = new SchedulesMigrator(DownloadLecturersMapAsync)
                 {
-                    Logger = Logger
+                    Logger = _logger
                 };
 
                 IEnumerable<Schedule> affectedSchedules = schedulesMigrator.MigrateAsync(_schedules.Values)
@@ -74,7 +74,7 @@ namespace SmtuSchedule.Core
             {
                 LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
                 {
-                    Logger = Logger
+                    Logger = _logger
                 };
 
                 Dictionary<String, Int32> localLecturersMap = lecturersRepository.Read();
@@ -93,11 +93,11 @@ namespace SmtuSchedule.Core
 
                 ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(localLecturersMap)
                 {
-                    Logger = Logger
+                    Logger = _logger
                 };
 
                 Dictionary<Int32, Schedule> updatedSchedules = await schedulesLoader.DownloadAsync(
-                    _schedules.Keys,
+                    _schedules.Values.Where(s => !s.IsActual).Select(s => s.ScheduleId),
                     false
                 )
                 .ConfigureAwait(false);
@@ -114,16 +114,6 @@ namespace SmtuSchedule.Core
                     {
                         _schedules[scheduleId] = schedule;
                     }
-                }
-
-                foreach ((Int32 scheduleId, Schedule schedule) in _schedules)
-                {
-                    if (updatedSchedules.ContainsKey(scheduleId))
-                    {
-                        continue;
-                    }
-
-                    schedule.IsNotUpdated = true;
                 }
 
                 IsDownloadingInProgress = false;
@@ -157,7 +147,7 @@ namespace SmtuSchedule.Core
 
                 ServerSchedulesDownloader schedulesLoader = new ServerSchedulesDownloader(_lecturersMap)
                 {
-                    Logger = Logger
+                    Logger = _logger
                 };
 
                 Dictionary<Int32, Schedule> schedules = await schedulesLoader.DownloadAsync(
@@ -206,7 +196,7 @@ namespace SmtuSchedule.Core
             {
                 LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
                 {
-                    Logger = Logger
+                    Logger = _logger
                 };
 
                 _isLecturersMapReadedFromCache = true;
@@ -228,12 +218,12 @@ namespace SmtuSchedule.Core
 
                 LocalLecturersRepository lecturersRepository = new LocalLecturersRepository(_storagePath)
                 {
-                    Logger = Logger
+                    Logger = _logger
                 };
 
                 _isLecturersMapReadedFromCache = false;
 
-                _lecturersMap = await ServerLecturersDownloader.DownloadAsync(Logger).ConfigureAwait(false);
+                _lecturersMap = await ServerLecturersDownloader.DownloadAsync(_logger).ConfigureAwait(false);
                 if (_lecturersMap != null)
                 {
                     lecturersRepository.Save(_lecturersMap);
@@ -249,7 +239,6 @@ namespace SmtuSchedule.Core
             {
                 Dictionary<Int32, Schedule> schedules = _schedulesRepository.Read(out Boolean haveReadingErrors);
                 _schedules = new ConcurrentDictionary<Int32, Schedule>(schedules);
-
                 return haveReadingErrors;
             });
         }
@@ -258,6 +247,8 @@ namespace SmtuSchedule.Core
 
         private Dictionary<String, Int32> _lecturersMap;
         private ConcurrentDictionary<Int32, Schedule> _schedules;
+
+        private ILogger _logger;
 
         private readonly String _storagePath;
         private readonly LocalSchedulesRepository _schedulesRepository;

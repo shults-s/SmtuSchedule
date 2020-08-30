@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
+    <declare-styleable name="CustomMultiSelectListPreference">
+        <attr name="summaryNothingSelected" format="reference" />
+    </declare-styleable>
+
     <attr name="windowColorBackground" format="reference" />
 
     <attr name="colorDivider" format="reference" />
