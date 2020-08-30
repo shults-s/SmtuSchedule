@@ -279,7 +279,8 @@ namespace SmtuSchedule.Core
                     // В связи с вводом дистанционного обучения аудитория теперь может быть не указана.
                     switch (cells.Length)
                     {
-                        case 3:
+                        case 4 when (schedule.Type == ScheduleType.Lecturer):
+                        case 3 when (schedule.Type == ScheduleType.Group):
                             timeCellIndex = 0;
                             auditoriumCellIndex = -1;
                             titleCellIndex = 1;
