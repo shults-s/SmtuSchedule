@@ -1,7 +1,7 @@
 {
-    "IsCriticalUpdate": false,
+    "IsCriticalUpdate": true,
     "VersionCode": 27,
-    "VersionName": "1.3.0-β",
-    "VersionNotes": "",
+    "VersionName": "1.3.0",
+    "VersionNotes": "Исправлены ошибки при загрузке расписаний, в которых не указаны аудитории.<br><br>Добавлены настраиваемые уведомления о предстоящих занятиях (beta).<br><br>Добавлено автоматическое фоновое обновление расписаний.",
     "GooglePlayStorePackageId": "shults.smtuschedule"
 }
