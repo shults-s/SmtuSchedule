@@ -24,7 +24,7 @@ namespace SmtuSchedule.Android.Views
 
                 if (preference is DatePreference)
                 {
-                    fragment = new DatePreference.DatePreferenceDialogFragment(preference.Key);
+                    fragment = DatePreference.DatePreferenceDialogFragment.Create(preference.Key);
                 }
 
                 if (fragment == null)

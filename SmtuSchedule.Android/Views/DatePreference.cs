@@ -18,10 +18,15 @@ namespace SmtuSchedule.Android.Views
     {
         internal class DatePreferenceDialogFragment : PreferenceDialogFragmentCompat
         {
-            public DatePreferenceDialogFragment(String key)
+            public static DatePreferenceDialogFragment Create(String preferenceKey)
             {
-                Arguments = new Bundle();
-                Arguments.PutString(ArgKey, key);
+                DatePreferenceDialogFragment fragment = new DatePreferenceDialogFragment()
+                {
+                    Arguments = new Bundle()
+                };
+
+                fragment.Arguments.PutString(ArgKey, preferenceKey);
+                return fragment;
             }
 
             public override void OnDialogClosed(Boolean positiveResult)
