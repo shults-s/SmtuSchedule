@@ -131,6 +131,8 @@ namespace SmtuSchedule.Android.Views
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            _application = ApplicationContext as SmtuScheduleApplication;
+
             // Если пользователь нажал на уведомление, содержащее полезную нагрузку и пришедшее, когда
             // приложение не было запущено, либо находилось в фоновом режиме.
             if (Intent.Extras != null)
@@ -167,8 +169,6 @@ namespace SmtuSchedule.Android.Views
                     }
                 }
             }
-
-            _application = ApplicationContext as SmtuScheduleApplication;
 
             _currentlyUsedDarkTheme = _application.Preferences.UseDarkTheme;
             _isThemeChanged = false;
