@@ -54,7 +54,7 @@ namespace SmtuSchedule.Android.Utilities
                 title ?? context.Resources.GetString(Resource.String.applicationCompleteName));
 
             builder.SetStyle(new NotificationCompat.BigTextStyle().BigText(text)).SetAutoCancel(true)
-                .SetSmallIcon(Resource.Mipmap.launcherIcon);
+                .SetSmallIcon(Resource.Mipmap.notificationIcon);
 
             manager.Notify(notificationId, builder.Build());
             return notificationId;

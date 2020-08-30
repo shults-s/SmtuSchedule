@@ -4966,6 +4966,9 @@ namespace SmtuSchedule.Android
 			// aapt resource value: 0x7F0E0001
 			public const int launchLogo = 2131623937;
 			
+			// aapt resource value: 0x7F0E0002
+			public const int notificationIcon = 2131623938;
+			
 			static Mipmap()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
