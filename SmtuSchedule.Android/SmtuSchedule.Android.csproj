@@ -82,6 +82,7 @@
     <Compile Include="Enumerations\InitializationStatus.cs" />
     <Compile Include="Enumerations\FeatureDiscoveryState.cs" />
     <Compile Include="Enumerations\LessonRemindTime.cs" />
+    <Compile Include="Exceptions\UiException.cs" />
     <Compile Include="Exceptions\WorkerException.cs" />
     <Compile Include="Interfaces\ISchedulesViewer.cs" />
     <Compile Include="Properties\PrivateKeys.cs" />

@@ -93,6 +93,10 @@
         Ошибка при инициализации приложения: {0}.
         \n\nПожалуйста, [сообщите мне](https://vk.com/write62700344) об этом.
     </string>
+    <string name="restartSchedulesRenderingSubsystemErrorMessage">
+        Ошибка при перезапуске подсистемы рендеринга расписаний.
+        \n\nПожалуйста, [сообщите мне](https://vk.com/write62700344) об этом.
+    </string>
     <string name="failedToRemoveDirectoryErrorMessage">
         В старой директории приложения остались файлы, созданные Вами вручную. Посмотрите, возможно их стоит удалить.
     </string>
