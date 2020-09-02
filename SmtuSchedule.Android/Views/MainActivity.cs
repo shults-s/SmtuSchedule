@@ -427,23 +427,23 @@ namespace SmtuSchedule.Android.Views
             return _application.Preferences.UpperWeekDate != default(DateTime);
         }
 
-        private async void MigrateSchedulesAsync(Int64 currentVersion)
-        {
-            if (_application.Preferences.LastMigrationVersion == currentVersion)
-            {
-                return ;
-            }
-
-            if (!await _application.Manager.MigrateSchedulesAsync())
-            {
-                ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
-                _ = _application.SaveLogAsync();
-            }
-            else
-            {
-                _application.Preferences.SetLastMigrationVersion(currentVersion);
-            }
-        }
+        // private async void MigrateSchedulesAsync(Int64 currentVersion)
+        // {
+        //     if (_application.Preferences.LastMigrationVersion == currentVersion)
+        //     {
+        //         return ;
+        //     }
+        //
+        //     if (!await _application.Manager.MigrateSchedulesAsync())
+        //     {
+        //         ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
+        //         _ = _application.SaveLogAsync();
+        //     }
+        //     else
+        //     {
+        //         _application.Preferences.SetLastMigrationVersion(currentVersion);
+        //     }
+        // }
 
         private async void CheckForCriticalUpdatesAsync(Int64 currentVersion)
         {
