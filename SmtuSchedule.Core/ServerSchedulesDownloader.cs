@@ -24,6 +24,11 @@ namespace SmtuSchedule.Core
             (@"Расписание занятий группы (?<group>\d+)", "Группа ${group}")
         };
 
+        private static readonly Dictionary<String, String> Auditoriums = new Dictionary<String, String>()
+        {
+            ["Дистанционно"] = "Онлайн"
+        };
+
         private static readonly Dictionary<String, DayOfWeek> Days = new Dictionary<String, DayOfWeek>()
         {
             ["Понедельник"] = DayOfWeek.Monday,
@@ -173,7 +178,11 @@ namespace SmtuSchedule.Core
             // На входе: Корпус Аудитория[Литера]|Корпус каф.[ФВ|ВК|...]|Корпус Лаборатория
             static String ParseAuditorium(HtmlNode td)
             {
-                String auditorium = td.InnerText.Trim().Replace(' ', '-').ToUpper(Culture);
+                String auditorium = td.InnerText.Trim();
+
+                auditorium = Auditoriums.TryGetValue(auditorium, out String auditoriumAlias)
+                    ? auditoriumAlias.ToUpper(Culture)
+                    : auditorium.Replace(' ', '-').ToUpper(Culture);
 
                 if (!auditorium.Contains('.'))
                 {
