@@ -860,7 +860,7 @@ namespace SmtuSchedule.Android.Views
 
         private String GetScheduleDisplayedNameGivenActuality(Schedule schedule)
         {
-            String suffix = $"({schedule.GetFormattedLastUpdate()})";
+            String suffix = $" ({schedule.GetFormattedLastUpdate()})";
             return schedule.IsActual ? schedule.DisplayedName : schedule.DisplayedName + suffix;
         }
 
