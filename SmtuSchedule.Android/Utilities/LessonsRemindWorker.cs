@@ -24,8 +24,6 @@ namespace SmtuSchedule.Android.Utilities
                 _application.GetModernExternalStoragePath(),
                 SmtuScheduleApplication.SchedulesDirectoryName
             );
-
-            _currentUtcUnixTime = GetDateTimeInUtcUnixTime(DateTime.UtcNow);
         }
 
         public override Result DoWork()
@@ -201,7 +199,8 @@ namespace SmtuSchedule.Android.Utilities
         private void ScheduleNotification(Int64 whenDisplayNotificationInUtcUnixTime, String title,
             String message, Int32 scheduleId, DateTime lessonDate, Int32 requestCode)
         {
-            if (whenDisplayNotificationInUtcUnixTime <= _currentUtcUnixTime)
+            Int64 currentUtcUnixTime = GetDateTimeInUtcUnixTime(DateTime.UtcNow);
+            if (whenDisplayNotificationInUtcUnixTime <= currentUtcUnixTime)
             {
                 return ;
             }
@@ -238,8 +237,6 @@ namespace SmtuSchedule.Android.Utilities
                 alarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, timeInMilliseconds, pendingIntent);
             }
         }
-
-        private readonly Int64 _currentUtcUnixTime;
 
         private readonly Context _context;
         private readonly SmtuScheduleApplication _application;
