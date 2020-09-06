@@ -1,8 +1,8 @@
 using System;
-using System.IO;
 using System.Text.Json;
 using System.Text.Encodings.Web;
 using System.Collections.Generic;
+using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
 
@@ -30,7 +30,7 @@ namespace SmtuSchedule.Core
             try
             {
                 String json = JsonSerializer.Serialize<Dictionary<String, Int32>>(lecturers, Options);
-                File.WriteAllText(filePath, json);
+                FileThreadSafeUtilities.WriteAllText(filePath, json);
             }
             catch (Exception exception)
             {
@@ -46,7 +46,8 @@ namespace SmtuSchedule.Core
             String filePath = _storagePath + LecturersMapFileName;
             try
             {
-                return JsonSerializer.Deserialize<Dictionary<String, Int32>>(File.ReadAllText(filePath), Options);
+                String json = FileThreadSafeUtilities.ReadAllText(filePath);
+                return JsonSerializer.Deserialize<Dictionary<String, Int32>>(json, Options);
             }
             catch (Exception exception)
             {
