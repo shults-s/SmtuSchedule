@@ -26,6 +26,7 @@ namespace SmtuSchedule.Core
 
         private static readonly Dictionary<String, String> Auditoriums = new Dictionary<String, String>()
         {
+            ["ЦДО Дистанционно"] = "Онлайн",
             ["Дистанционно"] = "Онлайн"
         };
 
@@ -272,7 +273,14 @@ namespace SmtuSchedule.Core
             // Первые элементы относятся к заголовку таблицы и интереса не представляют.
             for (Int32 i = 1; i < heads.Length; i++)
             {
-                DayOfWeek day = Days[heads[i].Element("tr").Element("th").InnerText];
+                String dayTitle = heads[i].Element("tr").Element("th").InnerText;
+
+                if (!Days.ContainsKey(dayTitle)) // «По определенным датам» и прочее.
+                {
+                    continue;
+                }
+
+                DayOfWeek day = Days[dayTitle];
 
                 List<Subject> subjects = new List<Subject>();
 
