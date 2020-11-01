@@ -97,8 +97,20 @@ namespace SmtuSchedule.Core
                     haveReadingErrors = true;
 
                     String fileName = Path.GetFileName(filePath);
+
                     Logger?.Log(
                         new SchedulesRepositoryException($"Error of reading file \"{fileName}\".", exception));
+
+                    // Костыль для отключения повторяющихся уведомлений о невозможности открыть расписание.
+                    try
+                    {
+                        File.Delete(filePath);
+                    }
+                    catch (Exception removingException)
+                    {
+                        String message = $"Error of removing corrupted file \"{fileName}\".";
+                        Logger?.Log(new SchedulesRepositoryException(message, removingException));
+                    }
                 }
             }
 
