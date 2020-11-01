@@ -34,6 +34,8 @@ namespace SmtuSchedule.Core.Utilities
                 {
                     using StreamWriter writer = new StreamWriter(stream);
                     writer.Write(contents);
+                    writer.Flush();
+                    stream.Flush(flushToDisk: true);
                 },
                 onException: (exception) => throw exception
             );
