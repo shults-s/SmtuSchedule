@@ -22,6 +22,7 @@ using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Enumerations;
 using SmtuSchedule.Android.Utilities;
 using SmtuSchedule.Android.Interfaces;
+using SmtuSchedule.Android.Exceptions;
 using SmtuSchedule.Android.Enumerations;
 
 using PopupMenu = Android.Support.V7.Widget.PopupMenu;
@@ -427,23 +428,23 @@ namespace SmtuSchedule.Android.Views
             return _application.Preferences.UpperWeekDate != default(DateTime);
         }
 
-        private async void MigrateSchedulesAsync(Int64 currentVersion)
-        {
-            if (_application.Preferences.LastMigrationVersion == currentVersion)
-            {
-                return ;
-            }
-
-            if (!await _application.Manager.MigrateSchedulesAsync())
-            {
-                ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
-                _ = _application.SaveLogAsync();
-            }
-            else
-            {
-                _application.Preferences.SetLastMigrationVersion(currentVersion);
-            }
-        }
+        // private async void MigrateSchedulesAsync(Int64 currentVersion)
+        // {
+        //     if (_application.Preferences.LastMigrationVersion == currentVersion)
+        //     {
+        //         return ;
+        //     }
+        //
+        //     if (!await _application.Manager.MigrateSchedulesAsync())
+        //     {
+        //         ShowSnackbar(Resource.String.schedulesMigrationErrorMessage);
+        //         _ = _application.SaveLogAsync();
+        //     }
+        //     else
+        //     {
+        //         _application.Preferences.SetLastMigrationVersion(currentVersion);
+        //     }
+        // }
 
         private async void CheckForCriticalUpdatesAsync(Int64 currentVersion)
         {
@@ -563,6 +564,19 @@ namespace SmtuSchedule.Android.Views
             }
 
             IReadOnlyDictionary<Int32, Schedule> schedules = _application.Manager.Schedules;
+
+            // Невоспроизводимая искусственно ситуация, которая хоть и очень редко, но роняет приложение.
+            if (schedules == null)
+            {
+                UiException exception = new UiException("Unexpected null value of Schedules property.");
+                exception.Data["_stateManager.CurrentState"] = _stateManager.CurrentState;
+                exception.Data["_application.IsInitialized"] = _application.IsInitialized;
+                _application.Logger.Log(exception);
+
+                ShowLayoutMessage(Resource.String.restartSchedulesRenderingSubsystemErrorMessage, true);
+
+                return ;
+            }
 
             IReadOnlyList<Schedule> sortedSchedules = schedules.Select(s => s.Value)
                 .OrderBy(s => s, new SchedulesComparer())
@@ -846,7 +860,7 @@ namespace SmtuSchedule.Android.Views
 
         private String GetScheduleDisplayedNameGivenActuality(Schedule schedule)
         {
-            String suffix = $"({schedule.GetFormattedLastUpdate()})";
+            String suffix = $" ({schedule.GetFormattedLastUpdate()})";
             return schedule.IsActual ? schedule.DisplayedName : schedule.DisplayedName + suffix;
         }
 

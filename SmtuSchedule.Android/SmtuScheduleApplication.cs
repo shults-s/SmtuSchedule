@@ -72,9 +72,11 @@ namespace SmtuSchedule.Android
             {
                 LecturersDownloaderException _ => true,
                 SchedulesDownloaderException _ => true,
+                LecturersRepositoryException _ => true,
                 SchedulesRepositoryException _ => true,
                 ApplicationException         _ => true,
                 WorkerException              _ => true,
+                UiException                  _ => true,
                 _ => false
             };
 

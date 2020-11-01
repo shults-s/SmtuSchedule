@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using SmtuSchedule.Core.Models;
+// using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
 
@@ -20,7 +21,8 @@ namespace SmtuSchedule.Core
             String fileName = schedule.DisplayedName + ".json";
             try
             {
-                File.Delete(_storagePath + fileName);
+                String filePath = _storagePath + fileName;
+                File.Delete(filePath);
             }
             catch (Exception exception)
             {
@@ -39,7 +41,9 @@ namespace SmtuSchedule.Core
             String fileName = schedule.DisplayedName + ".json";
             try
             {
-                File.WriteAllText(_storagePath + fileName, schedule.ToJson());
+                String filePath = _storagePath + fileName;
+                // FileThreadSafeUtilities.WriteAllText(filePath, schedule.ToJson());
+                File.WriteAllText(filePath, schedule.ToJson());
             }
             catch (Exception exception)
             {
@@ -75,7 +79,10 @@ namespace SmtuSchedule.Core
             {
                 try
                 {
-                    Schedule schedule = Schedule.FromJson(File.ReadAllText(filePath));
+                    // String json = FileThreadSafeUtilities.ReadAllText(filePath);
+                    String json = File.ReadAllText(filePath);
+                    Schedule schedule = Schedule.FromJson(json);
+
                     schedule.Validate();
 
                     if (schedules.ContainsKey(schedule.ScheduleId))
@@ -90,8 +97,20 @@ namespace SmtuSchedule.Core
                     haveReadingErrors = true;
 
                     String fileName = Path.GetFileName(filePath);
+
                     Logger?.Log(
                         new SchedulesRepositoryException($"Error of reading file \"{fileName}\".", exception));
+
+                    // Костыль для отключения повторяющихся уведомлений о невозможности открыть расписание.
+                    try
+                    {
+                        File.Delete(filePath);
+                    }
+                    catch (Exception removingException)
+                    {
+                        String message = $"Error of removing corrupted file \"{fileName}\".";
+                        Logger?.Log(new SchedulesRepositoryException(message, removingException));
+                    }
                 }
             }
 

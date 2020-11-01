@@ -32,6 +32,13 @@ namespace SmtuSchedule.Android.Utilities
                 channelId ?? GeneralChannelId
             );
 
+            if (Build.VERSION.SdkInt < BuildVersionCodes.O && channelId == GeneralChannelId)
+            {
+                // Вместо NotificationImportance.High в новых версиях Android.
+                builder.SetDefaults(NotificationCompat.DefaultAll);
+                builder.SetPriority(NotificationCompat.PriorityHigh);
+            }
+
             notificationId = (notificationId != 0) ? notificationId : UniqueIdGenerator.GenerateId();
 
             if (data != null && IntentUtilities.IsDataKeysCollectionValidToCreateIntent(data.Keys))

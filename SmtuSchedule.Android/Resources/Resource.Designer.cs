@@ -5352,124 +5352,127 @@ namespace SmtuSchedule.Android
 			public const int removeCurrentScheduleMessage = 2131689594;
 			
 			// aapt resource value: 0x7F0F007B
-			public const int scheduleChangeDateFeatureDiscoveryMessage = 2131689595;
+			public const int restartSchedulesRenderingSubsystemErrorMessage = 2131689595;
 			
 			// aapt resource value: 0x7F0F007C
-			public const int scheduleChangeDateFeatureDiscoveryTitle = 2131689596;
-			
-			// aapt resource value: 0x7F0F007E
-			public const int scheduleDownloadedSuccessfullyMessage = 2131689598;
+			public const int scheduleChangeDateFeatureDiscoveryMessage = 2131689596;
 			
 			// aapt resource value: 0x7F0F007D
-			public const int scheduleDownloadErrorMessage = 2131689597;
+			public const int scheduleChangeDateFeatureDiscoveryTitle = 2131689597;
 			
 			// aapt resource value: 0x7F0F007F
-			public const int scheduleNotAvailableMessage = 2131689599;
+			public const int scheduleDownloadedSuccessfullyMessage = 2131689599;
+			
+			// aapt resource value: 0x7F0F007E
+			public const int scheduleDownloadErrorMessage = 2131689598;
 			
 			// aapt resource value: 0x7F0F0080
-			public const int scheduleNotYetDownloadedMessage = 2131689600;
+			public const int scheduleNotAvailableMessage = 2131689600;
 			
 			// aapt resource value: 0x7F0F0081
-			public const int scheduleRemovedSuccessfullyMessage = 2131689601;
+			public const int scheduleNotYetDownloadedMessage = 2131689601;
 			
 			// aapt resource value: 0x7F0F0082
-			public const int scheduleRemovingErrorMessage = 2131689602;
-			
-			// aapt resource value: 0x7F0F0086
-			public const int schedulesDownloadedSuccessfullyMessage = 2131689606;
+			public const int scheduleRemovedSuccessfullyMessage = 2131689602;
 			
 			// aapt resource value: 0x7F0F0083
-			public const int schedulesDownloadErrorMessage = 2131689603;
-			
-			// aapt resource value: 0x7F0F0084
-			public const int schedulesDownloadFeatureDiscoveryMessage = 2131689604;
-			
-			// aapt resource value: 0x7F0F0085
-			public const int schedulesDownloadFeatureDiscoveryTitle = 2131689605;
+			public const int scheduleRemovingErrorMessage = 2131689603;
 			
 			// aapt resource value: 0x7F0F0087
-			public const int schedulesDownloadingStarted = 2131689607;
+			public const int schedulesDownloadedSuccessfullyMessage = 2131689607;
+			
+			// aapt resource value: 0x7F0F0084
+			public const int schedulesDownloadErrorMessage = 2131689604;
+			
+			// aapt resource value: 0x7F0F0085
+			public const int schedulesDownloadFeatureDiscoveryMessage = 2131689605;
+			
+			// aapt resource value: 0x7F0F0086
+			public const int schedulesDownloadFeatureDiscoveryTitle = 2131689606;
 			
 			// aapt resource value: 0x7F0F0088
-			public const int schedulesManagementFeatureDiscoveryMessage = 2131689608;
+			public const int schedulesDownloadingStarted = 2131689608;
 			
 			// aapt resource value: 0x7F0F0089
-			public const int schedulesManagementFeatureDiscoveryTitle = 2131689609;
+			public const int schedulesManagementFeatureDiscoveryMessage = 2131689609;
 			
 			// aapt resource value: 0x7F0F008A
-			public const int schedulesMigrationErrorMessage = 2131689610;
+			public const int schedulesManagementFeatureDiscoveryTitle = 2131689610;
 			
 			// aapt resource value: 0x7F0F008B
-			public const int schedulesReadingErrorMessage = 2131689611;
+			public const int schedulesMigrationErrorMessage = 2131689611;
 			
 			// aapt resource value: 0x7F0F008C
-			public const int schedulesUpdatingErrorMessage = 2131689612;
+			public const int schedulesReadingErrorMessage = 2131689612;
 			
 			// aapt resource value: 0x7F0F008D
-			public const int search_menu_title = 2131689613;
+			public const int schedulesUpdatingErrorMessage = 2131689613;
 			
 			// aapt resource value: 0x7F0F008E
-			public const int selectViewingDateMenuItem = 2131689614;
+			public const int search_menu_title = 2131689614;
 			
 			// aapt resource value: 0x7F0F008F
-			public const int shouldDownloadRelatedSchedulesMessage = 2131689615;
+			public const int selectViewingDateMenuItem = 2131689615;
 			
 			// aapt resource value: 0x7F0F0090
-			public const int startPreferencesMenuItem = 2131689616;
+			public const int shouldDownloadRelatedSchedulesMessage = 2131689616;
 			
 			// aapt resource value: 0x7F0F0091
-			public const int status_bar_notification_info_overflow = 2131689617;
+			public const int startPreferencesMenuItem = 2131689617;
 			
 			// aapt resource value: 0x7F0F0092
-			public const int storagePermissionsRationaleMessage = 2131689618;
+			public const int status_bar_notification_info_overflow = 2131689618;
 			
 			// aapt resource value: 0x7F0F0093
-			public const int summary_collapsed_preference_list = 2131689619;
+			public const int storagePermissionsRationaleMessage = 2131689619;
 			
 			// aapt resource value: 0x7F0F0094
-			public const int thanksActionTitle = 2131689620;
+			public const int summary_collapsed_preference_list = 2131689620;
 			
 			// aapt resource value: 0x7F0F0095
-			public const int tryAgainActionTitle = 2131689621;
+			public const int thanksActionTitle = 2131689621;
 			
 			// aapt resource value: 0x7F0F0096
-			public const int universityNotificationChannelDescription = 2131689622;
+			public const int tryAgainActionTitle = 2131689622;
 			
 			// aapt resource value: 0x7F0F0097
-			public const int universityNotificationChannelName = 2131689623;
+			public const int universityNotificationChannelDescription = 2131689623;
 			
 			// aapt resource value: 0x7F0F0098
-			public const int universitySiteConnectionLostErrorMessage = 2131689624;
+			public const int universityNotificationChannelName = 2131689624;
 			
 			// aapt resource value: 0x7F0F0099
-			public const int upcomingLessonRemindNotificationMessage = 2131689625;
+			public const int universitySiteConnectionLostErrorMessage = 2131689625;
 			
 			// aapt resource value: 0x7F0F009A
-			public const int upcomingLessonRemindNotificationTitle = 2131689626;
+			public const int upcomingLessonRemindNotificationMessage = 2131689626;
 			
 			// aapt resource value: 0x7F0F009B
-			public const int updatesNotificationChannelDescription = 2131689627;
+			public const int upcomingLessonRemindNotificationTitle = 2131689627;
 			
 			// aapt resource value: 0x7F0F009C
-			public const int updatesNotificationChannelName = 2131689628;
+			public const int updatesNotificationChannelDescription = 2131689628;
 			
 			// aapt resource value: 0x7F0F009D
-			public const int v7_preference_off = 2131689629;
+			public const int updatesNotificationChannelName = 2131689629;
 			
 			// aapt resource value: 0x7F0F009E
-			public const int v7_preference_on = 2131689630;
+			public const int v7_preference_off = 2131689630;
 			
 			// aapt resource value: 0x7F0F009F
-			public const int waitUntilSchedulesFinishDownloading = 2131689631;
+			public const int v7_preference_on = 2131689631;
 			
 			// aapt resource value: 0x7F0F00A0
-			public const int weekendMessage = 2131689632;
+			public const int waitUntilSchedulesFinishDownloading = 2131689632;
 			
 			// aapt resource value: 0x7F0F00A1
-			public const int welcomeMessage = 2131689633;
+			public const int weekendMessage = 2131689633;
 			
 			// aapt resource value: 0x7F0F00A2
-			public const int welcomeToolbarTitle = 2131689634;
+			public const int welcomeMessage = 2131689634;
+			
+			// aapt resource value: 0x7F0F00A3
+			public const int welcomeToolbarTitle = 2131689635;
 			
 			static String()
 			{

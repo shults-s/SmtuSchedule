@@ -24,6 +24,12 @@ namespace SmtuSchedule.Core
             (@"Расписание занятий группы (?<group>\d+)", "Группа ${group}")
         };
 
+        private static readonly Dictionary<String, String> Auditoriums = new Dictionary<String, String>()
+        {
+            ["ЦДО Дистанционно"] = "Онлайн",
+            ["Дистанционно"] = "Онлайн"
+        };
+
         private static readonly Dictionary<String, DayOfWeek> Days = new Dictionary<String, DayOfWeek>()
         {
             ["Понедельник"] = DayOfWeek.Monday,
@@ -173,7 +179,11 @@ namespace SmtuSchedule.Core
             // На входе: Корпус Аудитория[Литера]|Корпус каф.[ФВ|ВК|...]|Корпус Лаборатория
             static String ParseAuditorium(HtmlNode td)
             {
-                String auditorium = td.InnerText.Trim().Replace(' ', '-').ToUpper(Culture);
+                String auditorium = td.InnerText.Trim();
+
+                auditorium = Auditoriums.TryGetValue(auditorium, out String auditoriumAlias)
+                    ? auditoriumAlias.ToUpper(Culture)
+                    : auditorium.Replace(' ', '-').ToUpper(Culture);
 
                 if (!auditorium.Contains('.'))
                 {
@@ -263,7 +273,14 @@ namespace SmtuSchedule.Core
             // Первые элементы относятся к заголовку таблицы и интереса не представляют.
             for (Int32 i = 1; i < heads.Length; i++)
             {
-                DayOfWeek day = Days[heads[i].Element("tr").Element("th").InnerText];
+                String dayTitle = heads[i].Element("tr").Element("th").InnerText;
+
+                if (!Days.ContainsKey(dayTitle)) // «По определенным датам» и прочее.
+                {
+                    continue;
+                }
+
+                DayOfWeek day = Days[dayTitle];
 
                 List<Subject> subjects = new List<Subject>();
 

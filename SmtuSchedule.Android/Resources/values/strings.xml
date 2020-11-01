@@ -93,6 +93,10 @@
         Ошибка при инициализации приложения: {0}.
         \n\nПожалуйста, [сообщите мне](https://vk.com/write62700344) об этом.
     </string>
+    <string name="restartSchedulesRenderingSubsystemErrorMessage">
+        Ошибка при перезапуске подсистемы рендеринга расписаний.
+        \n\nПожалуйста, [сообщите мне](https://vk.com/write62700344) об этом.
+    </string>
     <string name="failedToRemoveDirectoryErrorMessage">
         В старой директории приложения остались файлы, созданные Вами вручную. Посмотрите, возможно их стоит удалить.
     </string>
@@ -147,7 +151,7 @@
 
     <!-- Сообщения уведомительного характера -->
     <string name="aboutApplicationMessage">
-        Версия 1.3.0 от 30 августа 2020.
+        Версия 1.3.1 от 1 ноября 2020.
         \n\nРазработчик: [@shults_s](https://vk.com/shults_s).
         \n\n[Политика конфиденциальности](https://github.com/shults-s/SmtuSchedule/wiki/Privacy-policy).
         \n\nИсходный код и информация о проекте размещены на [GitHub](https://github.com/shults-s/SmtuSchedule).
