@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using SmtuSchedule.Core.Models;
-using SmtuSchedule.Core.Utilities;
+// using SmtuSchedule.Core.Utilities;
 using SmtuSchedule.Core.Interfaces;
 using SmtuSchedule.Core.Exceptions;
 
@@ -42,7 +42,8 @@ namespace SmtuSchedule.Core
             try
             {
                 String filePath = _storagePath + fileName;
-                FileThreadSafeUtilities.WriteAllText(filePath, schedule.ToJson());
+                // FileThreadSafeUtilities.WriteAllText(filePath, schedule.ToJson());
+                File.WriteAllText(filePath, schedule.ToJson());
             }
             catch (Exception exception)
             {
@@ -78,7 +79,8 @@ namespace SmtuSchedule.Core
             {
                 try
                 {
-                    String json = FileThreadSafeUtilities.ReadAllText(filePath);
+                    // String json = FileThreadSafeUtilities.ReadAllText(filePath);
+                    String json = File.ReadAllText(filePath);
                     Schedule schedule = Schedule.FromJson(json);
 
                     schedule.Validate();
