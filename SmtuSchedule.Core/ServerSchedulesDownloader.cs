@@ -26,7 +26,7 @@ namespace SmtuSchedule.Core
 
         private static readonly Dictionary<String, String> Auditoriums = new Dictionary<String, String>()
         {
-            ["ЦДО Дистанционно"] = "Онлайн",
+            ["ЦДО-Дистанционно"] = "Онлайн",
             ["Дистанционно"] = "Онлайн"
         };
 
